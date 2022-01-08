@@ -1,0 +1,389 @@
+[
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "length",
+            "contributor": "datalab",
+            "task": "Any",
+            "description": "this function is used to calulate the length of a text"
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_entities",
+            "contributor": "spacy",
+            "task": "Any",
+            "description": "get entities"
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_postag",
+            "contributor": "spacy",
+            "task": "Any",
+            "description": "get entities"
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_postag",
+            "contributor": "nltk",
+            "task": "Any",
+            "description": "get entities"
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_basic_words",
+            "contributor": "datalab",
+            "task": "Any",
+            "description": "get entities"
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_lexical_richness",
+            "contributor": "datalab",
+            "task": "Any",
+            "description": "get entities"
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_gender_bias",
+            "contributor": "datalab",
+            "task": "Any",
+            "description": "get entities"
+        }
+    },
+    {
+        "class_type": "summarization_featurizing",
+        "args": {
+            "name": "get_density",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "this function is used for computing"
+        }
+    },
+    {
+        "class_type": "summarization_featurizing",
+        "args": {
+            "name": "get_coverage",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "this function is used for computing"
+        }
+    },
+    {
+        "class_type": "summarization_featurizing",
+        "args": {
+            "name": "get_compression",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "this function is used for computing"
+        }
+    },
+    {
+        "class_type": "summarization_featurizing",
+        "args": {
+            "name": "get_repetition",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "this function is used for computing"
+        }
+    },
+    {
+        "class_type": "summarization_featurizing",
+        "args": {
+            "name": "get_novelty",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "this function is used for computing"
+        }
+    },
+    {
+        "class_type": "summarization_featurizing",
+        "args": {
+            "name": "get_copy_len",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "this function is used for computing"
+        }
+    },
+    {
+        "class_type": "summarization_featurizing",
+        "args": {
+            "name": "get_all_features",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "this function is used for computing"
+        }
+    },
+    {
+        "class_type": "summarization_featurizing",
+        "args": {
+            "name": "get_oracle_summary",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "this function is used for computing"
+        }
+    },
+    {
+        "class_type": "summarization_featurizing",
+        "args": {
+            "name": "get_lead_k_summary",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "this function is used for computing"
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "strip_punctuation",
+            "contributor": "checklist",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "add_typos",
+            "contributor": "checklist",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "contract",
+            "contributor": "checklist",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "abbreviate",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "abbreviate_country_state",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "abbreviate_weekday_month",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "add_filler_words",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "add_typo",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "britishize_americanize",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "change_city_name",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "change_color",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "change_person_name",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "correct_typo",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "emojify",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "insert_abbreviation",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "reformat_date",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "replace_acronyms",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "replace_greetings",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "replace_hypernyms",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "replace_hyponyms",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "replace_synonym",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "simple_cipher",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "slangificator",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "preprocessing",
+        "args": {
+            "name": "lower",
+            "contributor": "datalab",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "preprocessing",
+        "args": {
+            "name": "tokenize_nltk",
+            "contributor": "nltk",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "preprocessing",
+        "args": {
+            "name": "tokenize_huggingface",
+            "contributor": "huggingface",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "preprocessing",
+        "args": {
+            "name": "stem",
+            "contributor": "nltk",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    }
+]

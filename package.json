@@ -1,0 +1,25 @@
+{
+  "name": "datasets",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">\r     <br>\r     <img src=\"https://raw.githubusercontent.com/huggingface/datasets/master/docs/source/imgs/datasets_logo_name.jpg\" width=\"400\"/>\r     <br>\r <p>\r <p align=\"center\">\r     <a href=\"https://circleci.com/gh/huggingface/datasets\">\r         <img alt=\"Build\" src=\"https://img.shields.io/circleci/build/github/huggingface/datasets/master\">\r     </a>\r     <a href=\"https://github.com/huggingface/datasets/blob/master/LICENSE\">\r         <img alt=\"GitHub\" src=\"https://img.shields.io/github/license/huggingface/datasets.svg?color=blue\">\r     </a>\r     <a href=\"https://huggingface.co/docs/datasets/index.html\">\r         <img alt=\"Documentation\" src=\"https://img.shields.io/website/http/huggingface.co/docs/datasets/index.html.svg?down_color=red&down_message=offline&up_message=online\">\r     </a>\r     <a href=\"https://github.com/huggingface/datasets/releases\">\r         <img alt=\"GitHub release\" src=\"https://img.shields.io/github/release/huggingface/datasets.svg\">\r     </a>\r     <a href=\"https://huggingface.co/datasets/\">\r         <img alt=\"Number of datasets\" src=\"https://img.shields.io/endpoint?url=https://huggingface.co/api/shields/datasets&color=brightgreen\">\r     </a>\r     <a href=\"CODE_OF_CONDUCT.md\">\r         <img alt=\"Contributor Covenant\" src=\"https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg\">\r     </a>\r     <a href=\"https://zenodo.org/badge/latestdoi/250213286\"><img src=\"https://zenodo.org/badge/250213286.svg\" alt=\"DOI\"></a>\r </p>",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "python local.py",
+    "sync": "git push lab master:main"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShiinaHiiragi/datasets.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ShiinaHiiragi/datasets/issues"
+  },
+  "homepage": "https://github.com/ShiinaHiiragi/datasets#readme"
+}

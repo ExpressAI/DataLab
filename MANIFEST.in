@@ -1,0 +1,2 @@
+recursive-include datasets/operations/featurize/pre_models/* *.pkl
+recursive-include src/datasets/operations/featurize/pre_models/* *.pkl
