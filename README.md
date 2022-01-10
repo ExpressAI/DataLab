@@ -13,7 +13,7 @@
 
 #### Uninstall
     ```shell
-    pip uninstall datasets
+    pip uninstall datalab
     ```
 
 #### Dataset Operation
