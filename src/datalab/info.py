@@ -333,7 +333,7 @@ class DatasetInfo:
         self.post_processing_size = None
         self.dataset_size = None
         self.size_in_bytes = None
-        self._init_db_attr()
+        # self._init_db_attr()
 
     def _init_db_attr(self):
         metadata = MongoDBClient("cluster0").query_metadata(self.builder_name)
