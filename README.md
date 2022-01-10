@@ -3,12 +3,7 @@
 ## Installation
 #### Install
 
-    ```shell
-    git clone https://github.com/ExpressAI/Datalab.git
-    cd Datalab
-    python setup.py install
-    ```
-   or 
+ 
 
     ```shell
     git clone https://github.com/ExpressAI/Datalab.git
@@ -22,6 +17,14 @@
     ```
 
 #### Dataset Operation
+
+* Step 1:
+```shell
+cd Datalab/datasets/
+
+```
+
+* Step 2:
 ```python
 
 # pip install datalab
