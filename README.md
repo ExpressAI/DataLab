@@ -31,6 +31,11 @@ from datalab import operations, load_dataset
 from featurize import *
 
 dataset = load_dataset("ag_news")
+
+# print(task schema)
+print(dataset['test']._info.task_templates)
+
+# data operators
 res = dataset["test"].apply(get_text_length)
 print(next(res))
 

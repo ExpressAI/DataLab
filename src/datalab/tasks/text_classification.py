@@ -8,6 +8,7 @@ from .base import TaskTemplate
 @dataclass
 class TextClassification(TaskTemplate):
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
+    task_category: str = "text-classification"
     task: str = "text-classification"
     input_schema: ClassVar[Features] = Features({"text": Value("string")})
     # TODO(lewtun): Find a more elegant approach without descriptors.

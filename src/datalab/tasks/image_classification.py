@@ -7,6 +7,7 @@ from .base import TaskTemplate
 
 @dataclass
 class ImageClassification(TaskTemplate):
+    task_category: str = "image-classification"
     task: str = "image-classification"
     input_schema: ClassVar[Features] = Features({"image_file_path": Value("string")})
     # TODO(lewtun): Find a more elegant approach without descriptors.

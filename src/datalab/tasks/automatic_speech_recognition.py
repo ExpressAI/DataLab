@@ -7,6 +7,7 @@ from .base import TaskTemplate
 
 @dataclass
 class AutomaticSpeechRecognition(TaskTemplate):
+    task_category:str = "automatic-speech-recognition"
     task: str = "automatic-speech-recognition"
     # TODO(lewtun): Replace input path feature with dedicated `Audio` features
     # when https://github.com/huggingface/datasets/pull/2324 is implemented
