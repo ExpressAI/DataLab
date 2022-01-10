@@ -93,7 +93,7 @@ one can use `dataset[SPLIT]._info.task_templates` to get more useful task-depend
 
    
 
-### Demo for add new datasets and write them into Mongodb
+### Demo for add new datasets and write them into Mongodb (Don't Run this)
 
 `python -m unittest tests/test_mongodb.py`，
 
