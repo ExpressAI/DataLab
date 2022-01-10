@@ -62,6 +62,35 @@ print(next(res))
 
 ```
 
+### Task Schema
+
+* `text-classification`
+    * `text`:str
+    * `label`:ClassLabel
+    
+* `text-matching`
+    * `text1`:str
+    * `text2`:str
+    * `label`:ClassLabel
+    
+* `summarization`
+    * `text`:str
+    * `summary`:str
+    
+* `sequence-labeling`
+    * `tokens`:List[str]
+    * `tags`:List[ClassLabel]
+    
+* `question-answering-extractive`:
+    * `context`:str
+    * `question`:str
+    * `answers`:List[{"text":"","answer_start":""}]
+
+
+one can use `dataset[SPLIT]._info.task_templates` to get more useful task-dependent information, where
+`SPLIT` could be `train` or `validation` or `test`.
+
+
    
 
 ### Demo for add new datasets and write them into Mongodb
