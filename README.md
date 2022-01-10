@@ -3,7 +3,6 @@
 ## Installation
 #### Install
 
- 
 
     ```shell
     git clone https://github.com/ExpressAI/Datalab.git
