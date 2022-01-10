@@ -25,7 +25,7 @@
 ```python
 
 # pip install datalab
-from datasets import operations, load_dataset
+from datalab import operations, load_dataset
 from featurize import *
 
 dataset = load_dataset("ag_news")
@@ -42,9 +42,9 @@ print(next(res))
 `python -m unittest tests/test_mongodb.py`，
 
 ```python
-import datasets
+import datalab
 
-dataset = datasets.load_dataset("datasets/adv_mtl")
+dataset = datalab.load_dataset("datasets/adv_mtl")
 dataset["imdb_test"].write_db()
 print("OK")
 
