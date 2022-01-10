@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The HuggingFace Datasets Authors and the current dataset script contributor.
+# Copyright 2020 The HuggingFace datalab Authors and the current dataset script contributor.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 
 import csv
 
-import datasets
-
+import datalab
+from datalab.tasks import TextClassification
 
 _CITATION = """\
 @inproceedings{hateoffensive,
@@ -49,28 +49,29 @@ _CLASS_MAP = {
 }
 
 
-class HateSpeechOffensive(datasets.GeneratorBasedBuilder):
+class HateSpeechOffensive(datalab.GeneratorBasedBuilder):
     """An annotated dataset for hate speech and offensive language detection on tweets."""
 
-    VERSION = datasets.Version("1.0.0")
+    VERSION = datalab.Version("1.0.0")
 
     def _info(self):
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    "count": datasets.Value("int64"),
-                    "hate_speech_count": datasets.Value("int64"),
-                    "offensive_language_count": datasets.Value("int64"),
-                    "neither_count": datasets.Value("int64"),
-                    "class": datasets.ClassLabel(names=["hate speech", "offensive language", "neither"]),
-                    "tweet": datasets.Value("string"),
+                    "count": datalab.Value("int64"),
+                    "hate_speech_count": datalab.Value("int64"),
+                    "offensive_language_count": datalab.Value("int64"),
+                    "neither_count": datalab.Value("int64"),
+                    "label": datalab.ClassLabel(names=["hate speech", "offensive language", "neither"]),
+                    "text": datalab.Value("string"),
                 }
             ),
             supervised_keys=("tweet", "class"),
             homepage=_HOMEPAGE,
             license=_LICENSE,
             citation=_CITATION,
+            task_templates=[TextClassification(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):
@@ -78,8 +79,8 @@ class HateSpeechOffensive(datasets.GeneratorBasedBuilder):
 
         data_file = dl_manager.download_and_extract(_URL)
         return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN,
+            datalab.SplitGenerator(
+                name=datalab.Split.TRAIN,
                 gen_kwargs={
                     "filepath": data_file,
                 },
@@ -100,6 +101,6 @@ class HateSpeechOffensive(datasets.GeneratorBasedBuilder):
                     "hate_speech_count": row[2],
                     "offensive_language_count": row[3],
                     "neither_count": row[4],
-                    "class": _CLASS_MAP[row[5]],
-                    "tweet": row[6],
+                    "label": _CLASS_MAP[row[5]],
+                    "text": row[6],
                 }

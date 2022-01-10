@@ -70,7 +70,7 @@ Examples:
     >>> sources=["About 95 species are currently accepted ."]
     >>> predictions=["About 95 you now get in ."]
     >>> references=[["About 95 species are currently known ."]]
-    >>> wiki_split = datasets.load_metric("wiki_split")
+    >>> wiki_split = datalab.load_metric("wiki_split")
     >>> results = wiki_split.compute(sources=sources, predictions=predictions, references=references)
     >>> print(results)
     {'sari': 21.805555555555557, 'sacrebleu': 14.535768424205482, 'exact': 0.0}
@@ -257,8 +257,8 @@ def SARIsent(ssent, csent, rsents):
 def normalize(sentence, lowercase: bool = True, tokenizer: str = "13a", return_str: bool = True):
 
     # Normalization is requried for the ASSET dataset (one of the primary
-    # datasets in sentence simplification) to allow using space
-    # to split the sentence. Even though Wiki-Auto and TURK datasets,
+    # datalab in sentence simplification) to allow using space
+    # to split the sentence. Even though Wiki-Auto and TURK datalab,
     # do not require normalization, we do it for consistency.
     # Code adapted from the EASSE library [1] written by the authors of the ASSET dataset.
     # [1] https://github.com/feralvam/easse/blob/580bba7e1378fc8289c663f864e0487188fe8067/easse/utils/preprocessing.py#L7

@@ -26,7 +26,7 @@ class TestFileEncoding(TestCase):
         return match
 
     def test_no_encoding_on_file_open(self):
-        dataset_paths = Path("./datasets")
+        dataset_paths = Path("./datalab")
         dataset_files = list(dataset_paths.absolute().glob("**/*.py"))
 
         for dataset in dataset_files:

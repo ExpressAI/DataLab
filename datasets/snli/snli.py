@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The TensorFlow Datasets Authors and the HuggingFace Datasets Authors.
+# Copyright 2020 The TensorFlow datalab Authors and the HuggingFace datalab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@
 import csv
 import os
 
-import datasets
-
+import datalab
+from datalab.tasks import TextMatching
 
 _CITATION = """\
 @inproceedings{snli:emnlp2015,
@@ -43,25 +43,25 @@ inference (NLI), also known as recognizing textual entailment (RTE).
 _DATA_URL = "https://nlp.stanford.edu/projects/snli/snli_1.0.zip"
 
 
-class Snli(datasets.GeneratorBasedBuilder):
+class Snli(datalab.GeneratorBasedBuilder):
     """The Stanford Natural Language Inference (SNLI) Corpus."""
 
-    BUILDER_CONFIGS = [
-        datasets.BuilderConfig(
-            name="plain_text",
-            version=datasets.Version("1.0.0", ""),
-            description="Plain text import of SNLI",
-        )
-    ]
+    # BUILDER_CONFIGS = [
+    #     datalab.BuilderConfig(
+    #         name="plain_text",
+    #         version=datalab.Version("1.0.0", ""),
+    #         description="Plain text import of SNLI",
+    #     )
+    # ]
 
     def _info(self):
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    "premise": datasets.Value("string"),
-                    "hypothesis": datasets.Value("string"),
-                    "label": datasets.features.ClassLabel(names=["entailment", "neutral", "contradiction"]),
+                    "text1": datalab.Value("string"),
+                    "text2": datalab.Value("string"),
+                    "label": datalab.features.ClassLabel(names=["entailment", "neutral", "contradiction"]),
                 }
             ),
             # No default supervised_keys (as we have to pass both premise
@@ -69,20 +69,26 @@ class Snli(datasets.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://nlp.stanford.edu/projects/snli/",
             citation=_CITATION,
+            task_templates=[TextMatching(
+                text1_column="text1",
+                text2_column="text2",
+                task = "natural-language-inference",
+                label_column="label"),
+            ],
         )
 
     def _split_generators(self, dl_manager):
         dl_dir = dl_manager.download_and_extract(_DATA_URL)
         data_dir = os.path.join(dl_dir, "snli_1.0")
         return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TEST, gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_test.txt")}
+            datalab.SplitGenerator(
+                name=datalab.Split.TEST, gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_test.txt")}
             ),
-            datasets.SplitGenerator(
-                name=datasets.Split.VALIDATION, gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_dev.txt")}
+            datalab.SplitGenerator(
+                name=datalab.Split.VALIDATION, gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_dev.txt")}
             ),
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN, gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_train.txt")}
+            datalab.SplitGenerator(
+                name=datalab.Split.TRAIN, gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_train.txt")}
             ),
         ]
 
@@ -93,7 +99,7 @@ class Snli(datasets.GeneratorBasedBuilder):
             for idx, row in enumerate(reader):
                 label = -1 if row["gold_label"] == "-" else row["gold_label"]
                 yield idx, {
-                    "premise": row["sentence1"],
-                    "hypothesis": row["sentence2"],
+                    "text1": row["sentence1"],
+                    "text2": row["sentence2"],
                     "label": label,
                 }

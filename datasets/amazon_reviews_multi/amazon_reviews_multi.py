@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 HuggingFace Datasets Authors.
+# Copyright 2020 HuggingFace datalab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 import json
 
-import datasets
+import datalab
 
 
 _CITATION = """\
@@ -58,15 +58,15 @@ _HOMEPAGE_URL = "https://registry.opendata.aws/amazon-reviews-ml/"
 _DOWNLOAD_URL = "https://amazon-reviews-ml.s3-us-west-2.amazonaws.com/json/{split}/dataset_{lang}_{split}.json"
 
 
-class AmazonReviewsMultiConfig(datasets.BuilderConfig):
+class AmazonReviewsMultiConfig(datalab.BuilderConfig):
     """BuilderConfig for AmazonReviewsMultiConfig."""
 
     def __init__(self, languages=None, **kwargs):
-        super(AmazonReviewsMultiConfig, self).__init__(version=datasets.Version(_VERSION, ""), **kwargs),
+        super(AmazonReviewsMultiConfig, self).__init__(version=datalab.Version(_VERSION, ""), **kwargs),
         self.languages = languages
 
 
-class AmazonReviewsMulti(datasets.GeneratorBasedBuilder):
+class AmazonReviewsMulti(datalab.GeneratorBasedBuilder):
     """The Multilingual Amazon Reviews Corpus"""
 
     BUILDER_CONFIGS = [
@@ -87,18 +87,22 @@ class AmazonReviewsMulti(datasets.GeneratorBasedBuilder):
     DEFAULT_CONFIG_NAME = _ALL_LANGUAGES
 
     def _info(self):
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    "review_id": datasets.Value("string"),
-                    "product_id": datasets.Value("string"),
-                    "reviewer_id": datasets.Value("string"),
-                    "stars": datasets.Value("int32"),
-                    "review_body": datasets.Value("string"),
-                    "review_title": datasets.Value("string"),
-                    "language": datasets.Value("string"),
-                    "product_category": datasets.Value("string"),
+                    "review_id": datalab.Value("string"),
+                    "product_id": datalab.Value("string"),
+                    "reviewer_id": datalab.Value("string"),
+                    "label": datalab.features.ClassLabel(names=["1 star",
+                                                                 "2 stars",
+                                                                 "3 stars",
+                                                                 "4 stars",
+                                                                 "5 stars"]),
+                    "text": datalab.Value("string"),
+                    "review_title": datalab.Value("string"),
+                    "language": datalab.Value("string"),
+                    "product_category": datalab.Value("string"),
                 }
             ),
             supervised_keys=None,
@@ -117,15 +121,37 @@ class AmazonReviewsMulti(datasets.GeneratorBasedBuilder):
         test_paths = dl_manager.download_and_extract(test_urls)
 
         return [
-            datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"file_paths": train_paths}),
-            datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"file_paths": dev_paths}),
-            datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"file_paths": test_paths}),
+            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"file_paths": train_paths}),
+            datalab.SplitGenerator(name=datalab.Split.VALIDATION, gen_kwargs={"file_paths": dev_paths}),
+            datalab.SplitGenerator(name=datalab.Split.TEST, gen_kwargs={"file_paths": test_paths}),
         ]
 
     def _generate_examples(self, file_paths):
+        textualize_label = {"1":"1 star",
+                                 "2":"2 stars",
+                                 "3":"3 stars",
+                                 "4":"4 stars",
+                                 "5":"5 stars"}
+
+
+
         row_count = 0
         for file_path in file_paths:
             with open(file_path, "r", encoding="utf-8") as f:
+
+
                 for line in f:
-                    yield row_count, json.loads(line)
+                    res_info = json.loads(line)
+                    label = textualize_label[res_info['stars']]
+                    yield row_count, {
+                    "review_id": res_info['review_id'],
+                    "product_id": res_info['product_id'],
+                    "reviewer_id": res_info['reviewer_id'],
+                    "label": label,
+                    "text":res_info['review_body'],
+                    "review_title":res_info['review_title'],
+                    "language":res_info['language'],
+                    "product_category":res_info['product_category'],
+                }
+
                     row_count += 1

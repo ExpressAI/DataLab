@@ -23,7 +23,7 @@ _DESCRIPTION = """
 Pearson correlation coefficient and p-value for testing non-correlation.
 
 The Pearson correlation coefficient measures the linear relationship
-between two datasets.  The calculation of the p-value relies on the
+between two datalab.  The calculation of the p-value relies on the
 assumption that each dataset is normally distributed. Like other correlation
 coefficients, this one varies between -1 and +1 with 0 implying no
 correlation. Correlations of -1 or +1 imply an exact linear relationship.
@@ -31,8 +31,8 @@ Positive correlations imply that as x increases, so does y. Negative
 correlations imply that as x increases, y decreases.
 
 The p-value roughly indicates the probability of an uncorrelated system
-producing datasets that have a Pearson correlation at least as extreme
-as the one computed from these datasets.
+producing datalab that have a Pearson correlation at least as extreme
+as the one computed from these datalab.
 """
 
 _KWARGS_DESCRIPTION = """
@@ -43,7 +43,7 @@ Returns:
     pearsonr: Pearson correlation coefficient.
 Examples:
 
-    >>> pearsonr_metric = datasets.load_metric("pearsonr")
+    >>> pearsonr_metric = datalab.load_metric("pearsonr")
     >>> results = pearsonr_metric.compute(references=[0, 1], predictions=[0, 1])
     >>> print(results)
     {'pearsonr': 1.0}

@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The HuggingFace Datasets Authors.
+# Copyright 2020 The HuggingFace datalab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@
 
 import json
 
-import datasets
-from datasets.tasks import TextClassification
+import datalab
+from datalab.tasks import TextClassification
 
 
 _DESCRIPTION = """\
@@ -63,29 +63,29 @@ _DOWNLOAD_URL = (
 )
 
 
-class SnipsBuiltInIntents(datasets.GeneratorBasedBuilder):
+class SnipsBuiltInIntents(datalab.GeneratorBasedBuilder):
     """Snips built in intents (2016-12-built-in-intents) dataset."""
 
     def _info(self):
         # ToDo: Consider adding an alternate configuration for the entity slots. The default is to only return the intent labels.
 
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    "text": datasets.Value("string"),
-                    "label": datasets.features.ClassLabel(
+                    "text": datalab.Value("string"),
+                    "label": datalab.features.ClassLabel(
                         names=[
-                            "ComparePlaces",
-                            "RequestRide",
-                            "GetWeather",
-                            "SearchPlace",
-                            "GetPlaceDetails",
-                            "ShareCurrentLocation",
-                            "GetTrafficInformation",
-                            "BookRestaurant",
-                            "GetDirections",
-                            "ShareETA",
+                            "Compare Places",
+                            "Request Ride",
+                            "Get Weather",
+                            "Search Place",
+                            "GetPlace Details",
+                            "Share Current Location",
+                            "Get Traffic Information",
+                            "Book Restaurant",
+                            "Get Directions",
+                            "Share ETA",
                         ]
                     ),
                 }
@@ -100,11 +100,41 @@ class SnipsBuiltInIntents(datasets.GeneratorBasedBuilder):
         # ToDo: Consider splitting the data into train-test sets and re-hosting.
         samples_path = dl_manager.download_and_extract(_DOWNLOAD_URL)
         return [
-            datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": samples_path}),
+            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": samples_path}),
         ]
 
     def _generate_examples(self, filepath):
         """Snips built in intent examples."""
+
+
+
+        name_key = [
+            "ComparePlaces",
+            "RequestRide",
+            "GetWeather",
+            "SearchPlace",
+            "GetPlaceDetails",
+            "ShareCurrentLocation",
+            "GetTrafficInformation",
+            "BookRestaurant",
+            "GetDirections",
+            "ShareETA",
+        ]
+        name_value = [
+            "Compare Places",
+            "Request Ride",
+            "Get Weather",
+            "Search Place",
+            "GetPlace Details",
+            "Share Current Location",
+            "Get Traffic Information",
+            "Book Restaurant",
+            "Get Directions",
+            "Share ETA",
+        ]
+
+        textualize_label = dict(zip(name_key,name_value))
+
         num_examples = 0
 
         with open(filepath, encoding="utf-8") as file_obj:
@@ -121,5 +151,5 @@ class SnipsBuiltInIntents(datasets.GeneratorBasedBuilder):
                     for query_dict in queries:
                         query_text = query_dict["text"]
 
-                        yield num_examples, {"text": query_text, "label": label}
+                        yield num_examples, {"text": query_text, "label": textualize_label[label]}
                         num_examples += 1  # Explicitly keep track of the number of examples.

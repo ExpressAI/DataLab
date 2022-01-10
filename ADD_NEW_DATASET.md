@@ -8,8 +8,8 @@ This creates a copy of the code under your GitHub user account.
 2. Clone your fork to your local disk, and add the base repository as a remote:
 
 	```bash
-	git clone https://github.com/<your Github handle>/datasets
-	cd datasets
+	git clone https://github.com/<your Github handle>/datalab
+	cd datalab
 	git remote add upstream https://github.com/huggingface/datasets.git
 	```
 
@@ -58,13 +58,13 @@ You are now ready to start the process of adding the dataset. We will create the
 3. Create your dataset folder under `datasets/<your_dataset_name>`:
 
 	```bash
-	mkdir ./datasets/<your_dataset_name>
+	mkdir ./datalab/<your_dataset_name>
 	```
 
 4. Open a new online [dataset card form](https://huggingface.co/datasets/card-creator/) to fill out: you will be able to download it to your dataset folder with the `Export` button when you are done. Alternatively, you can also manually create and edit a dataset card in the folder by copying the template:
 
 	```bash
-	cp ./templates/README.md ./datasets/<your_dataset_name>/README.md
+	cp ./templates/README.md ./datalab/<your_dataset_name>/README.md
 	```
 
 5. Now explore the dataset you have selected while completing some fields of the **dataset card** while you are doing it:
@@ -95,7 +95,7 @@ Note on naming: the dataset class should be camel case, while the dataset short_
 To add a new dataset, you can start from the empty template which is [in the `templates` folder](https://github.com/huggingface/datasets/blob/master/templates/new_dataset_script.py):
 
 ```bash
-cp ./templates/new_dataset_script.py ./datasets/<your_dataset_name>/<your_dataset_name>.py
+cp ./templates/new_dataset_script.py ./datalab/<your_dataset_name>/<your_dataset_name>.py
 ```
 
 And then go progressively through all the `TODO` in the template 🙂. If it's your first dataset addition and you are a bit lost among the information to fill in, you can take some time to read the [detailed explanation here](https://huggingface.co/docs/datasets/master/dataset_script.html).
@@ -146,12 +146,12 @@ Sometimes you need to use several *configurations* and/or *splits* (usually at l
 **Last step:** To check that your dataset works correctly and to create its `dataset_infos.json` file run the command:
 
 ```bash
-datasets-cli test datasets/<your-dataset-folder> --save_infos --all_configs
+datalab-cli test datalab/<your-dataset-folder> --save_infos --all_configs
 ```
 
 **Note:** If your dataset requires manually downloading the data and having the user provide the path to the dataset you can run the following command:
 ```bash
-datasets-cli test datasets/<your-dataset-folder> --save_infos --all_configs --data_dir your/manual/dir
+datalab-cli test datalab/<your-dataset-folder> --save_infos --all_configs --data_dir your/manual/dir
 ```
 To have the configs use the path from `--data_dir` when generating them.
 
@@ -166,19 +166,19 @@ Now that your dataset script runs and create a dataset with the format you expec
    If the extensions of the raw data files of your dataset are in this list, then you can automatically generate your dummy data with:
 
 	```bash
-	datasets-cli dummy_data datasets/<your-dataset-folder> --auto_generate
+	datalab-cli dummy_data datalab/<your-dataset-folder> --auto_generate
 	```
 
 	Example:
 
 	```bash
-	datasets-cli dummy_data ./datasets/snli --auto_generate
+	datalab-cli dummy_data ./datalab/snli --auto_generate
 	```
 
     If your data files are not in the supported format, you can run the same command without the `--auto_generate` flag. It should give you instructions on the files to manually create (basically, the same ones as for the real dataset but with only five items).
 	
 	```bash
-	datasets-cli dummy_data datasets/<your-dataset-folder>
+	datalab-cli dummy_data datalab/<your-dataset-folder>
 	```
 
    If this doesn't work more information on how to add dummy data can be found in the documentation [here](https://huggingface.co/docs/datasets/dataset_script.html#dummy-data).
@@ -209,7 +209,7 @@ Now that your dataset script runs and create a dataset with the format you expec
 3. If all tests pass, your dataset works correctly. You can finally create the metadata JSON by running the command:
 
 	```bash
-	datasets-cli test datasets/<your-dataset-folder> --save_infos --all_configs
+	datalab-cli test datalab/<your-dataset-folder> --save_infos --all_configs
 	```
 
 	This first command should create a `dataset_infos.json` file in your dataset folder.
@@ -219,7 +219,7 @@ You have now finished the coding part, congratulation! 🎉 You are Awesome! �
 
 Note: You can use the CLI tool from the root of the repository with the following command:
 ```bash
-python src/datasets/commands/datasets_cli.py <command>
+python src/datalab/commands/datasets_cli.py <command>
 ```
 
 ### Open a Pull Request on the main HuggingFace repo and share your work!!
@@ -230,7 +230,7 @@ Here are the step to open the Pull-Request on the main repo.
 
 	```bash
 	make style
-	flake8 datasets
+	flake8 datalab
 	```
 
 	If you are on windows and `make style` doesn't work you can do the following steps instead:
@@ -240,11 +240,11 @@ Here are the step to open the Pull-Request on the main repo.
 	pip install isort
 	pip install flake8
 
-	black --line-length 119 --target-version py36 datasets/your_dataset
+	black --line-length 119 --target-version py36 datalab/your_dataset
 	
-	isort datasets/your_dataset/your_dataset.py
+	isort datalab/your_dataset/your_dataset.py
 
-	flake8 datasets/your_dataset
+	flake8 datalab/your_dataset
 	```
 
 2. Make sure that you have a dataset card (more information in the [next section](#tag-the-dataset-and-write-the-dataset-card)) with:
@@ -258,7 +258,7 @@ Here are the step to open the Pull-Request on the main repo.
 3. Once you're happy with your dataset script file, add your changes and make a commit to record your changes locally:
 
 	```bash
-	git add datasets/<your_dataset_name>
+	git add datalab/<your_dataset_name>
 	git commit
 	```
 

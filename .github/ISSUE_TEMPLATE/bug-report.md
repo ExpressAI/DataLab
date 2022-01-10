@@ -22,7 +22,7 @@ A clear and concise description of the expected results.
 Specify the actual results or traceback.
 
 ## Environment info
-<!-- You can run the command `datasets-cli env` and copy-and-paste its output below. -->
+<!-- You can run the command `datalab-cli env` and copy-and-paste its output below. -->
 - `datasets` version:
 - Platform:
 - Python version:

@@ -23,18 +23,18 @@ _DESCRIPTION = """
 Calculate a Spearman correlation coefficient with associated p-value.
 
 The Spearman rank-order correlation coefficient is a nonparametric measure
-of the monotonicity of the relationship between two datasets. Unlike the
+of the monotonicity of the relationship between two datalab. Unlike the
 Pearson correlation, the Spearman correlation does not assume that both
-datasets are normally distributed. Like other correlation coefficients,
+datalab are normally distributed. Like other correlation coefficients,
 this one varies between -1 and +1 with 0 implying no correlation.
 Correlations of -1 or +1 imply an exact monotonic relationship. Positive
 correlations imply that as x increases, so does y. Negative correlations
 imply that as x increases, y decreases.
 
 The p-value roughly indicates the probability of an uncorrelated system
-producing datasets that have a Spearman correlation at least as extreme
-as the one computed from these datasets. The p-values are not entirely
-reliable but are probably reasonable for datasets larger than 500 or so.
+producing datalab that have a Spearman correlation at least as extreme
+as the one computed from these datalab. The p-values are not entirely
+reliable but are probably reasonable for datalab larger than 500 or so.
 """
 
 _KWARGS_DESCRIPTION = """
@@ -45,7 +45,7 @@ Returns:
     spearmanr: Spearman correlation coefficient.
 Examples:
 
-    >>> spearmanr_metric = datasets.load_metric("spearmanr")
+    >>> spearmanr_metric = datalab.load_metric("spearmanr")
     >>> results = spearmanr_metric.compute(references=[0, 1, 1], predictions=[0, 1, 1])
     >>> print(results)
     {'spearmanr': 1.0}

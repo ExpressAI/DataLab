@@ -55,7 +55,7 @@ Returns:
     f1: F1 score.
 Examples:
 
-    >>> f1_metric = datasets.load_metric("f1")
+    >>> f1_metric = datalab.load_metric("f1")
     >>> results = f1_metric.compute(predictions=[0, 1], references=[0, 1])
     >>> print(results)
     {'f1': 1.0}

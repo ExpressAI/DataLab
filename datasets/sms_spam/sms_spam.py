@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The TensorFlow Datasets Authors and the HuggingFace Datasets Authors.
+# Copyright 2020 The TensorFlow datalab Authors and the HuggingFace datalab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@
 
 import os
 
-import datasets
-from datasets.tasks import TextClassification
+import datalab
+from datalab.tasks import TextClassification
 
 
 _CITATION = """\
@@ -40,37 +40,36 @@ It has one collection composed by 5,574 English, real and non-enconded messages,
 _DATA_URL = "http://archive.ics.uci.edu/ml/machine-learning-databases/00228/smsspamcollection.zip"
 
 
-class SmsSpam(datasets.GeneratorBasedBuilder):
+class SmsSpam(datalab.GeneratorBasedBuilder):
     """SMS Spam Collection Data Set"""
 
     BUILDER_CONFIGS = [
-        datasets.BuilderConfig(
+        datalab.BuilderConfig(
             name="plain_text",
-            version=datasets.Version("1.0.0", ""),
+            version=datalab.Version("1.0.0", ""),
             description="Plain text import of SMS Spam Collection Data Set",
         )
     ]
 
     def _info(self):
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    "sms": datasets.Value("string"),
-                    "label": datasets.features.ClassLabel(names=["ham", "spam"]),
+                    "text": datalab.Value("string"),
+                    "label": datalab.features.ClassLabel(names=["legitimate", "spam"]),
                 }
             ),
-            supervised_keys=("sms", "label"),
-            homepage="http://archive.ics.uci.edu/ml/datasets/SMS+Spam+Collection",
+            homepage="http://archive.ics.uci.edu/ml/datalab/SMS+Spam+Collection",
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="sms", label_column="label")],
+            task_templates=[TextClassification(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):
         dl_dir = dl_manager.download_and_extract(_DATA_URL)
         return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN, gen_kwargs={"filepath": os.path.join(dl_dir, "SMSSpamCollection")}
+            datalab.SplitGenerator(
+                name=datalab.Split.TRAIN, gen_kwargs={"filepath": os.path.join(dl_dir, "SMSSpamCollection")}
             ),
         ]
 
@@ -87,6 +86,6 @@ class SmsSpam(datasets.GeneratorBasedBuilder):
                     label = 1
 
                 yield idx, {
-                    "sms": fields[1],
+                    "text": fields[1],
                     "label": label,
                 }

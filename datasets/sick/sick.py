@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2021 The HuggingFace Datasets Authors and the current dataset script contributor.
+# Copyright 2021 The HuggingFace datalab Authors and the current dataset script contributor.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
 # limitations under the License.
 import os
 
-import datasets
-
+import datalab
+from datalab.tasks import TextMatching
 
 _CITATION = """\
 @inproceedings{marelli-etal-2014-sick,
@@ -47,46 +47,52 @@ The SICK data set was used in SemEval-2014 Task 1, and it freely available for r
 _DOWNLOAD_URL = "https://zenodo.org/record/2787612/files/SICK.zip?download=1"
 
 
-class SICK(datasets.GeneratorBasedBuilder):
+class SICK(datalab.GeneratorBasedBuilder):
     """The SICK (Sentences Involving Compositional Knowldedge) dataset."""
 
     def _info(self):
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    "id": datasets.Value("string"),
-                    "sentence_A": datasets.Value("string"),
-                    "sentence_B": datasets.Value("string"),
-                    "label": datasets.features.ClassLabel(names=["entailment", "neutral", "contradiction"]),
-                    "relatedness_score": datasets.Value("float"),
-                    "entailment_AB": datasets.Value("string"),
-                    "entailment_BA": datasets.Value("string"),
-                    "sentence_A_original": datasets.Value("string"),
-                    "sentence_B_original": datasets.Value("string"),
-                    "sentence_A_dataset": datasets.Value("string"),
-                    "sentence_B_dataset": datasets.Value("string"),
+                    "id": datalab.Value("string"),
+                    "text1": datalab.Value("string"),
+                    "text2": datalab.Value("string"),
+                    "label": datalab.features.ClassLabel(names=["entailment", "neutral", "contradiction"]),
+                    "relatedness_score": datalab.Value("float"),
+                    "entailment_AB": datalab.Value("string"),
+                    "entailment_BA": datalab.Value("string"),
+                    "sentence_A_original": datalab.Value("string"),
+                    "sentence_B_original": datalab.Value("string"),
+                    "sentence_A_dataset": datalab.Value("string"),
+                    "sentence_B_dataset": datalab.Value("string"),
                 }
             ),
             supervised_keys=None,
             homepage="http://marcobaroni.org/composes/sick.html",
             citation=_CITATION,
+            task_templates=[TextMatching(
+                text1_column="text1",
+                text2_column="text2",
+                task="natural-language-inference",
+                label_column="label"),
+            ],
         )
 
     def _split_generators(self, dl_manager):
         dl_dir = dl_manager.download_and_extract(_DOWNLOAD_URL)
 
         return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN,
+            datalab.SplitGenerator(
+                name=datalab.Split.TRAIN,
                 gen_kwargs={"filepath": os.path.join(dl_dir, "SICK.txt"), "key": "TRAIN"},
             ),
-            datasets.SplitGenerator(
-                name=datasets.Split.VALIDATION,
+            datalab.SplitGenerator(
+                name=datalab.Split.VALIDATION,
                 gen_kwargs={"filepath": os.path.join(dl_dir, "SICK.txt"), "key": "TRIAL"},
             ),
-            datasets.SplitGenerator(
-                name=datasets.Split.TEST,
+            datalab.SplitGenerator(
+                name=datalab.Split.TEST,
                 gen_kwargs={"filepath": os.path.join(dl_dir, "SICK.txt"), "key": "TEST"},
             ),
         ]
@@ -98,8 +104,8 @@ class SICK(datasets.GeneratorBasedBuilder):
                 if data[-1] == key:
                     yield data[0], {
                         "id": data[0],
-                        "sentence_A": data[1],
-                        "sentence_B": data[2],
+                        "text1": data[1],
+                        "text2": data[2],
                         "label": data[3].lower(),
                         "relatedness_score": data[4],
                         "entailment_AB": data[5],

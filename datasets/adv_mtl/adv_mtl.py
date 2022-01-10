@@ -12,8 +12,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import datasets
-
+import datalab
+from datalab.tasks import TextClassification
 # Find for instance the citation on arxiv or on the dataset repo/website
 _CITATION = """\
 @article{liu2017adversarial,
@@ -26,7 +26,7 @@ year={2017}
 
 # You can copy an official description
 _DESCRIPTION = """\
-This datasets is used in the paper of adversarial multi-task learning in text classification including 16 different fields.
+This datalab is used in the paper of adversarial multi-task learning in text classification including 16 different fields.
 """
 
 _HOMEPAGE = "http://pfliu.com/paper/adv-mtl.html"
@@ -34,22 +34,22 @@ _HOMEPAGE = "http://pfliu.com/paper/adv-mtl.html"
 # TODO: Add the licence for the dataset here if you can find it
 _LICENSE = "N/A"
 
-# The HuggingFace dataset library don't host the datasets but only point to the original files
+# The HuggingFace dataset library don't host the datalab but only point to the original files
 # This can be an arbitrary nested dict/list of URLs (see below in `_split_generators` method)
 _URLs = "https://raw.githubusercontent.com/ShiinaHiiragi/multi-task-dataset/master/{}.task.{}"
 
-class AdvMtl(datasets.GeneratorBasedBuilder):
-    VERSION = datasets.Version("1.0.0")
+class AdvMtl(datalab.GeneratorBasedBuilder):
+    VERSION = datalab.Version("1.0.0")
 
     def _info(self):
-        features = datasets.Features(
+        features = datalab.Features(
             {
-                "sentence": datasets.Value("string"),
-                "label": datasets.Value("int32")
+                "text": datalab.Value("string"),
+                "label": datalab.features.ClassLabel(names=["positive","negative"]),
             }
         )
-        return datasets.DatasetInfo(
-            # This is the description that will appear on the datasets page.
+        return datalab.DatasetInfo(
+            # This is the description that will appear on the datalab page.
             description=_DESCRIPTION,
             # This defines the different columns of the dataset and their types
             features=features,  # Here we define them above because they are different between the two configurations
@@ -63,13 +63,14 @@ class AdvMtl(datasets.GeneratorBasedBuilder):
             license=_LICENSE,
             # Citation for the dataset
             citation=_CITATION,
+            task_templates=[TextClassification(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         # If several configurations are possible (listed in BUILDER_CONFIGS), the configuration selected by the user is in self.config.name
 
-        # dl_manager is a datasets.download.DownloadManager that can be used to download and extract URLs
+        # dl_manager is a datalab.download.DownloadManager that can be used to download and extract URLs
         # It can accept any type or nested list/dict and will give back the same structure with the url replaced with path to local files.
         # By default the archives will be extracted and a path to a cached folder where they are extracted is returned instead of the archive
 
@@ -97,7 +98,7 @@ class AdvMtl(datasets.GeneratorBasedBuilder):
         for data_field in fields:
             for data_type in data_types:
                 split_name = data_field + "_" + data_type
-                result.append(datasets.SplitGenerator(
+                result.append(datalab.SplitGenerator(
                     name=split_name,
                     # These kwargs will be passed to _generate_examples
                     gen_kwargs={
@@ -120,7 +121,9 @@ class AdvMtl(datasets.GeneratorBasedBuilder):
             for id_, row in enumerate(f):
                 row = row.decode("utf-8", "ignore")
                 datas = row.split("\t")
+                text = datas[1]
+                label = "positive" if datas[0] == "1" else "negative"
                 yield id_, {
-                    "sentence": datas[1],
-                    "label": int(datas[0])
+                    "text": text,
+                    "label": label,
                 }

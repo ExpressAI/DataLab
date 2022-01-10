@@ -110,8 +110,8 @@ def test_extracted_datasets_path(default_extracted, default_cache_dir, xz_file, 
     if default_extracted:
         expected = ("downloads" if default_cache_dir else custom_cache_dir, "extracted")
     else:
-        monkeypatch.setattr("datasets.config.EXTRACTED_DATASETS_DIR", custom_extracted_dir)
-        monkeypatch.setattr("datasets.config.EXTRACTED_DATASETS_PATH", str(custom_extracted_path))
+        monkeypatch.setattr("datalab.config.EXTRACTED_DATASETS_DIR", custom_extracted_dir)
+        monkeypatch.setattr("datalab.config.EXTRACTED_DATASETS_PATH", str(custom_extracted_path))
         expected = custom_extracted_path.parts[-2:] if default_cache_dir else (custom_cache_dir, custom_extracted_dir)
 
     filename = xz_file
@@ -144,13 +144,13 @@ def test_cached_path_missing_local(tmp_path):
         cached_path(missing_file)
 
 
-@patch("datasets.config.HF_DATASETS_OFFLINE", True)
+@patch("datalab.config.HF_DATASETS_OFFLINE", True)
 def test_cached_path_offline():
     with pytest.raises(OfflineModeIsEnabled):
         cached_path("https://huggingface.co")
 
 
-@patch("datasets.config.HF_DATASETS_OFFLINE", True)
+@patch("datalab.config.HF_DATASETS_OFFLINE", True)
 def test_http_offline(tmp_path_factory):
     filename = tmp_path_factory.mktemp("data") / "file.html"
     with pytest.raises(OfflineModeIsEnabled):
@@ -159,7 +159,7 @@ def test_http_offline(tmp_path_factory):
         http_head("https://huggingface.co")
 
 
-@patch("datasets.config.HF_DATASETS_OFFLINE", True)
+@patch("datalab.config.HF_DATASETS_OFFLINE", True)
 def test_ftp_offline(tmp_path_factory):
     filename = tmp_path_factory.mktemp("data") / "file.html"
     with pytest.raises(OfflineModeIsEnabled):

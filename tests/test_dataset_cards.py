@@ -36,7 +36,7 @@ def get_changed_datasets(repo_path: Path) -> List[Path]:
     diff_output = check_output(["git", "diff", "--name-only", "origin/master...HEAD"], cwd=repo_path)
     changed_files = [Path(repo_path, f) for f in diff_output.decode().splitlines()]
 
-    datasets_dir_path = repo_path / "datasets"
+    datasets_dir_path = repo_path / "datalab"
 
     changed_datasets = set(
         f.resolve().relative_to(datasets_dir_path).parts[0]
@@ -48,13 +48,13 @@ def get_changed_datasets(repo_path: Path) -> List[Path]:
 
 
 def get_all_datasets(repo_path: Path) -> List[Path]:
-    dataset_names = [path.parts[-1] for path in (repo_path / "datasets").iterdir()]
+    dataset_names = [path.parts[-1] for path in (repo_path / "datalab").iterdir()]
     return [dataset_name for dataset_name in dataset_names if dataset_name not in _PACKAGED_DATASETS_MODULES]
 
 
 @pytest.mark.parametrize("dataset_name", get_changed_datasets(repo_path))
 def test_changed_dataset_card(dataset_name):
-    card_path = repo_path / "datasets" / dataset_name / "README.md"
+    card_path = repo_path / "datalab" / dataset_name / "README.md"
     assert card_path.exists()
     error_messages = []
     try:
@@ -85,7 +85,7 @@ def test_changed_dataset_card(dataset_name):
 @slow
 @pytest.mark.parametrize("dataset_name", get_all_datasets(repo_path))
 def test_dataset_card(dataset_name):
-    card_path = repo_path / "datasets" / dataset_name / "README.md"
+    card_path = repo_path / "datalab" / dataset_name / "README.md"
     assert card_path.exists()
     error_messages = []
     try:

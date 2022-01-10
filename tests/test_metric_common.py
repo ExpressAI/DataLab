@@ -117,7 +117,7 @@ class LocalMetricTest(parameterized.TestCase):
         def load_local_metric(metric_name, *args, **kwargs):
             return load_metric(os.path.join("metrics", metric_name), *args, **kwargs)
 
-        with patch("datasets.load_metric") as mock_load_metric:
+        with patch("datalab.load_metric") as mock_load_metric:
             mock_load_metric.side_effect = load_local_metric
             yield
 

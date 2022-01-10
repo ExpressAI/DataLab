@@ -56,7 +56,7 @@ Returns:
         (e.g., converting "1/2" to "\\frac{1}{2}")
 
 Examples:
-    >>> metric = datasets.load_metric("competition_math")
+    >>> metric = datalab.load_metric("competition_math")
     >>> results = metric.compute(references=["\\frac{1}{2}"], predictions=["1/2"])
     >>> print(results)
     {'accuracy': 1.0}

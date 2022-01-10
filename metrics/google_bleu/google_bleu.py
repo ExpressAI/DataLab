@@ -93,7 +93,7 @@ Examples:
 
     >>> list_of_references = [[ref1a, ref1b, ref1c], [ref2a]]
     >>> hypotheses = [hyp1, hyp2]
-    >>> google_bleu = datasets.load_metric("google_bleu")
+    >>> google_bleu = datalab.load_metric("google_bleu")
     >>> results = google_bleu.compute(predictions=hypotheses, references=list_of_references)
     >>> print(results["google_bleu"])
     0.5673076923076923

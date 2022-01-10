@@ -14,7 +14,7 @@
 # limitations under the License.
 """TODO: Add a description here."""
 
-import datasets
+import datalab
 
 
 # TODO: Add BibTeX citation
@@ -47,7 +47,7 @@ Examples:
     Examples should be written in doctest format, and should illustrate how
     to use the function.
 
-    >>> my_new_metric = datasets.load_metric("my_new_metric")
+    >>> my_new_metric = datalab.load_metric("my_new_metric")
     >>> results = my_new_metric.compute(references=[0, 1], predictions=[0, 1])
     >>> print(results)
     {'accuracy': 1.0}
@@ -57,21 +57,21 @@ Examples:
 BAD_WORDS_URL = "http://url/to/external/resource/bad_words.txt"
 
 
-@datasets.utils.file_utils.add_start_docstrings(_DESCRIPTION, _KWARGS_DESCRIPTION)
-class NewMetric(datasets.Metric):
+@datalab.utils.file_utils.add_start_docstrings(_DESCRIPTION, _KWARGS_DESCRIPTION)
+class NewMetric(datalab.Metric):
     """TODO: Short description of my metric."""
 
     def _info(self):
-        # TODO: Specifies the datasets.MetricInfo object
-        return datasets.MetricInfo(
+        # TODO: Specifies the datalab.MetricInfo object
+        return datalab.MetricInfo(
             # This is the description that will appear on the metrics page.
             description=_DESCRIPTION,
             citation=_CITATION,
             inputs_description=_KWARGS_DESCRIPTION,
             # This defines the format of each prediction and reference
-            features=datasets.Features({
-                'predictions': datasets.Value('string'),
-                'references': datasets.Value('string'),
+            features=datalab.Features({
+                'predictions': datalab.Value('string'),
+                'references': datalab.Value('string'),
             }),
             # Homepage of the metric for documentation
             homepage="http://metric.homepage",

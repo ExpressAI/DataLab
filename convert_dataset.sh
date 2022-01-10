@@ -17,8 +17,8 @@ datasetName=$(python -c "print(\"${pathToFile}\".split('/')[-1].split('.')[0])")
 
 # Uncomment if you want to clean your cache
 #echo "### STEP 0 ### Clean your cache..."
-#rm -rf "${curPath}/src/datasets/datasets/*"
-#rm -rf "~/.cache/huggingface/datasets/*"
+#rm -rf "${curPath}/src/datalab/datalab/*"
+#rm -rf "~/.cache/huggingface/datalab/*"
 
 # Step 1
 

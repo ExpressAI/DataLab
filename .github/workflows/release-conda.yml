@@ -24,7 +24,7 @@ jobs:
         with:
           auto-update-conda: true
           auto-activate-base: false
-          activate-environment: "build-datasets"
+          activate-environment: "build-datalab"
           python-version: 3.8
           channels: huggingface,conda-forge
 

@@ -56,7 +56,7 @@ Examples:
 
     >>> predictions = ["hello there", "general kenobi"]
     >>> references = ["hello there", "general kenobi"]
-    >>> bleurt = datasets.load_metric("bleurt")
+    >>> bleurt = datalab.load_metric("bleurt")
     >>> results = bleurt.compute(predictions=predictions, references=references)
     >>> print([round(v, 2) for v in results["scores"]])
     [1.03, 1.04]
@@ -101,7 +101,7 @@ class BLEURT(datasets.Metric):
         if self.config_name == "default":
             logger.warning(
                 "Using default BLEURT-Base checkpoint for sequence maximum length 128. "
-                "You can use a bigger model for better results with e.g.: datasets.load_metric('bleurt', 'bleurt-large-512')."
+                "You can use a bigger model for better results with e.g.: datalab.load_metric('bleurt', 'bleurt-large-512')."
             )
             self.config_name = "bleurt-base-128"
         if self.config_name not in CHECKPOINT_URLS.keys():

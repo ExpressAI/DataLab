@@ -61,7 +61,7 @@ class DummyDataAutoGenerationTest(TestCase):
                 f.write("foo\nbar\n" * 10)
 
             class MockDownloadManagerWithCustomDatasetsScriptsDir(MockDownloadManager):
-                datasets_scripts_dir = os.path.join(tmp_dir, "datasets")
+                datasets_scripts_dir = os.path.join(tmp_dir, "datalab")
 
             cache_dir = os.path.join(tmp_dir, "cache")
             os.makedirs(cache_dir, exist_ok=True)

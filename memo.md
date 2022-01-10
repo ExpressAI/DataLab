@@ -82,7 +82,7 @@ DatasetInfo 类和 MongoDB `metadata` 字段的区别（以 `ag_news` 为例）�
             "storage": "30.2284517288208 mega bytes"
         },
         "production_status": null,
-        "huggingface_link": "https://huggingface.co/datasets/ag_news",
+        "huggingface_link": "https://huggingface.co/datalab/ag_news",
         "curation_rationale": null,
         "genre": null,
         "quality": null,

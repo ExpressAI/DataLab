@@ -48,11 +48,11 @@ DATASET_LOADING_SCRIPT_NAME = "__dummy_dataset1__"
 DATASET_LOADING_SCRIPT_CODE = """
 import os
 
-import datasets
-from datasets import DatasetInfo, Features, Split, SplitGenerator, Value
+import datalab
+from datalab import DatasetInfo, Features, Split, SplitGenerator, Value
 
 
-class __DummyDataset1__(datasets.GeneratorBasedBuilder):
+class __DummyDataset1__(datalab.GeneratorBasedBuilder):
 
     def _info(self) -> DatasetInfo:
         return DatasetInfo(features=Features({"text": Value("string")}))
@@ -78,11 +78,11 @@ SAMPLE_DATASET_NAME_THAT_DOESNT_EXIST = "_dummy"
 METRIC_LOADING_SCRIPT_NAME = "__dummy_metric1__"
 
 METRIC_LOADING_SCRIPT_CODE = """
-import datasets
-from datasets import MetricInfo, Features, Value
+import datalab
+from datalab import MetricInfo, Features, Value
 
 
-class __DummyMetric1__(datasets.Metric):
+class __DummyMetric1__(datalab.Metric):
 
     def _info(self):
         return MetricInfo(features=Features({"predictions": Value("int"), "references": Value("int")}))
@@ -369,7 +369,7 @@ class LoadTest(TestCase):
                     datasets.load_dataset("_dummy")
                 if offline_simulation_mode != OfflineSimulationMode.HF_DATASETS_OFFLINE_SET_TO_1:
                     self.assertIn(
-                        f"https://raw.githubusercontent.com/huggingface/datasets/{scripts_version}/datasets/_dummy/_dummy.py",
+                        f"https://raw.githubusercontent.com/huggingface/datasets/{scripts_version}/datalab/_dummy/_dummy.py",
                         str(context.exception),
                     )
 
@@ -507,7 +507,7 @@ def test_load_dataset_streaming_gz_json(jsonl_gz_path):
     "path", ["sample.jsonl", "sample.jsonl.gz", "sample.tar", "sample.jsonl.xz", "sample.zip", "sample.jsonl.zst"]
 )
 def test_load_dataset_streaming_compressed_files(path):
-    repo_id = "albertvillanova/datasets-tests-compression"
+    repo_id = "albertvillanova/datalab-tests-compression"
     data_files = f"https://huggingface.co/datasets/{repo_id}/resolve/main/{path}"
     if data_files[-3:] in ("zip", "tar"):  # we need to glob "*" inside archives
         data_files = data_files[-3:] + "://*::" + data_files

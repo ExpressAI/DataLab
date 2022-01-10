@@ -84,7 +84,7 @@ series = {MUC6 ’95}
 """
 
 _DESCRIPTION = """\
-CoVal is a coreference evaluation tool for the CoNLL and ARRAU datasets which
+CoVal is a coreference evaluation tool for the CoNLL and ARRAU datalab which
 implements of the common evaluation metrics including MUC [Vilain et al, 1995],
 B-cubed [Bagga and Baldwin, 1998], CEAFe [Luo et al., 2005],
 LEA [Moosavi and Strube, 2016] and the averaged CoNLL score
@@ -150,7 +150,7 @@ Returns:
 
 Examples:
 
-    >>> coval = datasets.load_metric('coval')
+    >>> coval = datalab.load_metric('coval')
     >>> words = ['bc/cctv/00/cctv_0005   0   0       Thank   VBP  (TOP(S(VP*    thank  01   1    Xu_li  *           (V*)        *       -',
     ... 'bc/cctv/00/cctv_0005   0   1         you   PRP        (NP*)      -    -   -    Xu_li  *        (ARG1*)   (ARG0*)   (116)',
     ... 'bc/cctv/00/cctv_0005   0   2    everyone    NN        (NP*)      -    -   -    Xu_li  *    (ARGM-DIS*)        *    (116)',

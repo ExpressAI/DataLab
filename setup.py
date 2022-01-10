@@ -1,5 +1,5 @@
 # Lint as: python3
-""" HuggingFace/Datasets is an open library of datasets.
+""" HuggingFace/Datasets is an open library of datalab.
 
 Note:
 
@@ -13,7 +13,7 @@ To create the package for pypi.
 0. Prerequisites:
    - Dependencies:
      - twine: "pip install twine"
-   - Create an account in (and join the 'datasets' project):
+   - Create an account in (and join the 'datalab' project):
      - PyPI: https://pypi.org/
      - Test PyPI: https://test.pypi.org/
 
@@ -45,7 +45,7 @@ To create the package for pypi.
    Check that you can install it in a virtualenv/notebook by running:
    pip install huggingface_hub fsspec aiohttp
    pip install -U tqdm
-   pip install -i https://testpypi.python.org/pypi datasets
+   pip install -i https://testpypi.python.org/pypi datalab
 
 6. Upload the final version to actual pypi:
    twine upload dist/* -r pypi
@@ -81,7 +81,7 @@ REQUIRED_PKGS = [
     "dill",
     # For performance gains with apache arrow
     "pandas",
-    # for downloading datasets over HTTPS
+    # for downloading datalab over HTTPS
     "requests>=2.19.0",
     # progress bars in download and scripts
     "tqdm>=4.62.1",
@@ -93,12 +93,12 @@ REQUIRED_PKGS = [
     "multiprocess",
     # to get metadata of optional dependencies such as torch or tensorflow for Python versions that don't have it
     "importlib_metadata;python_version<'3.8'",
-    # to save datasets locally or on any filesystem
+    # to save datalab locally or on any filesystem
     # minimum 2021.05.0 to have the AbstractArchiveFileSystem
     "fsspec[http]>=2021.05.0",
     # for data streaming via http
     "aiohttp",
-    # To get datasets from the Datasets Hub on huggingface.co
+    # To get datalab from the Datasets Hub on huggingface.co
     "huggingface_hub>=0.1.0,<1.0.0",
     # Utilities from PyPA to e.g., compare versions
     "packaging",
@@ -140,7 +140,7 @@ TESTS_REQUIRE = [
     "torch",
     "torchaudio",
     "transformers",
-    # datasets dependencies
+    # datalab dependencies
     "bs4",
     "conllu",
     "langdetect",
@@ -224,25 +224,25 @@ EXTRAS_REQUIRE = {
 }
 
 setup(
-    name="datasets",
+    name="datalab",
     version="1.16.2.dev0",  # expected format is one of x.y.z.dev0, or x.y.z.rc1 or x.y.z (no to dashes, yes to dots)
-    description="HuggingFace community-driven open-source library of datasets",
+    description="HuggingFace community-driven open-source library of datalab",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     author="HuggingFace Inc.",
     author_email="thomas@huggingface.co",
-    url="https://github.com/huggingface/datasets",
-    download_url="https://github.com/huggingface/datasets/tags",
+    url="https://github.com/expressai/datalab",
+    download_url="https://github.com/expressai/datalab/tags",
     license="Apache 2.0",
     package_dir={"": "src"},
     packages=find_packages("src"),
-    package_data={"datasets": ["py.typed", "scripts/templates/*"],
-                  "datasets.utils.resources": ["*.json", "*.yaml"],
-                  "datasets.operations.featurize.pre_models":["*.pkl","*.json"],
-                  "datasets.operations.featurize.resources.gender_data": ["*.json"],
-                  "datasets.operations.edit.resources": ["*.json","*.txt", "*.names","*.tsv"],
+    package_data={"datalab": ["py.typed", "scripts/templates/*"],
+                  "datalab.utils.resources": ["*.json", "*.yaml"],
+                  "datalab.operations.featurize.pre_models":["*.pkl","*.json"],
+                  "datalab.operations.featurize.resources.gender_data": ["*.json"],
+                  "datalab.operations.edit.resources": ["*.json","*.txt", "*.names","*.tsv"],
                   },
-    entry_points={"console_scripts": ["datasets-cli=datasets.commands.datasets_cli:main"]},
+    entry_points={"console_scripts": ["datalab-cli=datalab.commands.datasets_cli:main"]},
     install_requires=REQUIRED_PKGS,
     extras_require=EXTRAS_REQUIRE,
     classifiers=[
@@ -257,7 +257,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ],
-    keywords="datasets machine learning datasets metrics",
+    keywords="datalab machine learning datalab metrics",
     zip_safe=False,  # Required for mypy to find the py.typed file
     include_package_data=True
 )

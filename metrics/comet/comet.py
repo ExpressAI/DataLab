@@ -20,7 +20,7 @@ pip install unbabel-comet
 Usage:
 
 ```python
-from datasets import load_metric
+from datalab import load_metric
 comet_metric = load_metric('metrics/comet/comet.py')
 #comet_metric = load_metric('comet')
 #comet_metric = load_metric('comet', 'wmt-large-hter-estimator')
@@ -94,7 +94,7 @@ Returns:
 
 Examples:
 
-    >>> comet_metric = datasets.load_metric('comet') # doctest:+ELLIPSIS
+    >>> comet_metric = datalab.load_metric('comet') # doctest:+ELLIPSIS
     [...]Download succeeded. Loading model[...]
     >>> # comet_metric = load_metric('comet', 'wmt-large-hter-estimator')  # you can also choose which model to use
     >>> source = ["Dem Feuer konnte Einhalt geboten werden", "Schulen und Kindergärten wurden eröffnet."]

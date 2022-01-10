@@ -40,7 +40,7 @@ Once you have created your virtual environment, you can install 🤗 Datasets in
 The most straightforward way to install 🤗 Datasets is with pip:
 
 ```bash
-pip install datasets
+pip install datalab
 ```
 
 Run the following command to check if 🤗 Datasets has been properly installed:
@@ -61,7 +61,7 @@ Building 🤗 Datasets from source lets you make changes to the code base. To in
 
 ```bash
 git clone https://github.com/huggingface/datasets.git
-cd datasets
+cd datalab
 pip install -e .
 ```
 
@@ -76,5 +76,5 @@ python -c "from datasets import load_dataset; print(load_dataset('squad', split=
 🤗 Datasets can also be installed with conda, a package management system:
 
 ```bash
-conda install -c huggingface -c conda-forge datasets
+conda install -c huggingface -c conda-forge datalab
 ```

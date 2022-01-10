@@ -108,8 +108,8 @@ def benchmark_array_xd():
 
     with tempfile.TemporaryDirectory() as tmp_dir:
         # don't use fixed length for fair comparison
-        # feats = datasets.Features(
-        #     {"image": datasets.Sequence(datasets.Sequence(datasets.Value("float32"), SPEED_TEST_SHAPE[1]), SPEED_TEST_SHAPE[0])}
+        # feats = datalab.Features(
+        #     {"image": datalab.Sequence(datalab.Sequence(datalab.Value("float32"), SPEED_TEST_SHAPE[1]), SPEED_TEST_SHAPE[0])}
         # )
         feats = datasets.Features({"image": datasets.Sequence(datasets.Sequence(datasets.Value("float32")))})
         data = generate_examples(
@@ -121,8 +121,8 @@ def benchmark_array_xd():
 
     with tempfile.TemporaryDirectory() as tmp_dir:
         # don't use fixed length for fair comparison
-        # feats = datasets.Features(
-        #     {"image": datasets.Sequence(datasets.Value("float32"), SPEED_TEST_SHAPE[0] * SPEED_TEST_SHAPE[1])}
+        # feats = datalab.Features(
+        #     {"image": datalab.Sequence(datalab.Value("float32"), SPEED_TEST_SHAPE[0] * SPEED_TEST_SHAPE[1])}
         # )
         feats = datasets.Features({"image": datasets.Sequence(datasets.Value("float32"))})
         data = generate_examples(

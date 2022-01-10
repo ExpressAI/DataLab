@@ -302,7 +302,7 @@ def test_move_script_doesnt_change_hash(tmp_path: Path):
     script_filename = "script.py"
     code = dedent(
         """
-    from datasets.fingerprint import Hasher
+    from datalab.fingerprint import Hasher
     def foo():
         pass
     print(Hasher.hash(foo))

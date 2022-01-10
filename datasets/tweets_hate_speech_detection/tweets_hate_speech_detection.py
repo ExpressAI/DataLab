@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The TensorFlow Datasets Authors and the HuggingFace Datasets Authors.
+# Copyright 2020 The TensorFlow datalab Authors and the HuggingFace datalab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@
 
 import csv
 
-import datasets
-from datasets.tasks import TextClassification
+import datalab
+from datalab.tasks import TextClassification
 
 
 _DESCRIPTION = """\
@@ -43,32 +43,34 @@ _TRAIN_DOWNLOAD_URL = (
 )
 
 
-class TweetsHateSpeechDetection(datasets.GeneratorBasedBuilder):
+class TweetsHateSpeechDetection(datalab.GeneratorBasedBuilder):
     """Detecing which tweets showcase hate or racist remarks."""
 
     def _info(self):
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    "label": datasets.ClassLabel(names=["no-hate-speech", "hate-speech"]),
-                    "tweet": datasets.Value("string"),
+                    "label": datalab.ClassLabel(names=["no-hate-speech", "hate-speech"]),
+                    "text": datalab.Value("string"),
                 }
             ),
             homepage="https://github.com/sharmaroshan/Twitter-Sentiment-Analysis",
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="tweet", label_column="label")],
+            task_templates=[TextClassification(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
 
         return [
-            datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": train_path}),
         ]
 
     def _generate_examples(self, filepath):
         """Generate Tweet examples."""
+        textualize_label = {"0":"no-hate-speech",
+                                 "1":"hate-speech",}
         with open(filepath, encoding="utf-8") as csv_file:
             csv_reader = csv.reader(
                 csv_file, quotechar='"', delimiter=",", quoting=csv.QUOTE_ALL, skipinitialspace=True
@@ -79,6 +81,6 @@ class TweetsHateSpeechDetection(datasets.GeneratorBasedBuilder):
                 (label, tweet) = row
 
                 yield id_, {
-                    "label": int(label),
-                    "tweet": (tweet),
+                    "label": textualize_label[label],
+                    "text": (tweet),
                 }

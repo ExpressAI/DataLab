@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The HuggingFace Datasets Authors and the current dataset script contributor.
+# Copyright 2020 The HuggingFace datalab Authors and the current dataset script contributor.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""The Tweet Eval Datasets"""
+"""The Tweet Eval datalab"""
 
 
-import datasets
-
+import datalab
+from datalab.tasks import TextClassification
 
 _CITATION = """\
 @inproceedings{barbieri2020tweeteval,
@@ -35,7 +35,7 @@ _HOMEPAGE = "https://github.com/cardiffnlp/tweeteval"
 
 _LICENSE = ""
 
-URL = "https://raw.githubusercontent.com/cardiffnlp/tweeteval/main/datasets/"
+URL = "https://raw.githubusercontent.com/cardiffnlp/tweeteval/main/datalab/"
 
 _URLs = {
     "emoji": {
@@ -131,7 +131,7 @@ _URLs = {
 }
 
 
-class TweetEvalConfig(datasets.BuilderConfig):
+class TweetEvalConfig(datalab.BuilderConfig):
     def __init__(self, *args, type=None, sub_type=None, **kwargs):
         super().__init__(
             *args,
@@ -142,14 +142,14 @@ class TweetEvalConfig(datasets.BuilderConfig):
         self.sub_type = sub_type
 
 
-class TweetEval(datasets.GeneratorBasedBuilder):
+class TweetEval(datalab.GeneratorBasedBuilder):
     """TweetEval Dataset."""
 
     BUILDER_CONFIGS = [
         TweetEvalConfig(
             type=key,
             sub_type=None,
-            version=datasets.Version("1.1.0"),
+            version=datalab.Version("1.1.0"),
             description=f"This part of my dataset covers {key} part of TweetEval Dataset.",
         )
         for key in list(_URLs.keys())
@@ -158,7 +158,7 @@ class TweetEval(datasets.GeneratorBasedBuilder):
         TweetEvalConfig(
             type="stance",
             sub_type=key,
-            version=datasets.Version("1.1.0"),
+            version=datalab.Version("1.1.0"),
             description=f"This part of my dataset covers stance_{key} part of TweetEval Dataset.",
         )
         for key in list(_URLs["stance"].keys())
@@ -202,15 +202,16 @@ class TweetEval(datasets.GeneratorBasedBuilder):
         else:
             names = ["anger", "joy", "optimism", "sadness"]
 
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
-                {"text": datasets.Value("string"), "label": datasets.features.ClassLabel(names=names)}
+            features=datalab.Features(
+                {"text": datalab.Value("string"), "label": datalab.features.ClassLabel(names=names)}
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
             license=_LICENSE,
             citation=_CITATION,
+            task_templates=[TextClassification(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):
@@ -221,18 +222,18 @@ class TweetEval(datasets.GeneratorBasedBuilder):
             my_urls = _URLs[self.config.type][self.config.sub_type]
         data_dir = dl_manager.download_and_extract(my_urls)
         return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN,
+            datalab.SplitGenerator(
+                name=datalab.Split.TRAIN,
                 # These kwargs will be passed to _generate_examples
                 gen_kwargs={"text_path": data_dir["train_text"], "labels_path": data_dir["train_labels"]},
             ),
-            datasets.SplitGenerator(
-                name=datasets.Split.TEST,
+            datalab.SplitGenerator(
+                name=datalab.Split.TEST,
                 # These kwargs will be passed to _generate_examples
                 gen_kwargs={"text_path": data_dir["test_text"], "labels_path": data_dir["test_labels"]},
             ),
-            datasets.SplitGenerator(
-                name=datasets.Split.VALIDATION,
+            datalab.SplitGenerator(
+                name=datalab.Split.VALIDATION,
                 # These kwargs will be passed to _generate_examples
                 gen_kwargs={"text_path": data_dir["val_text"], "labels_path": data_dir["val_labels"]},
             ),

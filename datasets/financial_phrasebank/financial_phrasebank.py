@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The HuggingFace Datasets Authors and the current dataset script contributor.
+# Copyright 2020 The HuggingFace datalab Authors and the current dataset script contributor.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ rate of 5-8 annotators."""
 
 import os
 
-import datasets
-
+import datalab
+from datalab.tasks import TextClassification
 
 _CITATION = """\
 @article{Malo2014GoodDO,
@@ -63,7 +63,7 @@ accounting, and economics.
 Given the large number of overlapping annotations (5 to 8 annotations per
 sentence), there are several ways to define a majority vote based gold
 standard. To provide an objective comparison, we have formed 4 alternative
-reference datasets based on the strength of majority agreement: all annotators
+reference datalab based on the strength of majority agreement: all annotators
 agree, >=75% of annotators agree, >=66% of annotators agree and >=50% of
 annotators agree.
 """
@@ -75,10 +75,10 @@ _LICENSE = "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported L
 _URL = "https://www.researchgate.net/profile/Pekka_Malo/publication/251231364_FinancialPhraseBank-v10/data/0c96051eee4fb1d56e000000/FinancialPhraseBank-v10.zip"
 
 
-_VERSION = datasets.Version("1.0.0")
+_VERSION = datalab.Version("1.0.0")
 
 
-class FinancialPhraseBankConfig(datasets.BuilderConfig):
+class FinancialPhraseBankConfig(datalab.BuilderConfig):
     """BuilderConfig for FinancialPhraseBank."""
 
     def __init__(
@@ -96,7 +96,7 @@ class FinancialPhraseBankConfig(datasets.BuilderConfig):
         self.path = os.path.join("FinancialPhraseBank-v1.0", f"Sentences_{split.title()}Agree.txt")
 
 
-class FinancialPhrasebank(datasets.GeneratorBasedBuilder):
+class FinancialPhrasebank(datalab.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
         FinancialPhraseBankConfig(
@@ -109,12 +109,12 @@ class FinancialPhrasebank(datasets.GeneratorBasedBuilder):
     ]
 
     def _info(self):
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    "sentence": datasets.Value("string"),
-                    "label": datasets.features.ClassLabel(
+                    "text": datalab.Value("string"),
+                    "label": datalab.features.ClassLabel(
                         names=[
                             "negative",
                             "neutral",
@@ -127,14 +127,15 @@ class FinancialPhrasebank(datasets.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             license=_LICENSE,
             citation=_CITATION,
+            task_templates=[TextClassification(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         data_dir = dl_manager.download_and_extract(_URL)
         return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN,
+            datalab.SplitGenerator(
+                name=datalab.Split.TRAIN,
                 # These kwargs will be passed to _generate_examples
                 gen_kwargs={"filepath": os.path.join(data_dir, self.config.path)},
             ),
@@ -145,4 +146,4 @@ class FinancialPhrasebank(datasets.GeneratorBasedBuilder):
         with open(filepath, encoding="iso-8859-1") as f:
             for id_, line in enumerate(f):
                 sentence, label = line.rsplit("@", 1)
-                yield id_, {"sentence": sentence, "label": label}
+                yield id_, {"text": sentence, "label": label}

@@ -270,9 +270,9 @@ Finally, create cross-validated dataset splits by:
 .. tab:: String API
 
    >>> # 10-fold cross-validation (see also next section on rounding behavior):
-   >>> # The validation datasets are each going to be 10%:
+   >>> # The validation datalab are each going to be 10%:
    >>> # [0%:10%], [10%:20%], ..., [90%:100%].
-   >>> # And the training datasets are each going to be the complementary 90%:
+   >>> # And the training datalab are each going to be the complementary 90%:
    >>> # [10%:100%] (for a corresponding validation set of [0%:10%]),
    >>> # [0%:10%] + [20%:100%] (for a validation set of [10%:20%]), ...,
    >>> # [0%:90%] (for a validation set of [90%:100%]).
@@ -282,9 +282,9 @@ Finally, create cross-validated dataset splits by:
 .. tab:: ReadInstruction
 
    >>> # 10-fold cross-validation (see also next section on rounding behavior):
-   >>> # The validation datasets are each going to be 10%:
+   >>> # The validation datalab are each going to be 10%:
    >>> # [0%:10%], [10%:20%], ..., [90%:100%].
-   >>> # And the training datasets are each going to be the complementary 90%:
+   >>> # And the training datalab are each going to be the complementary 90%:
    >>> # [10%:100%] (for a corresponding validation set of [0%:10%]),
    >>> # [0%:10%] + [20%:100%] (for a validation set of [10%:20%]), ...,
    >>> # [0%:90%] (for a validation set of [90%:100%]).

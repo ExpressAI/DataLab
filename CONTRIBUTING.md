@@ -30,8 +30,8 @@ If you would like to work on any of the open Issues:
 2. Clone your fork to your local disk, and add the base repository as a remote:
 
 	```bash
-	git clone git@github.com:<your Github handle>/datasets.git
-	cd datasets
+	git clone git@github.com:<your Github handle>/datalab.git
+	cd datalab
 	git remote add upstream https://github.com/huggingface/datasets.git
 	```
 
@@ -64,7 +64,7 @@ If you would like to work on any of the open Issues:
 7. Once you're happy with your dataset script file, add your changes and make a commit to record your changes locally:
 
 	```bash
-	git add datasets/<your_dataset_name>
+	git add datalab/<your_dataset_name>
 	git commit
 	```
 
@@ -95,20 +95,20 @@ A [more complete guide](https://github.com/huggingface/datasets/blob/master/ADD_
 3. **Make sure you run all of the following commands from the root of your `datasets` git clone.** To check that your dataset works correctly and to create its `dataset_infos.json` file run the command:
 
 	```bash
-	datasets-cli test datasets/<your-dataset-folder> --save_infos --all_configs
+	datalab-cli test datalab/<your-dataset-folder> --save_infos --all_configs
 	```
 
 4. If the command was succesful, you should now create some dummy data. Use the following command to get in-detail instructions on how to create the dummy data:
 
 	```bash
-	datasets-cli dummy_data datasets/<your-dataset-folder>
+	datalab-cli dummy_data datalab/<your-dataset-folder>
 	```
 
 	There is a tool that automatically generates dummy data for you. At the moment it supports data files in the following format: txt, csv, tsv, jsonl, json, xml.
 	If the extensions of the raw data files of your dataset are in this list, then you can automatically generate your dummy data with:
 
 	```bash
-	datasets-cli dummy_data datasets/<your-dataset-folder> --auto_generate
+	datalab-cli dummy_data datalab/<your-dataset-folder> --auto_generate
 	```
 
 5. Now test that both the real data and the dummy data work correctly using the following commands:
@@ -136,7 +136,7 @@ Follow these steps in case the dummy data test keeps failing:
 
 - Verify that all filenames are spelled correctly. Rerun the command
 	```bash
-	datasets-cli dummy_data datasets/<your-dataset-folder>
+	datalab-cli dummy_data datalab/<your-dataset-folder>
 	```
 	and make sure you follow the exact instructions provided by the command of step 5).
 
@@ -148,7 +148,7 @@ If you're looking for more details about dataset scripts creation, please refer 
 
 Note: You can use the CLI tool from the root of the repository with the following command:
 ```bash
-python src/datasets/commands/datasets_cli.py <command>
+python src/datalab/commands/datasets_cli.py <command>
 ```
 
 ## How to contribute to the dataset cards

@@ -39,7 +39,7 @@ import pyarrow.compute as pc
 from multiprocess import Pool, RLock
 from tqdm.auto import tqdm
 
-from datasets.tasks.text_classification import TextClassification
+from datalab.tasks.text_classification import TextClassification
 
 from . import config, utils
 from .arrow_reader import ArrowReader
@@ -98,12 +98,12 @@ class DatasetInfoMixin:
 
     @property
     def info(self):
-        """:class:`datasets.DatasetInfo` object containing all the metadata in the dataset."""
+        """:class:`datalab.DatasetInfo` object containing all the metadata in the dataset."""
         return self._info
 
     @property
     def split(self):
-        """:class:`datasets.NamedSplit` object corresponding to a named dataset split."""
+        """:class:`datalab.NamedSplit` object corresponding to a named dataset split."""
         return self._split
 
     @property
@@ -221,7 +221,7 @@ def update_metadata_with_features(table: Table, features: Features):
 
 
 def _check_table(table) -> Table:
-    """We check the table type to make sure it's an instance of :class:`datasets.table.Table`"""
+    """We check the table type to make sure it's an instance of :class:`datalab.table.Table`"""
     if isinstance(table, pa.Table):
         # for a pyarrow table, we can just consider it as a in-memory table
         # this is here for backward compatibility
@@ -229,7 +229,7 @@ def _check_table(table) -> Table:
     elif isinstance(table, Table):
         return table
     else:
-        raise TypeError(f"Expected a pyarrow.Table or a datasets.table.Table object, but got {table}.")
+        raise TypeError(f"Expected a pyarrow.Table or a datalab.table.Table object, but got {table}.")
 
 
 class NonExistentDatasetError(Exception):
@@ -489,7 +489,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
             path_or_paths (path-like or list of path-like): Path(s) of the CSV file(s).
             split (:class:`NamedSplit`, optional): Split name to be assigned to the dataset.
             features (:class:`Features`, optional): Dataset features.
-            cache_dir (:obj:`str`, optional, default ``"~/.cache/huggingface/datasets"``): Directory to cache data.
+            cache_dir (:obj:`str`, optional, default ``"~/.cache/huggingface/datalab"``): Directory to cache data.
             keep_in_memory (:obj:`bool`, default ``False``): Whether to copy the data in-memory.
             **kwargs: Keyword arguments to be passed to :meth:`pandas.read_csv`.
 
@@ -519,7 +519,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
             path_or_paths (path-like or list of path-like): Path(s) of the JSON or JSON Lines file(s).
             split (:class:`NamedSplit`, optional): Split name to be assigned to the dataset.
             features (:class:`Features`, optional): Dataset features.
-            cache_dir (:obj:`str`, optional, default ``"~/.cache/huggingface/datasets"``): Directory to cache data.
+            cache_dir (:obj:`str`, optional, default ``"~/.cache/huggingface/datalab"``): Directory to cache data.
             keep_in_memory (:obj:`bool`, default ``False``): Whether to copy the data in-memory.
             field (:obj:`str`, optional): Field name of the JSON file where the dataset is contained in.
             **kwargs: Keyword arguments to be passed to :class:`JsonConfig`.
@@ -556,7 +556,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
             path_or_paths (path-like or list of path-like): Path(s) of the Parquet file(s).
             split (:class:`NamedSplit`, optional): Split name to be assigned to the dataset.
             features (:class:`Features`, optional): Dataset features.
-            cache_dir (:obj:`str`, optional, default ``"~/.cache/huggingface/datasets"``): Directory to cache data.
+            cache_dir (:obj:`str`, optional, default ``"~/.cache/huggingface/datalab"``): Directory to cache data.
             keep_in_memory (:obj:`bool`, default ``False``): Whether to copy the data in-memory.
             columns (:obj:`List[str]`, optional): If not None, only these columns will be read from the file.
                 A column name may be a prefix of a nested field, e.g. 'a' will select
@@ -594,7 +594,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
             path_or_paths (path-like or list of path-like): Path(s) of the text file(s).
             split (:class:`NamedSplit`, optional): Split name to be assigned to the dataset.
             features (:class:`Features`, optional): Dataset features.
-            cache_dir (:obj:`str`, optional, default ``"~/.cache/huggingface/datasets"``): Directory to cache data.
+            cache_dir (:obj:`str`, optional, default ``"~/.cache/huggingface/datalab"``): Directory to cache data.
             keep_in_memory (:obj:`bool`, default ``False``): Whether to copy the data in-memory.
             **kwargs: Keyword arguments to be passed to :class:`TextConfig`.
 
@@ -627,7 +627,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
         any implementation of ``fsspec.spec.AbstractFileSystem``.
 
 
-        Note regarding sliced datasets:
+        Note regarding sliced datalab:
 
         If you sliced the dataset in some way (using shard, train_test_split or select for example), then an indices mapping
         is added to avoid having to rewrite a new arrow Table (save time + disk/memory usage).
@@ -635,7 +635,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
         By default save_to_disk does save the full dataset table + the mapping.
 
         If you want to only save the shard of the dataset instead of the original arrow file and the indices,
-        then you have to call :func:`datasets.Dataset.flatten_indices` before saving.
+        then you have to call :func:`datalab.Dataset.flatten_indices` before saving.
         This will create a new arrow table by using the right rows of the original table.
 
         Args:
@@ -729,13 +729,13 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
                 Instance of the remote filesystem used to download the files from.
             keep_in_memory (:obj:`bool`, default ``None``): Whether to copy the dataset in-memory. If `None`, the
                 dataset will not be copied in-memory unless explicitly enabled by setting
-                `datasets.config.IN_MEMORY_MAX_SIZE` to nonzero. See more details in the
+                `datalab.config.IN_MEMORY_MAX_SIZE` to nonzero. See more details in the
                 :ref:`load_dataset_enhancing_performance` section.
 
         Returns:
             :class:`Dataset` or :class:`DatasetDict`:
             - If `dataset_path` is a path of a dataset directory: the dataset requested.
-            - If `dataset_path` is a path of a dataset dict directory: a ``datasets.DatasetDict`` with each split.
+            - If `dataset_path` is a path of a dataset dict directory: a ``datalab.DatasetDict`` with each split.
         """
         # copies file from filesystem if it is remote filesystem to local filesystem and modifies dataset_path to temp directory containing local copies
         fs = fsspec.filesystem("file") if fs is None else fs
@@ -743,7 +743,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
         dataset_info_path = Path(dataset_path, config.DATASET_INFO_FILENAME).as_posix()
         if not fs.isfile(dataset_info_path) and fs.isfile(dataset_dict_json_path):
             raise FileNotFoundError(
-                f"No such file or directory: '{dataset_info_path}'. Expected to load a Dataset object, but got a DatasetDict. Please use datasets.load_from_disk instead."
+                f"No such file or directory: '{dataset_info_path}'. Expected to load a Dataset object, but got a DatasetDict. Please use datalab.load_from_disk instead."
             )
 
         if is_remote_filesystem(fs):
@@ -832,7 +832,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
         This is implemented in the low-level backend and as such, very fast.
 
         Args:
-            column (:obj:`str`): Column name (list all the column names with :func:`datasets.Dataset.column_names`).
+            column (:obj:`str`): Column name (list all the column names with :func:`datalab.Dataset.column_names`).
 
         Returns:
             :obj:`list`: List of unique elements in the given column.
@@ -850,10 +850,10 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
         return self._data.column(column).unique().to_pylist()
 
     def class_encode_column(self, column: str) -> "Dataset":
-        """Casts the given column as :obj:``datasets.features.ClassLabel`` and updates the table.
+        """Casts the given column as :obj:``datalab.features.ClassLabel`` and updates the table.
 
         Args:
-            column (`str`): The name of the column to cast (list all the column names with :func:`datasets.Dataset.column_names`)
+            column (`str`): The name of the column to cast (list all the column names with :func:`datalab.Dataset.column_names`)
         """
         # Sanity checks
         if column not in self._data.column_names:
@@ -1347,7 +1347,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
     ):
         """Set __getitem__ return format (type and columns). The data formatting is applied on-the-fly.
         The format ``type`` (for example "numpy") is used to format batches when using __getitem__.
-        It's also possible to use custom transforms for formatting using :func:`datasets.Dataset.set_transform`.
+        It's also possible to use custom transforms for formatting using :func:`datalab.Dataset.set_transform`.
 
         Args:
             type (Optional ``str``):
@@ -1406,10 +1406,10 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
         output_all_columns: bool = False,
     ):
         """Set __getitem__ return format using this transform. The transform is applied on-the-fly on batches when __getitem__ is called.
-        As :func:`datasets.Dataset.set_format`, this can be reset using :func:`datasets.Dataset.reset_format`
+        As :func:`datalab.Dataset.set_format`, this can be reset using :func:`datalab.Dataset.reset_format`
 
         Args:
-            transform (Optional ``Callable``): user-defined formatting transform, replaces the format defined by :func:`datasets.Dataset.set_format`
+            transform (Optional ``Callable``): user-defined formatting transform, replaces the format defined by :func:`datalab.Dataset.set_format`
                 A formatting function is a callable that takes a batch (as a dict) as input and returns a batch.
                 This function is applied right before returning the objects in __getitem__.
             columns (Optional ``List[str]``): columns to format in the output
@@ -1430,9 +1430,9 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
         """Set __getitem__ return format (type and columns). The data formatting is applied on-the-fly.
         The format ``type`` (for example "numpy") is used to format batches when using __getitem__.
 
-        It's also possible to use custom transforms for formatting using :func:`datasets.Dataset.with_transform`.
+        It's also possible to use custom transforms for formatting using :func:`datalab.Dataset.with_transform`.
 
-        Contrary to :func:`datasets.Dataset.set_format`, ``with_format`` returns a new Dataset object.
+        Contrary to :func:`datalab.Dataset.set_format`, ``with_format`` returns a new Dataset object.
 
         Args:
             type (Optional ``str``):
@@ -1455,12 +1455,12 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
     ):
         """Set __getitem__ return format using this transform. The transform is applied on-the-fly on batches when __getitem__ is called.
 
-        As :func:`datasets.Dataset.set_format`, this can be reset using :func:`datasets.Dataset.reset_format`.
+        As :func:`datalab.Dataset.set_format`, this can be reset using :func:`datalab.Dataset.reset_format`.
 
-        Contrary to :func:`datasets.Dataset.set_transform`, ``with_transform`` returns a new Dataset object.
+        Contrary to :func:`datalab.Dataset.set_transform`, ``with_transform`` returns a new Dataset object.
 
         Args:
-            transform (Optional ``Callable``): user-defined formatting transform, replaces the format defined by :func:`datasets.Dataset.set_format`
+            transform (Optional ``Callable``): user-defined formatting transform, replaces the format defined by :func:`datalab.Dataset.set_format`
                 A formatting function is a callable that takes a batch (as a dict) as input and returns a batch.
                 This function is applied right before returning the objects in __getitem__.
             columns (Optional ``List[str]``): columns to format in the output
@@ -1474,9 +1474,9 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
         return dataset
 
     def prepare_for_task(self, task: Union[str, TaskTemplate]) -> "Dataset":
-        """Prepare a dataset for the given task by casting the dataset's :class:`Features` to standardized column names and types as detailed in :py:mod:`datasets.tasks`.
+        """Prepare a dataset for the given task by casting the dataset's :class:`Features` to standardized column names and types as detailed in :py:mod:`datalab.tasks`.
 
-        Casts :attr:`datasets.DatasetInfo.features` according to a task-specific schema. Intended for single-use only, so all task templates are removed from :attr:`datasets.DatasetInfo.task_templates` after casting.
+        Casts :attr:`datalab.DatasetInfo.features` according to a task-specific schema. Intended for single-use only, so all task templates are removed from :attr:`datalab.DatasetInfo.task_templates` after casting.
 
         Args:
             task (:obj:`Union[str, TaskTemplate]`): The task to prepare the dataset for during training and evaluation. If :obj:`str`, supported tasks include:
@@ -1484,7 +1484,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
                 - :obj:`"text-classification"`
                 - :obj:`"question-answering"`
 
-                If :obj:`TaskTemplate`, must be one of the task templates in :py:mod:`datasets.tasks`.
+                If :obj:`TaskTemplate`, must be one of the task templates in :py:mod:`datalab.tasks`.
         """
         # TODO(lewtun): Add support for casting nested features like answers.text and answers.answer_start in SQuAD
         if isinstance(task, str):
@@ -1495,20 +1495,20 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
 
             if len(compatible_templates) > 1:
                 raise ValueError(
-                    f"Expected 1 task template but found {len(compatible_templates)}! Please ensure that `datasets.DatasetInfo.task_templates` contains a unique set of task types."
+                    f"Expected 1 task template but found {len(compatible_templates)}! Please ensure that `datalab.DatasetInfo.task_templates` contains a unique set of task types."
                 )
             template = compatible_templates[0]
         elif isinstance(task, TaskTemplate):
             template = task
         else:
             raise ValueError(
-                f"Expected a `str` or `datasets.tasks.TaskTemplate` object but got task {task} with type {type(task)}."
+                f"Expected a `str` or `datalab.tasks.TaskTemplate` object but got task {task} with type {type(task)}."
             )
         if isinstance(template, TextClassification) and self.info.features is not None:
             dataset_labels = tuple(sorted(self.info.features[template.label_column].names))
             if template.labels is None or template.labels != dataset_labels:
                 raise ValueError(
-                    f"Incompatible labels between the dataset and task template! Expected labels {dataset_labels} but got {template.labels}. Please ensure that `datasets.tasks.TextClassification.labels` matches the features of the dataset."
+                    f"Incompatible labels between the dataset and task template! Expected labels {dataset_labels} but got {template.labels}. Please ensure that `datalab.tasks.TextClassification.labels` matches the features of the dataset."
                 )
         column_mapping = template.column_mapping
         columns_to_drop = [column for column in self.column_names if column not in column_mapping]
@@ -1639,7 +1639,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
             writer_batch_size (:obj:`int`, default `1000`): Number of rows per write operation for the cache file writer.
                 This value is a good trade-off between memory usage during the processing, and processing speed.
                 Higher value makes the processing do fewer lookups, lower value consume less temporary memory while running `.map()`.
-            features (`Optional[datasets.Features]`, default `None`): Use a specific Features to store the cache file
+            features (`Optional[datalab.Features]`, default `None`): Use a specific Features to store the cache file
                 instead of the automatically generated one.
             disable_nullable (:obj:`bool`, default `True`): Disallow null values in the table.
             fn_kwargs (`Optional[Dict]`, default `None`): Keyword arguments to be passed to `function`.
@@ -1874,7 +1874,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
             writer_batch_size (:obj:`int`, default `1000`): Number of rows per write operation for the cache file writer.
                 This value is a good trade-off between memory usage during the processing, and processing speed.
                 Higher value makes the processing do fewer lookups, lower value consume less temporary memory while running `.map()`.
-            features (`Optional[datasets.Features]`, defaults to `None`): Use a specific Features to store the cache file
+            features (`Optional[datalab.Features]`, defaults to `None`): Use a specific Features to store the cache file
                 instead of the automatically generated one.
             disable_nullable (:obj:`bool`, defaults to `True`): Disallow null values in the table.
             fn_kwargs (`Optional[Dict]`, defaults to `None`): Keyword arguments to be passed to `function`
@@ -2226,7 +2226,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
             writer_batch_size (:obj:`int`, default `1000`): Number of rows per write operation for the cache file writer.
                 This value is a good trade-off between memory usage during the processing, and processing speed.
                 Higher value makes the processing do fewer lookups, lower value consume less temporary memory while running `.map()`.
-            features (`Optional[datasets.Features]`, default `None`): Use a specific Features to store the cache file
+            features (`Optional[datalab.Features]`, default `None`): Use a specific Features to store the cache file
                 instead of the automatically generated one.
             disable_nullable (:obj:`bool`, default `True`): Allow null values in the table.
             new_fingerprint (`Optional[str]`, default `None`): The new fingerprint of the dataset after transform.
@@ -2534,7 +2534,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
         train_new_fingerprint: Optional[str] = None,
         test_new_fingerprint: Optional[str] = None,
     ) -> "DatasetDict":
-        """Return a dictionary (:obj:`datasets.DatsetDict`) with two random train and test subsets (`train` and `test` ``Dataset`` splits).
+        """Return a dictionary (:obj:`datalab.DatsetDict`) with two random train and test subsets (`train` and `test` ``Dataset`` splits).
         Splits are created from the dataset according to `test_size`, `train_size` and `shuffle`.
 
         This method is similar to scikit-learn `train_test_split` with the omission of the stratified options.
@@ -2730,7 +2730,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
         dset.shard(n, i, contiguous=True) will instead split dset into contiguous chunks,
         so it can be easily concatenated back together after processing. If n % i == l, then the
         first l shards will have length (n // i) + 1, and the remaining shards will have length (n // i).
-        `datasets.concatenate([dset.shard(n, i, contiguous=True) for i in range(n)])` will return
+        `datalab.concatenate([dset.shard(n, i, contiguous=True) for i in range(n)])` will return
         a dataset with the same order as the original.
 
         Be sure to shard before using any randomizing operator (such as shuffle).
@@ -2860,7 +2860,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
         Args:
             path_or_buf (``PathLike`` or ``FileOrBuffer``): Either a path to a file or a BinaryIO.
             batch_size (Optional ``int``): Size of the batch to load in memory and write at once.
-                Defaults to :obj:`datasets.config.DEFAULT_MAX_BATCH_SIZE`.
+                Defaults to :obj:`datalab.config.DEFAULT_MAX_BATCH_SIZE`.
             to_csv_kwargs: Parameters to pass to pandas's :func:`pandas.DataFrame.to_csv`
 
         Returns:
@@ -2872,13 +2872,13 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
         return CsvDatasetWriter(self, path_or_buf, batch_size=batch_size, **to_csv_kwargs).write()
 
     def to_dict(self, batch_size: Optional[int] = None, batched: bool = False) -> Union[dict, Iterator[dict]]:
-        """Returns the dataset as a Python dict. Can also return a generator for large datasets.
+        """Returns the dataset as a Python dict. Can also return a generator for large datalab.
 
         Args:
             batched (``bool``): Set to :obj:`True` to return a generator that yields the dataset as batches
                 of ``batch_size`` rows. Defaults to :obj:`False` (returns the whole datasetas once)
             batch_size (Optional ``int``): The size (number of rows) of the batches if ``batched`` is `True`.
-                Defaults to :obj:`datasets.config.DEFAULT_MAX_BATCH_SIZE`.
+                Defaults to :obj:`datalab.config.DEFAULT_MAX_BATCH_SIZE`.
 
         Returns:
             `dict` or `Iterator[dict]`
@@ -2912,10 +2912,10 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
         Args:
             path_or_buf (``PathLike`` or ``FileOrBuffer``): Either a path to a file or a BinaryIO.
             batch_size (:obj:`int`, optional): Size of the batch to load in memory and write at once.
-                Defaults to :obj:`datasets.config.DEFAULT_MAX_BATCH_SIZE`.
+                Defaults to :obj:`datalab.config.DEFAULT_MAX_BATCH_SIZE`.
             num_proc (:obj:`int`, optional): Number of processes for multiprocessing. By default it doesn't
                 use multiprocessing. ``batch_size`` in this case defaults to
-                :obj:`datasets.config.DEFAULT_MAX_BATCH_SIZE` but feel free to make it 5x or 10x of the default
+                :obj:`datalab.config.DEFAULT_MAX_BATCH_SIZE` but feel free to make it 5x or 10x of the default
                 value if you have sufficient compute power.
             lines (:obj:`bool`, default ``True``): Whether output JSON lines format.
                 Only possible if ``orient="records"`. It will throw ValueError with ``orient`` different from
@@ -2942,13 +2942,13 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
     def to_pandas(
         self, batch_size: Optional[int] = None, batched: bool = False
     ) -> Union[pd.DataFrame, Iterator[pd.DataFrame]]:
-        """Returns the dataset as a :class:`pandas.DataFrame`. Can also return a generator for large datasets.
+        """Returns the dataset as a :class:`pandas.DataFrame`. Can also return a generator for large datalab.
 
         Args:
             batched (``bool``): Set to :obj:`True` to return a generator that yields the dataset as batches
                 of ``batch_size`` rows. Defaults to :obj:`False` (returns the whole datasetas once)
             batch_size (Optional ``int``): The size (number of rows) of the batches if ``batched`` is `True`.
-                Defaults to :obj:`datasets.config.DEFAULT_MAX_BATCH_SIZE`.
+                Defaults to :obj:`datalab.config.DEFAULT_MAX_BATCH_SIZE`.
 
         Returns:
             `pandas.DataFrame` or `Iterator[pandas.DataFrame]`
@@ -2981,7 +2981,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
         Args:
             path_or_buf (``PathLike`` or ``FileOrBuffer``): Either a path to a file or a BinaryIO.
             batch_size (Optional ``int``): Size of the batch to load in memory and write at once.
-                Defaults to :obj:`datasets.config.DEFAULT_MAX_BATCH_SIZE`.
+                Defaults to :obj:`datalab.config.DEFAULT_MAX_BATCH_SIZE`.
             parquet_writer_kwargs: Parameters to pass to PyArrow's :class:`pyarrow.parquet.ParquetWriter`
 
         Returns:
@@ -3039,7 +3039,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
                 The column of the vectors to add to the index.
             index_name (Optional :obj:`str`):
                 The index_name/identifier of the index.
-                This is the index_name that is used to call :func:`datasets.Dataset.get_nearest_examples` or :func:`datasets.Dataset.search`.
+                This is the index_name that is used to call :func:`datalab.Dataset.get_nearest_examples` or :func:`datalab.Dataset.search`.
                 By default it corresponds to `column`.
             device (Optional :obj:`int`):
                 If not None, this is the index of the GPU to use.
@@ -3061,7 +3061,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
         Example:
             .. code-block:: python
 
-                ds = datasets.load_dataset('crime_and_punish', split='train')
+                ds = datalab.load_dataset('crime_and_punish', split='train')
                 ds_with_embeddings = ds.map(lambda example: {'embeddings': embed(example['line']}))
                 ds_with_embeddings.add_faiss_index(column='embeddings')
                 # query
@@ -3069,7 +3069,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
                 # save index
                 ds_with_embeddings.save_faiss_index('embeddings', 'my_index.faiss')
 
-                ds = datasets.load_dataset('crime_and_punish', split='train')
+                ds = datalab.load_dataset('crime_and_punish', split='train')
                 # load index
                 ds.load_faiss_index('embeddings', 'my_index.faiss')
                 # query
@@ -3113,7 +3113,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
                 It will use :obj:`external_arrays` to create the Faiss index instead of the arrays in the given :obj:`column`.
             index_name (:obj:`str`):
                 The index_name/identifier of the index.
-                This is the index_name that is used to call :func:`datasets.Dataset.get_nearest_examples` or :func:`datasets.Dataset.search`.
+                This is the index_name that is used to call :func:`datalab.Dataset.get_nearest_examples` or :func:`datalab.Dataset.search`.
             device (Optional :obj:`int`):
                 If not None, this is the index of the GPU to use.
                 By default it uses the CPU.
@@ -3192,7 +3192,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin):
             .. code-block:: python
 
                 es_client = elasticsearch.Elasticsearch()
-                ds = datasets.load_dataset('crime_and_punish', split='train')
+                ds = datalab.load_dataset('crime_and_punish', split='train')
                 ds.add_elasticsearch_index(column='line', es_client=es_client, es_index_name="my_es_index")
                 scores, retrieved_examples = ds.get_nearest_examples('line', 'my new query', k=10)
 
@@ -3289,7 +3289,7 @@ def concatenate_datasets(
     Converts a list of :class:`Dataset` with the same schema into a single :class:`Dataset`.
 
     Args:
-        dsets (:obj:`List[datasets.Dataset]`): List of Datasets to concatenate.
+        dsets (:obj:`List[datalab.Dataset]`): List of Datasets to concatenate.
         info (:class:`DatasetInfo`, optional): Dataset information, like description, citation, etc.
         split (:class:`NamedSplit`, optional): Name of the dataset split.
         axis (``{0, 1}``, default ``0``, meaning over rows):
@@ -3299,15 +3299,15 @@ def concatenate_datasets(
             .. versionadded:: 1.6.0
     """
     if axis == 0 and not all([dset.features.type == dsets[0].features.type for dset in dsets]):
-        raise ValueError("Features must match for all datasets")
+        raise ValueError("Features must match for all datalab")
     elif axis == 1 and not all([dset.num_rows == dsets[0].num_rows for dset in dsets]):
-        raise ValueError("Number of rows must match for all datasets")
+        raise ValueError("Number of rows must match for all datalab")
 
     # Find common format or reset format
     format = dsets[0].format
     if any(dset.format != format for dset in dsets):
         format = {}
-        logger.info("Some of the datasets have disparate format. Resetting the format of the concatenated dataset.")
+        logger.info("Some of the datalab have disparate format. Resetting the format of the concatenated dataset.")
 
     # Concatenate tables
     tables_to_concat = [dset._data for dset in dsets if len(dset._data) > 0]

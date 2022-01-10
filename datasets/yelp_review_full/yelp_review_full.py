@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The HuggingFace Datasets Authors and the current dataset script contributor.
+# Copyright 2020 The HuggingFace datalab Authors and the current dataset script contributor.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@
 import csv
 import os
 
-import datasets
-from datasets.tasks import TextClassification
+import datalab
+from datalab.tasks import TextClassification
 
 
 _CITATION = """\
@@ -48,7 +48,7 @@ _URLs = {
 }
 
 
-class YelpReviewFullConfig(datasets.BuilderConfig):
+class YelpReviewFullConfig(datalab.BuilderConfig):
     """BuilderConfig for YelpReviewFull."""
 
     def __init__(self, **kwargs):
@@ -60,10 +60,10 @@ class YelpReviewFullConfig(datasets.BuilderConfig):
         super(YelpReviewFullConfig, self).__init__(**kwargs)
 
 
-class YelpReviewFull(datasets.GeneratorBasedBuilder):
+class YelpReviewFull(datalab.GeneratorBasedBuilder):
     """Yelp Review Full Star Dataset 2015."""
 
-    VERSION = datasets.Version("1.0.0")
+    VERSION = datalab.Version("1.0.0")
 
     BUILDER_CONFIGS = [
         YelpReviewFullConfig(
@@ -72,9 +72,9 @@ class YelpReviewFull(datasets.GeneratorBasedBuilder):
     ]
 
     def _info(self):
-        features = datasets.Features(
+        features = datalab.Features(
             {
-                "label": datasets.features.ClassLabel(
+                "label": datalab.features.ClassLabel(
                     names=[
                         "1 star",
                         "2 star",
@@ -83,10 +83,10 @@ class YelpReviewFull(datasets.GeneratorBasedBuilder):
                         "5 stars",
                     ]
                 ),
-                "text": datasets.Value("string"),
+                "text": datalab.Value("string"),
             }
         )
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
             features=features,
             supervised_keys=None,
@@ -101,21 +101,23 @@ class YelpReviewFull(datasets.GeneratorBasedBuilder):
         my_urls = _URLs[self.config.name]
         data_dir = dl_manager.download_and_extract(my_urls)
         return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN,
+            datalab.SplitGenerator(
+                name=datalab.Split.TRAIN,
                 gen_kwargs={
                     "filepath": os.path.join(data_dir, "yelp_review_full_csv", "train.csv"),
                     "split": "train",
                 },
             ),
-            datasets.SplitGenerator(
-                name=datasets.Split.TEST,
+            datalab.SplitGenerator(
+                name=datalab.Split.TEST,
                 gen_kwargs={"filepath": os.path.join(data_dir, "yelp_review_full_csv", "test.csv"), "split": "test"},
             ),
         ]
 
     def _generate_examples(self, filepath, split):
         """Yields examples."""
+
+
 
         with open(filepath, encoding="utf-8") as f:
             data = csv.reader(f, delimiter=",", quoting=csv.QUOTE_NONNUMERIC)

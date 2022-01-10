@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The TensorFlow Datasets Authors and the HuggingFace Datasets Authors.
+# Copyright 2020 The TensorFlow datalab Authors and the HuggingFace datalab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 import json
 import os
 
-import datasets
+import datalab
 
 
 _SUPER_GLUE_CITATION = """\
@@ -80,12 +80,12 @@ and Daily Mail. Following the original work, we evaluate with max (over all ment
 F1 and exact match (EM)."""
 
 _RTE_DESCRIPTION = """\
-The Recognizing Textual Entailment (RTE) datasets come from a series of annual competitions
+The Recognizing Textual Entailment (RTE) datalab come from a series of annual competitions
 on textual entailment, the problem of predicting whether a given premise sentence entails a given
 hypothesis sentence (also known as natural language inference, NLI). RTE was previously included
 in GLUE, and we use the same data and format as before: We merge data from RTE1 (Dagan
 et al., 2006), RTE2 (Bar Haim et al., 2006), RTE3 (Giampiccolo et al., 2007), and RTE5 (Bentivogli
-et al., 2009). All datasets are combined and converted to two-class classification: entailment and
+et al., 2009). All datalab are combined and converted to two-class classification: entailment and
 not_entailment. Of all the GLUE tasks, RTE was among those that benefited from transfer learning
 the most, jumping from near random-chance performance (~56%) at the time of GLUE's launch to
 85% accuracy (Liu et al., 2019c) at the time of writing. Given the eight point gap with respect to
@@ -96,7 +96,7 @@ _MULTIRC_DESCRIPTION = """\
 The Multi-Sentence Reading Comprehension dataset (MultiRC, Khashabi et al., 2018)
 is a true/false question-answering task. Each example consists of a context paragraph, a question
 about that paragraph, and a list of possible answers to that question which must be labeled as true or
-false. Question-answering (QA) is a popular problem with many datasets. We use MultiRC because
+false. Question-answering (QA) is a popular problem with many datalab. We use MultiRC because
 of a number of desirable properties: (i) each question can have multiple possible correct answers,
 so each question-answer pair must be evaluated independent of other pairs, (ii) the questions are
 designed such that answering each question requires drawing facts from multiple context sentences,
@@ -278,7 +278,7 @@ _AXG_CITATION = """\
 """
 
 
-class SuperGlueConfig(datasets.BuilderConfig):
+class SuperGlueConfig(datalab.BuilderConfig):
     """BuilderConfig for SuperGLUE."""
 
     def __init__(self, features, data_url, citation, url, label_classes=("False", "True"), **kwargs):
@@ -301,7 +301,7 @@ class SuperGlueConfig(datasets.BuilderConfig):
         #        the full release (v2.0).
         # 1.0.0: S3 (new shuffling, sharding and slicing mechanism).
         # 0.0.2: Initial version.
-        super(SuperGlueConfig, self).__init__(version=datasets.Version("1.0.2"), **kwargs)
+        super(SuperGlueConfig, self).__init__(version=datalab.Version("1.0.2"), **kwargs)
         self.features = features
         self.label_classes = label_classes
         self.data_url = data_url
@@ -309,7 +309,7 @@ class SuperGlueConfig(datasets.BuilderConfig):
         self.url = url
 
 
-class SuperGlue(datasets.GeneratorBasedBuilder):
+class SuperGlue(datalab.GeneratorBasedBuilder):
     """The SuperGLUE benchmark."""
 
     BUILDER_CONFIGS = [
@@ -319,7 +319,7 @@ class SuperGlue(datasets.GeneratorBasedBuilder):
             features=["question", "passage"],
             data_url="https://dl.fbaipublicfiles.com/glue/superglue/data/v2/BoolQ.zip",
             citation=_BOOLQ_CITATION,
-            url="https://github.com/google-research-datasets/boolean-questions",
+            url="https://github.com/google-research-datalab/boolean-questions",
         ),
         SuperGlueConfig(
             name="cb",
@@ -373,7 +373,7 @@ class SuperGlue(datasets.GeneratorBasedBuilder):
             name="wic",
             description=_WIC_DESCRIPTION,
             # Note that start1, start2, end1, and end2 will be integers stored as
-            # datasets.Value('int32').
+            # datalab.Value('int32').
             features=["word", "sentence1", "sentence2", "start1", "start2", "end1", "end2"],
             data_url="https://dl.fbaipublicfiles.com/glue/superglue/data/v2/WiC.zip",
             citation=_WIC_CITATION,
@@ -383,7 +383,7 @@ class SuperGlue(datasets.GeneratorBasedBuilder):
             name="wsc",
             description=_WSC_DESCRIPTION,
             # Note that span1_index and span2_index will be integers stored as
-            # datasets.Value('int32').
+            # datalab.Value('int32').
             features=["text", "span1_index", "span2_index", "span1_text", "span2_text"],
             data_url="https://dl.fbaipublicfiles.com/glue/superglue/data/v2/WSC.zip",
             citation=_WSC_CITATION,
@@ -396,7 +396,7 @@ class SuperGlue(datasets.GeneratorBasedBuilder):
                 "substrings of the text."
             ),
             # Note that span1_index and span2_index will be integers stored as
-            # datasets.Value('int32').
+            # datalab.Value('int32').
             features=["text", "span1_index", "span2_index", "span1_text", "span2_text"],
             data_url="https://dl.fbaipublicfiles.com/glue/superglue/data/v2/WSC.zip",
             citation=_WSC_CITATION,
@@ -423,44 +423,44 @@ class SuperGlue(datasets.GeneratorBasedBuilder):
     ]
 
     def _info(self):
-        features = {feature: datasets.Value("string") for feature in self.config.features}
+        features = {feature: datalab.Value("string") for feature in self.config.features}
         if self.config.name.startswith("wsc"):
-            features["span1_index"] = datasets.Value("int32")
-            features["span2_index"] = datasets.Value("int32")
+            features["span1_index"] = datalab.Value("int32")
+            features["span2_index"] = datalab.Value("int32")
         if self.config.name == "wic":
-            features["start1"] = datasets.Value("int32")
-            features["start2"] = datasets.Value("int32")
-            features["end1"] = datasets.Value("int32")
-            features["end2"] = datasets.Value("int32")
+            features["start1"] = datalab.Value("int32")
+            features["start2"] = datalab.Value("int32")
+            features["end1"] = datalab.Value("int32")
+            features["end2"] = datalab.Value("int32")
         if self.config.name == "multirc":
             features["idx"] = dict(
                 {
-                    "paragraph": datasets.Value("int32"),
-                    "question": datasets.Value("int32"),
-                    "answer": datasets.Value("int32"),
+                    "paragraph": datalab.Value("int32"),
+                    "question": datalab.Value("int32"),
+                    "answer": datalab.Value("int32"),
                 }
             )
         elif self.config.name == "record":
             features["idx"] = dict(
                 {
-                    "passage": datasets.Value("int32"),
-                    "query": datasets.Value("int32"),
+                    "passage": datalab.Value("int32"),
+                    "query": datalab.Value("int32"),
                 }
             )
         else:
-            features["idx"] = datasets.Value("int32")
+            features["idx"] = datalab.Value("int32")
 
         if self.config.name == "record":
             # Entities are the set of possible choices for the placeholder.
-            features["entities"] = datasets.features.Sequence(datasets.Value("string"))
+            features["entities"] = datalab.features.Sequence(datalab.Value("string"))
             # Answers are the subset of entities that are correct.
-            features["answers"] = datasets.features.Sequence(datasets.Value("string"))
+            features["answers"] = datalab.features.Sequence(datalab.Value("string"))
         else:
-            features["label"] = datasets.features.ClassLabel(names=self.config.label_classes)
+            features["label"] = datalab.features.ClassLabel(names=self.config.label_classes)
 
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_GLUE_DESCRIPTION + self.config.description,
-            features=datasets.Features(features),
+            features=datalab.Features(features),
             homepage=self.config.url,
             citation=self.config.citation + "\n" + _SUPER_GLUE_CITATION,
         )
@@ -471,34 +471,34 @@ class SuperGlue(datasets.GeneratorBasedBuilder):
         dl_dir = os.path.join(dl_dir, task_name)
         if self.config.name in ["axb", "axg"]:
             return [
-                datasets.SplitGenerator(
-                    name=datasets.Split.TEST,
+                datalab.SplitGenerator(
+                    name=datalab.Split.TEST,
                     gen_kwargs={
                         "data_file": os.path.join(dl_dir, f"{task_name}.jsonl"),
-                        "split": datasets.Split.TEST,
+                        "split": datalab.Split.TEST,
                     },
                 ),
             ]
         return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN,
+            datalab.SplitGenerator(
+                name=datalab.Split.TRAIN,
                 gen_kwargs={
                     "data_file": os.path.join(dl_dir, "train.jsonl"),
-                    "split": datasets.Split.TRAIN,
+                    "split": datalab.Split.TRAIN,
                 },
             ),
-            datasets.SplitGenerator(
-                name=datasets.Split.VALIDATION,
+            datalab.SplitGenerator(
+                name=datalab.Split.VALIDATION,
                 gen_kwargs={
                     "data_file": os.path.join(dl_dir, "val.jsonl"),
-                    "split": datasets.Split.VALIDATION,
+                    "split": datalab.Split.VALIDATION,
                 },
             ),
-            datasets.SplitGenerator(
-                name=datasets.Split.TEST,
+            datalab.SplitGenerator(
+                name=datalab.Split.TEST,
                 gen_kwargs={
                     "data_file": os.path.join(dl_dir, "test.jsonl"),
-                    "split": datasets.Split.TEST,
+                    "split": datalab.Split.TEST,
                 },
             ),
         ]
@@ -545,7 +545,7 @@ class SuperGlue(datasets.GeneratorBasedBuilder):
                         else:
                             example["label"] = _cast_label(row["label"])
                     else:
-                        assert split == datasets.Split.TEST, row
+                        assert split == datalab.Split.TEST, row
                         example["label"] = -1
                     yield example["idx"], example
 

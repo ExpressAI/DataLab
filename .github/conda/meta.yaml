@@ -1,4 +1,4 @@
-{% set name = "datasets" %}
+{% set name = "datalab" %}
 
 package:
   name: "{{ name|lower }}"
@@ -48,10 +48,10 @@ requirements:
 
 test:
   imports:
-    - datasets
+    - datalab
 
 about:
   home: https://huggingface.co
   license: Apache License 2.0
   license_file: LICENSE
-  summary: "🤗 The largest hub of ready-to-use NLP datasets for ML models with fast, easy-to-use and efficient data manipulation tools"
+  summary: "🤗 The largest hub of ready-to-use NLP datalab for ML models with fast, easy-to-use and efficient data manipulation tools"

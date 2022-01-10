@@ -82,7 +82,7 @@ Examples:
 
     >>> predictions = ["hello there general kenobi", "foo bar foobar"]
     >>> references = [["hello there general kenobi", "hello there !"], ["foo bar foobar", "foo bar foobar"]]
-    >>> ter = datasets.load_metric("ter")
+    >>> ter = datalab.load_metric("ter")
     >>> results = ter.compute(predictions=predictions, references=references)
     >>> print(results)
     {'score': 0.0, 'num_edits': 0, 'ref_length': 6.5}

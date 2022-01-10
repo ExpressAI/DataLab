@@ -57,7 +57,7 @@ Returns:
     recall: Recall score.
 Examples:
 
-    >>> recall_metric = datasets.load_metric("recall")
+    >>> recall_metric = datalab.load_metric("recall")
     >>> results = recall_metric.compute(references=[0, 1], predictions=[0, 1])
     >>> print(results)
     {'recall': 1.0}

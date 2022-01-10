@@ -38,9 +38,9 @@ def with_staging_testing(func):
     )
 
     config = patch.multiple(
-        "datasets.config",
+        "datalab.config",
         HF_ENDPOINT=ENDPOINT_STAGING,
-        HUB_DATASETS_URL=ENDPOINT_STAGING + "/datasets/{path}/resolve/{revision}/{name}",
+        HUB_DATASETS_URL=ENDPOINT_STAGING + "/datalab/{path}/resolve/{revision}/{name}",
     )
 
     return config(repository(hfh_hf_api(file_download(func))))
@@ -327,7 +327,7 @@ class TestPushToHub(TestCase):
                 ds_name.split("/")[1], organization=ds_name.split("/")[0], token=self._token, repo_type="dataset"
             )
 
-    @unittest.skip("This test cannot pass until iterable datasets have push to hub")
+    @unittest.skip("This test cannot pass until iterable datalab have push to hub")
     def test_push_streaming_dataset_dict_to_hub(self):
         ds = Dataset.from_dict({"x": [1, 2, 3], "y": [4, 5, 6]})
         local_ds = DatasetDict({"train": ds})

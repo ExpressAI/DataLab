@@ -19,7 +19,7 @@ import csv
 import json
 import os
 
-import datasets
+import datalab
 
 
 # TODO: Add BibTeX citation
@@ -46,7 +46,7 @@ _HOMEPAGE = ""
 _LICENSE = ""
 
 # TODO: Add link to the official dataset URLs here
-# The HuggingFace dataset library don't host the datasets but only point to the original files
+# The HuggingFace dataset library don't host the datalab but only point to the original files
 # This can be an arbitrary nested dict/list of URLs (see below in `_split_generators` method)
 _URLs = {
     'first_domain': "https://huggingface.co/great-new-dataset-first_domain.zip",
@@ -55,51 +55,51 @@ _URLs = {
 
 
 # TODO: Name of the dataset usually match the script name with CamelCase instead of snake_case
-class NewDataset(datasets.GeneratorBasedBuilder):
+class NewDataset(datalab.GeneratorBasedBuilder):
     """TODO: Short description of my dataset."""
 
-    VERSION = datasets.Version("1.1.0")
+    VERSION = datalab.Version("1.1.0")
 
     # This is an example of a dataset with multiple configurations.
     # If you don't want/need to define several sub-sets in your dataset,
     # just remove the BUILDER_CONFIG_CLASS and the BUILDER_CONFIGS attributes.
 
-    # If you need to make complex sub-parts in the datasets with configurable options
-    # You can create your own builder configuration class to store attribute, inheriting from datasets.BuilderConfig
+    # If you need to make complex sub-parts in the datalab with configurable options
+    # You can create your own builder configuration class to store attribute, inheriting from datalab.BuilderConfig
     # BUILDER_CONFIG_CLASS = MyBuilderConfig
 
     # You will be able to load one or the other configurations in the following list with
-    # data = datasets.load_dataset('my_dataset', 'first_domain')
-    # data = datasets.load_dataset('my_dataset', 'second_domain')
+    # data = datalab.load_dataset('my_dataset', 'first_domain')
+    # data = datalab.load_dataset('my_dataset', 'second_domain')
     BUILDER_CONFIGS = [
-        datasets.BuilderConfig(name="first_domain", version=VERSION, description="This part of my dataset covers a first domain"),
-        datasets.BuilderConfig(name="second_domain", version=VERSION, description="This part of my dataset covers a second domain"),
+        datalab.BuilderConfig(name="first_domain", version=VERSION, description="This part of my dataset covers a first domain"),
+        datalab.BuilderConfig(name="second_domain", version=VERSION, description="This part of my dataset covers a second domain"),
     ]
 
     DEFAULT_CONFIG_NAME = "first_domain"  # It's not mandatory to have a default configuration. Just use one if it make sense.
 
     def _info(self):
-        # TODO: This method specifies the datasets.DatasetInfo object which contains informations and typings for the dataset
+        # TODO: This method specifies the datalab.DatasetInfo object which contains informations and typings for the dataset
         if self.config.name == "first_domain":  # This is the name of the configuration selected in BUILDER_CONFIGS above
-            features = datasets.Features(
+            features = datalab.Features(
                 {
-                    "sentence": datasets.Value("string"),
-                    "option1": datasets.Value("string"),
-                    "answer": datasets.Value("string")
+                    "sentence": datalab.Value("string"),
+                    "option1": datalab.Value("string"),
+                    "answer": datalab.Value("string")
                     # These are the features of your dataset like images, labels ...
                 }
             )
         else:  # This is an example to show how to have different features for "first_domain" and "second_domain"
-            features = datasets.Features(
+            features = datalab.Features(
                 {
-                    "sentence": datasets.Value("string"),
-                    "option2": datasets.Value("string"),
-                    "second_domain_answer": datasets.Value("string")
+                    "sentence": datalab.Value("string"),
+                    "option2": datalab.Value("string"),
+                    "second_domain_answer": datalab.Value("string")
                     # These are the features of your dataset like images, labels ...
                 }
             )
-        return datasets.DatasetInfo(
-            # This is the description that will appear on the datasets page.
+        return datalab.DatasetInfo(
+            # This is the description that will appear on the datalab page.
             description=_DESCRIPTION,
             # This defines the different columns of the dataset and their types
             features=features,  # Here we define them above because they are different between the two configurations
@@ -120,30 +120,30 @@ class NewDataset(datasets.GeneratorBasedBuilder):
         # TODO: This method is tasked with downloading/extracting the data and defining the splits depending on the configuration
         # If several configurations are possible (listed in BUILDER_CONFIGS), the configuration selected by the user is in self.config.name
 
-        # dl_manager is a datasets.download.DownloadManager that can be used to download and extract URLs
+        # dl_manager is a datalab.download.DownloadManager that can be used to download and extract URLs
         # It can accept any type or nested list/dict and will give back the same structure with the url replaced with path to local files.
         # By default the archives will be extracted and a path to a cached folder where they are extracted is returned instead of the archive
         my_urls = _URLs[self.config.name]
         data_dir = dl_manager.download_and_extract(my_urls)
         return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN,
+            datalab.SplitGenerator(
+                name=datalab.Split.TRAIN,
                 # These kwargs will be passed to _generate_examples
                 gen_kwargs={
                     "filepath": os.path.join(data_dir, "train.jsonl"),
                     "split": "train",
                 },
             ),
-            datasets.SplitGenerator(
-                name=datasets.Split.TEST,
+            datalab.SplitGenerator(
+                name=datalab.Split.TEST,
                 # These kwargs will be passed to _generate_examples
                 gen_kwargs={
                     "filepath": os.path.join(data_dir, "test.jsonl"),
                     "split": "test"
                 },
             ),
-            datasets.SplitGenerator(
-                name=datasets.Split.VALIDATION,
+            datalab.SplitGenerator(
+                name=datalab.Split.VALIDATION,
                 # These kwargs will be passed to _generate_examples
                 gen_kwargs={
                     "filepath": os.path.join(data_dir, "dev.jsonl"),

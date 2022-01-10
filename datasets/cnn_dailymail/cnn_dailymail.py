@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The TensorFlow Datasets Authors and the HuggingFace Datasets Authors.
+# Copyright 2020 The TensorFlow datalab Authors and the HuggingFace datalab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@
 import hashlib
 import os
 
-import datasets
+import datalab
+from datalab.tasks import Summarization
 
-
-logger = datasets.logging.get_logger(__name__)
+logger = datalab.logging.get_logger(__name__)
 
 
 _DESCRIPTION = """\
@@ -72,24 +72,29 @@ _DL_URLS = {
     # pylint: enable=line-too-long
 }
 
-_HIGHLIGHTS = "highlights"
-_ARTICLE = "article"
+# _HIGHLIGHTS = "summary"
+# _ARTICLE = "text"
+
+
+_HIGHLIGHTS = "text"
+_ARTICLE = "summary"
+
 
 _SUPPORTED_VERSIONS = [
     # Using cased version.
-    datasets.Version("3.0.0", "Using cased version."),
+    datalab.Version("3.0.0", "Using cased version."),
     # Same data as 0.0.2
-    datasets.Version("1.0.0", ""),
+    datalab.Version("1.0.0", ""),
     # Having the model predict newline separators makes it easier to evaluate
     # using summary-level ROUGE.
-    datasets.Version("2.0.0", "Separate target sentences with newline."),
+    datalab.Version("2.0.0", "Separate target sentences with newline."),
 ]
 
 
-_DEFAULT_VERSION = datasets.Version("3.0.0", "Using cased version.")
+_DEFAULT_VERSION = datalab.Version("3.0.0", "Using cased version.")
 
 
-class CnnDailymailConfig(datasets.BuilderConfig):
+class CnnDailymailConfig(datalab.BuilderConfig):
     """BuilderConfig for CnnDailymail."""
 
     def __init__(self, **kwargs):
@@ -127,11 +132,14 @@ def _get_hash_from_path(p):
 def _find_files(dl_paths, publisher, url_dict):
     """Find files corresponding to urls."""
     if publisher == "cnn":
+
         top_dir = os.path.join(dl_paths["cnn_stories"], "cnn", "stories")
     elif publisher == "dm":
+
         top_dir = os.path.join(dl_paths["dm_stories"], "dailymail", "stories")
     else:
         logger.fatal("Unsupported publisher: %s", publisher)
+
     files = sorted(os.listdir(top_dir))
 
     ret_files = []
@@ -145,11 +153,11 @@ def _subset_filenames(dl_paths, split):
     """Get filenames for a particular split."""
     assert isinstance(dl_paths, dict), dl_paths
     # Get filenames for a split.
-    if split == datasets.Split.TRAIN:
+    if split == datalab.Split.TRAIN:
         urls = _get_url_hashes(dl_paths["train_urls"])
-    elif split == datasets.Split.VALIDATION:
+    elif split == datalab.Split.VALIDATION:
         urls = _get_url_hashes(dl_paths["val_urls"])
-    elif split == datasets.Split.TEST:
+    elif split == datalab.Split.TEST:
         urls = _get_url_hashes(dl_paths["test_urls"])
     else:
         logger.fatal("Unsupported split: %s", split)
@@ -222,28 +230,35 @@ def _get_art_abs(story_file, tfds_version):
     return article, abstract
 
 
-class CnnDailymail(datasets.GeneratorBasedBuilder):
+class CnnDailymail(datalab.GeneratorBasedBuilder):
     """CNN/DailyMail non-anonymized summarization dataset."""
 
     BUILDER_CONFIGS = [
-        CnnDailymailConfig(name=str(version), description="Plain text", version=version)
+        CnnDailymailConfig(name=str(version), description="Text", version=version)
         for version in _SUPPORTED_VERSIONS
     ]
 
+    DEFAULT_CONFIG_NAME = "3.0.0"
+
     def _info(self):
-        # Should return a datasets.DatasetInfo object
-        return datasets.DatasetInfo(
+        # Should return a datalab.DatasetInfo object
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    _ARTICLE: datasets.Value("string"),
-                    _HIGHLIGHTS: datasets.Value("string"),
-                    "id": datasets.Value("string"),
+                    _ARTICLE: datalab.Value("string"),
+                    _HIGHLIGHTS: datalab.Value("string"),
+                    "id": datalab.Value("string"),
                 }
             ),
             supervised_keys=None,
             homepage="https://github.com/abisee/cnn-dailymail",
             citation=_CITATION,
+            task_templates=[Summarization(
+                text_column=_ARTICLE,
+                summary_column=_HIGHLIGHTS),
+            ],
+
         )
 
     def _vocab_text_gen(self, paths):
@@ -252,17 +267,17 @@ class CnnDailymail(datasets.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         dl_paths = dl_manager.download_and_extract(_DL_URLS)
-        train_files = _subset_filenames(dl_paths, datasets.Split.TRAIN)
+        train_files = _subset_filenames(dl_paths, datalab.Split.TRAIN)
         # Generate shared vocabulary
 
         return [
-            datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"files": train_files}),
-            datasets.SplitGenerator(
-                name=datasets.Split.VALIDATION,
-                gen_kwargs={"files": _subset_filenames(dl_paths, datasets.Split.VALIDATION)},
+            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"files": train_files}),
+            datalab.SplitGenerator(
+                name=datalab.Split.VALIDATION,
+                gen_kwargs={"files": _subset_filenames(dl_paths, datalab.Split.VALIDATION)},
             ),
-            datasets.SplitGenerator(
-                name=datasets.Split.TEST, gen_kwargs={"files": _subset_filenames(dl_paths, datasets.Split.TEST)}
+            datalab.SplitGenerator(
+                name=datalab.Split.TEST, gen_kwargs={"files": _subset_filenames(dl_paths, datalab.Split.TEST)}
             ),
         ]
 

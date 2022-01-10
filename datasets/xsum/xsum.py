@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The TensorFlow Datasets Authors and the HuggingFace Datasets Authors.
+# Copyright 2020 The TensorFlow datalab Authors and the HuggingFace datalab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@
 import json
 import os
 
-import datasets
-
+import datalab
+from datalab.tasks import Summarization
 
 _CITATION = """
 @article{Narayan2018DontGM,
@@ -49,7 +49,7 @@ _URL_SPLITS = (
     "https://raw.githubusercontent.com/EdinburghNLP/XSum/master/XSum-Dataset/XSum-TRAINING-DEV-TEST-SPLIT-90-5-5.json"
 )
 
-_DOCUMENT = "document"
+_DOCUMENT = "text"
 _SUMMARY = "summary"
 _ID = "id"
 
@@ -70,25 +70,29 @@ _REMOVE_LINES = set(
 )
 
 
-class Xsum(datasets.GeneratorBasedBuilder):
+class Xsum(datalab.GeneratorBasedBuilder):
     """Extreme Summarization (XSum) Dataset."""
 
     # Version 1.2.0 expands coverage, includes ids, and removes web contents.
-    VERSION = datasets.Version("1.2.0")
+    VERSION = datalab.Version("1.2.0")
 
     def _info(self):
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    _DOCUMENT: datasets.Value("string"),
-                    _SUMMARY: datasets.Value("string"),
-                    _ID: datasets.Value("string"),
+                    _DOCUMENT: datalab.Value("string"),
+                    _SUMMARY: datalab.Value("string"),
+                    _ID: datalab.Value("string"),
                 }
             ),
             supervised_keys=(_DOCUMENT, _SUMMARY),
             homepage="https://github.com/EdinburghNLP/XSum/tree/master/XSum-Dataset",
             citation=_CITATION,
+            task_templates=[Summarization(
+                text_column=_DOCUMENT,
+                summary_column=_SUMMARY),
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -98,8 +102,8 @@ class Xsum(datasets.GeneratorBasedBuilder):
         downloaded_files = dl_manager.download(files_to_download)
 
         return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN,
+            datalab.SplitGenerator(
+                name=datalab.Split.TRAIN,
                 gen_kwargs={
                     "split_path": downloaded_files["splits"],
                     "split_name": "train",
@@ -107,8 +111,8 @@ class Xsum(datasets.GeneratorBasedBuilder):
                     "files": dl_manager.iter_archive(downloaded_files["data"]),
                 },
             ),
-            datasets.SplitGenerator(
-                name=datasets.Split.VALIDATION,
+            datalab.SplitGenerator(
+                name=datalab.Split.VALIDATION,
                 gen_kwargs={
                     "split_path": downloaded_files["splits"],
                     "split_name": "validation",
@@ -116,8 +120,8 @@ class Xsum(datasets.GeneratorBasedBuilder):
                     "files": dl_manager.iter_archive(downloaded_files["data"]),
                 },
             ),
-            datasets.SplitGenerator(
-                name=datasets.Split.TEST,
+            datalab.SplitGenerator(
+                name=datalab.Split.TEST,
                 gen_kwargs={
                     "split_path": downloaded_files["splits"],
                     "split_name": "test",

@@ -1,7 +1,7 @@
 import csv
 
-import datasets
-from datasets.tasks import TextClassification
+import datalab
+from datalab.tasks import TextClassification
 
 
 _CITATION = """\
@@ -34,13 +34,13 @@ _VALIDATION_DOWNLOAD_URL = "https://www.dropbox.com/s/2mzialpsgf9k5l3/val.txt?dl
 _TEST_DOWNLOAD_URL = "https://www.dropbox.com/s/ikkqxfdbdec3fuj/test.txt?dl=1"
 
 
-class Emotion(datasets.GeneratorBasedBuilder):
+class Emotion(datalab.GeneratorBasedBuilder):
     def _info(self):
         class_names = ["sadness", "joy", "love", "anger", "fear", "surprise"]
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
-                {"text": datasets.Value("string"), "label": datasets.ClassLabel(names=class_names)}
+            features=datalab.Features(
+                {"text": datalab.Value("string"), "label": datalab.ClassLabel(names=class_names)}
             ),
             supervised_keys=("text", "label"),
             homepage=_URL,
@@ -54,9 +54,9 @@ class Emotion(datasets.GeneratorBasedBuilder):
         valid_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"filepath": valid_path}),
-            datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalab.SplitGenerator(name=datalab.Split.VALIDATION, gen_kwargs={"filepath": valid_path}),
+            datalab.SplitGenerator(name=datalab.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
     def _generate_examples(self, filepath):

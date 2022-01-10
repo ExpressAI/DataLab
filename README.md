@@ -49,7 +49,7 @@ dataset["imdb_test"].write_db()
 print("OK")
 
 # 这个函数用于删除上面产生的 dev_samples_of_dataset 的 adv_mtl 集合（不是清空），慎用
-# cluster = datasets.MongoDBClient("cluster0")
+# cluster = datalab.MongoDBClient("cluster0")
 # cluster.drop("dev_samples_of_dataset", "adv_mtl", True)
 
 ```

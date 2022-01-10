@@ -8,15 +8,15 @@ from featurize import *
 
 
 """
-from datasets.operations.edit.core import add_typos_checklist
-from datasets import load_dataset
+from datalab.operations.edit.core import add_typos_checklist
+from datalab import load_dataset
 dataset = load_dataset("ag_news")
 dataset["test"].apply(add_typos_checklist)
 
 
 
-from datasets.operations.featurize.text_classification import get_length
-from datasets import load_dataset
+from datalab.operations.featurize.text_classification import get_length
+from datalab import load_dataset
 dataset = load_dataset("ag_news")
 res = dataset["test"].apply(get_length)
 

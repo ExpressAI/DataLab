@@ -38,7 +38,7 @@ Listing datasets
 
    >>> import datasets
    >>> s3 = datasets.filesystems.S3FileSystem(anon=True)  
-   >>> s3.ls('public-datasets/imdb/train')
+   >>> s3.ls('public-datalab/imdb/train')
    ['dataset_info.json.json','dataset.arrow','state.json']
 
 Access a private S3 bucket by entering your ``aws_access_key_id`` and ``aws_secret_access_key``:
@@ -47,7 +47,7 @@ Access a private S3 bucket by entering your ``aws_access_key_id`` and ``aws_secr
 
    >>> import datasets
    >>> s3 = datasets.filesystems.S3FileSystem(key=aws_access_key_id, secret=aws_secret_access_key)  
-   >>> s3.ls('my-private-datasets/imdb/train')  
+   >>> s3.ls('my-private-datalab/imdb/train')
    ['dataset_info.json.json','dataset.arrow','state.json']
 
 Google Cloud Storage
@@ -71,7 +71,7 @@ Other filesystem implementations, like Google Cloud Storage, are used similarly:
    >>> gcs = gcsfs.GCSFileSystem(project='my-google-project') 
    
    >>> # saves encoded_dataset to your s3 bucket
-   >>> encoded_dataset.save_to_disk('gcs://my-private-datasets/imdb/train', fs=gcs)
+   >>> encoded_dataset.save_to_disk('gcs://my-private-datalab/imdb/train', fs=gcs)
 
 Saving datasets
 ---------------
@@ -86,7 +86,7 @@ After you have processed your dataset, you can save it to S3 with :func:`dataset
    >>> s3 = S3FileSystem(anon=True)  
    
    >>> # saves encoded_dataset to your s3 bucket
-   >>> encoded_dataset.save_to_disk('s3://my-private-datasets/imdb/train', fs=s3)
+   >>> encoded_dataset.save_to_disk('s3://my-private-datalab/imdb/train', fs=s3)
 
 .. tip::
 
@@ -106,7 +106,7 @@ Save your dataset with ``botocore.session.Session`` and a custom AWS profile:
    >>> s3 = S3FileSystem(session=s3_session)  
    
    >>> # saves encoded_dataset to your s3 bucket
-   >>> encoded_dataset.save_to_disk('s3://my-private-datasets/imdb/train',fs=s3)
+   >>> encoded_dataset.save_to_disk('s3://my-private-datalab/imdb/train',fs=s3)
 
 Loading datasets
 ----------------
@@ -122,7 +122,7 @@ When you are ready to use your dataset again, reload it with :obj:`datasets.load
    >>> s3 = S3FileSystem(anon=True)  
    
    >>> # load encoded_dataset to from s3 bucket
-   >>> dataset = load_from_disk('s3://a-public-datasets/imdb/train',fs=s3)  
+   >>> dataset = load_from_disk('s3://a-public-datalab/imdb/train',fs=s3)
    
    >>> print(len(dataset))
    >>> # 25000
@@ -141,7 +141,7 @@ Load with ``botocore.session.Session`` and custom AWS profile:
    >>> s3 = S3FileSystem(session=s3_session)
    
    >>> # load encoded_dataset to from s3 bucket
-   >>> dataset = load_from_disk('s3://my-private-datasets/imdb/train',fs=s3)  
+   >>> dataset = load_from_disk('s3://my-private-datalab/imdb/train',fs=s3)
    
    >>> print(len(dataset))
    >>> # 25000

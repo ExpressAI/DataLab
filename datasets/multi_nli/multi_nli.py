@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The TensorFlow Datasets Authors and the HuggingFace Datasets Authors.
+# Copyright 2020 The TensorFlow datalab Authors and the HuggingFace datalab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@
 import json
 import os
 
-import datasets
-
+import datalab
+from datalab.tasks import TextMatching
 
 _CITATION = """\
 @InProceedings{N18-1101,
@@ -53,26 +53,26 @@ basis for the shared task of the RepEval 2017 Workshop at EMNLP in Copenhagen.
 """
 
 
-class MultiNli(datasets.GeneratorBasedBuilder):
+class MultiNli(datalab.GeneratorBasedBuilder):
     """MultiNLI: The Stanford Question Answering Dataset. Version 1.1."""
 
     def _info(self):
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    "promptID": datasets.Value("int32"),
-                    "pairID": datasets.Value("string"),
-                    "premise": datasets.Value("string"),
-                    "premise_binary_parse": datasets.Value("string"),  # parses in unlabeled binary-branching format
-                    "premise_parse": datasets.Value("string"),  # sentence as parsed by the Stanford PCFG Parser 3.5.2
-                    "hypothesis": datasets.Value("string"),
-                    "hypothesis_binary_parse": datasets.Value("string"),  # parses in unlabeled binary-branching format
-                    "hypothesis_parse": datasets.Value(
+                    "promptID": datalab.Value("int32"),
+                    "pairID": datalab.Value("string"),
+                    "text1": datalab.Value("string"),
+                    "premise_binary_parse": datalab.Value("string"),  # parses in unlabeled binary-branching format
+                    "premise_parse": datalab.Value("string"),  # sentence as parsed by the Stanford PCFG Parser 3.5.2
+                    "text2": datalab.Value("string"),
+                    "hypothesis_binary_parse": datalab.Value("string"),  # parses in unlabeled binary-branching format
+                    "hypothesis_parse": datalab.Value(
                         "string"
                     ),  # sentence as parsed by the Stanford PCFG Parser 3.5.2
-                    "genre": datasets.Value("string"),
-                    "label": datasets.features.ClassLabel(names=["entailment", "neutral", "contradiction"]),
+                    "genre": datalab.Value("string"),
+                    "label": datalab.features.ClassLabel(names=["entailment", "neutral", "contradiction"]),
                 }
             ),
             # No default supervised_keys (as we have to pass both premise
@@ -80,6 +80,12 @@ class MultiNli(datasets.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://www.nyu.edu/projects/bowman/multinli/",
             citation=_CITATION,
+            task_templates=[TextMatching(
+                text1_column="text1",
+                text2_column="text2",
+                task="natural-language-inference",
+                label_column="label"),
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -91,9 +97,9 @@ class MultiNli(datasets.GeneratorBasedBuilder):
         mismatched_validation_path = os.path.join(mnli_path, "multinli_1.0_dev_mismatched.jsonl")
 
         return [
-            datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datasets.SplitGenerator(name="validation_matched", gen_kwargs={"filepath": matched_validation_path}),
-            datasets.SplitGenerator(name="validation_mismatched", gen_kwargs={"filepath": mismatched_validation_path}),
+            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalab.SplitGenerator(name="validation_matched", gen_kwargs={"filepath": matched_validation_path}),
+            datalab.SplitGenerator(name="validation_mismatched", gen_kwargs={"filepath": mismatched_validation_path}),
         ]
 
     def _generate_examples(self, filepath):
@@ -107,10 +113,10 @@ class MultiNli(datasets.GeneratorBasedBuilder):
                 yield id_, {
                     "promptID": data["promptID"],
                     "pairID": data["pairID"],
-                    "premise": data["sentence1"],
+                    "text1": data["sentence1"],
                     "premise_binary_parse": data["sentence1_binary_parse"],
                     "premise_parse": data["sentence1_parse"],
-                    "hypothesis": data["sentence2"],
+                    "text2": data["sentence2"],
                     "hypothesis_binary_parse": data["sentence2_binary_parse"],
                     "hypothesis_parse": data["sentence2_parse"],
                     "genre": data["genre"],

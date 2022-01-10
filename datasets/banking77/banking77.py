@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The HuggingFace Datasets Authors and the current dataset script contributor.
+# Copyright 2020 The HuggingFace datalab Authors and the current dataset script contributor.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 
 import csv
 
-import datasets
-from datasets.tasks import TextClassification
+import datalab
+from datalab.tasks import TextClassification
 
 
 _CITATION = """\
@@ -27,7 +27,7 @@ _CITATION = """\
     title       = {Efficient Intent Detection with Dual Sentence Encoders},
     year        = {2020},
     month       = {mar},
-    note        = {Data available at https://github.com/PolyAI-LDN/task-specific-datasets},
+    note        = {Data available at https://github.com/PolyAI-LDN/task-specific-datalab},
     url         = {https://arxiv.org/abs/2003.04807},
     booktitle   = {Proceedings of the 2nd Workshop on NLP for ConvAI - ACL 2020}
 }
@@ -39,26 +39,26 @@ It comprises 13,083 customer service queries labeled with 77 intents.
 It focuses on fine-grained single-domain intent detection.
 """
 
-_HOMEPAGE = "https://github.com/PolyAI-LDN/task-specific-datasets"
+_HOMEPAGE = "https://github.com/PolyAI-LDN/task-specific-datalab"
 
 _LICENSE = "Creative Commons Attribution 4.0 International"
 
 _TRAIN_DOWNLOAD_URL = (
-    "https://raw.githubusercontent.com/PolyAI-LDN/task-specific-datasets/master/banking_data/train.csv"
+    "https://raw.githubusercontent.com/PolyAI-LDN/task-specific-datalab/master/banking_data/train.csv"
 )
-_TEST_DOWNLOAD_URL = "https://raw.githubusercontent.com/PolyAI-LDN/task-specific-datasets/master/banking_data/test.csv"
+_TEST_DOWNLOAD_URL = "https://raw.githubusercontent.com/PolyAI-LDN/task-specific-datalab/master/banking_data/test.csv"
 
 
-class Banking77(datasets.GeneratorBasedBuilder):
+class Banking77(datalab.GeneratorBasedBuilder):
     """BANKING77 dataset."""
 
-    VERSION = datasets.Version("1.1.0")
+    VERSION = datalab.Version("1.1.0")
 
     def _info(self):
-        features = datasets.Features(
+        features = datalab.Features(
             {
-                "text": datasets.Value("string"),
-                "label": datasets.features.ClassLabel(
+                "text": datalab.Value("string"),
+                "label": datalab.features.ClassLabel(
                     names=[
                         "activate_my_card",
                         "age_limit",
@@ -141,7 +141,7 @@ class Banking77(datasets.GeneratorBasedBuilder):
                 ),
             }
         )
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
             features=features,
             supervised_keys=None,
@@ -156,8 +156,8 @@ class Banking77(datasets.GeneratorBasedBuilder):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalab.SplitGenerator(name=datalab.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
     def _generate_examples(self, filepath):

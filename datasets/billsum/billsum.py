@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The TensorFlow Datasets Authors and the HuggingFace Datasets Authors.
+# Copyright 2020 The TensorFlow datalab Authors and the HuggingFace datalab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@
 import json
 import os
 
-import datasets
-
+import datalab
+from datalab.tasks import Summarization
 
 _CITATION = """
 @misc{kornilova2019billsum,
@@ -52,42 +52,46 @@ _DOCUMENT = "text"
 _SUMMARY = "summary"
 
 
-class Billsum(datasets.GeneratorBasedBuilder):
+class Billsum(datalab.GeneratorBasedBuilder):
     """BillSum Dataset."""
 
     # 2.0.0 data source updated to filter near duplicates.
     # 3.0.0  none of the test examples are 'near duplicates' of an example in the
     #   train set AND they dont have the same title, regardless of similarity.
-    VERSION = datasets.Version("3.0.0")
+    VERSION = datalab.Version("3.0.0")
 
     def _info(self):
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    _DOCUMENT: datasets.Value("string"),
-                    _SUMMARY: datasets.Value("string"),
-                    "title": datasets.Value("string"),
+                    _DOCUMENT: datalab.Value("string"),
+                    _SUMMARY: datalab.Value("string"),
+                    "title": datalab.Value("string"),
                 }
             ),
             supervised_keys=(_DOCUMENT, _SUMMARY),
             homepage="https://github.com/FiscalNote/BillSum",
             citation=_CITATION,
+            task_templates=[Summarization(
+                text_column=_DOCUMENT,
+                summary_column=_SUMMARY),
+            ],
         )
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         dl_path = dl_manager.download_and_extract(_URL)
         return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN,
+            datalab.SplitGenerator(
+                name=datalab.Split.TRAIN,
                 gen_kwargs={"path": os.path.join(dl_path, "us_train_data_final_OFFICIAL.jsonl"), "key": "bill_id"},
             ),
-            datasets.SplitGenerator(
-                name=datasets.Split.TEST,
+            datalab.SplitGenerator(
+                name=datalab.Split.TEST,
                 gen_kwargs={"path": os.path.join(dl_path, "us_test_data_final_OFFICIAL.jsonl"), "key": "bill_id"},
             ),
-            datasets.SplitGenerator(
+            datalab.SplitGenerator(
                 name="ca_test",
                 gen_kwargs={"path": os.path.join(dl_path, "ca_test_data_final_OFFICIAL.jsonl"), "key": "external_id"},
             ),

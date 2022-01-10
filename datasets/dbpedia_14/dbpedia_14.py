@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The HuggingFace Datasets Authors and the current dataset script contributor.
+# Copyright 2020 The HuggingFace datalab Authors and the current dataset script contributor.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@
 import csv
 import os
 
-import datasets
-
+import datalab
+from datalab.tasks import TextClassification
 
 # TODO: Add BibTeX citation
 # Find for instance the citation on arxiv or on the dataset repo/website
@@ -48,7 +48,7 @@ There are 3 columns in the dataset (same for train and test splits), correspondi
 internal double quote is escaped by 2 double quotes (""). There are no new lines in title or content.
 """
 
-_HOMEPAGE = "https://wiki.dbpedia.org/develop/datasets"
+_HOMEPAGE = "https://wiki.dbpedia.org/develop/datalab"
 
 _LICENSE = "Creative Commons Attribution-ShareAlike 3.0 and the GNU Free Documentation License"
 
@@ -57,7 +57,7 @@ _URLs = {
 }
 
 
-class DBpedia14Config(datasets.BuilderConfig):
+class DBpedia14Config(datalab.BuilderConfig):
     """BuilderConfig for DBpedia."""
 
     def __init__(self, **kwargs):
@@ -69,10 +69,10 @@ class DBpedia14Config(datasets.BuilderConfig):
         super(DBpedia14Config, self).__init__(**kwargs)
 
 
-class DBpedia14(datasets.GeneratorBasedBuilder):
+class DBpedia14(datalab.GeneratorBasedBuilder):
     """DBpedia 2014 Ontology Classification Dataset."""
 
-    VERSION = datasets.Version("2.0.0")
+    VERSION = datalab.Version("2.0.0")
 
     BUILDER_CONFIGS = [
         DBpedia14Config(
@@ -81,9 +81,9 @@ class DBpedia14(datasets.GeneratorBasedBuilder):
     ]
 
     def _info(self):
-        features = datasets.Features(
+        features = datalab.Features(
             {
-                "label": datasets.features.ClassLabel(
+                "label": datalab.features.ClassLabel(
                     names=[
                         "Company",
                         "EducationalInstitution",
@@ -101,17 +101,18 @@ class DBpedia14(datasets.GeneratorBasedBuilder):
                         "WrittenWork",
                     ]
                 ),
-                "title": datasets.Value("string"),
-                "content": datasets.Value("string"),
+                "title": datalab.Value("string"),
+                "text": datalab.Value("string"),
             }
         )
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
             features=features,
             supervised_keys=None,
             homepage=_HOMEPAGE,
             license=_LICENSE,
             citation=_CITATION,
+            task_templates=[TextClassification(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):
@@ -119,15 +120,15 @@ class DBpedia14(datasets.GeneratorBasedBuilder):
         my_urls = _URLs[self.config.name]
         data_dir = dl_manager.download_and_extract(my_urls)
         return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN,
+            datalab.SplitGenerator(
+                name=datalab.Split.TRAIN,
                 gen_kwargs={
                     "filepath": os.path.join(data_dir, "dbpedia_csv/train.csv"),
                     "split": "train",
                 },
             ),
-            datasets.SplitGenerator(
-                name=datasets.Split.TEST,
+            datalab.SplitGenerator(
+                name=datalab.Split.TEST,
                 gen_kwargs={"filepath": os.path.join(data_dir, "dbpedia_csv/test.csv"), "split": "test"},
             ),
         ]
@@ -140,6 +141,6 @@ class DBpedia14(datasets.GeneratorBasedBuilder):
             for id_, row in enumerate(data):
                 yield id_, {
                     "title": row[1],
-                    "content": row[2],
+                    "text": row[2],
                     "label": int(row[0]) - 1,
                 }

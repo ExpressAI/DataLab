@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The TensorFlow Datasets Authors and the HuggingFace Datasets Authors.
+# Copyright 2020 The TensorFlow datalab Authors and the HuggingFace datalab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,8 +23,9 @@ import textwrap
 
 import numpy as np
 
-import datasets
-
+import datalab
+from datalab.tasks import TextMatching
+from datalab.tasks import TextClassification
 
 _GLUE_CITATION = """\
 @inproceedings{wang2019glue,
@@ -48,11 +49,11 @@ _MRPC_TEST = "https://dl.fbaipublicfiles.com/senteval/senteval_data/msr_paraphra
 
 _MNLI_BASE_KWARGS = dict(
     text_features={
-        "premise": "sentence1",
-        "hypothesis": "sentence2",
+        "text1": "text1",
+        "text2": "text2",
     },
     label_classes=["entailment", "neutral", "contradiction"],
-    label_column="gold_label",
+    label_column="label",
     data_url="https://dl.fbaipublicfiles.com/glue/data/MNLI.zip",
     data_dir="MNLI",
     citation=textwrap.dedent(
@@ -82,10 +83,16 @@ _MNLI_BASE_KWARGS = dict(
       }"""
     ),
     url="http://www.nyu.edu/projects/bowman/multinli/",
+    task_templates=[TextMatching(
+        text1_column="text1",
+        text2_column="text2",
+        task="natural-language-inference",
+        label_column="label"),
+    ],
 )
 
 
-class GlueConfig(datasets.BuilderConfig):
+class GlueConfig(datalab.BuilderConfig):
     """BuilderConfig for GLUE."""
 
     def __init__(
@@ -98,6 +105,7 @@ class GlueConfig(datasets.BuilderConfig):
         url,
         label_classes=None,
         process_label=lambda x: x,
+        task_templates=None,
         **kwargs,
     ):
         """BuilderConfig for GLUE.
@@ -114,12 +122,12 @@ class GlueConfig(datasets.BuilderConfig):
           url: `string`, url for information about the data set
           label_classes: `list[string]`, the list of classes if the label is
             categorical. If not provided, then the label will be of type
-            `datasets.Value('float32')`.
+            `datalab.Value('float32')`.
           process_label: `Function[string, any]`, function  taking in the raw value
             of the label and processing it to the form required by the label feature
           **kwargs: keyword arguments forwarded to super.
         """
-        super(GlueConfig, self).__init__(version=datasets.Version("1.0.0", ""), **kwargs)
+        super(GlueConfig, self).__init__(version=datalab.Version("1.0.0", ""), **kwargs)
         self.text_features = text_features
         self.label_column = label_column
         self.label_classes = label_classes
@@ -128,9 +136,10 @@ class GlueConfig(datasets.BuilderConfig):
         self.citation = citation
         self.url = url
         self.process_label = process_label
+        self.task_templates = task_templates
 
 
-class Glue(datasets.GeneratorBasedBuilder):
+class Glue(datalab.GeneratorBasedBuilder):
     """The General Language Understanding Evaluation (GLUE) benchmark."""
 
     BUILDER_CONFIGS = [
@@ -143,9 +152,9 @@ class Glue(datasets.GeneratorBasedBuilder):
             linguistic theory. Each example is a sequence of words annotated
             with whether it is a grammatical English sentence."""
             ),
-            text_features={"sentence": "sentence"},
+            text_features={"text": "text"},
             label_classes=["unacceptable", "acceptable"],
-            label_column="is_acceptable",
+            label_column="label",
             data_url="https://dl.fbaipublicfiles.com/glue/data/CoLA.zip",
             data_dir="CoLA",
             citation=textwrap.dedent(
@@ -158,6 +167,7 @@ class Glue(datasets.GeneratorBasedBuilder):
             }"""
             ),
             url="https://nyu-mll.github.io/CoLA/",
+            task_templates=[TextClassification(text_column="text", label_column="label")],
         ),
         GlueConfig(
             name="sst2",
@@ -168,7 +178,7 @@ class Glue(datasets.GeneratorBasedBuilder):
             given sentence. We use the two-way (positive/negative) class split, and use only
             sentence-level labels."""
             ),
-            text_features={"sentence": "sentence"},
+            text_features={"text": "text"},
             label_classes=["negative", "positive"],
             label_column="label",
             data_url="https://dl.fbaipublicfiles.com/glue/data/SST-2.zip",
@@ -183,7 +193,8 @@ class Glue(datasets.GeneratorBasedBuilder):
               year={2013}
             }"""
             ),
-            url="https://datasets.stanford.edu/sentiment/index.html",
+            url="https://datalab.stanford.edu/sentiment/index.html",
+            task_templates=[TextClassification(text_column="text", label_column="label")],
         ),
         GlueConfig(
             name="mrpc",
@@ -193,9 +204,9 @@ class Glue(datasets.GeneratorBasedBuilder):
             sentence pairs automatically extracted from online news sources, with human annotations
             for whether the sentences in the pair are semantically equivalent."""
             ),  # pylint: disable=line-too-long
-            text_features={"sentence1": "", "sentence2": ""},
+            text_features={"text1": "", "text2": ""},
             label_classes=["not_equivalent", "equivalent"],
-            label_column="Quality",
+            label_column="label",
             data_url="",  # MRPC isn't hosted by GLUE.
             data_dir="MRPC",
             citation=textwrap.dedent(
@@ -208,6 +219,12 @@ class Glue(datasets.GeneratorBasedBuilder):
             }"""
             ),
             url="https://www.microsoft.com/en-us/download/details.aspx?id=52398",
+            task_templates=[TextMatching(
+                text1_column="text1",
+                text2_column="text2",
+                task="natural-language-inference",
+                label_column="label"),
+            ],
         ),
         GlueConfig(
             name="qqp",
@@ -218,11 +235,11 @@ class Glue(datasets.GeneratorBasedBuilder):
             pair of questions are semantically equivalent."""
             ),
             text_features={
-                "question1": "question1",
-                "question2": "question2",
+                "text1": "text1",
+                "text2": "text2",
             },
             label_classes=["not_duplicate", "duplicate"],
-            label_column="is_duplicate",
+            label_column="label",
             data_url="https://dl.fbaipublicfiles.com/glue/data/QQP-clean.zip",
             data_dir="QQP",
             citation=textwrap.dedent(
@@ -236,6 +253,12 @@ class Glue(datasets.GeneratorBasedBuilder):
           }"""
             ),
             url="https://data.quora.com/First-Quora-Dataset-Release-Question-Pairs",
+            task_templates=[TextMatching(
+                text1_column="text1",
+                text2_column="text2",
+                task="natural-language-inference",
+                label_column="label"),
+            ],
         ),
         GlueConfig(
             name="stsb",
@@ -247,10 +270,10 @@ class Glue(datasets.GeneratorBasedBuilder):
             from 1 to 5."""
             ),
             text_features={
-                "sentence1": "sentence1",
-                "sentence2": "sentence2",
+                "text1": "text1",
+                "text2": "text2",
             },
-            label_column="score",
+            label_column="label",
             data_url="https://dl.fbaipublicfiles.com/glue/data/STS-B.zip",
             data_dir="STS-B",
             citation=textwrap.dedent(
@@ -264,6 +287,12 @@ class Glue(datasets.GeneratorBasedBuilder):
             ),
             url="http://ixa2.si.ehu.es/stswiki/index.php/STSbenchmark",
             process_label=np.float32,
+            task_templates=[TextMatching(
+                text1_column="text1",
+                text2_column="text2",
+                task="natural-language-inference",
+                label_column="label"),
+            ],
         ),
         GlueConfig(
             name="mnli",
@@ -313,8 +342,8 @@ class Glue(datasets.GeneratorBasedBuilder):
             is always present in the input and that lexical overlap is a reliable cue."""
             ),  # pylint: disable=line-too-long
             text_features={
-                "question": "question",
-                "sentence": "sentence",
+                "text1": "text1",
+                "text2": "text2",
             },
             label_classes=["entailment", "not_entailment"],
             label_column="label",
@@ -330,20 +359,26 @@ class Glue(datasets.GeneratorBasedBuilder):
             }"""
             ),
             url="https://rajpurkar.github.io/SQuAD-explorer/",
+            task_templates=[TextMatching(
+                text1_column="text1",
+                text2_column="text2",
+                task="question-answer-matching",
+                label_column="label"),
+            ],
         ),
         GlueConfig(
             name="rte",
             description=textwrap.dedent(
                 """\
-            The Recognizing Textual Entailment (RTE) datasets come from a series of annual textual
+            The Recognizing Textual Entailment (RTE) datalab come from a series of annual textual
             entailment challenges. We combine the data from RTE1 (Dagan et al., 2006), RTE2 (Bar Haim
             et al., 2006), RTE3 (Giampiccolo et al., 2007), and RTE5 (Bentivogli et al., 2009).4 Examples are
-            constructed based on news and Wikipedia text. We convert all datasets to a two-class split, where
-            for three-class datasets we collapse neutral and contradiction into not entailment, for consistency."""
+            constructed based on news and Wikipedia text. We convert all datalab to a two-class split, where
+            for three-class datalab we collapse neutral and contradiction into not entailment, for consistency."""
             ),  # pylint: disable=line-too-long
             text_features={
-                "sentence1": "sentence1",
-                "sentence2": "sentence2",
+                "text1": "text1",
+                "text2": "text2",
             },
             label_classes=["entailment", "not_entailment"],
             label_column="label",
@@ -385,6 +420,12 @@ class Glue(datasets.GeneratorBasedBuilder):
             }"""
             ),
             url="https://aclweb.org/aclwiki/Recognizing_Textual_Entailment",
+            task_templates=[TextMatching(
+                text1_column="text1",
+                text2_column="text2",
+                task="question-answer-matching",
+                label_column="label"),
+            ],
         ),
         GlueConfig(
             name="wnli",
@@ -407,8 +448,8 @@ class Glue(datasets.GeneratorBasedBuilder):
             call converted dataset WNLI (Winograd NLI)."""
             ),
             text_features={
-                "sentence1": "sentence1",
-                "sentence2": "sentence2",
+                "text1": "text1",
+                "text2": "text2",
             },
             label_classes=["not_entailment", "entailment"],
             label_column="label",
@@ -424,6 +465,12 @@ class Glue(datasets.GeneratorBasedBuilder):
             }"""
             ),
             url="https://cs.nyu.edu/faculty/davise/papers/WinogradSchemas/WS.html",
+            task_templates=[TextMatching(
+                text1_column="text1",
+                text2_column="text2",
+                task="question-answer-matching",
+                label_column="label"),
+            ],
         ),
         GlueConfig(
             name="ax",
@@ -436,8 +483,8 @@ class Glue(datasets.GeneratorBasedBuilder):
             predictions for this dataset."""
             ),
             text_features={
-                "premise": "sentence1",
-                "hypothesis": "sentence2",
+                "text1": "text1",
+                "text2": "text2",
             },
             label_classes=["entailment", "neutral", "contradiction"],
             label_column="",  # No label since we only have test set.
@@ -447,29 +494,36 @@ class Glue(datasets.GeneratorBasedBuilder):
             data_dir="",  # We are downloading a tsv.
             citation="",  # The GLUE citation is sufficient.
             url="https://gluebenchmark.com/diagnostics",
+            task_templates=[TextMatching(
+                text1_column="text1",
+                text2_column="text2",
+                task="question-answer-matching",
+                label_column="label"),
+            ],
         ),
     ]
 
     def _info(self):
-        features = {text_feature: datasets.Value("string") for text_feature in self.config.text_features.keys()}
+        features = {text_feature: datalab.Value("string") for text_feature in self.config.text_features.keys()}
         if self.config.label_classes:
-            features["label"] = datasets.features.ClassLabel(names=self.config.label_classes)
+            features["label"] = datalab.features.ClassLabel(names=self.config.label_classes)
         else:
-            features["label"] = datasets.Value("float32")
-        features["idx"] = datasets.Value("int32")
-        return datasets.DatasetInfo(
+            features["label"] = datalab.Value("float32")
+        features["idx"] = datalab.Value("int32")
+        return datalab.DatasetInfo(
             description=_GLUE_DESCRIPTION,
-            features=datasets.Features(features),
+            features=datalab.Features(features),
             homepage=self.config.url,
             citation=self.config.citation + "\n" + _GLUE_CITATION,
+            task_templates=self.config.task_templates,
         )
 
     def _split_generators(self, dl_manager):
         if self.config.name == "ax":
             data_file = dl_manager.download(self.config.data_url)
             return [
-                datasets.SplitGenerator(
-                    name=datasets.Split.TEST,
+                datalab.SplitGenerator(
+                    name=datalab.Split.TEST,
                     gen_kwargs={
                         "data_file": data_file,
                         "split": "test",
@@ -490,8 +544,8 @@ class Glue(datasets.GeneratorBasedBuilder):
             dl_dir = dl_manager.download_and_extract(self.config.data_url)
             data_dir = os.path.join(dl_dir, self.config.data_dir)
             mrpc_files = None
-        train_split = datasets.SplitGenerator(
-            name=datasets.Split.TRAIN,
+        train_split = datalab.SplitGenerator(
+            name=datalab.Split.TRAIN,
             gen_kwargs={
                 "data_file": os.path.join(data_dir or "", "train.tsv"),
                 "split": "train",
@@ -519,16 +573,16 @@ class Glue(datasets.GeneratorBasedBuilder):
         else:
             return [
                 train_split,
-                datasets.SplitGenerator(
-                    name=datasets.Split.VALIDATION,
+                datalab.SplitGenerator(
+                    name=datalab.Split.VALIDATION,
                     gen_kwargs={
                         "data_file": os.path.join(data_dir or "", "dev.tsv"),
                         "split": "dev",
                         "mrpc_files": mrpc_files,
                     },
                 ),
-                datasets.SplitGenerator(
-                    name=datasets.Split.TEST,
+                datalab.SplitGenerator(
+                    name=datalab.Split.TEST,
                     gen_kwargs={
                         "data_file": os.path.join(data_dir or "", "test.tsv"),
                         "split": "test",
@@ -559,11 +613,41 @@ class Glue(datasets.GeneratorBasedBuilder):
                 for n, row in enumerate(reader):
                     if is_cola_non_test:
                         row = {
-                            "sentence": row[3],
-                            "is_acceptable": row[1],
+                            "text": row[3],
+                            "label": row[1],
                         }
+                    else:
+                        if "sentence" in row.keys():
+                            row["text"] = row["sentence"]
+                        if "sentence1" in row.keys():
+                            row["text1"] = row["sentence1"]
+                        if "sentence2" in row.keys():
+                            row["text2"] = row["sentence2"]
+                        if "question1" in row.keys():
+                            row["text1"] = row["question1"]
+                        if "question2" in row.keys():
+                            row["text2"] = row["question2"]
+                        if "question" in row.keys() and "sentence" in row.keys():
+                            row["text1"] = row["question"]
+                            row["text2"] = row["sentence"]
+
+
+                    # print(row)
+                    # for feat, col in self.config.text_features.items():
+                    #     print(feat, col)
+                    #     print(row[col])
+                    #     print("------------------")
+
+                    #print(self.config.text_features)
+
+                    # exit()
+
 
                     example = {feat: row[col] for feat, col in self.config.text_features.items()}
+
+
+
+
                     example["idx"] = n
 
                     if self.config.label_column in row:
@@ -592,8 +676,8 @@ class Glue(datasets.GeneratorBasedBuilder):
                 reader = csv.DictReader(f, delimiter="\t", quoting=csv.QUOTE_NONE)
                 for n, row in enumerate(reader):
                     yield {
-                        "sentence1": row["#1 String"],
-                        "sentence2": row["#2 String"],
+                        "text1": row["#1 String"],
+                        "text2": row["#2 String"],
                         "label": int(row["Quality"]),
                         "idx": n,
                     }
@@ -610,15 +694,15 @@ class Glue(datasets.GeneratorBasedBuilder):
                     is_row_in_dev = [row["#1 ID"], row["#2 ID"]] in dev_ids
                     if is_row_in_dev == (split == "dev"):
                         yield {
-                            "sentence1": row["#1 String"],
-                            "sentence2": row["#2 String"],
+                            "text1": row["#1 String"],
+                            "text2": row["#2 String"],
                             "label": int(row["Quality"]),
                             "idx": n,
                         }
 
 
 def _mnli_split_generator(name, data_dir, split, matched):
-    return datasets.SplitGenerator(
+    return datalab.SplitGenerator(
         name=name,
         gen_kwargs={
             "data_file": os.path.join(data_dir, "%s_%s.tsv" % (split, "matched" if matched else "mismatched")),

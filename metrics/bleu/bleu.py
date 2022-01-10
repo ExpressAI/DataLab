@@ -83,7 +83,7 @@ Examples:
     ...     [["hello", "there", "general", "kenobi"], ["hello", "there", "!"]],  # tokenized references for the first sample (2 references)
     ...     [["foo", "bar", "foobar"]]                                           # tokenized references for the second sample (1 reference)
     ... ]
-    >>> bleu = datasets.load_metric("bleu")
+    >>> bleu = datalab.load_metric("bleu")
     >>> results = bleu.compute(predictions=predictions, references=references)
     >>> print(results["bleu"])
     1.0

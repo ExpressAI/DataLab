@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The HuggingFace Datasets Authors.
+# Copyright 2020 The HuggingFace datalab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@
 import csv
 import os
 
-import datasets
-
+import datalab
+from datalab.tasks import TextClassification
 
 _DESCRIPTION = """
 Yahoo! Answers Topic Classification is text classification dataset. \
@@ -44,30 +44,32 @@ _TOPICS = [
 ]
 
 
-class YahooAnswersTopics(datasets.GeneratorBasedBuilder):
+class YahooAnswersTopics(datalab.GeneratorBasedBuilder):
     "Yahoo! Answers Topic Classification Dataset"
 
-    VERSION = datasets.Version("1.0.0")
+    VERSION = datalab.Version("1.0.0")
     BUILDER_CONFIGS = [
-        datasets.BuilderConfig(
+        datalab.BuilderConfig(
             name="yahoo_answers_topics",
-            version=datasets.Version("1.0.0", ""),
+            version=datalab.Version("1.0.0", ""),
         ),
     ]
 
     def _info(self):
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    "id": datasets.Value("int32"),
-                    "topic": datasets.features.ClassLabel(names=_TOPICS),
-                    "question_title": datasets.Value("string"),
-                    "question_content": datasets.Value("string"),
-                    "best_answer": datasets.Value("string"),
+                    "id": datalab.Value("int32"),
+                    "label": datalab.features.ClassLabel(names=_TOPICS),
+                    # "question_title": datalab.Value("string"),
+                    "text": datalab.Value("string"),
+                    "question_content": datalab.Value("string"),
+                    "best_answer": datalab.Value("string"),
                 },
             ),
             supervised_keys=None,
+            task_templates=[TextClassification(text_column="text", label_column="label")],
             homepage="https://github.com/LC-John/Yahoo-Answers-Topic-Classification-Dataset",
         )
 
@@ -77,11 +79,11 @@ class YahooAnswersTopics(datasets.GeneratorBasedBuilder):
         # Extracting (un-taring) the training data
         data_dir = os.path.join(data_dir, "yahoo_answers_csv")
         return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN, gen_kwargs={"filepath": os.path.join(data_dir, "train.csv")}
+            datalab.SplitGenerator(
+                name=datalab.Split.TRAIN, gen_kwargs={"filepath": os.path.join(data_dir, "train.csv")}
             ),
-            datasets.SplitGenerator(
-                name=datasets.Split.TEST, gen_kwargs={"filepath": os.path.join(data_dir, "test.csv")}
+            datalab.SplitGenerator(
+                name=datalab.Split.TEST, gen_kwargs={"filepath": os.path.join(data_dir, "test.csv")}
             ),
         ]
 
@@ -91,8 +93,8 @@ class YahooAnswersTopics(datasets.GeneratorBasedBuilder):
             for i, row in enumerate(rows):
                 yield i, {
                     "id": i,
-                    "topic": int(row[0]) - 1,
-                    "question_title": row[1],
+                    "label": int(row[0]) - 1,
+                    "text": row[1],
                     "question_content": row[2],
                     "best_answer": row[3],
                 }

@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 HuggingFace Datasets Authors.
+# Copyright 2020 HuggingFace datalab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 # Lint as: python3
 """Introduction to the CoNLL-2003 Shared Task: Language-Independent Named Entity Recognition"""
 
-import datasets
+import datalab
+from datalab.tasks import SequenceLabeling
 
-
-logger = datasets.logging.get_logger(__name__)
+logger = datalab.logging.get_logger(__name__)
 
 
 _CITATION = """\
@@ -56,35 +56,37 @@ _DEV_FILE = "valid.txt"
 _TEST_FILE = "test.txt"
 
 
-class Conll2003Config(datasets.BuilderConfig):
+class Conll2003Config(datalab.BuilderConfig):
     """BuilderConfig for Conll2003"""
 
-    def __init__(self, **kwargs):
+    def __init__(self,
+                 tokens_column=None,
+                 tags_column=None,
+                 label_classes = None,
+                 task_templates = None,
+                 **kwargs):
         """BuilderConfig forConll2003.
 
         Args:
           **kwargs: keyword arguments forwarded to super.
         """
         super(Conll2003Config, self).__init__(**kwargs)
+        self.tokens_column = tokens_column
+        self.tags_column = tags_column
+        self.label_classes = label_classes
+        self.task_templates = task_templates
 
 
-class Conll2003(datasets.GeneratorBasedBuilder):
+class Conll2003(datalab.GeneratorBasedBuilder):
     """Conll2003 dataset."""
 
     BUILDER_CONFIGS = [
-        Conll2003Config(name="conll2003", version=datasets.Version("1.0.0"), description="Conll2003 dataset"),
-    ]
-
-    def _info(self):
-        return datasets.DatasetInfo(
-            description=_DESCRIPTION,
-            features=datasets.Features(
-                {
-                    "id": datasets.Value("string"),
-                    "tokens": datasets.Sequence(datasets.Value("string")),
-                    "pos_tags": datasets.Sequence(
-                        datasets.features.ClassLabel(
-                            names=[
+        Conll2003Config(name="pos",
+                        version=datalab.Version("1.0.0"),
+                        description="Part-of-Speech",
+                        tokens_column="tokens",
+                        tags_column="tags",
+                        label_classes=[
                                 '"',
                                 "''",
                                 "#",
@@ -132,12 +134,35 @@ class Conll2003(datasets.GeneratorBasedBuilder):
                                 "WP",
                                 "WP$",
                                 "WRB",
-                            ]
-                        )
-                    ),
-                    "chunk_tags": datasets.Sequence(
-                        datasets.features.ClassLabel(
-                            names=[
+                            ],
+                        task_templates=[SequenceLabeling(tokens_column="tokens", tags_column="tags",
+                                                         task="part-of-speech")]
+                        ),
+        Conll2003Config(name="ner",
+                        version=datalab.Version("1.0.0"),
+                        description="Named Entity Recognition",
+                        tokens_column="tokens",
+                        tags_column="tags",
+                        label_classes=[
+                                "O",
+                                "B-PER",
+                                "I-PER",
+                                "B-ORG",
+                                "I-ORG",
+                                "B-LOC",
+                                "I-LOC",
+                                "B-MISC",
+                                "I-MISC",
+                            ],
+                        task_templates=[SequenceLabeling(tokens_column="tokens", tags_column="tags",
+                                                         task="named-entity-recognition")]
+                        ),
+        Conll2003Config(name="chunking",
+                        version=datalab.Version("1.0.0"),
+                        description="Chunking",
+                        tokens_column="tokens",
+                        tags_column="tags",
+                        label_classes=[
                                 "O",
                                 "B-ADJP",
                                 "I-ADJP",
@@ -161,22 +186,23 @@ class Conll2003(datasets.GeneratorBasedBuilder):
                                 "I-UCP",
                                 "B-VP",
                                 "I-VP",
-                            ]
-                        )
-                    ),
-                    "ner_tags": datasets.Sequence(
-                        datasets.features.ClassLabel(
-                            names=[
-                                "O",
-                                "B-PER",
-                                "I-PER",
-                                "B-ORG",
-                                "I-ORG",
-                                "B-LOC",
-                                "I-LOC",
-                                "B-MISC",
-                                "I-MISC",
-                            ]
+                            ],
+                        task_templates=[SequenceLabeling(tokens_column="tokens", tags_column="tags",
+                                                         task="text-chunking")]
+                        ),
+    ]
+    DEFAULT_CONFIG_NAME = "ner"
+
+    def _info(self):
+        return datalab.DatasetInfo(
+            description=_DESCRIPTION,
+            features=datalab.Features(
+                {
+                    "id": datalab.Value("string"),
+                    "tokens": datalab.Sequence(datalab.Value("string")),
+                    "tags": datalab.Sequence(
+                        datalab.features.ClassLabel(
+                            names=self.config.label_classes
                         )
                     ),
                 }
@@ -184,6 +210,7 @@ class Conll2003(datasets.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://www.aclweb.org/anthology/W03-0419/",
             citation=_CITATION,
+            task_templates=self.config.task_templates
         )
 
     def _split_generators(self, dl_manager):
@@ -196,9 +223,9 @@ class Conll2003(datasets.GeneratorBasedBuilder):
         downloaded_files = dl_manager.download_and_extract(urls_to_download)
 
         return [
-            datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
-            datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
-            datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepath": downloaded_files["test"]}),
+            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
+            datalab.SplitGenerator(name=datalab.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
+            datalab.SplitGenerator(name=datalab.Split.TEST, gen_kwargs={"filepath": downloaded_files["test"]}),
         ]
 
     def _generate_examples(self, filepath):
@@ -206,36 +233,33 @@ class Conll2003(datasets.GeneratorBasedBuilder):
         with open(filepath, encoding="utf-8") as f:
             guid = 0
             tokens = []
-            pos_tags = []
-            chunk_tags = []
-            ner_tags = []
+            tags = []
             for line in f:
                 if line.startswith("-DOCSTART-") or line == "" or line == "\n":
                     if tokens:
+
                         yield guid, {
                             "id": str(guid),
                             "tokens": tokens,
-                            "pos_tags": pos_tags,
-                            "chunk_tags": chunk_tags,
-                            "ner_tags": ner_tags,
+                            "tags": tags,
                         }
                         guid += 1
                         tokens = []
-                        pos_tags = []
-                        chunk_tags = []
-                        ner_tags = []
+                        tags = []
                 else:
                     # conll2003 tokens are space separated
                     splits = line.split(" ")
                     tokens.append(splits[0])
-                    pos_tags.append(splits[1])
-                    chunk_tags.append(splits[2])
-                    ner_tags.append(splits[3].rstrip())
+                    if self.config.name == "pos":
+                        tags.append(splits[1])
+                    elif self.config.name == "chunk":
+                        tags.append(splits[2])
+                    elif self.config.name == "ner":
+                        tags.append(splits[3].rstrip())
+
             # last example
             yield guid, {
                 "id": str(guid),
                 "tokens": tokens,
-                "pos_tags": pos_tags,
-                "chunk_tags": chunk_tags,
-                "ner_tags": ner_tags,
+                "tags": tags,
             }

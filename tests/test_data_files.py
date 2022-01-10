@@ -275,12 +275,12 @@ def test_DataFilesDict_from_hf_local_or_remote_hashing(text_file):
     data_files2 = DataFilesDict.from_local_or_remote(patterns2)
     assert Hasher.hash(data_files1) != Hasher.hash(data_files2)
 
-    with patch("datasets.data_files.request_etag") as mock_request_etag:
+    with patch("datalab.data_files.request_etag") as mock_request_etag:
         mock_request_etag.return_value = "blabla"
         data_files2 = DataFilesDict.from_local_or_remote(patterns)
         assert Hasher.hash(data_files1) != Hasher.hash(data_files2)
 
-    with patch("datasets.data_files.os.path.getmtime") as mock_getmtime:
+    with patch("datalab.data_files.os.path.getmtime") as mock_getmtime:
         mock_getmtime.return_value = 123
         data_files2 = DataFilesDict.from_local_or_remote(patterns)
         assert Hasher.hash(data_files1) != Hasher.hash(data_files2)

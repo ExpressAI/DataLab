@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The TensorFlow Datasets Authors and the HuggingFace Datasets Authors.
+# Copyright 2020 The TensorFlow datalab Authors and the HuggingFace datalab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@
 
 import csv
 
-import datasets
-
+import datalab
+from datalab.tasks import TextClassification
 
 _DESCRIPTION = """\
 It is a large dataset of Android applications belonging to 23 differentapps categories, which provides an overview of the types of feedback users report on the apps and documents the evolution of the related code metrics. The dataset contains about 395 applications of the F-Droid repository, including around 600 versions, 280,000 user reviews (extracted with specific text mining approaches)
@@ -39,32 +39,42 @@ year={2017}
 _TRAIN_DOWNLOAD_URL = "https://raw.githubusercontent.com/sealuzh/user_quality/master/csv_files/reviews.csv"
 
 
-class AppReviews(datasets.GeneratorBasedBuilder):
+class AppReviews(datalab.GeneratorBasedBuilder):
     """Software Application Reviews by Users."""
 
     def _info(self):
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    "package_name": datasets.Value("string"),
-                    "review": datasets.Value("string"),
-                    "date": datasets.Value("string"),
-                    "star": datasets.Value("int8"),
+                    "package_name": datalab.Value("string"),
+                    "text": datalab.Value("string"),
+                    "date": datalab.Value("string"),
+                    "label": datalab.features.ClassLabel(names=["1 star",
+                                                                 "2 stars",
+                                                                 "3 stars",
+                                                                 "4 stars",
+                                                                 "5 stars"]),
                 }
             ),
             homepage="https://giograno.me/assets/pdf/workshop/wama17.pdf",
             citation=_CITATION,
+            task_templates=[TextClassification(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         return [
-            datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": train_path}),
         ]
 
     def _generate_examples(self, filepath):
         """Generate Distaster Response Messages examples."""
+        textualize_label = {"1":"1 star",
+                                 "2":"2 stars",
+                                 "3":"3 stars",
+                                 "4":"4 stars",
+                                 "5":"5 stars"}
         with open(filepath, encoding="utf-8") as csv_file:
             csv_reader = csv.reader(
                 csv_file, quotechar='"', delimiter=",", quoting=csv.QUOTE_ALL, skipinitialspace=True
@@ -74,9 +84,10 @@ class AppReviews(datasets.GeneratorBasedBuilder):
                 row = row[1:5]
                 (package_name, review, date, star) = row
 
+
                 yield id_, {
                     "package_name": (package_name),
-                    "review": (review),
+                    "text": review,
                     "date": (date),
-                    "star": int(star),
+                    "label": textualize_label[star],
                 }

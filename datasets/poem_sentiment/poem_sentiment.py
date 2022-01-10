@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The HuggingFace Datasets Authors and the current dataset script contributor.
+# Copyright 2020 The HuggingFace datalab Authors and the current dataset script contributor.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 """Poem Sentiment: A sentiment dataset of poem verses"""
 
 
-import datasets
-
+import datalab
+from datalab.tasks import TextClassification
 
 _CITATION = """\
 @misc{sheng2020investigating,
@@ -35,9 +35,9 @@ This dataset can be used for tasks such as sentiment classification or style tra
 """
 
 
-_HOMEPAGE = "https://github.com/google-research-datasets/poem-sentiment"
+_HOMEPAGE = "https://github.com/google-research-datalab/poem-sentiment"
 
-_BASE_URL = "https://raw.githubusercontent.com/google-research-datasets/poem-sentiment/master/data/"
+_BASE_URL = "https://raw.githubusercontent.com/google-research-datalab/poem-sentiment/master/data/"
 _URLS = {
     "train": f"{_BASE_URL}/train.tsv",
     "dev": f"{_BASE_URL}/dev.tsv",
@@ -46,32 +46,33 @@ _URLS = {
 _LABEL_MAPPING = {-1: 0, 0: 2, 1: 1, 2: 3}
 
 
-class PoemSentiment(datasets.GeneratorBasedBuilder):
+class PoemSentiment(datalab.GeneratorBasedBuilder):
     """Poem Sentiment: A sentiment dataset of poem verses"""
 
-    VERSION = datasets.Version("1.0.0")
+    VERSION = datalab.Version("1.0.0")
 
     def _info(self):
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    "id": datasets.Value("int32"),
-                    "verse_text": datasets.Value("string"),
-                    "label": datasets.ClassLabel(names=["negative", "positive", "no_impact", "mixed"]),
+                    "id": datalab.Value("int32"),
+                    "text": datalab.Value("string"),
+                    "label": datalab.ClassLabel(names=["negative", "positive", "neutral", "mixed"]),
                 }
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
+            task_templates=[TextClassification(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):
         downloaded_files = dl_manager.download(_URLS)
         return [
-            datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
-            datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
-            datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepath": downloaded_files["test"]}),
+            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
+            datalab.SplitGenerator(name=datalab.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
+            datalab.SplitGenerator(name=datalab.Split.TEST, gen_kwargs={"filepath": downloaded_files["test"]}),
         ]
 
     def _generate_examples(self, filepath):
@@ -81,4 +82,4 @@ class PoemSentiment(datasets.GeneratorBasedBuilder):
                 fields = line.strip().split("\t")
                 idx, verse_text, label = fields
                 label = _LABEL_MAPPING[int(label)]
-                yield int(idx), {"id": int(idx), "verse_text": verse_text, "label": label}
+                yield int(idx), {"id": int(idx), "text": verse_text, "label": label}

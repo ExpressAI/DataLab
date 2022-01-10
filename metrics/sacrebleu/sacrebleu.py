@@ -69,7 +69,7 @@ Examples:
 
     >>> predictions = ["hello there general kenobi", "foo bar foobar"]
     >>> references = [["hello there general kenobi", "hello there !"], ["foo bar foobar", "foo bar foobar"]]
-    >>> sacrebleu = datasets.load_metric("sacrebleu")
+    >>> sacrebleu = datalab.load_metric("sacrebleu")
     >>> results = sacrebleu.compute(predictions=predictions, references=references)
     >>> print(list(results.keys()))
     ['score', 'counts', 'totals', 'precisions', 'bp', 'sys_len', 'ref_len']

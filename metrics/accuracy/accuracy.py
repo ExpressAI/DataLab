@@ -39,7 +39,7 @@ Returns:
     accuracy: Accuracy score.
 Examples:
 
-    >>> accuracy_metric = datasets.load_metric("accuracy")
+    >>> accuracy_metric = datalab.load_metric("accuracy")
     >>> results = accuracy_metric.compute(references=[0, 1], predictions=[0, 1])
     >>> print(results)
     {'accuracy': 1.0}

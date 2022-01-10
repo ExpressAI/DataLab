@@ -57,7 +57,7 @@ Returns:
     precision: Precision score.
 Examples:
 
-    >>> precision_metric = datasets.load_metric("precision")
+    >>> precision_metric = datalab.load_metric("precision")
     >>> results = precision_metric.compute(references=[0, 1], predictions=[0, 1])
     >>> print(results)
     {'precision': 1.0}

@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The TensorFlow Datasets Authors and the HuggingFace Datasets Authors.
+# Copyright 2020 The TensorFlow datalab Authors and the HuggingFace datalab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@
 
 import json
 
-import datasets
-from datasets.tasks import QuestionAnsweringExtractive
+import datalab
+from datalab.tasks import QuestionAnsweringExtractive
 
 
-logger = datasets.logging.get_logger(__name__)
+logger = datalab.logging.get_logger(__name__)
 
 
 _CITATION = """\
@@ -54,7 +54,7 @@ _URLS = {
 }
 
 
-class SquadConfig(datasets.BuilderConfig):
+class SquadConfig(datalab.BuilderConfig):
     """BuilderConfig for SQUAD."""
 
     def __init__(self, **kwargs):
@@ -66,30 +66,30 @@ class SquadConfig(datasets.BuilderConfig):
         super(SquadConfig, self).__init__(**kwargs)
 
 
-class Squad(datasets.GeneratorBasedBuilder):
+class Squad(datalab.GeneratorBasedBuilder):
     """SQUAD: The Stanford Question Answering Dataset. Version 1.1."""
 
     BUILDER_CONFIGS = [
         SquadConfig(
             name="plain_text",
-            version=datasets.Version("1.0.0", ""),
+            version=datalab.Version("1.0.0", ""),
             description="Plain text",
         ),
     ]
 
     def _info(self):
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    "id": datasets.Value("string"),
-                    "title": datasets.Value("string"),
-                    "context": datasets.Value("string"),
-                    "question": datasets.Value("string"),
-                    "answers": datasets.features.Sequence(
+                    "id": datalab.Value("string"),
+                    "title": datalab.Value("string"),
+                    "context": datalab.Value("string"),
+                    "question": datalab.Value("string"),
+                    "answers": datalab.features.Sequence(
                         {
-                            "text": datasets.Value("string"),
-                            "answer_start": datasets.Value("int32"),
+                            "text": datalab.Value("string"),
+                            "answer_start": datalab.Value("int32"),
                         }
                     ),
                 }
@@ -110,8 +110,8 @@ class Squad(datasets.GeneratorBasedBuilder):
         downloaded_files = dl_manager.download_and_extract(_URLS)
 
         return [
-            datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
-            datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
+            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
+            datalab.SplitGenerator(name=datalab.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
         ]
 
     def _generate_examples(self, filepath):

@@ -706,7 +706,7 @@ class BaseDatasetTest(TestCase):
                 Dataset.from_dict(data2, info=info2),
                 Dataset.from_dict(data3),
             )
-            # mix from in-memory and on-disk datasets
+            # mix from in-memory and on-disk datalab
             dset1, dset2 = self._to(in_memory, tmp_dir, dset1, dset2)
             dset3 = self._to(not in_memory, tmp_dir, dset3)
             dset1, dset2, dset3 = (
@@ -1064,7 +1064,7 @@ class BaseDatasetTest(TestCase):
             self._caplog.clear()
             with self._caplog.at_level(WARNING):
                 with self._create_dummy_dataset(in_memory, tmp_dir) as dset:
-                    with patch("datasets.arrow_dataset.Pool", side_effect=datasets.arrow_dataset.Pool) as mock_pool:
+                    with patch("datalab.arrow_dataset.Pool", side_effect=datasets.arrow_dataset.Pool) as mock_pool:
                         with dset.map(lambda x: {"foo": "bar"}, num_proc=2) as dset_test1:
                             dset_test1_data_files = list(dset_test1.cache_files)
                         self.assertEqual(mock_pool.call_count, 1)

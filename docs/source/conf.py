@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath("../../src"))
 
 # -- Project information -----------------------------------------------------
 
-project = "datasets"
+project = "datalab"
 copyright = "2020, HuggingFace"
 author = "HuggingFace"
 
@@ -96,7 +96,7 @@ html_theme_options = {"analytics_id": "UA-83738774-2", "navigation_with_keys": T
 # These are responsible for creating nice shareable social images https://ahrefs.com/blog/open-graph-meta-tags/
 # https://ogp.me/#type_website
 ogp_image = "https://huggingface.co/front/thumbnails/docs/datasets.png"
-ogp_description = "🤗 Datasets is a lightweight and extensible library to easily share and access datasets and evaluation metrics for Natural Language Processing (NLP)."
+ogp_description = "🤗 Datasets is a lightweight and extensible library to easily share and access datalab and evaluation metrics for Natural Language Processing (NLP)."
 ogp_description_length = 160
 
 ogp_custom_meta_tags = [
@@ -151,7 +151,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "datasets.tex", "datasets Documentation", "huggingface", "manual"),
+    (master_doc, "datalab.tex", "datalab Documentation", "huggingface", "manual"),
 ]
 
 
@@ -159,7 +159,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "datasets", "datasets Documentation", [author], 1)]
+man_pages = [(master_doc, "datalab", "datalab Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output ----------------------------------------------
@@ -170,10 +170,10 @@ man_pages = [(master_doc, "datasets", "datasets Documentation", [author], 1)]
 texinfo_documents = [
     (
         master_doc,
-        "datasets",
-        "datasets Documentation",
+        "datalab",
+        "datalab Documentation",
         author,
-        "datasets",
+        "datalab",
         "One line description of project.",
         "Miscellaneous",
     ),

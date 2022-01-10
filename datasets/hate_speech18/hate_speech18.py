@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 The TensorFlow Datasets Authors and the HuggingFace Datasets Authors.
+# Copyright 2020 The TensorFlow datalab Authors and the HuggingFace datalab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@
 import csv
 import os
 
-import datasets
-
+import datalab
+from datalab.tasks import TextClassification
 
 _CITATION = """\
 @inproceedings{gibert2018hate,
@@ -50,36 +50,44 @@ have been manually labelled as containing hate speech or not, according to certa
 _DATA_URL = "https://github.com/Vicomtech/hate-speech-dataset/archive/master.zip"
 
 
-class HateSpeech18(datasets.GeneratorBasedBuilder):
+class HateSpeech18(datalab.GeneratorBasedBuilder):
     """Hate speech dataset"""
 
     def _info(self):
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    "text": datasets.Value("string"),
-                    "user_id": datasets.Value("int64"),
-                    "subforum_id": datasets.Value("int64"),
-                    "num_contexts": datasets.Value("int64"),
-                    "label": datasets.features.ClassLabel(names=["noHate", "hate", "idk/skip", "relation"]),
+                    "text": datalab.Value("string"),
+                    "user_id": datalab.Value("int64"),
+                    "subforum_id": datalab.Value("int64"),
+                    "num_contexts": datalab.Value("int64"),
+                    "label": datalab.features.ClassLabel(names=["no hate",
+                                                                 "hate",
+                                                                 "unknown",]),
                 }
             ),
             supervised_keys=None,
             homepage="https://github.com/Vicomtech/hate-speech-dataset",
             citation=_CITATION,
+            task_templates=[TextClassification(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):
         dl_dir = dl_manager.download_and_extract(_DATA_URL)
 
         return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN, gen_kwargs={"filepath": os.path.join(dl_dir, "hate-speech-dataset-master")}
+            datalab.SplitGenerator(
+                name=datalab.Split.TRAIN, gen_kwargs={"filepath": os.path.join(dl_dir, "hate-speech-dataset-master")}
             ),
         ]
 
     def _generate_examples(self, filepath):
+
+        textualize_label = {"hate":"hate",
+                                 "relation":"hate",
+                                 "noHate":"no hate",
+                                 "idk/skip":"unknown"}
 
         with open(os.path.join(filepath, "annotations_metadata.csv"), encoding="utf-8") as csv_file:
 
@@ -97,13 +105,18 @@ class HateSpeech18(datasets.GeneratorBasedBuilder):
 
                 path = os.path.join(all_files_path, file_id + ".txt")
 
+
+
+
+
                 with open(path, encoding="utf-8") as file:
                     text = file.read()
+
 
                 yield idx, {
                     "text": text,
                     "user_id": user_id,
                     "subforum_id": subforum_id,
                     "num_contexts": num_contexts,
-                    "label": label,
+                    "label": textualize_label[label],
                 }

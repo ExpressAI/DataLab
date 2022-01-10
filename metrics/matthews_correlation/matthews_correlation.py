@@ -41,7 +41,7 @@ Returns:
     matthews_correlation: Matthews correlation.
 Examples:
 
-    >>> matthews_metric = datasets.load_metric("matthews_correlation")
+    >>> matthews_metric = datalab.load_metric("matthews_correlation")
     >>> results = matthews_metric.compute(references=[0, 1], predictions=[0, 1])
     >>> print(results)
     {'matthews_correlation': 1.0}

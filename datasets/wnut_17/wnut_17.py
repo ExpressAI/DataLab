@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 HuggingFace Datasets Authors.
+# Copyright 2020 HuggingFace datalab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 """The WNUT 17 Emerging Entities Dataset."""
 
 
-import datasets
+import datalab
+from datalab.tasks import SequenceLabeling
 
-
-logger = datasets.logging.get_logger(__name__)
+logger = datalab.logging.get_logger(__name__)
 
 
 _CITATION = """\
@@ -44,7 +44,7 @@ _CITATION = """\
                 This drop tends to be due to novel entities and surface forms.
                 Take for example the tweet {``}so.. kktny in 30 mins?!{''} {--} even human experts find the entity {`}kktny{'}
                 hard to detect and resolve. The goal of this task is to provide a definition of emerging and of rare entities,
-                and based on that, also datasets for detecting these entities. The task as described in this paper evaluated the
+                and based on that, also datalab for detecting these entities. The task as described in this paper evaluated the
                 ability of participating entries to detect and classify novel and emerging named entities in noisy text.",
 }
 """
@@ -58,7 +58,7 @@ but recall on them is a real problem in noisy text - even among annotators. This
 Take for example the tweet “so.. kktny in 30 mins?” - even human experts find entity kktny hard to detect and resolve.
 This task will evaluate the ability to detect and classify novel, emerging, singleton named entities in noisy text.
 
-The goal of this task is to provide a definition of emerging and of rare entities, and based on that, also datasets for detecting these entities.
+The goal of this task is to provide a definition of emerging and of rare entities, and based on that, also datalab for detecting these entities.
 """
 
 _URL = "https://raw.githubusercontent.com/leondz/emerging_entities_17/master/"
@@ -67,7 +67,7 @@ _DEV_FILE = "emerging.dev.conll"
 _TEST_FILE = "emerging.test.annotated"
 
 
-class WNUT_17Config(datasets.BuilderConfig):
+class WNUT_17Config(datalab.BuilderConfig):
     """The WNUT 17 Emerging Entities Dataset."""
 
     def __init__(self, **kwargs):
@@ -79,24 +79,24 @@ class WNUT_17Config(datasets.BuilderConfig):
         super(WNUT_17Config, self).__init__(**kwargs)
 
 
-class WNUT_17(datasets.GeneratorBasedBuilder):
+class WNUT_17(datalab.GeneratorBasedBuilder):
     """The WNUT 17 Emerging Entities Dataset."""
 
     BUILDER_CONFIGS = [
         WNUT_17Config(
-            name="wnut_17", version=datasets.Version("1.0.0"), description="The WNUT 17 Emerging Entities Dataset"
+            name="wnut_17", version=datalab.Version("1.0.0"), description="The WNUT 17 Emerging Entities Dataset"
         ),
     ]
 
     def _info(self):
-        return datasets.DatasetInfo(
+        return datalab.DatasetInfo(
             description=_DESCRIPTION,
-            features=datasets.Features(
+            features=datalab.Features(
                 {
-                    "id": datasets.Value("string"),
-                    "tokens": datasets.Sequence(datasets.Value("string")),
-                    "ner_tags": datasets.Sequence(
-                        datasets.features.ClassLabel(
+                    "id": datalab.Value("string"),
+                    "tokens": datalab.Sequence(datalab.Value("string")),
+                    "tags": datalab.Sequence(
+                        datalab.features.ClassLabel(
                             names=[
                                 "O",
                                 "B-corporation",
@@ -119,6 +119,7 @@ class WNUT_17(datasets.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="http://noisy-text.github.io/2017/emerging-rare-entities.html",
             citation=_CITATION,
+            task_templates=[SequenceLabeling(tokens_column="tokens", tags_column="tags")],
         )
 
     def _split_generators(self, dl_manager):
@@ -131,9 +132,9 @@ class WNUT_17(datasets.GeneratorBasedBuilder):
         downloaded_files = dl_manager.download_and_extract(urls_to_download)
 
         return [
-            datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
-            datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
-            datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepath": downloaded_files["test"]}),
+            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
+            datalab.SplitGenerator(name=datalab.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
+            datalab.SplitGenerator(name=datalab.Split.TEST, gen_kwargs={"filepath": downloaded_files["test"]}),
         ]
 
     def _generate_examples(self, filepath):
@@ -159,7 +160,7 @@ class WNUT_17(datasets.GeneratorBasedBuilder):
                         {
                             "id": str(sentence_counter),
                             "tokens": current_tokens,
-                            "ner_tags": current_labels,
+                            "tags": current_labels,
                         },
                     )
                     sentence_counter += 1
@@ -171,5 +172,5 @@ class WNUT_17(datasets.GeneratorBasedBuilder):
                 yield sentence_counter, {
                     "id": str(sentence_counter),
                     "tokens": current_tokens,
-                    "ner_tags": current_labels,
+                    "tags": current_labels,
                 }

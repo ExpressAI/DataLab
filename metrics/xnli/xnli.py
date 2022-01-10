@@ -54,7 +54,7 @@ Examples:
 
     >>> predictions = [0, 1]
     >>> references = [0, 1]
-    >>> xnli_metric = datasets.load_metric("xnli")
+    >>> xnli_metric = datalab.load_metric("xnli")
     >>> results = xnli_metric.compute(predictions=predictions, references=references)
     >>> print(results)
     {'accuracy': 1.0}

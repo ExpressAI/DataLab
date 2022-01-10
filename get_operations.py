@@ -3,7 +3,7 @@ import os
 import sys
 import importlib
 import inspect
-import datasets
+import datalab
 import json
 from featurize import general
 from inspect import getmembers, isfunction
@@ -107,7 +107,7 @@ edit.general.plugins
 """
 dir_operations = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
-    "src/datasets/operations/edit/plugins/general/",
+    "src/datalab/operations/edit/plugins/general/",
 )
 sys.path.append(dir_operations)
 
@@ -193,13 +193,13 @@ with open('operations_info.json', 'w') as f:
 
 # dir_operations = os.path.join(
 #     os.path.dirname(os.path.abspath(__file__)),
-#     "src/datasets/operations/",
+#     "src/datalab/operations/",
 # )
 
 
 # "edit" functions
 # dir_operations_edit_general = dir_operations + "edit/general.py"
-# sys.path.append("/usr1/data/pliu3/expressAI/Datalab/src/datasets/operations/edit")
+# sys.path.append("/usr1/data/pliu3/expressAI/Datalab/src/datalab/operations/edit")
 # print(dir_operations_edit_general)
 # file_name = my_module = importlib.import_module(dir_operations_edit_general)
 

@@ -99,7 +99,7 @@ class DatasetTester:
     def load_builder_class(self, dataset_name, is_local=False):
         # Download/copy dataset script
         if is_local is True:
-            dataset_module = dataset_module_factory(os.path.join("datasets", dataset_name))
+            dataset_module = dataset_module_factory(os.path.join("datalab", dataset_name))
         else:
             dataset_module = dataset_module_factory(dataset_name, download_config=DownloadConfig(force_download=True))
         # Get dataset builder class
@@ -124,7 +124,7 @@ class DatasetTester:
                 name = config.name if config is not None else None
                 dataset_builder = dataset_builder_cls(name=name, cache_dir=processed_temp_dir)
 
-                # TODO: skip Beam datasets and datasets that lack dummy data for now
+                # TODO: skip Beam datalab and datalab that lack dummy data for now
                 if not dataset_builder.test_dummy_data:
                     logger.info("Skip tests for this dataset for now")
                     return
@@ -148,7 +148,7 @@ class DatasetTester:
                     download_callbacks=[check_if_url_is_valid],
                 )
 
-                # packaged datasets like csv, text, json or pandas require some data files
+                # packaged datalab like csv, text, json or pandas require some data files
                 builder_name = dataset_builder.__class__.__name__.lower()
                 if builder_name in _PACKAGED_DATASETS_MODULES:
                     mock_dl_manager.download_dummy_data()
@@ -197,7 +197,7 @@ class DatasetTester:
 
 
 def test_datasets_dir_and_script_names():
-    for dataset_dir in glob.glob("./datasets/*/"):
+    for dataset_dir in glob.glob("./datalab/*/"):
         name = dataset_dir.split(os.sep)[-2]
         if not name.startswith("__") and len(os.listdir(dataset_dir)) > 0:  # ignore __pycache__ and empty dirs
             if name in _PACKAGED_DATASETS_MODULES:
@@ -212,7 +212,7 @@ def test_datasets_dir_and_script_names():
 def get_local_dataset_names():
     datasets = [
         dataset_dir.split(os.sep)[-2]
-        for dataset_dir in glob.glob("./datasets/*/")
+        for dataset_dir in glob.glob("./datalab/*/")
         if os.path.exists(os.path.join(dataset_dir, dataset_dir.split(os.sep)[-2] + ".py"))
     ]
     return [{"testcase_name": x, "dataset_name": x} for x in datasets]
@@ -252,7 +252,7 @@ class LocalDatasetTest(parameterized.TestCase):
 
     @slow
     def test_load_real_dataset(self, dataset_name):
-        path = "./datasets/" + dataset_name
+        path = "./datalab/" + dataset_name
         dataset_module = dataset_module_factory(path, download_config=DownloadConfig(local_files_only=True))
         builder_cls = import_main_class(dataset_module.module_path)
         name = builder_cls.BUILDER_CONFIGS[0].name if builder_cls.BUILDER_CONFIGS else None
@@ -266,7 +266,7 @@ class LocalDatasetTest(parameterized.TestCase):
 
     @slow
     def test_load_real_dataset_all_configs(self, dataset_name):
-        path = "./datasets/" + dataset_name
+        path = "./datalab/" + dataset_name
         dataset_module = dataset_module_factory(path, download_config=DownloadConfig(local_files_only=True))
         builder_cls = import_main_class(dataset_module.module_path)
         config_names = (
@@ -327,7 +327,7 @@ class DistributedDatasetTest(TestCase):
         num_workers = 5
         with tempfile.TemporaryDirectory() as tmp_dir:
             data_name = "csv"
-            data_base_path = os.path.join("datasets", data_name, "dummy", "0.0.0", "dummy_data.zip")
+            data_base_path = os.path.join("datalab", data_name, "dummy", "0.0.0", "dummy_data.zip")
             local_path = cached_path(
                 data_base_path, cache_dir=tmp_dir, extract_compressed_file=True, force_extract=True
             )
