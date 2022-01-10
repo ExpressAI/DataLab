@@ -30,7 +30,8 @@ cd Datalab/datasets/
 from datalab import operations, load_dataset
 from featurize import *
 
-dataset = load_dataset("ag_news")
+# don't forget `./`
+dataset = load_dataset("./ag_news")
 
 # print(task schema)
 print(dataset['test']._info.task_templates)
@@ -38,6 +39,25 @@ print(dataset['test']._info.task_templates)
 # data operators
 res = dataset["test"].apply(get_text_length)
 print(next(res))
+
+
+# get entity
+res = dataset["test"].apply(get_entity_spacy)
+print(next(res))
+
+# get postag
+res = dataset["test"].apply(get_postag_spacy)
+print(next(res))
+
+from edit import *
+# add typos
+res = dataset["test"].apply(add_typo)
+print(next(res))
+
+#  change person name
+res = dataset["test"].apply(change_person_name)
+print(next(res))
+
 
 
 ```
