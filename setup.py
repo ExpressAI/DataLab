@@ -106,6 +106,9 @@ REQUIRED_PKGS = [
     "pymongo[srv]",
     "spacy",
     "checklist",
+    "lexicalrichness",
+    "sacrebleu",
+    "compare_mt",
 ]
 
 AUDIO_REQUIRE = [
