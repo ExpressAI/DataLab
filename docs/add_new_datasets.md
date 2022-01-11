@@ -17,14 +17,16 @@ if your link is from google drive, you just need to modify following template by
 You can get `ID` from the link of `sharing to any`, for example, we can know
 `ID` is: `1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb` from 
 
-`https://drive.google.com/file/d/1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb/view?usp=sharing`, so finally, we have
+`https://drive.google.com/file/d/1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb/view?usp=sharing`, 
+so finally, we have
+
 `https://drive.google.com/uc?id=1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb=download`
 
 
-## 3. creat a new folder and write a config python script inside it.
+## 3. Creat a new folder and write a config python script inside it.
 
 Suppose the dataset name to be added is `ag_news`, we need to:
-* creat a folder `ag_news` in [DataLab/datasets](https://github.com/ExpressAI/DataLab/tree/main/datasets)
+* creat a folder `ag_news` in [DataLab/datasets/](https://github.com/ExpressAI/DataLab/tree/main/datasets)
 * creat a config script `ag_news.py` in the above folder, i.e., `Datalab/datasets/ag_news/ag_news.py`
 * finish the config script based on some provided examples:
     * text-classification: [template](https://github.com/ExpressAI/DataLab/blob/main/datasets/ag_news/ag_news.py)
