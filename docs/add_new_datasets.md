@@ -11,11 +11,13 @@ For example, you can place your datasets in this shared gdrive [folder](https://
 ## 2. Get the downloadable url for datasets
 
 if your link is from google drive, you just need to modify following template by replacing `ID` with real string
+
 `https://drive.google.com/uc?id=ID=download`
 
 You can get `ID' from the link of `sharing to any`, for example, we can know
-`ID` is: `1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb`
-from `https://drive.google.com/file/d/1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb/view?usp=sharing`, so finally, we have
+`ID` is: `1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb` from 
+
+`https://drive.google.com/file/d/1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb/view?usp=sharing`, so finally, we have
 `https://drive.google.com/uc?id=1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb=download`
 
 
