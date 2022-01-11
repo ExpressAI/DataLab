@@ -82,6 +82,7 @@ def _lead_k(src: List[str], ref: str, sim_fn, k: int = 3):
     sim_fn: sim_fn: similarity function between two strings
     """
     src = [x.strip() for x in src]
+    doc = src
     ref = ref.strip()
     if len(src) == 0:
         src = ["#"]
@@ -90,7 +91,7 @@ def _lead_k(src: List[str], ref: str, sim_fn, k: int = 3):
     src = src[:k]
     score = sim_fn(" ".join(src), ref)
 
-    return {"source":src,
+    return {"source":doc,
             "reference":ref,
             "lead_k_summary":src,
             "lead_k_score":score}
