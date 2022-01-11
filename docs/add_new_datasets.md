@@ -14,7 +14,7 @@ if your link is from google drive, you just need to modify following template by
 
 `https://drive.google.com/uc?id=ID=download`
 
-You can get `ID' from the link of `sharing to any`, for example, we can know
+You can get `ID` from the link of `sharing to any`, for example, we can know
 `ID` is: `1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb` from 
 
 `https://drive.google.com/file/d/1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb/view?usp=sharing`, so finally, we have
