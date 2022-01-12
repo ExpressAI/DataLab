@@ -25,7 +25,7 @@
 
 ```python
 
-# pip install datalab
+# pip install datalabs
 from datalabs import operations, load_dataset
 from featurize import *
 
@@ -41,7 +41,7 @@ print(next(res))
 
 
 # get entity
-res = dataset["test"].apply(get_entity_spacy)
+res = dataset["test"].apply(get_entities_spacy)
 print(next(res))
 
 # get postag
