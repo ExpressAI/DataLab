@@ -110,7 +110,12 @@ TESTS_REQUIRE = [
     # metadata validation
     "importlib_resources;python_version<'3.7'",
     # new dependencies needed by datalabs
-    "pymongo[srv]"
+    "pymongo[srv]",
+    "spacy",
+    "checklist",
+    "lexicalrichness",
+    "sacrebleu",
+    "compare_mt",
 ]
 
 if os.name != "nt":
@@ -165,7 +170,7 @@ EXTRAS_REQUIRE = {
 
 setup(
     name="datalabs",
-    version="0.0.1.dev",
+    version="0.0.2.dev",
     description="Datalabs",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",

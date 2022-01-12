@@ -3,27 +3,25 @@
 ## Installation
 #### Install
 
+    ```shell
+    pip install --upgrade pip
+    pip install datalabs
+    ```  
+
+   or 
 
     ```shell
+    pip install --upgrade pip
     git clone https://github.com/ExpressAI/Datalab.git
     cd Datalab
     pip install .
     ```
 
-#### Uninstall
-    ```shell
-    pip uninstall datalab
-    ```
-
+ 
 #### Dataset Operation
+ 
 
-* Step 1:
-```shell
-cd Datalab/datasets/
-
-```
-
-* Step 2:
+ 
 
 ```python
 
@@ -31,8 +29,8 @@ cd Datalab/datasets/
 from datalabs import operations, load_dataset
 from featurize import *
 
-# don't forget `./`
-dataset = load_dataset("./ag_news")
+ 
+dataset = load_dataset("ag_news")
 
 # print(task schema)
 print(dataset['test']._info.task_templates)
