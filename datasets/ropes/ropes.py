@@ -65,13 +65,11 @@ class Ropes(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "id": datalabs.Value("string"),
-                    # "context": datalabs.Value("string"),
                     "background": datalabs.Value("string"),
                     "situation": datalabs.Value("string"),
                     "question": datalabs.Value("string"),
                     "answers": datalabs.features.Sequence(
                         {
-                            # "answer_start": datalabs.Value("int32"),
                             "text": datalabs.Value("string"),
                         }
                     ),
@@ -134,12 +132,15 @@ class Ropes(datalabs.GeneratorBasedBuilder):
                             answers = [] if split == "test" else [answer["text"].strip() for answer in qa["answers"]]
 
                             yield id_, {
-                                "background": background,
+                                "title": "title",
+                                "context": background,
                                 "situation": situation,
                                 "question": question,
                                 "id": id_,
                                 "answers": {
+                                    "answer_start": -1,
                                     "text": answers,
                                 },
+                                "url": "xxx",
                             }
                 break
