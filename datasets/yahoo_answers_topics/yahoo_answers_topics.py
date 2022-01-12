@@ -18,8 +18,8 @@
 import csv
 import os
 
-import datalab
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextClassification
 
 _DESCRIPTION = """
 Yahoo! Answers Topic Classification is text classification dataset. \
@@ -44,28 +44,28 @@ _TOPICS = [
 ]
 
 
-class YahooAnswersTopics(datalab.GeneratorBasedBuilder):
+class YahooAnswersTopics(datalabs.GeneratorBasedBuilder):
     "Yahoo! Answers Topic Classification Dataset"
 
-    VERSION = datalab.Version("1.0.0")
+    VERSION = datalabs.Version("1.0.0")
     BUILDER_CONFIGS = [
-        datalab.BuilderConfig(
+        datalabs.BuilderConfig(
             name="yahoo_answers_topics",
-            version=datalab.Version("1.0.0", ""),
+            version=datalabs.Version("1.0.0", ""),
         ),
     ]
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "id": datalab.Value("int32"),
-                    "label": datalab.features.ClassLabel(names=_TOPICS),
+                    "id": datalabs.Value("int32"),
+                    "label": datalabs.features.ClassLabel(names=_TOPICS),
                     # "question_title": datalab.Value("string"),
-                    "text": datalab.Value("string"),
-                    "question_content": datalab.Value("string"),
-                    "best_answer": datalab.Value("string"),
+                    "text": datalabs.Value("string"),
+                    "question_content": datalabs.Value("string"),
+                    "best_answer": datalabs.Value("string"),
                 },
             ),
             supervised_keys=None,
@@ -79,11 +79,11 @@ class YahooAnswersTopics(datalab.GeneratorBasedBuilder):
         # Extracting (un-taring) the training data
         data_dir = os.path.join(data_dir, "yahoo_answers_csv")
         return [
-            datalab.SplitGenerator(
-                name=datalab.Split.TRAIN, gen_kwargs={"filepath": os.path.join(data_dir, "train.csv")}
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": os.path.join(data_dir, "train.csv")}
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.TEST, gen_kwargs={"filepath": os.path.join(data_dir, "test.csv")}
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": os.path.join(data_dir, "test.csv")}
             ),
         ]
 

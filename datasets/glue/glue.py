@@ -23,9 +23,9 @@ import textwrap
 
 import numpy as np
 
-import datalab
-from datalab.tasks import TextMatching
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextMatching
+from datalabs.tasks import TextClassification
 
 _GLUE_CITATION = """\
 @inproceedings{wang2019glue,
@@ -92,7 +92,7 @@ _MNLI_BASE_KWARGS = dict(
 )
 
 
-class GlueConfig(datalab.BuilderConfig):
+class GlueConfig(datalabs.BuilderConfig):
     """BuilderConfig for GLUE."""
 
     def __init__(
@@ -127,7 +127,7 @@ class GlueConfig(datalab.BuilderConfig):
             of the label and processing it to the form required by the label feature
           **kwargs: keyword arguments forwarded to super.
         """
-        super(GlueConfig, self).__init__(version=datalab.Version("1.0.0", ""), **kwargs)
+        super(GlueConfig, self).__init__(version=datalabs.Version("1.0.0", ""), **kwargs)
         self.text_features = text_features
         self.label_column = label_column
         self.label_classes = label_classes
@@ -139,7 +139,7 @@ class GlueConfig(datalab.BuilderConfig):
         self.task_templates = task_templates
 
 
-class Glue(datalab.GeneratorBasedBuilder):
+class Glue(datalabs.GeneratorBasedBuilder):
     """The General Language Understanding Evaluation (GLUE) benchmark."""
 
     BUILDER_CONFIGS = [
@@ -504,15 +504,15 @@ class Glue(datalab.GeneratorBasedBuilder):
     ]
 
     def _info(self):
-        features = {text_feature: datalab.Value("string") for text_feature in self.config.text_features.keys()}
+        features = {text_feature: datalabs.Value("string") for text_feature in self.config.text_features.keys()}
         if self.config.label_classes:
-            features["label"] = datalab.features.ClassLabel(names=self.config.label_classes)
+            features["label"] = datalabs.features.ClassLabel(names=self.config.label_classes)
         else:
-            features["label"] = datalab.Value("float32")
-        features["idx"] = datalab.Value("int32")
-        return datalab.DatasetInfo(
+            features["label"] = datalabs.Value("float32")
+        features["idx"] = datalabs.Value("int32")
+        return datalabs.DatasetInfo(
             description=_GLUE_DESCRIPTION,
-            features=datalab.Features(features),
+            features=datalabs.Features(features),
             homepage=self.config.url,
             citation=self.config.citation + "\n" + _GLUE_CITATION,
             task_templates=self.config.task_templates,
@@ -522,8 +522,8 @@ class Glue(datalab.GeneratorBasedBuilder):
         if self.config.name == "ax":
             data_file = dl_manager.download(self.config.data_url)
             return [
-                datalab.SplitGenerator(
-                    name=datalab.Split.TEST,
+                datalabs.SplitGenerator(
+                    name=datalabs.Split.TEST,
                     gen_kwargs={
                         "data_file": data_file,
                         "split": "test",
@@ -544,8 +544,8 @@ class Glue(datalab.GeneratorBasedBuilder):
             dl_dir = dl_manager.download_and_extract(self.config.data_url)
             data_dir = os.path.join(dl_dir, self.config.data_dir)
             mrpc_files = None
-        train_split = datalab.SplitGenerator(
-            name=datalab.Split.TRAIN,
+        train_split = datalabs.SplitGenerator(
+            name=datalabs.Split.TRAIN,
             gen_kwargs={
                 "data_file": os.path.join(data_dir or "", "train.tsv"),
                 "split": "train",
@@ -573,16 +573,16 @@ class Glue(datalab.GeneratorBasedBuilder):
         else:
             return [
                 train_split,
-                datalab.SplitGenerator(
-                    name=datalab.Split.VALIDATION,
+                datalabs.SplitGenerator(
+                    name=datalabs.Split.VALIDATION,
                     gen_kwargs={
                         "data_file": os.path.join(data_dir or "", "dev.tsv"),
                         "split": "dev",
                         "mrpc_files": mrpc_files,
                     },
                 ),
-                datalab.SplitGenerator(
-                    name=datalab.Split.TEST,
+                datalabs.SplitGenerator(
+                    name=datalabs.Split.TEST,
                     gen_kwargs={
                         "data_file": os.path.join(data_dir or "", "test.tsv"),
                         "split": "test",
@@ -702,7 +702,7 @@ class Glue(datalab.GeneratorBasedBuilder):
 
 
 def _mnli_split_generator(name, data_dir, split, matched):
-    return datalab.SplitGenerator(
+    return datalabs.SplitGenerator(
         name=name,
         gen_kwargs={
             "data_file": os.path.join(data_dir, "%s_%s.tsv" % (split, "matched" if matched else "mismatched")),

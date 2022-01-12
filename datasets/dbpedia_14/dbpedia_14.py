@@ -18,8 +18,8 @@
 import csv
 import os
 
-import datalab
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextClassification
 
 # TODO: Add BibTeX citation
 # Find for instance the citation on arxiv or on the dataset repo/website
@@ -57,7 +57,7 @@ _URLs = {
 }
 
 
-class DBpedia14Config(datalab.BuilderConfig):
+class DBpedia14Config(datalabs.BuilderConfig):
     """BuilderConfig for DBpedia."""
 
     def __init__(self, **kwargs):
@@ -69,10 +69,10 @@ class DBpedia14Config(datalab.BuilderConfig):
         super(DBpedia14Config, self).__init__(**kwargs)
 
 
-class DBpedia14(datalab.GeneratorBasedBuilder):
+class DBpedia14(datalabs.GeneratorBasedBuilder):
     """DBpedia 2014 Ontology Classification Dataset."""
 
-    VERSION = datalab.Version("2.0.0")
+    VERSION = datalabs.Version("2.0.0")
 
     BUILDER_CONFIGS = [
         DBpedia14Config(
@@ -81,9 +81,9 @@ class DBpedia14(datalab.GeneratorBasedBuilder):
     ]
 
     def _info(self):
-        features = datalab.Features(
+        features = datalabs.Features(
             {
-                "label": datalab.features.ClassLabel(
+                "label": datalabs.features.ClassLabel(
                     names=[
                         "Company",
                         "EducationalInstitution",
@@ -101,11 +101,11 @@ class DBpedia14(datalab.GeneratorBasedBuilder):
                         "WrittenWork",
                     ]
                 ),
-                "title": datalab.Value("string"),
-                "text": datalab.Value("string"),
+                "title": datalabs.Value("string"),
+                "text": datalabs.Value("string"),
             }
         )
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features,
             supervised_keys=None,
@@ -120,15 +120,15 @@ class DBpedia14(datalab.GeneratorBasedBuilder):
         my_urls = _URLs[self.config.name]
         data_dir = dl_manager.download_and_extract(my_urls)
         return [
-            datalab.SplitGenerator(
-                name=datalab.Split.TRAIN,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
                 gen_kwargs={
                     "filepath": os.path.join(data_dir, "dbpedia_csv/train.csv"),
                     "split": "train",
                 },
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.TEST,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
                 gen_kwargs={"filepath": os.path.join(data_dir, "dbpedia_csv/test.csv"), "split": "test"},
             ),
         ]

@@ -19,8 +19,8 @@
 
 import os
 
-import datalab
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextClassification
 
 
 _CITATION = """\
@@ -40,24 +40,24 @@ It has one collection composed by 5,574 English, real and non-enconded messages,
 _DATA_URL = "http://archive.ics.uci.edu/ml/machine-learning-databases/00228/smsspamcollection.zip"
 
 
-class SmsSpam(datalab.GeneratorBasedBuilder):
+class SmsSpam(datalabs.GeneratorBasedBuilder):
     """SMS Spam Collection Data Set"""
 
     BUILDER_CONFIGS = [
-        datalab.BuilderConfig(
+        datalabs.BuilderConfig(
             name="plain_text",
-            version=datalab.Version("1.0.0", ""),
+            version=datalabs.Version("1.0.0", ""),
             description="Plain text import of SMS Spam Collection Data Set",
         )
     ]
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "text": datalab.Value("string"),
-                    "label": datalab.features.ClassLabel(names=["legitimate", "spam"]),
+                    "text": datalabs.Value("string"),
+                    "label": datalabs.features.ClassLabel(names=["legitimate", "spam"]),
                 }
             ),
             homepage="http://archive.ics.uci.edu/ml/datalab/SMS+Spam+Collection",
@@ -68,8 +68,8 @@ class SmsSpam(datalab.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         dl_dir = dl_manager.download_and_extract(_DATA_URL)
         return [
-            datalab.SplitGenerator(
-                name=datalab.Split.TRAIN, gen_kwargs={"filepath": os.path.join(dl_dir, "SMSSpamCollection")}
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": os.path.join(dl_dir, "SMSSpamCollection")}
             ),
         ]
 

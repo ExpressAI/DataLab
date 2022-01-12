@@ -15,8 +15,8 @@
 """Poem Sentiment: A sentiment dataset of poem verses"""
 
 
-import datalab
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextClassification
 
 _CITATION = """\
 @misc{sheng2020investigating,
@@ -46,19 +46,19 @@ _URLS = {
 _LABEL_MAPPING = {-1: 0, 0: 2, 1: 1, 2: 3}
 
 
-class PoemSentiment(datalab.GeneratorBasedBuilder):
+class PoemSentiment(datalabs.GeneratorBasedBuilder):
     """Poem Sentiment: A sentiment dataset of poem verses"""
 
-    VERSION = datalab.Version("1.0.0")
+    VERSION = datalabs.Version("1.0.0")
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "id": datalab.Value("int32"),
-                    "text": datalab.Value("string"),
-                    "label": datalab.ClassLabel(names=["negative", "positive", "neutral", "mixed"]),
+                    "id": datalabs.Value("int32"),
+                    "text": datalabs.Value("string"),
+                    "label": datalabs.ClassLabel(names=["negative", "positive", "neutral", "mixed"]),
                 }
             ),
             supervised_keys=None,
@@ -70,9 +70,9 @@ class PoemSentiment(datalab.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         downloaded_files = dl_manager.download(_URLS)
         return [
-            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
-            datalab.SplitGenerator(name=datalab.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
-            datalab.SplitGenerator(name=datalab.Split.TEST, gen_kwargs={"filepath": downloaded_files["test"]}),
+            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
+            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": downloaded_files["test"]}),
         ]
 
     def _generate_examples(self, filepath):

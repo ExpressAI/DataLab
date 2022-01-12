@@ -20,8 +20,8 @@
 import json
 import os
 
-import datalab
-from datalab.tasks import Summarization
+import datalabs
+from datalabs.tasks import Summarization
 
 _CITATION = """
 @misc{kornilova2019billsum,
@@ -52,22 +52,22 @@ _DOCUMENT = "text"
 _SUMMARY = "summary"
 
 
-class Billsum(datalab.GeneratorBasedBuilder):
+class Billsum(datalabs.GeneratorBasedBuilder):
     """BillSum Dataset."""
 
     # 2.0.0 data source updated to filter near duplicates.
     # 3.0.0  none of the test examples are 'near duplicates' of an example in the
     #   train set AND they dont have the same title, regardless of similarity.
-    VERSION = datalab.Version("3.0.0")
+    VERSION = datalabs.Version("3.0.0")
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    _DOCUMENT: datalab.Value("string"),
-                    _SUMMARY: datalab.Value("string"),
-                    "title": datalab.Value("string"),
+                    _DOCUMENT: datalabs.Value("string"),
+                    _SUMMARY: datalabs.Value("string"),
+                    "title": datalabs.Value("string"),
                 }
             ),
             supervised_keys=(_DOCUMENT, _SUMMARY),
@@ -83,15 +83,15 @@ class Billsum(datalab.GeneratorBasedBuilder):
         """Returns SplitGenerators."""
         dl_path = dl_manager.download_and_extract(_URL)
         return [
-            datalab.SplitGenerator(
-                name=datalab.Split.TRAIN,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
                 gen_kwargs={"path": os.path.join(dl_path, "us_train_data_final_OFFICIAL.jsonl"), "key": "bill_id"},
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.TEST,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
                 gen_kwargs={"path": os.path.join(dl_path, "us_test_data_final_OFFICIAL.jsonl"), "key": "bill_id"},
             ),
-            datalab.SplitGenerator(
+            datalabs.SplitGenerator(
                 name="ca_test",
                 gen_kwargs={"path": os.path.join(dl_path, "ca_test_data_final_OFFICIAL.jsonl"), "key": "external_id"},
             ),

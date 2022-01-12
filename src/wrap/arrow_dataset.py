@@ -39,7 +39,7 @@ import pyarrow.compute as pc
 from multiprocess import Pool, RLock
 from tqdm.auto import tqdm
 
-from datalab.tasks.text_classification import TextClassification
+from datalabs.tasks.text_classification import TextClassification
 
 from . import config, utils
 from .arrow_reader import ArrowReader

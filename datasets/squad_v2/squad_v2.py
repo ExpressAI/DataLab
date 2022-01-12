@@ -3,8 +3,8 @@
 
 import json
 
-import datalab
-from datalab.tasks import QuestionAnsweringExtractive
+import datalabs
+from datalabs.tasks import QuestionAnsweringExtractive
 
 
 # TODO(squad_v2): BibTeX citation
@@ -35,7 +35,7 @@ _URLS = {
 }
 
 
-class SquadV2Config(datalab.BuilderConfig):
+class SquadV2Config(datalabs.BuilderConfig):
     """BuilderConfig for SQUAD."""
 
     def __init__(self, **kwargs):
@@ -47,30 +47,30 @@ class SquadV2Config(datalab.BuilderConfig):
         super(SquadV2Config, self).__init__(**kwargs)
 
 
-class SquadV2(datalab.GeneratorBasedBuilder):
+class SquadV2(datalabs.GeneratorBasedBuilder):
     """TODO(squad_v2): Short description of my dataset."""
 
     # TODO(squad_v2): Set up version.
     BUILDER_CONFIGS = [
-        SquadV2Config(name="squad_v2", version=datalab.Version("2.0.0"), description="SQuAD plaint text version 2"),
+        SquadV2Config(name="squad_v2", version=datalabs.Version("2.0.0"), description="SQuAD plaint text version 2"),
     ]
 
     def _info(self):
         # TODO(squad_v2): Specifies the datalab.DatasetInfo object
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             # This is the description that will appear on the datalab page.
             description=_DESCRIPTION,
             # datalab.features.FeatureConnectors
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "id": datalab.Value("string"),
-                    "title": datalab.Value("string"),
-                    "context": datalab.Value("string"),
-                    "question": datalab.Value("string"),
-                    "answers": datalab.features.Sequence(
+                    "id": datalabs.Value("string"),
+                    "title": datalabs.Value("string"),
+                    "context": datalabs.Value("string"),
+                    "question": datalabs.Value("string"),
+                    "answers": datalabs.features.Sequence(
                         {
-                            "text": datalab.Value("string"),
-                            "answer_start": datalab.Value("int32"),
+                            "text": datalabs.Value("string"),
+                            "answer_start": datalabs.Value("int32"),
                         }
                     ),
                     # These are the features of your dataset like images, labels ...
@@ -99,8 +99,8 @@ class SquadV2(datalab.GeneratorBasedBuilder):
         downloaded_files = dl_manager.download_and_extract(urls_to_download)
 
         return [
-            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
-            datalab.SplitGenerator(name=datalab.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
+            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
+            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
         ]
 
     def _generate_examples(self, filepath):

@@ -2,6 +2,9 @@
 *.lock
 !dvc.lock
 
+
+install.sh
+publish.sh
 # Extracted dummy data
 datasets/**/dummy_data-zip-extracted/
 

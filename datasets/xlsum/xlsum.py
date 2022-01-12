@@ -1,8 +1,8 @@
 """XL-Sum abstractive summarization dataset."""
 import json
 import os
-import datalab
-from datalab.tasks import Summarization
+import datalabs
+from datalabs.tasks import Summarization
 
 
 _CITATION = """\
@@ -84,27 +84,27 @@ _LANGUAGES = [
 ]
 
 
-class Xlsum(datalab.GeneratorBasedBuilder):
-    VERSION = datalab.Version("2.0.0")
+class Xlsum(datalabs.GeneratorBasedBuilder):
+    VERSION = datalabs.Version("2.0.0")
 
     BUILDER_CONFIGS = [
-        datalab.BuilderConfig(
+        datalabs.BuilderConfig(
             name="{}".format(lang),
-            version=datalab.Version("2.0.0")
+            version=datalabs.Version("2.0.0")
         )
         for lang in _LANGUAGES
     ]
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "id": datalab.Value("string"),
-                    "url": datalab.Value("string"),
-                    "title": datalab.Value("string"),
-                    "summary": datalab.Value("string"),
-                    "text": datalab.Value("string"),
+                    "id": datalabs.Value("string"),
+                    "url": datalabs.Value("string"),
+                    "title": datalabs.Value("string"),
+                    "summary": datalabs.Value("string"),
+                    "text": datalabs.Value("string"),
                 }
             ),
             supervised_keys=None,
@@ -124,20 +124,20 @@ class Xlsum(datalab.GeneratorBasedBuilder):
         url = _URL.format(lang, self.VERSION.version_str[:-2])
         data_dir = dl_manager.download_and_extract(url)
         return [
-            datalab.SplitGenerator(
-                name=datalab.Split.TRAIN,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
                 gen_kwargs={
                     "filepath": os.path.join(data_dir, lang + "_train.jsonl"),
                 },
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.TEST,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
                 gen_kwargs={
                     "filepath": os.path.join(data_dir, lang + "_test.jsonl"),
                 },
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.VALIDATION,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION,
                 gen_kwargs={
                     "filepath": os.path.join(data_dir, lang + "_val.jsonl"),
                 },

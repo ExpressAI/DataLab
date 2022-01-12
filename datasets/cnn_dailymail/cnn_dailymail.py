@@ -19,10 +19,10 @@
 import hashlib
 import os
 
-import datalab
-from datalab.tasks import Summarization
+import datalabs
+from datalabs.tasks import Summarization
 
-logger = datalab.logging.get_logger(__name__)
+logger = datalabs.logging.get_logger(__name__)
 
 
 _DESCRIPTION = """\
@@ -82,19 +82,19 @@ _ARTICLE = "summary"
 
 _SUPPORTED_VERSIONS = [
     # Using cased version.
-    datalab.Version("3.0.0", "Using cased version."),
+    datalabs.Version("3.0.0", "Using cased version."),
     # Same data as 0.0.2
-    datalab.Version("1.0.0", ""),
+    datalabs.Version("1.0.0", ""),
     # Having the model predict newline separators makes it easier to evaluate
     # using summary-level ROUGE.
-    datalab.Version("2.0.0", "Separate target sentences with newline."),
+    datalabs.Version("2.0.0", "Separate target sentences with newline."),
 ]
 
 
-_DEFAULT_VERSION = datalab.Version("3.0.0", "Using cased version.")
+_DEFAULT_VERSION = datalabs.Version("3.0.0", "Using cased version.")
 
 
-class CnnDailymailConfig(datalab.BuilderConfig):
+class CnnDailymailConfig(datalabs.BuilderConfig):
     """BuilderConfig for CnnDailymail."""
 
     def __init__(self, **kwargs):
@@ -153,11 +153,11 @@ def _subset_filenames(dl_paths, split):
     """Get filenames for a particular split."""
     assert isinstance(dl_paths, dict), dl_paths
     # Get filenames for a split.
-    if split == datalab.Split.TRAIN:
+    if split == datalabs.Split.TRAIN:
         urls = _get_url_hashes(dl_paths["train_urls"])
-    elif split == datalab.Split.VALIDATION:
+    elif split == datalabs.Split.VALIDATION:
         urls = _get_url_hashes(dl_paths["val_urls"])
-    elif split == datalab.Split.TEST:
+    elif split == datalabs.Split.TEST:
         urls = _get_url_hashes(dl_paths["test_urls"])
     else:
         logger.fatal("Unsupported split: %s", split)
@@ -230,7 +230,7 @@ def _get_art_abs(story_file, tfds_version):
     return article, abstract
 
 
-class CnnDailymail(datalab.GeneratorBasedBuilder):
+class CnnDailymail(datalabs.GeneratorBasedBuilder):
     """CNN/DailyMail non-anonymized summarization dataset."""
 
     BUILDER_CONFIGS = [
@@ -242,13 +242,13 @@ class CnnDailymail(datalab.GeneratorBasedBuilder):
 
     def _info(self):
         # Should return a datalab.DatasetInfo object
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    _ARTICLE: datalab.Value("string"),
-                    _HIGHLIGHTS: datalab.Value("string"),
-                    "id": datalab.Value("string"),
+                    _ARTICLE: datalabs.Value("string"),
+                    _HIGHLIGHTS: datalabs.Value("string"),
+                    "id": datalabs.Value("string"),
                 }
             ),
             supervised_keys=None,
@@ -267,17 +267,17 @@ class CnnDailymail(datalab.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         dl_paths = dl_manager.download_and_extract(_DL_URLS)
-        train_files = _subset_filenames(dl_paths, datalab.Split.TRAIN)
+        train_files = _subset_filenames(dl_paths, datalabs.Split.TRAIN)
         # Generate shared vocabulary
 
         return [
-            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"files": train_files}),
-            datalab.SplitGenerator(
-                name=datalab.Split.VALIDATION,
-                gen_kwargs={"files": _subset_filenames(dl_paths, datalab.Split.VALIDATION)},
+            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"files": train_files}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"files": _subset_filenames(dl_paths, datalabs.Split.VALIDATION)},
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.TEST, gen_kwargs={"files": _subset_filenames(dl_paths, datalab.Split.TEST)}
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"files": _subset_filenames(dl_paths, datalabs.Split.TEST)}
             ),
         ]
 

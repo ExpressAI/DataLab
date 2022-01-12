@@ -1,7 +1,7 @@
 import json
 import os
-import datalab
-from datalab.tasks import Summarization
+import datalabs
+from datalabs.tasks import Summarization
 
 _CITATION = None
 _DESCRIPTION = """
@@ -35,7 +35,7 @@ _ABSTRACT = "summary"
 _ARTICLE = "text"
 
 
-class ArxivSumConfig(datalab.BuilderConfig):
+class ArxivSumConfig(datalabs.BuilderConfig):
     """BuilderConfig for ArxivSummarization."""
 
     def __init__(self, **kwargs):
@@ -46,7 +46,7 @@ class ArxivSumConfig(datalab.BuilderConfig):
         super(ArxivSumConfig, self).__init__(**kwargs)
 
 
-class ArxivSumDataset(datalab.GeneratorBasedBuilder):
+class ArxivSumDataset(datalabs.GeneratorBasedBuilder):
     """ArxivSummarization Dataset."""
 
     _TRAIN_FILE = "https://huggingface.co/datalab/ccdv/arxiv-summarization/resolve/main/train.zip"
@@ -55,12 +55,12 @@ class ArxivSumDataset(datalab.GeneratorBasedBuilder):
     BUILDER_CONFIGS = [
         ArxivSumConfig(
             name="section",
-            version=datalab.Version("1.0.0"),
+            version=datalabs.Version("1.0.0"),
             description="Arxiv dataset for summarization, concatenated sections",
         ),
         ArxivSumConfig(
             name="document",
-            version=datalab.Version("1.0.0"),
+            version=datalabs.Version("1.0.0"),
             description="Arxiv dataset for summarization, document",
         ),
     ]
@@ -68,12 +68,12 @@ class ArxivSumDataset(datalab.GeneratorBasedBuilder):
 
     def _info(self):
         # Should return a datalab.DatasetInfo object
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    _ARTICLE: datalab.Value("string"),
-                    _ABSTRACT: datalab.Value("string"),
+                    _ARTICLE: datalabs.Value("string"),
+                    _ABSTRACT: datalabs.Value("string"),
                     # "id": datalab.Value("string"),
                 }
             ),
@@ -92,14 +92,14 @@ class ArxivSumDataset(datalab.GeneratorBasedBuilder):
         test_path = dl_manager.download_and_extract(self._TEST_FILE) + "/test.txt"
 
         return [
-            datalab.SplitGenerator(
-                name=datalab.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.VALIDATION, gen_kwargs={"filepath": val_path}
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": val_path}
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.TEST, gen_kwargs={"filepath": test_path}
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
             ),
         ]
 

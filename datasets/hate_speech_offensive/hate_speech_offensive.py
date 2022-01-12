@@ -17,8 +17,8 @@
 
 import csv
 
-import datalab
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextClassification
 
 _CITATION = """\
 @inproceedings{hateoffensive,
@@ -49,22 +49,22 @@ _CLASS_MAP = {
 }
 
 
-class HateSpeechOffensive(datalab.GeneratorBasedBuilder):
+class HateSpeechOffensive(datalabs.GeneratorBasedBuilder):
     """An annotated dataset for hate speech and offensive language detection on tweets."""
 
-    VERSION = datalab.Version("1.0.0")
+    VERSION = datalabs.Version("1.0.0")
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "count": datalab.Value("int64"),
-                    "hate_speech_count": datalab.Value("int64"),
-                    "offensive_language_count": datalab.Value("int64"),
-                    "neither_count": datalab.Value("int64"),
-                    "label": datalab.ClassLabel(names=["hate speech", "offensive language", "neither"]),
-                    "text": datalab.Value("string"),
+                    "count": datalabs.Value("int64"),
+                    "hate_speech_count": datalabs.Value("int64"),
+                    "offensive_language_count": datalabs.Value("int64"),
+                    "neither_count": datalabs.Value("int64"),
+                    "label": datalabs.ClassLabel(names=["hate speech", "offensive language", "neither"]),
+                    "text": datalabs.Value("string"),
                 }
             ),
             supervised_keys=("tweet", "class"),
@@ -79,8 +79,8 @@ class HateSpeechOffensive(datalab.GeneratorBasedBuilder):
 
         data_file = dl_manager.download_and_extract(_URL)
         return [
-            datalab.SplitGenerator(
-                name=datalab.Split.TRAIN,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
                 gen_kwargs={
                     "filepath": data_file,
                 },

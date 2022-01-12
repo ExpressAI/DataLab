@@ -18,8 +18,8 @@
 import csv
 import os
 
-import datalab
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextClassification
 
 
 _CITATION = """\
@@ -48,7 +48,7 @@ _URLs = {
 }
 
 
-class YelpReviewFullConfig(datalab.BuilderConfig):
+class YelpReviewFullConfig(datalabs.BuilderConfig):
     """BuilderConfig for YelpReviewFull."""
 
     def __init__(self, **kwargs):
@@ -60,10 +60,10 @@ class YelpReviewFullConfig(datalab.BuilderConfig):
         super(YelpReviewFullConfig, self).__init__(**kwargs)
 
 
-class YelpReviewFull(datalab.GeneratorBasedBuilder):
+class YelpReviewFull(datalabs.GeneratorBasedBuilder):
     """Yelp Review Full Star Dataset 2015."""
 
-    VERSION = datalab.Version("1.0.0")
+    VERSION = datalabs.Version("1.0.0")
 
     BUILDER_CONFIGS = [
         YelpReviewFullConfig(
@@ -72,9 +72,9 @@ class YelpReviewFull(datalab.GeneratorBasedBuilder):
     ]
 
     def _info(self):
-        features = datalab.Features(
+        features = datalabs.Features(
             {
-                "label": datalab.features.ClassLabel(
+                "label": datalabs.features.ClassLabel(
                     names=[
                         "1 star",
                         "2 star",
@@ -83,10 +83,10 @@ class YelpReviewFull(datalab.GeneratorBasedBuilder):
                         "5 stars",
                     ]
                 ),
-                "text": datalab.Value("string"),
+                "text": datalabs.Value("string"),
             }
         )
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features,
             supervised_keys=None,
@@ -101,15 +101,15 @@ class YelpReviewFull(datalab.GeneratorBasedBuilder):
         my_urls = _URLs[self.config.name]
         data_dir = dl_manager.download_and_extract(my_urls)
         return [
-            datalab.SplitGenerator(
-                name=datalab.Split.TRAIN,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
                 gen_kwargs={
                     "filepath": os.path.join(data_dir, "yelp_review_full_csv", "train.csv"),
                     "split": "train",
                 },
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.TEST,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
                 gen_kwargs={"filepath": os.path.join(data_dir, "yelp_review_full_csv", "test.csv"), "split": "test"},
             ),
         ]

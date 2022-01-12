@@ -19,11 +19,11 @@
 
 import json
 
-import datalab
-from datalab.tasks import QuestionAnsweringExtractive
+import datalabs
+from datalabs.tasks import QuestionAnsweringExtractive
 
 
-logger = datalab.logging.get_logger(__name__)
+logger = datalabs.logging.get_logger(__name__)
 
 
 _CITATION = """\
@@ -54,7 +54,7 @@ _URLS = {
 }
 
 
-class SquadConfig(datalab.BuilderConfig):
+class SquadConfig(datalabs.BuilderConfig):
     """BuilderConfig for SQUAD."""
 
     def __init__(self, **kwargs):
@@ -66,30 +66,30 @@ class SquadConfig(datalab.BuilderConfig):
         super(SquadConfig, self).__init__(**kwargs)
 
 
-class Squad(datalab.GeneratorBasedBuilder):
+class Squad(datalabs.GeneratorBasedBuilder):
     """SQUAD: The Stanford Question Answering Dataset. Version 1.1."""
 
     BUILDER_CONFIGS = [
         SquadConfig(
             name="plain_text",
-            version=datalab.Version("1.0.0", ""),
+            version=datalabs.Version("1.0.0", ""),
             description="Plain text",
         ),
     ]
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "id": datalab.Value("string"),
-                    "title": datalab.Value("string"),
-                    "context": datalab.Value("string"),
-                    "question": datalab.Value("string"),
-                    "answers": datalab.features.Sequence(
+                    "id": datalabs.Value("string"),
+                    "title": datalabs.Value("string"),
+                    "context": datalabs.Value("string"),
+                    "question": datalabs.Value("string"),
+                    "answers": datalabs.features.Sequence(
                         {
-                            "text": datalab.Value("string"),
-                            "answer_start": datalab.Value("int32"),
+                            "text": datalabs.Value("string"),
+                            "answer_start": datalabs.Value("int32"),
                         }
                     ),
                 }
@@ -110,8 +110,8 @@ class Squad(datalab.GeneratorBasedBuilder):
         downloaded_files = dl_manager.download_and_extract(_URLS)
 
         return [
-            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
-            datalab.SplitGenerator(name=datalab.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
+            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
+            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
         ]
 
     def _generate_examples(self, filepath):

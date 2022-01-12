@@ -20,7 +20,7 @@
 import json
 import os
 
-import datalab
+import datalabs
 
 
 _SUPER_GLUE_CITATION = """\
@@ -278,7 +278,7 @@ _AXG_CITATION = """\
 """
 
 
-class SuperGlueConfig(datalab.BuilderConfig):
+class SuperGlueConfig(datalabs.BuilderConfig):
     """BuilderConfig for SuperGLUE."""
 
     def __init__(self, features, data_url, citation, url, label_classes=("False", "True"), **kwargs):
@@ -301,7 +301,7 @@ class SuperGlueConfig(datalab.BuilderConfig):
         #        the full release (v2.0).
         # 1.0.0: S3 (new shuffling, sharding and slicing mechanism).
         # 0.0.2: Initial version.
-        super(SuperGlueConfig, self).__init__(version=datalab.Version("1.0.2"), **kwargs)
+        super(SuperGlueConfig, self).__init__(version=datalabs.Version("1.0.2"), **kwargs)
         self.features = features
         self.label_classes = label_classes
         self.data_url = data_url
@@ -309,7 +309,7 @@ class SuperGlueConfig(datalab.BuilderConfig):
         self.url = url
 
 
-class SuperGlue(datalab.GeneratorBasedBuilder):
+class SuperGlue(datalabs.GeneratorBasedBuilder):
     """The SuperGLUE benchmark."""
 
     BUILDER_CONFIGS = [
@@ -423,44 +423,44 @@ class SuperGlue(datalab.GeneratorBasedBuilder):
     ]
 
     def _info(self):
-        features = {feature: datalab.Value("string") for feature in self.config.features}
+        features = {feature: datalabs.Value("string") for feature in self.config.features}
         if self.config.name.startswith("wsc"):
-            features["span1_index"] = datalab.Value("int32")
-            features["span2_index"] = datalab.Value("int32")
+            features["span1_index"] = datalabs.Value("int32")
+            features["span2_index"] = datalabs.Value("int32")
         if self.config.name == "wic":
-            features["start1"] = datalab.Value("int32")
-            features["start2"] = datalab.Value("int32")
-            features["end1"] = datalab.Value("int32")
-            features["end2"] = datalab.Value("int32")
+            features["start1"] = datalabs.Value("int32")
+            features["start2"] = datalabs.Value("int32")
+            features["end1"] = datalabs.Value("int32")
+            features["end2"] = datalabs.Value("int32")
         if self.config.name == "multirc":
             features["idx"] = dict(
                 {
-                    "paragraph": datalab.Value("int32"),
-                    "question": datalab.Value("int32"),
-                    "answer": datalab.Value("int32"),
+                    "paragraph": datalabs.Value("int32"),
+                    "question": datalabs.Value("int32"),
+                    "answer": datalabs.Value("int32"),
                 }
             )
         elif self.config.name == "record":
             features["idx"] = dict(
                 {
-                    "passage": datalab.Value("int32"),
-                    "query": datalab.Value("int32"),
+                    "passage": datalabs.Value("int32"),
+                    "query": datalabs.Value("int32"),
                 }
             )
         else:
-            features["idx"] = datalab.Value("int32")
+            features["idx"] = datalabs.Value("int32")
 
         if self.config.name == "record":
             # Entities are the set of possible choices for the placeholder.
-            features["entities"] = datalab.features.Sequence(datalab.Value("string"))
+            features["entities"] = datalabs.features.Sequence(datalabs.Value("string"))
             # Answers are the subset of entities that are correct.
-            features["answers"] = datalab.features.Sequence(datalab.Value("string"))
+            features["answers"] = datalabs.features.Sequence(datalabs.Value("string"))
         else:
-            features["label"] = datalab.features.ClassLabel(names=self.config.label_classes)
+            features["label"] = datalabs.features.ClassLabel(names=self.config.label_classes)
 
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_GLUE_DESCRIPTION + self.config.description,
-            features=datalab.Features(features),
+            features=datalabs.Features(features),
             homepage=self.config.url,
             citation=self.config.citation + "\n" + _SUPER_GLUE_CITATION,
         )
@@ -471,34 +471,34 @@ class SuperGlue(datalab.GeneratorBasedBuilder):
         dl_dir = os.path.join(dl_dir, task_name)
         if self.config.name in ["axb", "axg"]:
             return [
-                datalab.SplitGenerator(
-                    name=datalab.Split.TEST,
+                datalabs.SplitGenerator(
+                    name=datalabs.Split.TEST,
                     gen_kwargs={
                         "data_file": os.path.join(dl_dir, f"{task_name}.jsonl"),
-                        "split": datalab.Split.TEST,
+                        "split": datalabs.Split.TEST,
                     },
                 ),
             ]
         return [
-            datalab.SplitGenerator(
-                name=datalab.Split.TRAIN,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
                 gen_kwargs={
                     "data_file": os.path.join(dl_dir, "train.jsonl"),
-                    "split": datalab.Split.TRAIN,
+                    "split": datalabs.Split.TRAIN,
                 },
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.VALIDATION,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION,
                 gen_kwargs={
                     "data_file": os.path.join(dl_dir, "val.jsonl"),
-                    "split": datalab.Split.VALIDATION,
+                    "split": datalabs.Split.VALIDATION,
                 },
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.TEST,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
                 gen_kwargs={
                     "data_file": os.path.join(dl_dir, "test.jsonl"),
-                    "split": datalab.Split.TEST,
+                    "split": datalabs.Split.TEST,
                 },
             ),
         ]
@@ -545,7 +545,7 @@ class SuperGlue(datalab.GeneratorBasedBuilder):
                         else:
                             example["label"] = _cast_label(row["label"])
                     else:
-                        assert split == datalab.Split.TEST, row
+                        assert split == datalabs.Split.TEST, row
                         example["label"] = -1
                     yield example["idx"], example
 

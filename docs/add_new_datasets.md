@@ -36,8 +36,9 @@ Suppose the dataset name to be added is `ag_news`, we need to:
 ## 4. Test in your local server
 * enter into `Datalab/datasets` folder
 * run following python command
+
 ```python
-   from datalab import load_dataset
+   from datalabs import load_dataset
    dataset = load_dataset("./ag_news")
    print(dataset['train']._info)
 ```

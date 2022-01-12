@@ -20,8 +20,8 @@
 import json
 import os
 
-import datalab
-from datalab.tasks import Summarization
+import datalabs
+from datalabs.tasks import Summarization
 
 _CITATION = """
 @article{Narayan2018DontGM,
@@ -70,20 +70,20 @@ _REMOVE_LINES = set(
 )
 
 
-class Xsum(datalab.GeneratorBasedBuilder):
+class Xsum(datalabs.GeneratorBasedBuilder):
     """Extreme Summarization (XSum) Dataset."""
 
     # Version 1.2.0 expands coverage, includes ids, and removes web contents.
-    VERSION = datalab.Version("1.2.0")
+    VERSION = datalabs.Version("1.2.0")
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    _DOCUMENT: datalab.Value("string"),
-                    _SUMMARY: datalab.Value("string"),
-                    _ID: datalab.Value("string"),
+                    _DOCUMENT: datalabs.Value("string"),
+                    _SUMMARY: datalabs.Value("string"),
+                    _ID: datalabs.Value("string"),
                 }
             ),
             supervised_keys=(_DOCUMENT, _SUMMARY),
@@ -102,8 +102,8 @@ class Xsum(datalab.GeneratorBasedBuilder):
         downloaded_files = dl_manager.download(files_to_download)
 
         return [
-            datalab.SplitGenerator(
-                name=datalab.Split.TRAIN,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
                 gen_kwargs={
                     "split_path": downloaded_files["splits"],
                     "split_name": "train",
@@ -111,8 +111,8 @@ class Xsum(datalab.GeneratorBasedBuilder):
                     "files": dl_manager.iter_archive(downloaded_files["data"]),
                 },
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.VALIDATION,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION,
                 gen_kwargs={
                     "split_path": downloaded_files["splits"],
                     "split_name": "validation",
@@ -120,8 +120,8 @@ class Xsum(datalab.GeneratorBasedBuilder):
                     "files": dl_manager.iter_archive(downloaded_files["data"]),
                 },
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.TEST,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
                 gen_kwargs={
                     "split_path": downloaded_files["splits"],
                     "split_name": "test",

@@ -21,8 +21,8 @@ rate of 5-8 annotators."""
 
 import os
 
-import datalab
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextClassification
 
 _CITATION = """\
 @article{Malo2014GoodDO,
@@ -75,10 +75,10 @@ _LICENSE = "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported L
 _URL = "https://www.researchgate.net/profile/Pekka_Malo/publication/251231364_FinancialPhraseBank-v10/data/0c96051eee4fb1d56e000000/FinancialPhraseBank-v10.zip"
 
 
-_VERSION = datalab.Version("1.0.0")
+_VERSION = datalabs.Version("1.0.0")
 
 
-class FinancialPhraseBankConfig(datalab.BuilderConfig):
+class FinancialPhraseBankConfig(datalabs.BuilderConfig):
     """BuilderConfig for FinancialPhraseBank."""
 
     def __init__(
@@ -96,7 +96,7 @@ class FinancialPhraseBankConfig(datalab.BuilderConfig):
         self.path = os.path.join("FinancialPhraseBank-v1.0", f"Sentences_{split.title()}Agree.txt")
 
 
-class FinancialPhrasebank(datalab.GeneratorBasedBuilder):
+class FinancialPhrasebank(datalabs.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
         FinancialPhraseBankConfig(
@@ -109,12 +109,12 @@ class FinancialPhrasebank(datalab.GeneratorBasedBuilder):
     ]
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "text": datalab.Value("string"),
-                    "label": datalab.features.ClassLabel(
+                    "text": datalabs.Value("string"),
+                    "label": datalabs.features.ClassLabel(
                         names=[
                             "negative",
                             "neutral",
@@ -134,8 +134,8 @@ class FinancialPhrasebank(datalab.GeneratorBasedBuilder):
         """Returns SplitGenerators."""
         data_dir = dl_manager.download_and_extract(_URL)
         return [
-            datalab.SplitGenerator(
-                name=datalab.Split.TRAIN,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
                 # These kwargs will be passed to _generate_examples
                 gen_kwargs={"filepath": os.path.join(data_dir, self.config.path)},
             ),

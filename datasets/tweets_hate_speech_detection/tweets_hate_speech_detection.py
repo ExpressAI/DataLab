@@ -19,8 +19,8 @@
 
 import csv
 
-import datalab
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextClassification
 
 
 _DESCRIPTION = """\
@@ -43,16 +43,16 @@ _TRAIN_DOWNLOAD_URL = (
 )
 
 
-class TweetsHateSpeechDetection(datalab.GeneratorBasedBuilder):
+class TweetsHateSpeechDetection(datalabs.GeneratorBasedBuilder):
     """Detecing which tweets showcase hate or racist remarks."""
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "label": datalab.ClassLabel(names=["no-hate-speech", "hate-speech"]),
-                    "text": datalab.Value("string"),
+                    "label": datalabs.ClassLabel(names=["no-hate-speech", "hate-speech"]),
+                    "text": datalabs.Value("string"),
                 }
             ),
             homepage="https://github.com/sharmaroshan/Twitter-Sentiment-Analysis",
@@ -64,7 +64,7 @@ class TweetsHateSpeechDetection(datalab.GeneratorBasedBuilder):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
 
         return [
-            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
         ]
 
     def _generate_examples(self, filepath):

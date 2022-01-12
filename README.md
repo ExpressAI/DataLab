@@ -24,10 +24,11 @@ cd Datalab/datasets/
 ```
 
 * Step 2:
+
 ```python
 
 # pip install datalab
-from datalab import operations, load_dataset
+from datalabs import operations, load_dataset
 from featurize import *
 
 # don't forget `./`

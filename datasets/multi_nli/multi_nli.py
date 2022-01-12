@@ -20,8 +20,8 @@
 import json
 import os
 
-import datalab
-from datalab.tasks import TextMatching
+import datalabs
+from datalabs.tasks import TextMatching
 
 _CITATION = """\
 @InProceedings{N18-1101,
@@ -53,26 +53,26 @@ basis for the shared task of the RepEval 2017 Workshop at EMNLP in Copenhagen.
 """
 
 
-class MultiNli(datalab.GeneratorBasedBuilder):
+class MultiNli(datalabs.GeneratorBasedBuilder):
     """MultiNLI: The Stanford Question Answering Dataset. Version 1.1."""
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "promptID": datalab.Value("int32"),
-                    "pairID": datalab.Value("string"),
-                    "text1": datalab.Value("string"),
-                    "premise_binary_parse": datalab.Value("string"),  # parses in unlabeled binary-branching format
-                    "premise_parse": datalab.Value("string"),  # sentence as parsed by the Stanford PCFG Parser 3.5.2
-                    "text2": datalab.Value("string"),
-                    "hypothesis_binary_parse": datalab.Value("string"),  # parses in unlabeled binary-branching format
-                    "hypothesis_parse": datalab.Value(
+                    "promptID": datalabs.Value("int32"),
+                    "pairID": datalabs.Value("string"),
+                    "text1": datalabs.Value("string"),
+                    "premise_binary_parse": datalabs.Value("string"),  # parses in unlabeled binary-branching format
+                    "premise_parse": datalabs.Value("string"),  # sentence as parsed by the Stanford PCFG Parser 3.5.2
+                    "text2": datalabs.Value("string"),
+                    "hypothesis_binary_parse": datalabs.Value("string"),  # parses in unlabeled binary-branching format
+                    "hypothesis_parse": datalabs.Value(
                         "string"
                     ),  # sentence as parsed by the Stanford PCFG Parser 3.5.2
-                    "genre": datalab.Value("string"),
-                    "label": datalab.features.ClassLabel(names=["entailment", "neutral", "contradiction"]),
+                    "genre": datalabs.Value("string"),
+                    "label": datalabs.features.ClassLabel(names=["entailment", "neutral", "contradiction"]),
                 }
             ),
             # No default supervised_keys (as we have to pass both premise
@@ -97,9 +97,9 @@ class MultiNli(datalab.GeneratorBasedBuilder):
         mismatched_validation_path = os.path.join(mnli_path, "multinli_1.0_dev_mismatched.jsonl")
 
         return [
-            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalab.SplitGenerator(name="validation_matched", gen_kwargs={"filepath": matched_validation_path}),
-            datalab.SplitGenerator(name="validation_mismatched", gen_kwargs={"filepath": mismatched_validation_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(name="validation_matched", gen_kwargs={"filepath": matched_validation_path}),
+            datalabs.SplitGenerator(name="validation_mismatched", gen_kwargs={"filepath": mismatched_validation_path}),
         ]
 
     def _generate_examples(self, filepath):

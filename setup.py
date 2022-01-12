@@ -19,7 +19,7 @@ REQUIRED_PKGS = [
     "dill",
     # For performance gains with apache arrow
     "pandas",
-    # for downloading datalab over HTTPS
+    # for downloading datalabs over HTTPS
     "requests>=2.19.0",
     # progress bars in download and scripts
     "tqdm>=4.62.1",
@@ -31,7 +31,7 @@ REQUIRED_PKGS = [
     "multiprocess",
     # to get metadata of optional dependencies such as torch or tensorflow for Python versions that don't have it
     "importlib_metadata;python_version<'3.8'",
-    # to save datalab locally or on any filesystem
+    # to save datalabs locally or on any filesystem
     # minimum 2021.05.0 to have the AbstractArchiveFileSystem
     "fsspec[http]>=2021.05.0",
     # for data streaming via http
@@ -39,7 +39,7 @@ REQUIRED_PKGS = [
     "huggingface_hub>=0.1.0,<1.0.0",
     # Utilities from PyPA to e.g., compare versions
     "packaging",
-    # New dependencies needed by DataLab
+    # New dependencies needed by datalabs
     "pymongo[srv]",
     "spacy",
     "checklist",
@@ -80,7 +80,7 @@ TESTS_REQUIRE = [
     "torch",
     "torchaudio",
     "transformers",
-    # datalab dependencies
+    # datalabs dependencies
     "bs4",
     "conllu",
     "langdetect",
@@ -109,7 +109,7 @@ TESTS_REQUIRE = [
     "six~=1.15.0",
     # metadata validation
     "importlib_resources;python_version<'3.7'",
-    # new dependencies needed by DataLab
+    # new dependencies needed by datalabs
     "pymongo[srv]"
 ]
 
@@ -164,25 +164,25 @@ EXTRAS_REQUIRE = {
 }
 
 setup(
-    name="datalab",
-    version="1.16.2.dev0",  # expected format is one of x.y.z.dev0, or x.y.z.rc1 or x.y.z (no to dashes, yes to dots)
-    description="Datalab",
+    name="datalabs",
+    version="0.0.1.dev",
+    description="Datalabs",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     author="expressai",
-    author_email="expressai",
-    url="https://github.com/expressai/datalab",
-    download_url="https://github.com/expressai/datalab/tags",
+    author_email="stefanpengfei@gamil.com",
+    url="https://github.com/expressai/datalabs",
+    download_url="https://github.com/expressai/datalabs/tags",
     license="Apache 2.0",
     package_dir={"": "src"},
     packages=find_packages("src"),
-    package_data={"datalab": ["py.typed", "scripts/templates/*"],
-                  "datalab.utils.resources": ["*.json", "*.yaml"],
-                  "datalab.operations.featurize.pre_models":["*.pkl","*.json"],
-                  "datalab.operations.featurize.resources.gender_data": ["*.json"],
-                  "datalab.operations.edit.resources": ["*.json","*.txt", "*.names","*.tsv"],
+    package_data={"datalabs": ["py.typed", "scripts/templates/*"],
+                  "datalabs.utils.resources": ["*.json", "*.yaml"],
+                  "datalabs.operations.featurize.pre_models":["*.pkl","*.json"],
+                  "datalabs.operations.featurize.resources.gender_data": ["*.json"],
+                  "datalabs.operations.edit.resources": ["*.json","*.txt", "*.names","*.tsv"],
                   },
-    entry_points={"console_scripts": ["datalab-cli=datalab.commands.datasets_cli:main"]},
+    entry_points={"console_scripts": ["datalabs-cli=datalabs.commands.datasets_cli:main"]},
     install_requires=REQUIRED_PKGS,
     extras_require=EXTRAS_REQUIRE,
     classifiers=[
@@ -197,7 +197,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ],
-    keywords="datalab machine learning datalab metrics",
-    zip_safe=False,  # Required for mypy to find the py.typed file
+    keywords="dataset",
+    zip_safe=False,
     include_package_data=True
 )

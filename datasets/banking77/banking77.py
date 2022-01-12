@@ -17,8 +17,8 @@
 
 import csv
 
-import datalab
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextClassification
 
 
 _CITATION = """\
@@ -49,16 +49,16 @@ _TRAIN_DOWNLOAD_URL = (
 _TEST_DOWNLOAD_URL = "https://raw.githubusercontent.com/PolyAI-LDN/task-specific-datalab/master/banking_data/test.csv"
 
 
-class Banking77(datalab.GeneratorBasedBuilder):
+class Banking77(datalabs.GeneratorBasedBuilder):
     """BANKING77 dataset."""
 
-    VERSION = datalab.Version("1.1.0")
+    VERSION = datalabs.Version("1.1.0")
 
     def _info(self):
-        features = datalab.Features(
+        features = datalabs.Features(
             {
-                "text": datalab.Value("string"),
-                "label": datalab.features.ClassLabel(
+                "text": datalabs.Value("string"),
+                "label": datalabs.features.ClassLabel(
                     names=[
                         "activate_my_card",
                         "age_limit",
@@ -141,7 +141,7 @@ class Banking77(datalab.GeneratorBasedBuilder):
                 ),
             }
         )
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features,
             supervised_keys=None,
@@ -156,8 +156,8 @@ class Banking77(datalab.GeneratorBasedBuilder):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalab.SplitGenerator(name=datalab.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
     def _generate_examples(self, filepath):

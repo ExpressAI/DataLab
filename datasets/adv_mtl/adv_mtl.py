@@ -12,8 +12,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import datalab
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextClassification
 # Find for instance the citation on arxiv or on the dataset repo/website
 _CITATION = """\
 @article{liu2017adversarial,
@@ -38,17 +38,17 @@ _LICENSE = "N/A"
 # This can be an arbitrary nested dict/list of URLs (see below in `_split_generators` method)
 _URLs = "https://raw.githubusercontent.com/ShiinaHiiragi/multi-task-dataset/master/{}.task.{}"
 
-class AdvMtl(datalab.GeneratorBasedBuilder):
-    VERSION = datalab.Version("1.0.0")
+class AdvMtl(datalabs.GeneratorBasedBuilder):
+    VERSION = datalabs.Version("1.0.0")
 
     def _info(self):
-        features = datalab.Features(
+        features = datalabs.Features(
             {
-                "text": datalab.Value("string"),
-                "label": datalab.features.ClassLabel(names=["positive","negative"]),
+                "text": datalabs.Value("string"),
+                "label": datalabs.features.ClassLabel(names=["positive", "negative"]),
             }
         )
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             # This is the description that will appear on the datalab page.
             description=_DESCRIPTION,
             # This defines the different columns of the dataset and their types
@@ -98,7 +98,7 @@ class AdvMtl(datalab.GeneratorBasedBuilder):
         for data_field in fields:
             for data_type in data_types:
                 split_name = data_field + "_" + data_type
-                result.append(datalab.SplitGenerator(
+                result.append(datalabs.SplitGenerator(
                     name=split_name,
                     # These kwargs will be passed to _generate_examples
                     gen_kwargs={

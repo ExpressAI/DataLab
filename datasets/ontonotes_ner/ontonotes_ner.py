@@ -1,9 +1,9 @@
 """XL-Sum abstractive summarization dataset."""
 import json
 import os
-import datalab
-from datalab.tasks import SequenceLabeling
-logger = datalab.logging.get_logger(__name__)
+import datalabs
+from datalabs.tasks import SequenceLabeling
+logger = datalabs.logging.get_logger(__name__)
 
 _CITATION = """\
     @data{AB2/MKJJ2R_2013,
@@ -71,7 +71,7 @@ config_maps = {
 
 
 
-class OntonotesNERConfig(datalab.BuilderConfig):
+class OntonotesNERConfig(datalabs.BuilderConfig):
 
     def __init__(self,
                  labels = None,
@@ -80,13 +80,13 @@ class OntonotesNERConfig(datalab.BuilderConfig):
         self.labels = labels
 
 
-class OntonotesNER(datalab.GeneratorBasedBuilder):
-    VERSION = datalab.Version("1.0.0")
+class OntonotesNER(datalabs.GeneratorBasedBuilder):
+    VERSION = datalabs.Version("1.0.0")
 
     BUILDER_CONFIGS = [
         OntonotesNERConfig(
             name="{}".format(domain),
-            version=datalab.Version("1.0.0"),
+            version=datalabs.Version("1.0.0"),
             labels = val["labels"]
         )
         for domain, val in config_maps.items()
@@ -96,14 +96,14 @@ class OntonotesNER(datalab.GeneratorBasedBuilder):
 
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "id": datalab.Value("string"),
-                    "tokens": datalab.Sequence(datalab.Value("string")),
-                    "tags": datalab.Sequence(
-                        datalab.features.ClassLabel(
+                    "id": datalabs.Value("string"),
+                    "tokens": datalabs.Sequence(datalabs.Value("string")),
+                    "tags": datalabs.Sequence(
+                        datalabs.features.ClassLabel(
                             names=self.config.labels
                         )
                     ),
@@ -122,20 +122,20 @@ class OntonotesNER(datalab.GeneratorBasedBuilder):
         domain = str(self.config.name)
         data_dir = dl_manager.download_and_extract(_URL)
         return [
-            datalab.SplitGenerator(
-                name=datalab.Split.TRAIN,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
                 gen_kwargs={
                     "filepath": os.path.join(data_dir + "/ner_on/" + domain, "train-" + domain + ".tsv"),
                 },
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.TEST,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
                 gen_kwargs={
                     "filepath": os.path.join(data_dir + "/ner_on/" + domain, "test-" + domain + ".tsv"),
                 },
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.VALIDATION,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION,
                 gen_kwargs={
                     "filepath": os.path.join(data_dir + "/ner_on/" + domain, "dev-" + domain + ".tsv"),
                 },

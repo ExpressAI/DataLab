@@ -20,8 +20,8 @@
 import csv
 import os
 
-import datalab
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextClassification
 
 _CITATION = """\
 @inproceedings{gibert2018hate,
@@ -50,21 +50,21 @@ have been manually labelled as containing hate speech or not, according to certa
 _DATA_URL = "https://github.com/Vicomtech/hate-speech-dataset/archive/master.zip"
 
 
-class HateSpeech18(datalab.GeneratorBasedBuilder):
+class HateSpeech18(datalabs.GeneratorBasedBuilder):
     """Hate speech dataset"""
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "text": datalab.Value("string"),
-                    "user_id": datalab.Value("int64"),
-                    "subforum_id": datalab.Value("int64"),
-                    "num_contexts": datalab.Value("int64"),
-                    "label": datalab.features.ClassLabel(names=["no hate",
+                    "text": datalabs.Value("string"),
+                    "user_id": datalabs.Value("int64"),
+                    "subforum_id": datalabs.Value("int64"),
+                    "num_contexts": datalabs.Value("int64"),
+                    "label": datalabs.features.ClassLabel(names=["no hate",
                                                                  "hate",
-                                                                 "unknown",]),
+                                                                 "unknown", ]),
                 }
             ),
             supervised_keys=None,
@@ -77,8 +77,8 @@ class HateSpeech18(datalab.GeneratorBasedBuilder):
         dl_dir = dl_manager.download_and_extract(_DATA_URL)
 
         return [
-            datalab.SplitGenerator(
-                name=datalab.Split.TRAIN, gen_kwargs={"filepath": os.path.join(dl_dir, "hate-speech-dataset-master")}
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": os.path.join(dl_dir, "hate-speech-dataset-master")}
             ),
         ]
 

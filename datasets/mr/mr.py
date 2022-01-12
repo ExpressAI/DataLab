@@ -6,8 +6,8 @@
 
 import csv
 
-import datalab
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextClassification
 
 
 _DESCRIPTION = """\
@@ -48,16 +48,16 @@ _TRAIN_DOWNLOAD_URL = "https://drive.google.com/uc?id=1FCqdCBYNahOmoMOW7L29EZGan
 _TEST_DOWNLOAD_URL = "https://drive.google.com/uc?id=1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb&export=download"
 
 
-class MR(datalab.GeneratorBasedBuilder):
+class MR(datalabs.GeneratorBasedBuilder):
     """AG News topic classification dataset."""
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "text": datalab.Value("string"),
-                    "label": datalab.features.ClassLabel(names=["positive", "negative"]),
+                    "text": datalabs.Value("string"),
+                    "label": datalabs.features.ClassLabel(names=["positive", "negative"]),
                 }
             ),
             homepage="http://www.cs.cornell.edu/people/pabo/movie-review-data/",
@@ -70,8 +70,8 @@ class MR(datalab.GeneratorBasedBuilder):
         print(f"train_path: \t{train_path}")
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalab.SplitGenerator(name=datalab.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
     def _generate_examples(self, filepath):

@@ -18,7 +18,7 @@
 
 import json
 
-import datalab
+import datalabs
 
 
 _CITATION = """\
@@ -58,15 +58,15 @@ _HOMEPAGE_URL = "https://registry.opendata.aws/amazon-reviews-ml/"
 _DOWNLOAD_URL = "https://amazon-reviews-ml.s3-us-west-2.amazonaws.com/json/{split}/dataset_{lang}_{split}.json"
 
 
-class AmazonReviewsMultiConfig(datalab.BuilderConfig):
+class AmazonReviewsMultiConfig(datalabs.BuilderConfig):
     """BuilderConfig for AmazonReviewsMultiConfig."""
 
     def __init__(self, languages=None, **kwargs):
-        super(AmazonReviewsMultiConfig, self).__init__(version=datalab.Version(_VERSION, ""), **kwargs),
+        super(AmazonReviewsMultiConfig, self).__init__(version=datalabs.Version(_VERSION, ""), **kwargs),
         self.languages = languages
 
 
-class AmazonReviewsMulti(datalab.GeneratorBasedBuilder):
+class AmazonReviewsMulti(datalabs.GeneratorBasedBuilder):
     """The Multilingual Amazon Reviews Corpus"""
 
     BUILDER_CONFIGS = [
@@ -87,22 +87,22 @@ class AmazonReviewsMulti(datalab.GeneratorBasedBuilder):
     DEFAULT_CONFIG_NAME = _ALL_LANGUAGES
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "review_id": datalab.Value("string"),
-                    "product_id": datalab.Value("string"),
-                    "reviewer_id": datalab.Value("string"),
-                    "label": datalab.features.ClassLabel(names=["1 star",
+                    "review_id": datalabs.Value("string"),
+                    "product_id": datalabs.Value("string"),
+                    "reviewer_id": datalabs.Value("string"),
+                    "label": datalabs.features.ClassLabel(names=["1 star",
                                                                  "2 stars",
                                                                  "3 stars",
                                                                  "4 stars",
                                                                  "5 stars"]),
-                    "text": datalab.Value("string"),
-                    "review_title": datalab.Value("string"),
-                    "language": datalab.Value("string"),
-                    "product_category": datalab.Value("string"),
+                    "text": datalabs.Value("string"),
+                    "review_title": datalabs.Value("string"),
+                    "language": datalabs.Value("string"),
+                    "product_category": datalabs.Value("string"),
                 }
             ),
             supervised_keys=None,
@@ -121,9 +121,9 @@ class AmazonReviewsMulti(datalab.GeneratorBasedBuilder):
         test_paths = dl_manager.download_and_extract(test_urls)
 
         return [
-            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"file_paths": train_paths}),
-            datalab.SplitGenerator(name=datalab.Split.VALIDATION, gen_kwargs={"file_paths": dev_paths}),
-            datalab.SplitGenerator(name=datalab.Split.TEST, gen_kwargs={"file_paths": test_paths}),
+            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"file_paths": train_paths}),
+            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"file_paths": dev_paths}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"file_paths": test_paths}),
         ]
 
     def _generate_examples(self, file_paths):

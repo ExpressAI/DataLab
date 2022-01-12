@@ -15,8 +15,8 @@
 """The Tweet Eval datalab"""
 
 
-import datalab
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextClassification
 
 _CITATION = """\
 @inproceedings{barbieri2020tweeteval,
@@ -131,7 +131,7 @@ _URLs = {
 }
 
 
-class TweetEvalConfig(datalab.BuilderConfig):
+class TweetEvalConfig(datalabs.BuilderConfig):
     def __init__(self, *args, type=None, sub_type=None, **kwargs):
         super().__init__(
             *args,
@@ -142,14 +142,14 @@ class TweetEvalConfig(datalab.BuilderConfig):
         self.sub_type = sub_type
 
 
-class TweetEval(datalab.GeneratorBasedBuilder):
+class TweetEval(datalabs.GeneratorBasedBuilder):
     """TweetEval Dataset."""
 
     BUILDER_CONFIGS = [
         TweetEvalConfig(
             type=key,
             sub_type=None,
-            version=datalab.Version("1.1.0"),
+            version=datalabs.Version("1.1.0"),
             description=f"This part of my dataset covers {key} part of TweetEval Dataset.",
         )
         for key in list(_URLs.keys())
@@ -158,7 +158,7 @@ class TweetEval(datalab.GeneratorBasedBuilder):
         TweetEvalConfig(
             type="stance",
             sub_type=key,
-            version=datalab.Version("1.1.0"),
+            version=datalabs.Version("1.1.0"),
             description=f"This part of my dataset covers stance_{key} part of TweetEval Dataset.",
         )
         for key in list(_URLs["stance"].keys())
@@ -202,10 +202,10 @@ class TweetEval(datalab.GeneratorBasedBuilder):
         else:
             names = ["anger", "joy", "optimism", "sadness"]
 
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
-                {"text": datalab.Value("string"), "label": datalab.features.ClassLabel(names=names)}
+            features=datalabs.Features(
+                {"text": datalabs.Value("string"), "label": datalabs.features.ClassLabel(names=names)}
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
@@ -222,18 +222,18 @@ class TweetEval(datalab.GeneratorBasedBuilder):
             my_urls = _URLs[self.config.type][self.config.sub_type]
         data_dir = dl_manager.download_and_extract(my_urls)
         return [
-            datalab.SplitGenerator(
-                name=datalab.Split.TRAIN,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
                 # These kwargs will be passed to _generate_examples
                 gen_kwargs={"text_path": data_dir["train_text"], "labels_path": data_dir["train_labels"]},
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.TEST,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
                 # These kwargs will be passed to _generate_examples
                 gen_kwargs={"text_path": data_dir["test_text"], "labels_path": data_dir["test_labels"]},
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.VALIDATION,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION,
                 # These kwargs will be passed to _generate_examples
                 gen_kwargs={"text_path": data_dir["val_text"], "labels_path": data_dir["val_labels"]},
             ),

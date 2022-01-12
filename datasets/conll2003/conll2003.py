@@ -16,10 +16,10 @@
 # Lint as: python3
 """Introduction to the CoNLL-2003 Shared Task: Language-Independent Named Entity Recognition"""
 
-import datalab
-from datalab.tasks import SequenceLabeling
+import datalabs
+from datalabs.tasks import SequenceLabeling
 
-logger = datalab.logging.get_logger(__name__)
+logger = datalabs.logging.get_logger(__name__)
 
 
 _CITATION = """\
@@ -56,7 +56,7 @@ _DEV_FILE = "valid.txt"
 _TEST_FILE = "test.txt"
 
 
-class Conll2003Config(datalab.BuilderConfig):
+class Conll2003Config(datalabs.BuilderConfig):
     """BuilderConfig for Conll2003"""
 
     def __init__(self,
@@ -77,12 +77,12 @@ class Conll2003Config(datalab.BuilderConfig):
         self.task_templates = task_templates
 
 
-class Conll2003(datalab.GeneratorBasedBuilder):
+class Conll2003(datalabs.GeneratorBasedBuilder):
     """Conll2003 dataset."""
 
     BUILDER_CONFIGS = [
         Conll2003Config(name="pos",
-                        version=datalab.Version("1.0.0"),
+                        version=datalabs.Version("1.0.0"),
                         description="Part-of-Speech",
                         tokens_column="tokens",
                         tags_column="tags",
@@ -139,7 +139,7 @@ class Conll2003(datalab.GeneratorBasedBuilder):
                                                          task="part-of-speech")]
                         ),
         Conll2003Config(name="ner",
-                        version=datalab.Version("1.0.0"),
+                        version=datalabs.Version("1.0.0"),
                         description="Named Entity Recognition",
                         tokens_column="tokens",
                         tags_column="tags",
@@ -158,7 +158,7 @@ class Conll2003(datalab.GeneratorBasedBuilder):
                                                          task="named-entity-recognition")]
                         ),
         Conll2003Config(name="chunking",
-                        version=datalab.Version("1.0.0"),
+                        version=datalabs.Version("1.0.0"),
                         description="Chunking",
                         tokens_column="tokens",
                         tags_column="tags",
@@ -194,14 +194,14 @@ class Conll2003(datalab.GeneratorBasedBuilder):
     DEFAULT_CONFIG_NAME = "ner"
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "id": datalab.Value("string"),
-                    "tokens": datalab.Sequence(datalab.Value("string")),
-                    "tags": datalab.Sequence(
-                        datalab.features.ClassLabel(
+                    "id": datalabs.Value("string"),
+                    "tokens": datalabs.Sequence(datalabs.Value("string")),
+                    "tags": datalabs.Sequence(
+                        datalabs.features.ClassLabel(
                             names=self.config.label_classes
                         )
                     ),
@@ -223,9 +223,9 @@ class Conll2003(datalab.GeneratorBasedBuilder):
         downloaded_files = dl_manager.download_and_extract(urls_to_download)
 
         return [
-            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
-            datalab.SplitGenerator(name=datalab.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
-            datalab.SplitGenerator(name=datalab.Split.TEST, gen_kwargs={"filepath": downloaded_files["test"]}),
+            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
+            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": downloaded_files["test"]}),
         ]
 
     def _generate_examples(self, filepath):

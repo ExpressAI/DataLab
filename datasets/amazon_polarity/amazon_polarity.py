@@ -17,8 +17,8 @@
 
 import csv
 
-import datalab
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextClassification
 
 _CITATION = """\
 @inproceedings{mcauley2013hidden,
@@ -45,7 +45,7 @@ _URLs = {
 }
 
 
-class AmazonPolarityConfig(datalab.BuilderConfig):
+class AmazonPolarityConfig(datalabs.BuilderConfig):
     """BuilderConfig for AmazonPolarity."""
 
     def __init__(self, **kwargs):
@@ -57,10 +57,10 @@ class AmazonPolarityConfig(datalab.BuilderConfig):
         super(AmazonPolarityConfig, self).__init__(**kwargs)
 
 
-class AmazonPolarity(datalab.GeneratorBasedBuilder):
+class AmazonPolarity(datalabs.GeneratorBasedBuilder):
     """Amazon Polarity Classification Dataset."""
 
-    VERSION = datalab.Version("3.0.0")
+    VERSION = datalabs.Version("3.0.0")
 
     BUILDER_CONFIGS = [
         AmazonPolarityConfig(
@@ -69,19 +69,19 @@ class AmazonPolarity(datalab.GeneratorBasedBuilder):
     ]
 
     def _info(self):
-        features = datalab.Features(
+        features = datalabs.Features(
             {
-                "label": datalab.features.ClassLabel(
+                "label": datalabs.features.ClassLabel(
                     names=[
                         "negative",
                         "positive",
                     ]
                 ),
-                "title": datalab.Value("string"),
-                "text": datalab.Value("string"),
+                "title": datalabs.Value("string"),
+                "text": datalabs.Value("string"),
             }
         )
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features,
             supervised_keys=None,
@@ -95,15 +95,15 @@ class AmazonPolarity(datalab.GeneratorBasedBuilder):
         my_urls = _URLs[self.config.name]
         archive = dl_manager.download(my_urls)
         return [
-            datalab.SplitGenerator(
-                name=datalab.Split.TRAIN,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
                 gen_kwargs={
                     "filepath": "/".join(["amazon_review_polarity_csv", "train.csv"]),
                     "files": dl_manager.iter_archive(archive),
                 },
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.TEST,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
                 gen_kwargs={
                     "filepath": "/".join(["amazon_review_polarity_csv", "test.csv"]),
                     "files": dl_manager.iter_archive(archive),

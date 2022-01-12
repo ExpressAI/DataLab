@@ -20,8 +20,8 @@
 import csv
 import os
 
-import datalab
-from datalab.tasks import TextMatching
+import datalabs
+from datalabs.tasks import TextMatching
 
 _CITATION = """\
 @inproceedings{snli:emnlp2015,
@@ -43,19 +43,19 @@ inference (NLI), also known as recognizing textual entailment (RTE).
 _DATA_URL = "https://nlp.stanford.edu/projects/snli/snli_1.0.zip"
 
 
-class Snli(datalab.GeneratorBasedBuilder):
+class Snli(datalabs.GeneratorBasedBuilder):
     """The Stanford Natural Language Inference (SNLI) Corpus."""
 
 
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "text1": datalab.Value("string"),
-                    "text2": datalab.Value("string"),
-                    "label": datalab.features.ClassLabel(names=["entailment", "neutral", "contradiction"]),
+                    "text1": datalabs.Value("string"),
+                    "text2": datalabs.Value("string"),
+                    "label": datalabs.features.ClassLabel(names=["entailment", "neutral", "contradiction"]),
                 }
             ),
             # No default supervised_keys (as we have to pass both premise
@@ -75,14 +75,14 @@ class Snli(datalab.GeneratorBasedBuilder):
         dl_dir = dl_manager.download_and_extract(_DATA_URL)
         data_dir = os.path.join(dl_dir, "snli_1.0")
         return [
-            datalab.SplitGenerator(
-                name=datalab.Split.TEST, gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_test.txt")}
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_test.txt")}
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.VALIDATION, gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_dev.txt")}
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_dev.txt")}
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.TRAIN, gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_train.txt")}
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_train.txt")}
             ),
         ]
 

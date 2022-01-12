@@ -3,7 +3,7 @@ import os
 import sys
 import importlib
 import inspect
-import datalab
+import datalabs
 import json
 from featurize import general
 from inspect import getmembers, isfunction

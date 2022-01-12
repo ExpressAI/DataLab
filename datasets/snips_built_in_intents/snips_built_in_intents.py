@@ -19,8 +19,8 @@
 
 import json
 
-import datalab
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextClassification
 
 
 _DESCRIPTION = """\
@@ -63,18 +63,18 @@ _DOWNLOAD_URL = (
 )
 
 
-class SnipsBuiltInIntents(datalab.GeneratorBasedBuilder):
+class SnipsBuiltInIntents(datalabs.GeneratorBasedBuilder):
     """Snips built in intents (2016-12-built-in-intents) dataset."""
 
     def _info(self):
         # ToDo: Consider adding an alternate configuration for the entity slots. The default is to only return the intent labels.
 
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "text": datalab.Value("string"),
-                    "label": datalab.features.ClassLabel(
+                    "text": datalabs.Value("string"),
+                    "label": datalabs.features.ClassLabel(
                         names=[
                             "Compare Places",
                             "Request Ride",
@@ -100,7 +100,7 @@ class SnipsBuiltInIntents(datalab.GeneratorBasedBuilder):
         # ToDo: Consider splitting the data into train-test sets and re-hosting.
         samples_path = dl_manager.download_and_extract(_DOWNLOAD_URL)
         return [
-            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": samples_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": samples_path}),
         ]
 
     def _generate_examples(self, filepath):

@@ -17,10 +17,10 @@
 """The WNUT 17 Emerging Entities Dataset."""
 
 
-import datalab
-from datalab.tasks import SequenceLabeling
+import datalabs
+from datalabs.tasks import SequenceLabeling
 
-logger = datalab.logging.get_logger(__name__)
+logger = datalabs.logging.get_logger(__name__)
 
 
 _CITATION = """\
@@ -67,7 +67,7 @@ _DEV_FILE = "emerging.dev.conll"
 _TEST_FILE = "emerging.test.annotated"
 
 
-class WNUT_17Config(datalab.BuilderConfig):
+class WNUT_17Config(datalabs.BuilderConfig):
     """The WNUT 17 Emerging Entities Dataset."""
 
     def __init__(self, **kwargs):
@@ -79,24 +79,24 @@ class WNUT_17Config(datalab.BuilderConfig):
         super(WNUT_17Config, self).__init__(**kwargs)
 
 
-class WNUT_17(datalab.GeneratorBasedBuilder):
+class WNUT_17(datalabs.GeneratorBasedBuilder):
     """The WNUT 17 Emerging Entities Dataset."""
 
     BUILDER_CONFIGS = [
         WNUT_17Config(
-            name="wnut_17", version=datalab.Version("1.0.0"), description="The WNUT 17 Emerging Entities Dataset"
+            name="wnut_17", version=datalabs.Version("1.0.0"), description="The WNUT 17 Emerging Entities Dataset"
         ),
     ]
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "id": datalab.Value("string"),
-                    "tokens": datalab.Sequence(datalab.Value("string")),
-                    "tags": datalab.Sequence(
-                        datalab.features.ClassLabel(
+                    "id": datalabs.Value("string"),
+                    "tokens": datalabs.Sequence(datalabs.Value("string")),
+                    "tags": datalabs.Sequence(
+                        datalabs.features.ClassLabel(
                             names=[
                                 "O",
                                 "B-corporation",
@@ -132,9 +132,9 @@ class WNUT_17(datalab.GeneratorBasedBuilder):
         downloaded_files = dl_manager.download_and_extract(urls_to_download)
 
         return [
-            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
-            datalab.SplitGenerator(name=datalab.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
-            datalab.SplitGenerator(name=datalab.Split.TEST, gen_kwargs={"filepath": downloaded_files["test"]}),
+            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
+            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": downloaded_files["test"]}),
         ]
 
     def _generate_examples(self, filepath):

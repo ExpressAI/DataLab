@@ -14,8 +14,8 @@
 # limitations under the License.
 import os
 
-import datalab
-from datalab.tasks import TextMatching
+import datalabs
+from datalabs.tasks import TextMatching
 
 _CITATION = """\
 @inproceedings{marelli-etal-2014-sick,
@@ -47,25 +47,25 @@ The SICK data set was used in SemEval-2014 Task 1, and it freely available for r
 _DOWNLOAD_URL = "https://zenodo.org/record/2787612/files/SICK.zip?download=1"
 
 
-class SICK(datalab.GeneratorBasedBuilder):
+class SICK(datalabs.GeneratorBasedBuilder):
     """The SICK (Sentences Involving Compositional Knowldedge) dataset."""
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "id": datalab.Value("string"),
-                    "text1": datalab.Value("string"),
-                    "text2": datalab.Value("string"),
-                    "label": datalab.features.ClassLabel(names=["entailment", "neutral", "contradiction"]),
-                    "relatedness_score": datalab.Value("float"),
-                    "entailment_AB": datalab.Value("string"),
-                    "entailment_BA": datalab.Value("string"),
-                    "sentence_A_original": datalab.Value("string"),
-                    "sentence_B_original": datalab.Value("string"),
-                    "sentence_A_dataset": datalab.Value("string"),
-                    "sentence_B_dataset": datalab.Value("string"),
+                    "id": datalabs.Value("string"),
+                    "text1": datalabs.Value("string"),
+                    "text2": datalabs.Value("string"),
+                    "label": datalabs.features.ClassLabel(names=["entailment", "neutral", "contradiction"]),
+                    "relatedness_score": datalabs.Value("float"),
+                    "entailment_AB": datalabs.Value("string"),
+                    "entailment_BA": datalabs.Value("string"),
+                    "sentence_A_original": datalabs.Value("string"),
+                    "sentence_B_original": datalabs.Value("string"),
+                    "sentence_A_dataset": datalabs.Value("string"),
+                    "sentence_B_dataset": datalabs.Value("string"),
                 }
             ),
             supervised_keys=None,
@@ -83,16 +83,16 @@ class SICK(datalab.GeneratorBasedBuilder):
         dl_dir = dl_manager.download_and_extract(_DOWNLOAD_URL)
 
         return [
-            datalab.SplitGenerator(
-                name=datalab.Split.TRAIN,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
                 gen_kwargs={"filepath": os.path.join(dl_dir, "SICK.txt"), "key": "TRAIN"},
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.VALIDATION,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION,
                 gen_kwargs={"filepath": os.path.join(dl_dir, "SICK.txt"), "key": "TRIAL"},
             ),
-            datalab.SplitGenerator(
-                name=datalab.Split.TEST,
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
                 gen_kwargs={"filepath": os.path.join(dl_dir, "SICK.txt"), "key": "TEST"},
             ),
         ]

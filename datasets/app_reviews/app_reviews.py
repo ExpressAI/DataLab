@@ -19,8 +19,8 @@
 
 import csv
 
-import datalab
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextClassification
 
 _DESCRIPTION = """\
 It is a large dataset of Android applications belonging to 23 differentapps categories, which provides an overview of the types of feedback users report on the apps and documents the evolution of the related code metrics. The dataset contains about 395 applications of the F-Droid repository, including around 600 versions, 280,000 user reviews (extracted with specific text mining approaches)
@@ -39,18 +39,18 @@ year={2017}
 _TRAIN_DOWNLOAD_URL = "https://raw.githubusercontent.com/sealuzh/user_quality/master/csv_files/reviews.csv"
 
 
-class AppReviews(datalab.GeneratorBasedBuilder):
+class AppReviews(datalabs.GeneratorBasedBuilder):
     """Software Application Reviews by Users."""
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "package_name": datalab.Value("string"),
-                    "text": datalab.Value("string"),
-                    "date": datalab.Value("string"),
-                    "label": datalab.features.ClassLabel(names=["1 star",
+                    "package_name": datalabs.Value("string"),
+                    "text": datalabs.Value("string"),
+                    "date": datalabs.Value("string"),
+                    "label": datalabs.features.ClassLabel(names=["1 star",
                                                                  "2 stars",
                                                                  "3 stars",
                                                                  "4 stars",
@@ -65,7 +65,7 @@ class AppReviews(datalab.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         return [
-            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
         ]
 
     def _generate_examples(self, filepath):

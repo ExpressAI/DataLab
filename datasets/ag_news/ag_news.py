@@ -6,8 +6,8 @@
 
 import csv
 
-import datalab
-from datalab.tasks import TextClassification
+import datalabs
+from datalabs.tasks import TextClassification
 
 
 _DESCRIPTION = """\
@@ -40,16 +40,16 @@ _TRAIN_DOWNLOAD_URL = "https://raw.githubusercontent.com/mhjabreel/CharCnn_Keras
 _TEST_DOWNLOAD_URL = "https://raw.githubusercontent.com/mhjabreel/CharCnn_Keras/master/data/ag_news_csv/test.csv"
 
 
-class AGNews(datalab.GeneratorBasedBuilder):
+class AGNews(datalabs.GeneratorBasedBuilder):
 
 
     def _info(self):
-        return datalab.DatasetInfo(
+        return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalab.Features(
+            features=datalabs.Features(
                 {
-                    "text": datalab.Value("string"),
-                    "label": datalab.features.ClassLabel(names=["World", "Sports", "Business", "Science and Technology"]),
+                    "text": datalabs.Value("string"),
+                    "label": datalabs.features.ClassLabel(names=["World", "Sports", "Business", "Science and Technology"]),
                 }
             ),
             homepage="http://groups.di.unipi.it/~gulli/AG_corpus_of_news_articles.html",
@@ -62,8 +62,8 @@ class AGNews(datalab.GeneratorBasedBuilder):
         print(f"train_path: \t{train_path}")
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalab.SplitGenerator(name=datalab.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalab.SplitGenerator(name=datalab.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
     def _generate_examples(self, filepath):
