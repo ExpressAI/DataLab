@@ -1,4 +1,4 @@
-"""XL-Sum abstractive summarization dataset."""
+
 import json
 import os
 import datalabs
