@@ -1,66 +1,5 @@
 # Lint as: python3
-""" HuggingFace/Datasets is an open library of datalab.
 
-Note:
-
-   VERSION needs to be formatted following the MAJOR.MINOR.PATCH convention
-   (we need to follow this convention to be able to retrieve versioned scripts)
-
-Simple check list for release from AllenNLP repo: https://github.com/allenai/allennlp/blob/master/setup.py
-
-To create the package for pypi.
-
-0. Prerequisites:
-   - Dependencies:
-     - twine: "pip install twine"
-   - Create an account in (and join the 'datalab' project):
-     - PyPI: https://pypi.org/
-     - Test PyPI: https://test.pypi.org/
-
-1. Change the version in:
-   - __init__.py
-   - setup.py
-   - docs/source/conf.py
-
-2. Commit these changes: "git commit -m 'Release: VERSION'"
-
-3. Add a tag in git to mark the release: "git tag VERSION -m 'Add tag VERSION for pypi'"
-   Push the tag to remote: git push --tags origin master
-
-4. Build both the sources and the wheel. Do not change anything in setup.py between
-   creating the wheel and the source distribution (obviously).
-
-   First, delete any "build" directory that may exist from previous builds.
-
-   For the wheel, run: "python setup.py bdist_wheel" in the top level directory.
-   (this will build a wheel for the python version you use to build it).
-
-   For the sources, run: "python setup.py sdist"
-   You should now have a /dist directory with both .whl and .tar.gz source versions.
-
-5. Check that everything looks correct by uploading the package to the pypi test server:
-
-   twine upload dist/* -r pypitest --repository-url=https://test.pypi.org/legacy/
-
-   Check that you can install it in a virtualenv/notebook by running:
-   pip install huggingface_hub fsspec aiohttp
-   pip install -U tqdm
-   pip install -i https://testpypi.python.org/pypi datalab
-
-6. Upload the final version to actual pypi:
-   twine upload dist/* -r pypi
-
-7. Fill release notes in the tag in github once everything is looking hunky-dory.
-
-8. Update the documentation commit in .circleci/deploy.sh for the accurate documentation to be displayed.
-   Update the version mapping in docs/source/_static/js/custom.js with: "python utils/release.py --version VERSION"
-   Set version to X.X.X+1.dev0 (e.g. 1.8.0 -> 1.8.1.dev0) in:
-   - setup.py
-   - __init__.py
-
-9. Commit these changes: "git commit -m 'Release docs'"
-   Push the commit to remote: "git push origin master"
-"""
 
 import datetime
 import itertools
@@ -75,7 +14,6 @@ REQUIRED_PKGS = [
     "numpy>=1.17",
     # Backend and serialization.
     # Minimum 3.0.0 to support mix of struct and list types in parquet, and batch iterators of parquet data
-    # pyarrow 4.0.0 introduced segfault bug, see: https://github.com/huggingface/datasets/pull/2268
     "pyarrow>=3.0.0,!=4.0.0",
     # For smart caching dataset processing
     "dill",
@@ -98,7 +36,6 @@ REQUIRED_PKGS = [
     "fsspec[http]>=2021.05.0",
     # for data streaming via http
     "aiohttp",
-    # To get datalab from the Datasets Hub on huggingface.co
     "huggingface_hub>=0.1.0,<1.0.0",
     # Utilities from PyPA to e.g., compare versions
     "packaging",
@@ -229,11 +166,11 @@ EXTRAS_REQUIRE = {
 setup(
     name="datalab",
     version="1.16.2.dev0",  # expected format is one of x.y.z.dev0, or x.y.z.rc1 or x.y.z (no to dashes, yes to dots)
-    description="HuggingFace community-driven open-source library of datalab",
+    description="Datalab",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
-    author="HuggingFace Inc.",
-    author_email="thomas@huggingface.co",
+    author="expressai",
+    author_email="expressai",
     url="https://github.com/expressai/datalab",
     download_url="https://github.com/expressai/datalab/tags",
     license="Apache 2.0",
