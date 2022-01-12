@@ -42,6 +42,7 @@ Suppose the dataset name to be added is `ag_news`, we need to:
    from datalabs import load_dataset
    dataset = load_dataset("./ag_news")
    print(dataset['train']._info)
+   print(dataset['train']._info.task_templates)
 ```
 
 
