@@ -3,19 +3,19 @@
 ## Installation
 #### Install
 
-    ```shell
+ 
     pip install --upgrade pip
     pip install datalabs
-    ```  
+ 
 
    or 
 
-    ```shell
+ 
     pip install --upgrade pip
     git clone https://github.com/ExpressAI/Datalab.git
     cd Datalab
     pip install .
-    ```
+ 
 
  
 #### Dataset Operation
