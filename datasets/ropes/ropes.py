@@ -65,12 +65,16 @@ class Ropes(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "id": datalabs.Value("string"),
-                    "background": datalabs.Value("string"),
+                    # "background": datalabs.Value("string"),
+                    "title": datalabs.Value("string"),
+                    "url": datalabs.Value("string"),
+                    "context": datalabs.Value("string"),
                     "situation": datalabs.Value("string"),
                     "question": datalabs.Value("string"),
                     "answers": datalabs.features.Sequence(
                         {
                             "text": datalabs.Value("string"),
+                            "answer_start": datalabs.Value("int32"),
                         }
                     ),
                 }
