@@ -13,7 +13,8 @@ logger = get_logger(__name__)
 # Datasets
 S3_DATASETS_BUCKET_PREFIX = "xxx"
 CLOUDFRONT_DATASETS_DISTRIB_PREFIX = "xxx"
-REPO_DATASETS_URL = "https://raw.githubusercontent.com/expressai/data/{revision}/{path}/{name}"
+REPO_DATASETS_URL = "https://raw.githubusercontent.com/expressai/data/scripts/{revision}/{path}/{name}"
+
 
 
 # Metrics

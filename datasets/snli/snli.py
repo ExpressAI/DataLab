@@ -46,13 +46,7 @@ _DATA_URL = "https://nlp.stanford.edu/projects/snli/snli_1.0.zip"
 class Snli(datalab.GeneratorBasedBuilder):
     """The Stanford Natural Language Inference (SNLI) Corpus."""
 
-    # BUILDER_CONFIGS = [
-    #     datalab.BuilderConfig(
-    #         name="plain_text",
-    #         version=datalab.Version("1.0.0", ""),
-    #         description="Plain text import of SNLI",
-    #     )
-    # ]
+
 
     def _info(self):
         return datalab.DatasetInfo(
