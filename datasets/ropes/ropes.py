@@ -85,7 +85,7 @@ class Ropes(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 QuestionAnsweringExtractive(
-                    question_column="question", context_column="background", answers_column="answers"
+                    question_column="question", context_column="context", answers_column="answers"
                 )
             ],
         )
@@ -142,7 +142,7 @@ class Ropes(datalabs.GeneratorBasedBuilder):
                                 "question": question,
                                 "id": id_,
                                 "answers": {
-                                    "answer_start": -1,
+                                    "answer_start": [-1,],
                                     "text": answers,
                                 },
                                 "url": "xxx",
