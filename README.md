@@ -3,14 +3,14 @@
 ## Installation
 #### Install
 
- 
+   
     pip install --upgrade pip
     pip install datalabs
  
 
    or 
 
- 
+    # This is suitable for SDK developers
     pip install --upgrade pip
     git clone https://github.com/ExpressAI/Datalab.git
     cd Datalab
