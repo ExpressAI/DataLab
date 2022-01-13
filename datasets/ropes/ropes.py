@@ -71,12 +71,11 @@ class Ropes(datalabs.GeneratorBasedBuilder):
                     "context": datalabs.Value("string"),
                     "situation": datalabs.Value("string"),
                     "question": datalabs.Value("string"),
-                    "answers": datalabs.features.Sequence(
+                    "answers":
                         {
-                            "text": datalabs.Value("string"),
-                            "answer_start": datalabs.Value("int32"),
+                            "text": datalabs.features.Sequence(datalabs.Value("string")),
+                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
                         }
-                    ),
                 }
             ),
             supervised_keys=None,
@@ -134,7 +133,6 @@ class Ropes(datalabs.GeneratorBasedBuilder):
                             question = qa["question"].strip()
                             id_ = qa["id"]
                             answers = [] if split == "test" else [answer["text"].strip() for answer in qa["answers"]]
-
                             yield id_, {
                                 "title": "title",
                                 "context": background,
@@ -142,9 +140,28 @@ class Ropes(datalabs.GeneratorBasedBuilder):
                                 "question": question,
                                 "id": id_,
                                 "answers": {
-                                    "answer_start": [-1,],
+                                    "answer_start": [-1]*len(answers),
                                     "text": answers,
                                 },
                                 "url": "xxx",
                             }
+                            #
+                            # answers = {}
+                            # if split == "test":
+                            #     answers = {
+                            #         "text": None,
+                            #         "answer_start": None
+                            #     }
+                            # else:
+                            #     answers = [{"text": res_info["text"].strip(), "answer_start":-1} for res_info in qa["answers"]]
+                            # yield id_, {
+                            #     "title": "title",
+                            #     "context": background,
+                            #     "situation": situation,
+                            #     "question": question,
+                            #     "id": id_,
+                            #     "answers": answers,
+                            #     "url": "xxx",
+                            # }
+
                 break

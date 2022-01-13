@@ -48,12 +48,11 @@ class Quoref(datalabs.GeneratorBasedBuilder):
                     "context": datalabs.Value("string"),
                     "title": datalabs.Value("string"),
                     "url": datalabs.Value("string"),
-                    "answers": datalabs.features.Sequence(
+                    "answers":
                         {
-                            "answer_start": datalabs.Value("int32"),
-                            "text": datalabs.Value("string"),
+                            "text": datalabs.features.Sequence(datalabs.Value("string")),
+                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
                         }
-                    )
                     # These are the features of your dataset like images, labels ...
                 }
             ),
