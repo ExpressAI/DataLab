@@ -18,6 +18,7 @@
 
 import datalabs
 from datalabs.tasks import SequenceLabeling
+from datalabs.task_dataset import SequenceLabelingDataset
 
 logger = datalabs.logging.get_logger(__name__)
 
@@ -79,6 +80,12 @@ class Conll2003Config(datalabs.BuilderConfig):
 
 class Conll2003(datalabs.GeneratorBasedBuilder):
     """Conll2003 dataset."""
+
+
+    def __init__(self,*args, **kwargs):
+        super(Conll2003, self).__init__(*args, **kwargs)
+        self.dataset_class = SequenceLabelingDataset
+
 
     BUILDER_CONFIGS = [
         Conll2003Config(name="pos",
@@ -191,7 +198,7 @@ class Conll2003(datalabs.GeneratorBasedBuilder):
                                                          task="text-chunking")]
                         ),
     ]
-    DEFAULT_CONFIG_NAME = "ner"
+    # DEFAULT_CONFIG_NAME = "ner"
 
     def _info(self):
         return datalabs.DatasetInfo(

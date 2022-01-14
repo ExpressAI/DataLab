@@ -24,7 +24,7 @@ def get_average_length(texts:Iterator) -> int:
     lengths = []
     for text in texts:
         lengths.append(len(text.split(" ")))
-    return np.average(lengths)
+    return {"average_length":np.average(lengths)}
 
 
 
@@ -47,7 +47,7 @@ def get_vocabulary(texts:Iterator) -> Dict:
             else:
                 vocab[w] = 1
     vocab_sorted = dict(sorted(vocab.items(), key=lambda item: item[1], reverse = True))
-    return vocab_sorted
+    return {"vocabulary":vocab_sorted}
 
 
 
@@ -75,7 +75,7 @@ def get_tfidf(texts:Iterator) -> int:
             if tfidf[i, j] > 1e-5:
                 out[words[j]] = tfidf[i, j]
         outs.append(out)
-    return outs
+    return {"tfidf":outs}
 
 
 

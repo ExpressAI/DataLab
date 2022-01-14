@@ -19,6 +19,7 @@
 
 import datalabs
 from datalabs.tasks import SequenceLabeling
+from datalabs.task_dataset import SequenceLabelingDataset
 
 logger = datalabs.logging.get_logger(__name__)
 
@@ -67,6 +68,11 @@ _DEV_FILE = "emerging.dev.conll"
 _TEST_FILE = "emerging.test.annotated"
 
 
+
+
+
+
+
 class WNUT_17Config(datalabs.BuilderConfig):
     """The WNUT 17 Emerging Entities Dataset."""
 
@@ -79,8 +85,19 @@ class WNUT_17Config(datalabs.BuilderConfig):
         super(WNUT_17Config, self).__init__(**kwargs)
 
 
+
+
 class WNUT_17(datalabs.GeneratorBasedBuilder):
     """The WNUT 17 Emerging Entities Dataset."""
+
+
+
+    def __init__(self,*args, **kwargs):
+        super(WNUT_17, self).__init__(*args, **kwargs)
+        self.dataset_class = SequenceLabelingDataset
+
+
+
 
     BUILDER_CONFIGS = [
         WNUT_17Config(

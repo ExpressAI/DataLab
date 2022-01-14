@@ -56,6 +56,8 @@ from .utils.info_utils import get_size_checksum_dict, verify_checksums, verify_s
 from .utils.streaming_download_manager import StreamingDownloadManager
 
 
+
+
 logger = logging.get_logger(__name__)
 
 
@@ -197,6 +199,7 @@ class DatasetBuilder:
     # Optional default config name to be used used when name is None
     DEFAULT_CONFIG_NAME = None
 
+
     def __init__(
         self,
         cache_dir: Optional[str] = None,
@@ -208,6 +211,7 @@ class DatasetBuilder:
         namespace: Optional[str] = None,
         data_files: Optional[Union[str, list, dict, DataFilesDict]] = None,
         data_dir: Optional[str] = None,
+        dataset_class = Dataset,
         **config_kwargs,
     ):
         """Constructs a DatasetBuilder.
@@ -242,6 +246,7 @@ class DatasetBuilder:
         self.base_path = base_path
         self.use_auth_token = use_auth_token
         self.namespace = namespace
+        self.dataset_class = dataset_class
 
         if data_files is not None and not isinstance(data_files, DataFilesDict):
             data_files = DataFilesDict.from_local_or_remote(
@@ -771,6 +776,7 @@ class DatasetBuilder:
                 run_post_process=run_post_process,
                 ignore_verifications=ignore_verifications,
                 in_memory=in_memory,
+                dataset_class = self.dataset_class,
             ),
             split,
             map_tuple=True,
@@ -786,6 +792,7 @@ class DatasetBuilder:
         run_post_process: bool,
         ignore_verifications: bool,
         in_memory: bool = False,
+        dataset_class = Dataset,
     ):
         """as_dataset for a single split."""
         verify_infos = not ignore_verifications
@@ -799,6 +806,7 @@ class DatasetBuilder:
         ds = self._as_dataset(
             split=split,
             in_memory=in_memory,
+            dataset_class = dataset_class,
         )
         if run_post_process:
             for resource_file_name in self._post_processing_resources(split).values():
@@ -849,7 +857,9 @@ class DatasetBuilder:
 
         return ds
 
-    def _as_dataset(self, split: Union[ReadInstruction, Split] = Split.TRAIN, in_memory: bool = False) -> Dataset:
+
+
+    def _as_dataset(self, split: Union[ReadInstruction, Split] = Split.TRAIN, in_memory: bool = False, dataset_class = Dataset):
         """Constructs a `Dataset`.
 
         This is the internal implementation to overwrite called when user calls
@@ -871,7 +881,7 @@ class DatasetBuilder:
             in_memory=in_memory,
         )
         fingerprint = self._get_dataset_fingerprint(split)
-        return Dataset(fingerprint=fingerprint, **dataset_kwargs)
+        return dataset_class(fingerprint=fingerprint, **dataset_kwargs)
 
     def _get_dataset_fingerprint(self, split: Union[ReadInstruction, Split]) -> str:
         """The dataset fingerprint is the hash of the relative directory dataset_name/config_name/version/hash, as well as the split specs."""

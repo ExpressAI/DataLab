@@ -3,6 +3,7 @@ import json
 import os
 import datalabs
 from datalabs.tasks import SequenceLabeling
+from datalabs.task_dataset import SequenceLabelingDataset
 logger = datalabs.logging.get_logger(__name__)
 
 _CITATION = """\
@@ -81,6 +82,12 @@ class OntonotesNERConfig(datalabs.BuilderConfig):
 
 
 class OntonotesNER(datalabs.GeneratorBasedBuilder):
+
+    def __init__(self,*args, **kwargs):
+        super(OntonotesNER, self).__init__(*args, **kwargs)
+        self.dataset_class = SequenceLabelingDataset
+
+
     VERSION = datalabs.Version("1.0.0")
 
     BUILDER_CONFIGS = [
@@ -92,7 +99,7 @@ class OntonotesNER(datalabs.GeneratorBasedBuilder):
         for domain, val in config_maps.items()
     ]
 
-    DEFAULT_CONFIG_NAME = "notebc"
+    # DEFAULT_CONFIG_NAME = "notebc"
 
 
     def _info(self):

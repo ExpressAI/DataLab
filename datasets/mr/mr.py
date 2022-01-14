@@ -48,8 +48,31 @@ _TRAIN_DOWNLOAD_URL = "https://drive.google.com/uc?id=1FCqdCBYNahOmoMOW7L29EZGan
 _TEST_DOWNLOAD_URL = "https://drive.google.com/uc?id=1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb&export=download"
 
 
+# class MRDataset(datalabs.Dataset):
+#     def apply(self, func):
+#         if func._type == 'Aggregating':
+#             texts = [" ".join(tokens) for tokens in self["tokens"]] # [tokens] -> texts
+#             yield func(texts)
+#         elif func._type == "SequenceLabelingAggregating":
+#             yield func(self)
+#         elif func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
+#             for sample in self.__iter__():
+#                 yield func(" ".join(sample[func.processed_fields[0]])) # convert tokens -> a text
+#         else:
+#             for sample in self.__iter__():
+#                 yield func(sample)
+
+
 class MR(datalabs.GeneratorBasedBuilder):
     """AG News topic classification dataset."""
+
+    # def __init__(self,*args, **kwargs):
+    #     super(MR, self).__init__(*args, **kwargs)
+    #     self.dataset_class = MRDataset
+
+
+
+
 
     def _info(self):
         return datalabs.DatasetInfo(
