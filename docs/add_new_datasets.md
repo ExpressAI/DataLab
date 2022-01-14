@@ -30,6 +30,7 @@ Suppose the dataset name to be added is `ag_news`, we need to:
 * creat a config script `ag_news.py` in the above folder, i.e., `Datalab/datasets/ag_news/ag_news.py`
 * finish the config script based on some provided examples:
     * text-classification: [template](https://github.com/ExpressAI/DataLab/blob/main/datasets/ag_news/ag_news.py)
+    * extractive-qa: [template](https://github.com/ExpressAI/DataLab/blob/main/datasets/squad/squad.py)
     
 
 
@@ -41,6 +42,7 @@ Suppose the dataset name to be added is `ag_news`, we need to:
    from datalabs import load_dataset
    dataset = load_dataset("./ag_news")
    print(dataset['train']._info)
+   print(dataset['train']._info.task_templates)
 ```
 
 
