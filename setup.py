@@ -46,6 +46,7 @@ REQUIRED_PKGS = [
     "lexicalrichness",
     "sacrebleu",
     "compare_mt",
+    "scikit-learn",
 ]
 
 AUDIO_REQUIRE = [
@@ -170,7 +171,7 @@ EXTRAS_REQUIRE = {
 
 setup(
     name="datalabs",
-    version="0.0.2.dev",
+    version="0.0.3.dev",
     description="Datalabs",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",

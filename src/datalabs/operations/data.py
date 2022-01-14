@@ -33,12 +33,17 @@ class TextData(Data):
 
 
     def apply(self, func: TextOperation):
-        for sample in self.data:
-            #yield func(sample)
-            if len(func.processed_fields)==1 and sample.keys():
+
+        if func._type == 'Aggregating':
+            yield func([text["text"] for text in self.data])
+        elif func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
+            for sample in self.data:
                 yield func(sample[func.processed_fields[0]])
-            else:
+        else:
+            for sample in self.data:
                 yield func(sample)
+
+
 
 
 

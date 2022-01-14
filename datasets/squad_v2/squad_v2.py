@@ -67,12 +67,11 @@ class SquadV2(datalabs.GeneratorBasedBuilder):
                     "title": datalabs.Value("string"),
                     "context": datalabs.Value("string"),
                     "question": datalabs.Value("string"),
-                    "answers": datalabs.features.Sequence(
+                    "answers":
                         {
-                            "text": datalabs.Value("string"),
-                            "answer_start": datalabs.Value("int32"),
+                            "text": datalabs.features.Sequence(datalabs.Value("string")),
+                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
                         }
-                    ),
                     # These are the features of your dataset like images, labels ...
                 }
             ),

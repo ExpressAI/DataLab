@@ -86,12 +86,18 @@ class Squad(datalabs.GeneratorBasedBuilder):
                     "title": datalabs.Value("string"),
                     "context": datalabs.Value("string"),
                     "question": datalabs.Value("string"),
-                    "answers": datalabs.features.Sequence(
+                    # "answers": datalabs.features.Sequence(
+                    #     {
+                    #         "text": datalabs.Value("string"),
+                    #         "answer_start": datalabs.Value("int32"),
+                    #     }
+                    # ),
+                    "answers":
                         {
-                            "text": datalabs.Value("string"),
-                            "answer_start": datalabs.Value("int32"),
+                            "text": datalabs.features.Sequence(datalabs.Value("string")),
+                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
                         }
-                    ),
+
                 }
             ),
             # No default supervised_keys (as we have to pass both question
@@ -127,6 +133,11 @@ class Squad(datalabs.GeneratorBasedBuilder):
                     for qa in paragraph["qas"]:
                         answer_starts = [answer["answer_start"] for answer in qa["answers"]]
                         answers = [answer["text"] for answer in qa["answers"]]
+
+                        # answer_list = [
+                        #     {"text": "abc", "answer_start": -1},
+                        #     {"text": "def", "answer_start": -2}
+                        # ]
                         # Features currently used are "context", "question", and "answers".
                         # Others are extracted here for the ease of future expansions.
                         yield key, {
@@ -138,5 +149,6 @@ class Squad(datalabs.GeneratorBasedBuilder):
                                 "answer_start": answer_starts,
                                 "text": answers,
                             },
+                            # "answers":answer_list,
                         }
                         key += 1

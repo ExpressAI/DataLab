@@ -26,6 +26,7 @@ from pyarrow import total_allocated_bytes
 
 
 from .operations import operation
+from .operations.data import *
 
 # from .operations import operation
 # from .operations import data

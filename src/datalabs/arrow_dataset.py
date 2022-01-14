@@ -639,24 +639,34 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
 
         self._data = update_metadata_with_features(self._data, self.features)
 
+    # def apply(self, func):
+    #     for sample in self.__iter__():
+    #         # print(func)
+    #         #yield func(sample)
+    #         # print(func._type)
+    #         if func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
+    #             yield func(sample[func.processed_fields[0]])
+    #         else:
+    #             yield func(sample)
+
+
+
+
     def apply(self, func):
-        for sample in self.__iter__():
-            # print(func)
-            #yield func(sample)
-            # print(func._type)
-            if func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
-            # if len(func.processed_fields)==1 and sample.keys() and len(sample.keys()) ==1:
-            #     print(func.processed_fields)
-            #     print(func)
+        if func._type == 'Aggregating':
+            yield func(self[func.processed_fields[0]])
+        elif func._type == "TextClassificationAggregating":
+            yield func(self)
+        elif func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
+            for sample in self.__iter__():
                 yield func(sample[func.processed_fields[0]])
-            else:
+        else:
+            for sample in self.__iter__():
                 yield func(sample)
-            # if func.target_field in sample.keys():
-            #     yield func(sample)
-                #yield func(sample[func])
-            # print(type(sample))
-            #print(func(sample[func.target_field]))
-        #print("--------------")
+
+
+
+
 
     def write_arrow(self, path: str):
         with open(path, "wb") as file_obj:
