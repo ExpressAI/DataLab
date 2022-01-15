@@ -81,7 +81,7 @@ from .utils.typing import PathLike
 
 from .operations.data import  Data, TextData
 from .operations.operation import OperationFunction, DatasetOperation
-
+# from .operations.prompt.text_classification import *
 if TYPE_CHECKING:
     from .dataset_dict import DatasetDict
 
@@ -653,6 +653,13 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
 
 
     def apply(self, func):
+        # if isinstance(func, str):
+        #     if self._info.task_templates[0].task_category == "text-classification":
+        #
+        #         for sample in self.__iter__():
+        #                 labels = self._info.task_templates[0].labels
+        #                 labels_to_answers = dict(zip(range(len(labels)), labels))
+        #                 yield template_p1(sample, labels_to_answers, func)
         if func._type == 'Aggregating':
             yield func(self[func.processed_fields[0]])
         elif func._type.find("Aggregating")!=-1:
@@ -660,6 +667,12 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         elif func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
             for sample in self.__iter__():
                 yield func(sample[func.processed_fields[0]])
+        elif func._type  in ["TopicClassificationPrompting", "SentimentClassificationPrompting", "NLIPrompting"]:
+            for sample in self.__iter__():
+                labels = self._info.task_templates[0].labels
+                labels_to_answers = dict(zip(range(len(labels)), labels))
+                yield func(sample, labels_to_answers)
+
         else:
             for sample in self.__iter__():
                 yield func(sample)

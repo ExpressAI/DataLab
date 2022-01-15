@@ -1,4 +1,41 @@
 """
+
+## Test for Prompt
+
+
+from datalabs import load_dataset
+dataset = load_dataset('xsum')
+from prompt.summarization import *
+res = dataset['test'].apply(template_p1)
+print(next(res))
+
+
+
+from datalabs import load_dataset
+dataset = load_dataset('xsum')
+from prompt.summarization import *
+res = dataset['test'].apply(template_p1)
+print(next(res))
+
+
+
+from datalabs import load_dataset
+dataset = load_dataset('sick')
+from prompt.natural_language_inference import *
+res = dataset['test'].apply(template_p1)
+print(next(res))
+
+
+
+
+from datalabs import load_dataset
+dataset = load_dataset('mr')
+from prompt.sentiment_classification import *
+res = dataset['test'].apply(template_p1)
+print(next(res))
+
+
+
 from datalabs import load_dataset
 from aggregate.text_classification import *
 dataset = load_dataset('mr')

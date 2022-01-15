@@ -14,12 +14,13 @@ class Prompting(TextOperation):
                  func:Callable[...,Any] = None,
                  resources: Optional[Mapping[str, Any]] = None,
                  contributor: str = None,
-                 task:str = None,
+                 task = "Any",
+                 description = None,
                  ):
-        super().__init__(name, func, resources, contributor)
+        super().__init__(name, func, resources, contributor, task, description)
         self._type = "Prompting"
         self._data_type = "TextData"
-
+        self.processed_fields = ["text"]
 
 
 
@@ -28,10 +29,10 @@ class prompting(text_operation):
                  name: Optional[str] = None,
                  resources: Optional[Mapping[str, Any]] = None,
                  contributor: str = None,
-                 task:str = None,
+                 task = "Any",
+                 description = None,
                  ):
-        super().__init__(name, resources, contributor)
-        self.task = task
+        super().__init__(name, resources, contributor, task, description)
 
 
     def __call__(self, *param_arg):
@@ -44,7 +45,8 @@ class prompting(text_operation):
             tf_cls = Prompting(name=name, func = f,
                                    resources = self.resources,
                                    contributor = self.contributor,
-                                 task = self.task)
+                                   task = self.task,
+                                 description=self.description)
             return tf_cls
 
 
