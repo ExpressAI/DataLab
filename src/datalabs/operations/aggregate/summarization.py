@@ -10,7 +10,7 @@ from operation import DatasetOperation, dataset_operation
 from featurize import *
 from data import TextData
 
-class TextClassificationAggregating(Aggregating, DatasetOperation):
+class SummarizationAggregating(Aggregating, DatasetOperation):
 
 
     def __init__(self,
@@ -18,33 +18,33 @@ class TextClassificationAggregating(Aggregating, DatasetOperation):
                  func:Callable[...,Any] = None,
                  resources: Optional[Mapping[str, Any]] = None,
                  contributor: str = None,
-                 processed_fields: List = ["text"],
+                 processed_fields: List = ["text","summary"],
                  generated_field: str = None,
-                 task = "text-classification",
+                 task = "summarization",
                  description = None,
                  ):
         super().__init__(name = name, func = func, resources = resources, contributor = contributor,
                          task = task,description=description)
-        self._type = 'TextClassificationAggregating'
-        self.processed_fields = ["text"]
+        self._type = 'SummarizationAggregating'
+        self.processed_fields = ["text","summary"]
         if isinstance(processed_fields,str):
             self.processed_fields[0] = processed_fields
         else:
             self.processed_fields = processed_fields
         self.generated_field = generated_field
-        self._data_type = "Dataset"
+        self._data_type = "SummarizationDataset"
 
 
 
 
-class text_classification_aggregating(aggregating, dataset_operation):
+class summarization_aggregating(aggregating, dataset_operation):
     def __init__(self,
                  name: Optional[str] = None,
                  resources: Optional[Mapping[str, Any]] = None,
                  contributor: str = None,
-                 processed_fields: List = ["text"],
+                 processed_fields: List = ["text", "summary"],
                  generated_field:str = None,
-                 task = "text-classification",
+                 task = "summarization",
                  description = None,
                  ):
         super().__init__(name = name, resources = resources, contributor = contributor, description=description)
@@ -55,12 +55,12 @@ class text_classification_aggregating(aggregating, dataset_operation):
 
     def __call__(self, *param_arg):
         if callable(self.name):
-            tf_class = TextClassificationAggregating(name = self.name.__name__, func=self.name)
+            tf_class = SummarizationAggregating(name = self.name.__name__, func=self.name)
             return tf_class(*param_arg)
         else:
             f = param_arg[0]
             name = self.name or f.__name__
-            tf_cls = TextClassificationAggregating(name=name, func = f,
+            tf_cls = SummarizationAggregating(name=name, func = f,
                                    resources = self.resources,
                                    contributor = self.contributor,
                                     processed_fields = self.processed_fields,
@@ -71,84 +71,52 @@ class text_classification_aggregating(aggregating, dataset_operation):
 
 
 
-@text_classification_aggregating(name = "get_label_distribution", contributor= "datalab", processed_fields= "text",
-                                 task="text-classification", description="this function is used to calculate the text length")
-def get_label_distribution(samples:Iterator):
-    """
-    Input:
-    samples: [{
-     "text":
-     "label":
-    }]
-    Output:
-        dict:
-        "label":n_samples
-    """
-    labels_to_number = {}
-    for sample in samples:
-        text, label = sample["text"], sample["label"]
 
 
-
-
-        if label in labels_to_number.keys():
-            labels_to_number[label] += 1
-        else:
-            labels_to_number[label] = 1
-
-    res = {
-        "imbalance_ratio": min(labels_to_number.values())*1.0/max(labels_to_number.values()),
-        "label_distribution":labels_to_number
-    }
-
-    return res
-
-
-@text_classification_aggregating(name="get_statistics", contributor="datalab", processed_fields="text",
-                                 task="text-classification",
-                                 description="this function is used to calculate the text length")
+@summarization_aggregating(name="get_statistics", contributor="datalab", processed_fields=["text","summary"],
+                                 task="summarization",
+                                 description="this function is used to compute the overall statistics of the summarization")
 def get_statistics(samples: Iterator):
     """
     Input:
     samples: [{
      "text":
-     "label":
+     "summary":
     }]
-    Output:
-        dict:
-        "label":n_samples
+    Output:dict:
 
     usage:
     you can test it with following code:
 
     from datalabs import load_dataset
     from aggregate import *
-    dataset = load_dataset('mr')
+    dataset = load_dataset('xsum')
     res = dataset['test'].apply(get_statistics)
     print(next(res))
 
     """
-    labels_to_number = {}
-    lengths = []
+
+    summary_lengths = []
+    text_lengths = []
+
     for sample in tqdm(samples):
-        text, label = sample["text"], sample["label"]
 
-        # gender bias
-        results = get_gender_bias.func(text)
+        text, summary = sample["text"], sample["summary"]
 
-        # average length
-        text_length = get_length.func(text)
-        lengths.append(text_length)
+        # average length of text
+        text_length = len(text.split(" "))
+        text_lengths.append(text_length)
 
-        # label imbalance
-        if label in labels_to_number.keys():
-            labels_to_number[label] += 1
-        else:
-            labels_to_number[label] = 1
+        # average length of summary
+        summary_length = len(summary.split(" "))
+        summary_lengths.append(summary_length)
+
+
+
 
     res = {
-        "imbalance_ratio": min(labels_to_number.values()) * 1.0 / max(labels_to_number.values()),
-        "average_text_length":np.average(lengths),
+            "average_text_length":np.average(text_lengths),
+            "average_summary_length":np.average(summary_lengths),
     }
 
     return res

@@ -655,7 +655,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
     def apply(self, func):
         if func._type == 'Aggregating':
             yield func(self[func.processed_fields[0]])
-        elif func._type == "TextClassificationAggregating":
+        elif func._type.find("Aggregating")!=-1:
             yield func(self)
         elif func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
             for sample in self.__iter__():

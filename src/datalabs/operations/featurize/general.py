@@ -131,14 +131,15 @@ def get_lexical_richness(sentence:str):
         return results
 
 
+gendered_dic = load_gender_bias_data()
 
 @featurizing(name="get_gender_bias", contributor="datalab",
              task="Any", description="get entities")
-def get_gender_bias(sentence:str, gendered_dic=None):
+def get_gender_bias(sentence:str):
 
 
-    if gendered_dic is None:
-        gendered_dic = load_gender_bias_data()
+    # if gendered_dic is None:
+    #     gendered_dic = load_gender_bias_data()
 
     one_words_results = get_gender_bias_one_word(
         gendered_dic['words']['male'],
@@ -157,10 +158,10 @@ def get_gender_bias(sentence:str, gendered_dic=None):
             'male': one_words_results['single_name_m'],
             'female': one_words_results['single_name_f']
         },
-        'name': {
-            'male': get_gender_bias_two_words(gendered_dic['real_name']['male'], sentence),
-            'female': get_gender_bias_two_words(gendered_dic['real_name']['female'], sentence)
-        }
+        # 'name': {
+        #     'male': get_gender_bias_two_words(gendered_dic['real_name']['male'], sentence),
+        #     'female': get_gender_bias_two_words(gendered_dic['real_name']['female'], sentence)
+        # }
     }
 
     return results
@@ -191,12 +192,12 @@ def get_gender_bias_one_word(words_m, words_f, single_name_m, single_name_f, sen
     return results
 
 
-def get_gender_bias_two_words(gender_dic, sentence):
-    sentence = ' ' + sentence.lower().strip() + ' '
-
-    results = 0
-    for value in gender_dic:
-        count = sentence.count(' ' + value + ' ')
-        results += count
-
-    return results
+# def get_gender_bias_two_words(gender_dic, sentence):
+#     sentence = ' ' + sentence.lower().strip() + ' '
+#
+#     results = 0
+#     for value in gender_dic:
+#         count = sentence.count(' ' + value + ' ')
+#         results += count
+#
+#     return results
