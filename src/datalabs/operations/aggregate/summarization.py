@@ -7,8 +7,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from operation import DatasetOperation, dataset_operation
-from featurize import *
-from data import TextData
+from featurize.summarization import get_all_features
 
 class SummarizationAggregating(Aggregating, DatasetOperation):
 
@@ -89,7 +88,7 @@ def get_statistics(samples: Iterator):
     you can test it with following code:
 
     from datalabs import load_dataset
-    from aggregate import *
+    from aggregate.summarization import *
     dataset = load_dataset('xsum')
     res = dataset['test'].apply(get_statistics)
     print(next(res))
@@ -98,6 +97,7 @@ def get_statistics(samples: Iterator):
 
     summary_lengths = []
     text_lengths = []
+    attr_jsons = []
 
     for sample in tqdm(samples):
 
@@ -111,12 +111,30 @@ def get_statistics(samples: Iterator):
         summary_length = len(summary.split(" "))
         summary_lengths.append(summary_length)
 
+        # Others
+        attr_json = get_all_features(sample)
+        attr_jsons.append(attr_json)
+
+
+    attr_avg = {}
+    for attr_json in attr_jsons:
+        for attr_name, val in attr_json.items():
+            if attr_name not in attr_avg.keys():
+                attr_avg[attr_name] = val
+            else:
+                attr_avg[attr_name] += val
+    for attr_name, val in attr_avg.items():
+        attr_avg[attr_name] /= len(attr_jsons)
+
+
+
 
 
 
     res = {
             "average_text_length":np.average(text_lengths),
             "average_summary_length":np.average(summary_lengths),
+            **attr_avg,
     }
 
     return res
