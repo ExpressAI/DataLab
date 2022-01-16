@@ -8,8 +8,7 @@ import csv
 
 import datalabs
 from datalabs.tasks import TextClassification
-
-
+from datalabs import Dataset
 
 _DESCRIPTION = """\
 AG is a collection of more than 1 million news articles. News articles have been
@@ -39,6 +38,17 @@ _CITATION = """\
 
 _TRAIN_DOWNLOAD_URL = "https://raw.githubusercontent.com/mhjabreel/CharCnn_Keras/master/data/ag_news_csv/train.csv"
 _TEST_DOWNLOAD_URL = "https://raw.githubusercontent.com/mhjabreel/CharCnn_Keras/master/data/ag_news_csv/test.csv"
+
+
+
+
+
+
+# class AGNewsDataset(Dataset):
+#     def apply(self, func):
+#         if func._type == 'Aggregating':
+
+
 
 
 class AGNews(datalabs.GeneratorBasedBuilder):

@@ -101,7 +101,7 @@ print(next(res))
                          template="{text} Write a TLDR (Too Long Didn\'\'t Read) summary for the above text.",
                          task="summarization")
 def template_p1(sample: dict):
-    tp1 = "{text} Write a TLDR (Too Long Didn\'\'t Read) summary for the above text."
+    tp1 = "{text} Write a TLDR (Too Long Didn\\'t Read) summary for the above text."
 
     # prompting process
     text = sample["text"]

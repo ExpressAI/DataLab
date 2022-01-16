@@ -1,5 +1,13 @@
 import os
-from datasets import load_dataset
+
+"""
+
+data = load_data("wikipedia")
+
+
+"""
+
+
 
 """
 if the task's column haven't been specified, the function will be 

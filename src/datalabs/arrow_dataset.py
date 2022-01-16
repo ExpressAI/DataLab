@@ -660,6 +660,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         #                 labels = self._info.task_templates[0].labels
         #                 labels_to_answers = dict(zip(range(len(labels)), labels))
         #                 yield template_p1(sample, labels_to_answers, func)
+
         if func._type == 'Aggregating':
             yield func(self[func.processed_fields[0]])
         elif func._type.find("Aggregating")!=-1:

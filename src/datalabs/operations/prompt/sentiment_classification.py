@@ -92,7 +92,7 @@ Test Example:
 
 from datalabs import load_dataset
 dataset = load_dataset('mr')
-from prompt.text_classification import *
+from prompt.sentiment_classification import *
 res = dataset['test'].apply(template_p1)
 print(next(res))
 
@@ -148,7 +148,7 @@ def template_p3(sample: dict, labels_to_answers: Dict):
     # prompting process
     text = sample["text"]
     answers = list(labels_to_answers.values())
-    texture_choices = ", ".join(answers[:-1])
+    texture_choices = ", ".join(answers)
 
     # instantiation
     text_prompt = eval("f'{}'".format(tp))
@@ -163,7 +163,7 @@ def template_p3(sample: dict, labels_to_answers: Dict):
                                     template="Given the text: {text} What's the sentiment of this text? {texture_choices}",
                                     task="sentiment-classification")
 def template_p4(sample: dict, labels_to_answers: Dict):
-    tp = "Given the text: {text} What's the sentiment of this text? {texture_choices}"
+    tp = "Given the text: {text} What\\'s the sentiment of this text? {texture_choices}"
 
     # prompting process
     text = sample["text"]

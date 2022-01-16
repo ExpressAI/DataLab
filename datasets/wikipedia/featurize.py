@@ -3,7 +3,7 @@ from typing import Callable, Mapping
 from datalabs.operations.featurize.text_classification import TextClassificationFeaturizing, text_classification_featurizing
 
 
-class AGNewsFeaturizing(TextClassificationFeaturizing):
+class WikipediaFeaturizing(TextClassificationFeaturizing):
 
 
     def __init__(self, *args, **kwargs
@@ -15,7 +15,7 @@ class AGNewsFeaturizing(TextClassificationFeaturizing):
 
 
 
-class ag_news_featurizing(text_classification_featurizing):
+class wikipedia_featurizing(text_classification_featurizing):
     def __init__(self, *args, **kwargs
                  ):
 
@@ -27,13 +27,13 @@ class ag_news_featurizing(text_classification_featurizing):
     def __call__(self, *param_arg):
         if callable(self.name):
 
-            tf_class = AGNewsFeaturizing(name = self.name.__name__, func=self.name)
+            tf_class = WikipediaFeaturizing(name = self.name.__name__, func=self.name)
             return tf_class(*param_arg)
         else:
             f = param_arg[0]
 
             name = self.name or f.__name__
-            tf_cls = AGNewsFeaturizing(name=name, func = f,
+            tf_cls = WikipediaFeaturizing(name=name, func = f,
                                    resources = self.resources,
                                    contributor = self.contributor,
                                     processed_fields = self.processed_fields,
@@ -56,7 +56,7 @@ print(next(res))
 
 
 
-@ag_news_featurizing(name = "get_number_of_tokens", contributor= "datalab", processed_fields= "text",
+@wikipedia_featurizing(name = "get_number_of_tokens", contributor= "datalab", processed_fields= "text",
                                  task="text-classification", description="this function is used to calculate the text length",
                                  )
 def get_number_of_tokens(sample:dict):

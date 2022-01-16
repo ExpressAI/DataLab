@@ -92,7 +92,7 @@ Test Example:
 
 from datalabs import load_dataset
 dataset = load_dataset('mr')
-from prompt.text_classification import *
+from prompt.topic_classification import *
 res = dataset['test'].apply(template_p1)
 print(next(res))
 
@@ -223,7 +223,7 @@ def template_p6(sample: dict, labels_to_answers: Dict):
                                 template="Given the text: {text} What's the main topic of this paragraph? {texture_choices}",
                                 task="topic-classification")
 def template_p7(sample: dict, labels_to_answers: Dict):
-    tp = "Given the text: {text} What's the main topic of this paragraph? {texture_choices}"
+    tp = "Given the text: {text} What\\'s the main topic of this paragraph? {texture_choices}"
 
     # prompting process
     text = sample["text"]
