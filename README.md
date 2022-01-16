@@ -12,7 +12,7 @@
 
     # This is suitable for SDK developers
     pip install --upgrade pip
-    git clone https://github.com/ExpressAI/Datalab.git
+    git clone git@github.com:ExpressAI/DataLab.git
     cd Datalab
     pip install .
  
