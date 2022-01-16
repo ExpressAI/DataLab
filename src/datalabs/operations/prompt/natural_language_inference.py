@@ -2,7 +2,7 @@ from typing import Dict, List, Any, Optional
 from typing import Callable, Mapping
 
 import os
-import sys
+import sys  # contradiction, entailment, neutral
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from operation import DatasetOperation, dataset_operation
@@ -102,7 +102,7 @@ print(next(res))
 
 
 @nli_prompting(name="template_p1", contributor="datalab", processed_fields=['text1', 'text2', 'label'],
-               template="Given that {text1} Can we infer that {text2}? Yes or No or Unknown?",
+               template="Given that \"{text1}\" Can we infer that \"{text2}\"? Yes or No or Unknown?",
                task="natural-language-inference")
 def template_p1(sample: dict, labels_to_answers: Dict):
     # labels=('contradiction', 'entailment', 'neutral'))
@@ -110,7 +110,7 @@ def template_p1(sample: dict, labels_to_answers: Dict):
                        'entailment': "Yes",
                        'neutral': 'Unknown'}
 
-    tp1 = "Given that {text1} Can we infer that {text2}? Yes or No or Unknown?"
+    tp1 = "Given that \"{text1}\" Can we infer that {text2}? Yes or No or Unknown?"
 
     # prompting process
     answers = list(labels_to_answers.values())
