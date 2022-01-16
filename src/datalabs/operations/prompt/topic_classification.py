@@ -91,7 +91,7 @@ class topic_classification_prompting(prompting, dataset_operation):
 Test Example:
 
 from datalabs import load_dataset
-dataset = load_dataset('mr')
+dataset = load_dataset('ag_news')
 from prompt.topic_classification import *
 res = dataset['test'].apply(template_p1)
 print(next(res))

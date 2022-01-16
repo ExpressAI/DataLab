@@ -126,7 +126,7 @@ def template_p1(sample: dict, labels_to_answers: Dict):
             "label_prompt": label_prompt}
 
 
-@nli_prompting(name="template_p1", contributor="datalab", processed_fields=['text1', 'text2', 'label'],
+@nli_prompting(name="template_p2", contributor="datalab", processed_fields=['text1', 'text2', 'label'],
                template="Given text {text1} and text {text2}, is their relationship {texture_choices}",
                task="natural-language-inference")
 def template_p2(sample: dict, labels_to_answers: Dict):
