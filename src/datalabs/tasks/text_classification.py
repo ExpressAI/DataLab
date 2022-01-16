@@ -23,6 +23,7 @@ class TextClassification(TaskTemplate):
                 raise ValueError("Labels must be unique")
             # Cast labels to tuple to allow hashing
             # self.__dict__["labels"] = tuple(sorted(self.labels))
+
             self.__dict__["labels"] = self.labels
             self.__dict__["label_schema"] = self.label_schema.copy()
             self.label_schema["labels"] = ClassLabel(names=self.labels)
