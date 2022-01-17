@@ -126,7 +126,7 @@ def template_p1(sample: dict, labels_to_answers: Dict):
             "label_prompt": label_prompt}
 
 
-@nli_prompting(name="template_p1", contributor="datalab", processed_fields=['text1', 'text2', 'label'],
+@nli_prompting(name="template_p2", contributor="datalab", processed_fields=['text1', 'text2', 'label'],
                template="Given text {text1} and text {text2}, is their relationship {texture_choices}",
                task="natural-language-inference")
 def template_p2(sample: dict, labels_to_answers: Dict):
@@ -221,22 +221,6 @@ def template_p6(sample: dict, labels_to_answers: Dict):
     # instantiation
     text_prompt = eval("f'{}'".format(tp))
     label_prompt = answers_to_desc[labels_to_answers[sample["label"]]]
-
-    return {"text_prompt": text_prompt,
-            "label_prompt": label_prompt}
-
-
-@nli_prompting(name="template_p7", contributor="datalab", processed_fields=['text1', 'text2', 'label'],
-               template="Premise: {text1} Hypothesis: {text2} The relation between the hypothesis and premise is [mask]",
-               task="natural-language-inference")
-def template_p7(sample: dict, labels_to_answers: Dict):
-    tp = "Premise: {text1} Hypothesis: {text2} The relation between the hypothesis and premise is [mask]"
-    text1 = sample["text1"]
-    text2 = sample["text2"]
-
-    # instantiation
-    text_prompt = eval("f'{}'".format(tp))
-    label_prompt = labels_to_answers[sample["label"]]
 
     return {"text_prompt": text_prompt,
             "label_prompt": label_prompt}
