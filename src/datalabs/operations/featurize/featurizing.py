@@ -16,11 +16,12 @@ class Featurizing(TextOperation):
                  contributor: str = None,
                  task = "Any",
                  description = None,
+                 processed_fields = ["text"],
                  ):
         super().__init__(name, func, resources, contributor, task, description)
         self._type = "Featurizing"
         self._data_type = "TextData"
-        self.processed_fields = ["text"]
+        self.processed_fields = processed_fields
 
 
 
@@ -31,9 +32,10 @@ class featurizing(text_operation):
                  contributor: str = None,
                  task = "Any",
                  description = None,
+                 processed_fields = ["text"],
                  ):
         super().__init__(name, resources, contributor, task, description)
-
+        self.processed_fields = processed_fields
 
     def __call__(self, *param_arg):
         if callable(self.name):
@@ -46,7 +48,8 @@ class featurizing(text_operation):
                                    resources = self.resources,
                                    contributor = self.contributor,
                                    task = self.task,
-                                 description=self.description)
+                                 description=self.description,
+                                 processed_fields = self.processed_fields,)
             return tf_cls
 
 

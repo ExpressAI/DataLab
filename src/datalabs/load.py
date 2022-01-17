@@ -74,6 +74,8 @@ from .utils.logging import get_logger
 from .utils.streaming_download_manager import StreamingDownloadManager, xglob, xjoin
 from .utils.version import Version
 
+from .operations.data import *
+
 
 logger = get_logger(__name__)
 
@@ -103,7 +105,7 @@ def init_dynamic_modules(
 def import_main_class(module_path, dataset=True) -> Optional[Union[Type[DatasetBuilder], Type[Metric]]]:
     """Import a module at module_path and return its main class:
     - a DatasetBuilder if dataset is True
-    - a Metric if dataset is False
+    - a Metric if dataset is Falseload_dataset_builder
     """
     module = importlib.import_module(module_path)
 
@@ -115,11 +117,18 @@ def import_main_class(module_path, dataset=True) -> Optional[Union[Type[DatasetB
     # Find the main class in our imported module
     module_main_cls = None
     for name, obj in module.__dict__.items():
+        # print(name, obj)
         if isinstance(obj, type) and issubclass(obj, main_cls_type):
             if inspect.isabstract(obj):
                 continue
             module_main_cls = obj
             break
+        elif isinstance(obj, type) and issubclass(obj, StructuredTextData): # Datalab
+
+            if isinstance(obj, StructuredTextData):
+                continue
+            module_main_cls = obj
+            #break
 
     return module_main_cls
 
@@ -192,6 +201,8 @@ def get_imports(file_path: str) -> Tuple[str, str, str, str]:
         import tensorflow
         import .c4_utils
         import .clicr.dataset-code.build_json_dataset  # From: https://raw.githubusercontent.com/clips/clicr/master/dataset-code/build_json_dataset
+    Note:
+        from . import addition_model cannot work!
     """
     lines = []
     with open(file_path, mode="r", encoding="utf-8") as f:
@@ -215,6 +226,18 @@ def get_imports(file_path: str) -> Tuple[str, str, str, str]:
 
         match = re.match(r"^import\s+(\.?)([^\s\.]+)[^#\r\n]*(?:#\s+From:\s+)?([^\r\n]*)", line, flags=re.MULTILINE)
         if match is None:
+            """Example: by Datalab
+            >>> line = "from .module import ops"
+            >>> match =  re.match(r"^from\s+(\.?)([^\s\.]+)(?:[^\s]*)\s+import\s+[^#\r\n]*(?:#\s+From:\s+)?([^\r\n]*)",line,flags=re.MULTILINE, )
+            >>> match.group(0)
+            'from .module import ops'
+            >>> match.group(1)
+            '.'
+            >>> match.group(2)
+            'module'
+            >>> match.group(3)
+            ''
+            """
             match = re.match(
                 r"^from\s+(\.?)([^\s\.]+)(?:[^\s]*)\s+import\s+[^#\r\n]*(?:#\s+From:\s+)?([^\r\n]*)",
                 line,
@@ -222,17 +245,21 @@ def get_imports(file_path: str) -> Tuple[str, str, str, str]:
             )
             if match is None:
                 continue
+
         if match.group(1):
+
             # The import starts with a '.', we will download the relevant file
             if any(imp[1] == match.group(2) for imp in imports):
                 # We already have this import
                 continue
             if match.group(3):
+
                 # The import has a comment with 'From:', we'll retrieve it from the given url
                 url_path = match.group(3)
                 url_path, sub_directory = convert_github_url(url_path)
                 imports.append(("external", match.group(2), url_path, sub_directory))
             elif match.group(2):
+
                 # The import should be at the same place as the file
                 imports.append(("internal", match.group(2), match.group(2), None))
         else:
@@ -260,6 +287,7 @@ def _download_additional_modules(
     """
     local_imports = []
     library_imports = []
+    # print(f"imports:{imports}")
     for import_type, import_name, import_path, sub_directory in imports:
         if import_type == "library":
             library_imports.append((import_name, import_path))  # Import from a library
@@ -287,13 +315,16 @@ def _download_additional_modules(
             local_import_path = os.path.join(local_import_path, sub_directory)
         local_imports.append((import_name, local_import_path))
 
+
     # Check library imports
     needs_to_be_installed = []
     for library_import_name, library_import_path in library_imports:
+
         try:
             lib = importlib.import_module(library_import_name)  # noqa F841
         except ImportError:
-            needs_to_be_installed.append((library_import_name, library_import_path))
+            if library_import_name != 'ops':
+                needs_to_be_installed.append((library_import_name, library_import_path))
     if needs_to_be_installed:
         raise ImportError(
             f"To be able to use {name}, you need to install the following dependencies"
@@ -845,6 +876,7 @@ class CommunityDatasetModuleFactoryWithScript(_DatasetModuleFactory):
 
     def download_loading_script(self) -> str:
         file_path = hf_hub_url(path=self.name, name=self.name.split("/")[1] + ".py", revision=self.revision)
+
         return cached_path(file_path, download_config=self.download_config)
 
     def download_dataset_infos_file(self) -> str:
@@ -862,6 +894,8 @@ class CommunityDatasetModuleFactoryWithScript(_DatasetModuleFactory):
         # get script and other files
         local_path = self.download_loading_script()
         dataset_infos_path = self.download_dataset_infos_file()
+
+
         imports = get_imports(local_path)
         local_imports = _download_additional_modules(
             name=self.name,
@@ -1485,6 +1519,15 @@ def load_dataset_builder(
             error_msg += f'\nFor example `data_files={{"train": "path/to/data/train/*.{example_extensions[0]}"}}`'
         raise ValueError(error_msg)
 
+
+
+
+    if issubclass(builder_cls, StructuredTextData): # datalab
+        return builder_cls()
+    # print(builder_cls.__class__, StructuredTextData)
+    # if 1 == 1:
+    #     return builder_cls
+
     # Instantiate the dataset builder
     builder_instance: DatasetBuilder = builder_cls(
         cache_dir=cache_dir,
@@ -1641,6 +1684,13 @@ def load_dataset(
         use_auth_token=use_auth_token,
         **config_kwargs,
     )
+
+    if issubclass(builder_instance.__class__, StructuredTextData): # datalab
+        return builder_instance
+
+
+
+
 
     # Return iterable dataset in case of streaming
     if streaming:

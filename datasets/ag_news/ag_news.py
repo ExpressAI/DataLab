@@ -43,7 +43,6 @@ _TEST_DOWNLOAD_URL = "https://raw.githubusercontent.com/mhjabreel/CharCnn_Keras/
 
 
 
-
 # class AGNewsDataset(Dataset):
 #     def apply(self, func):
 #         if func._type == 'Aggregating':

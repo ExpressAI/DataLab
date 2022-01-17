@@ -47,6 +47,7 @@ REQUIRED_PKGS = [
     "sacrebleu",
     "compare_mt",
     "scikit-learn",
+    "py7zr",
 ]
 
 AUDIO_REQUIRE = [
@@ -117,6 +118,7 @@ TESTS_REQUIRE = [
     "lexicalrichness",
     "sacrebleu",
     "compare_mt",
+    "py7zr",
 ]
 
 if os.name != "nt":
