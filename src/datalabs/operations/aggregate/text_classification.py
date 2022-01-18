@@ -121,20 +121,107 @@ def get_statistics(samples: Iterator):
     usage:
     you can test it with following code:
 
-    from datalabs import load_dataset
-    from aggregate import *
-    dataset = load_dataset('mr')
-    res = dataset['test'].apply(get_statistics)
-    print(next(res))
+from datalabs import load_dataset
+from aggregate import *
+dataset = load_dataset('mr')
+res = dataset['test'].apply(get_statistics)
+print(next(res))
 
     """
+    # Grammar checker
+    # from spellchecker import SpellChecker
+    # spell = SpellChecker()
+    #spell = SpellChecker(distance=1)  # set at initialization
+
+    scriptpath = os.path.dirname(__file__)
+    with open(os.path.join(scriptpath, '../edit/resources/spell_corrections.json'), 'r') as file:
+        COMMON_MISSPELLINGS_DICT = json.loads(file.read())
+
+    # print(COMMON_MISSPELLINGS_DICT)
+    # exit()
+
+
+
+
+
+
+
+    # for hate speech
+    from hatesonar import Sonar
+    sonar = Sonar()
+
+
+
+
+    sample_infos = []
+
     labels_to_number = {}
     lengths = []
+    gender_results = []
+    vocab = {}
+    number_of_tokens = 0
+    hatespeech = {
+                     "hate_speech":{"ratio":0,"texts":[]},
+                        "offensive_language":{"ratio":0,"texts":[]},
+                        "neither":{"ratio":0,"texts":[]}}
+    spelling_errors = []
+
     for sample in tqdm(samples):
         text, label = sample["text"], sample["label"]
 
+
+
+        # grammar checker
+        for word in text.split(" "):
+            #word_corrected = spell.correction(word)
+            if word.lower() in COMMON_MISSPELLINGS_DICT.keys():
+                spelling_errors.append((word, COMMON_MISSPELLINGS_DICT[word.lower()]))
+
+
+        # hataspeech
+        results = sonar.ping(text=text)
+        class_ = results['top_class']
+        confidence = 0
+        for value in results['classes']:
+            if value['class_name'] == class_:
+                confidence = value['confidence']
+                break
+
+        hatespeech[class_]["ratio"] += 1
+        if class_ != "neither":
+            hatespeech[class_]["texts"].append(text)
+
+
+
+        # update the number of tokens
+        number_of_tokens += len(text.split())
+
+        # update vocabulary
+        for w in text.split(" "):
+
+            if w in vocab.keys():
+                vocab[w] += 1
+            else:
+                vocab[w] = 1
+
+
+
         # gender bias
-        results = get_gender_bias.func(text)
+        """
+        result = {
+        'word': {
+            'male': one_words_results['words_m'],
+            'female': one_words_results['words_f']
+        },
+        'single_name': {
+            'male': one_words_results['single_name_m'],
+            'female': one_words_results['single_name_f']
+        },
+        }
+        """
+        gender_result = get_gender_bias.func(text)
+        gender_results.append(gender_result)
+
 
         # average length
         text_length = get_length.func(text)
@@ -146,9 +233,69 @@ def get_statistics(samples: Iterator):
         else:
             labels_to_number[label] = 1
 
+
+        sample_info = {
+            "text":text,
+            "label":label,
+            "text_length": text_length,
+            "gender":gender_result,
+            "hate_speech_class":class_,
+        }
+
+        if len(sample_infos) < 2:
+            sample_infos.append(sample_info)
+
+    # -------------------------- dataset-level ---------------------------
+    # compute dataset-level gender_ratio
+    gender_ratio = {"word":
+                        {"male": 0, "female": 0},
+                    "single_name":
+                        {"male": 0, "female": 0},
+                    }
+    for result in gender_results:
+        res_word = result['word']
+        gender_ratio['word']['male'] += result['word']['male']
+        gender_ratio['word']['female'] += result['word']['female']
+        gender_ratio['single_name']['male'] += result['single_name']['male']
+        gender_ratio['single_name']['female'] += result['single_name']['female']
+
+    n_gender = (gender_ratio['word']['male'] + gender_ratio['word']['female'])
+    gender_ratio['word']['male'] /= n_gender
+    gender_ratio['word']['female'] /= n_gender
+
+    n_gender = (gender_ratio['single_name']['male'] + gender_ratio['single_name']['female'])
+    gender_ratio['single_name']['male'] /= n_gender
+    gender_ratio['single_name']['female'] /= n_gender
+
+
+
+    # get vocabulary
+    vocab_sorted = dict(sorted(vocab.items(), key=lambda item: item[1], reverse=True))
+
+    # get ratio of hate_speech:offensive_language:neither
+    for k,v in hatespeech.items():
+        hatespeech[k]["ratio"] /= len(samples)
+
+    #print(hatespeech)
     res = {
-        "imbalance_ratio": min(labels_to_number.values()) * 1.0 / max(labels_to_number.values()),
-        "average_text_length":np.average(lengths),
+            "dataset-level":{
+                "length_info": {
+                    "max_text_length": np.max(lengths),
+                    "min_text_length": np.min(lengths),
+                    "average_text_length": np.average(lengths),
+                },
+                "label_info": {
+                    "ratio":min(labels_to_number.values()) * 1.0 / max(labels_to_number.values()),
+                    "distribution": labels_to_number,
+                },
+                "gender_info":gender_ratio,
+                # "vocabulary_info":vocab_sorted,
+                "number_of_samples":len(samples),
+                "number_of_tokens":number_of_tokens,
+                "hatespeech_info":hatespeech,
+                "spelling_errors":len(spelling_errors),
+            },
+        "sample-level":sample_infos
     }
 
     return res

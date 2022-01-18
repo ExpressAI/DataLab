@@ -48,6 +48,8 @@ REQUIRED_PKGS = [
     "compare_mt",
     "scikit-learn",
     "py7zr",
+    # for hate speech
+    "hatesonar",
 ]
 
 AUDIO_REQUIRE = [
