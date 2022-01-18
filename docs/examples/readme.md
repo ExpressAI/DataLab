@@ -3,6 +3,29 @@
 
 
 ## Text Classification
+```python
+    res = {
+            "dataset-level":{
+                "length_info": {
+                    "max_text_length": np.max(lengths),
+                    "min_text_length": np.min(lengths),
+                    "average_text_length": np.average(lengths),
+                },
+                "label_info": {
+                    "ratio":min(labels_to_number.values()) * 1.0 / max(labels_to_number.values()),
+                    "distribution": labels_to_number,
+                },
+                "gender_info":gender_ratio,
+                # "vocabulary_info":vocab_sorted,
+                "number_of_samples":len(samples),
+                "number_of_tokens":number_of_tokens,
+                "hatespeech_info":hatespeech,
+                "spelling_errors":len(spelling_errors),
+            },
+        "sample-level":sample_infos
+    }
+```
+
 ![image](https://user-images.githubusercontent.com/59123869/149849695-615304ff-a19f-4dca-8597-c1a7bca41363.png)
 
 
