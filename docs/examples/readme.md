@@ -57,6 +57,9 @@
     }
 ```
 
+![image](https://user-images.githubusercontent.com/59123869/149858573-1b494181-1e1d-4ec1-9043-4c7102303a9f.png)
+
+
 ## Named Entity Recognition
 ```python
     res = {
@@ -86,10 +89,9 @@
     }
 ```
 
+![截屏2022-01-18 下午4 20 06](https://user-images.githubusercontent.com/24972331/149898182-96462875-afd4-4edf-9a95-bf5407abe10d.png)
 
 
-
-![image](https://user-images.githubusercontent.com/59123869/149858573-1b494181-1e1d-4ec1-9043-4c7102303a9f.png)
 
 
 ## Summarization
