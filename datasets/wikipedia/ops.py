@@ -313,3 +313,28 @@ def get_labeled_entities(outpath):
 
 
 
+# @wikipedia_featurizing(name = "get_labeled_texts", contributor= "datalab", processed_fields= "text",
+#                        _type="WikipediaLabeling",   task="unsupervised data", description="this function is used for ")
+# def get_labeled_texts(file, outpath):
+#     outfile = open(outpath, "w")
+#     with open(file, "r") as f:
+#         for line in tqdm(f.readlines()):
+#             line = line.strip()
+#             text = json.loads(line)
+#             for k, v in text.items():
+#                 if k is None or k == "null":
+#                     continue
+#                 title = k
+#                 long_text = []
+#                 for each in v:
+#                     curr_text = each["text"]
+#                     if len(curr_text.split(" ")) < 10:
+#                         # Filter out too short sentences
+#                         continue
+#                     long_text.append(curr_text)
+#                 if len(long_text) == 0:
+#                     continue
+#                 long_text = "\n".join(long_text)
+#                 datum = {"text": long_text, "title": title}
+#                 print(datum, file=outfile)
+#     outfile.flush()

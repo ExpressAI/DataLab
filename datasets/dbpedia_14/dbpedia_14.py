@@ -48,7 +48,7 @@ There are 3 columns in the dataset (same for train and test splits), correspondi
 internal double quote is escaped by 2 double quotes (""). There are no new lines in title or content.
 """
 
-_HOMEPAGE = "https://wiki.dbpedia.org/develop/datalab"
+_HOMEPAGE = "https://wiki.dbpedia.org/develop/datasets"
 
 _LICENSE = "Creative Commons Attribution-ShareAlike 3.0 and the GNU Free Documentation License"
 

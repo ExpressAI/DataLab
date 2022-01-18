@@ -35,7 +35,7 @@ _HOMEPAGE = "https://github.com/cardiffnlp/tweeteval"
 
 _LICENSE = ""
 
-URL = "https://raw.githubusercontent.com/cardiffnlp/tweeteval/main/datalab/"
+URL = "https://raw.githubusercontent.com/cardiffnlp/tweeteval/main/datasets/"
 
 _URLs = {
     "emoji": {
