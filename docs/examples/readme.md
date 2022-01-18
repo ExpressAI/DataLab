@@ -57,9 +57,41 @@
     }
 ```
 
-
-
 ![image](https://user-images.githubusercontent.com/59123869/149858573-1b494181-1e1d-4ec1-9043-4c7102303a9f.png)
+
+
+## Named Entity Recognition
+```python
+    res = {
+        "dataset-level": {
+            "entity_info":{
+                "avg_entity_length": avg_entityLen,
+                "avg_entity_on_sentence": avg_entity_nums_inSent,
+                "sentence_without_entity": len(samples) - len(chunks),
+                "entity_length_distribution": entity_length_distribution,
+            },
+            "length_info": {
+                "max_text_length": np.max(lengths),
+                "min_text_length": np.min(lengths),
+                "average_text_length": np.average(lengths),
+            },
+            "label_info": {
+                "ratio": min(labels_to_number.values()) * 1.0 / max(labels_to_number.values()),
+                "distribution": label_distribution, #labels_to_number,
+            },
+            "gender_info": gender_ratio,
+            "vocabulary_info":vocab_sorted,
+            "number_of_samples": len(samples),
+            "number_of_tokens": number_of_tokens,
+            "hatespeech_info": hatespeech,
+        },
+        "sample-level": sample_infos
+    }
+```
+
+![截屏2022-01-18 下午4 20 06](https://user-images.githubusercontent.com/24972331/149898182-96462875-afd4-4edf-9a95-bf5407abe10d.png)
+
+
 
 
 ## Summarization
