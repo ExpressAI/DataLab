@@ -289,7 +289,7 @@ print(next(res))
                     "distribution": labels_to_number,
                 },
                 "gender_info":gender_ratio,
-                # "vocabulary_info":vocab_sorted,
+                "vocabulary_info":vocab_sorted,
                 "number_of_samples":len(samples),
                 "number_of_tokens":number_of_tokens,
                 "hatespeech_info":hatespeech,
