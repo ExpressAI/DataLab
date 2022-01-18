@@ -107,7 +107,6 @@ def get_statistics(samples: Iterator):
 
     sample_infos = []
     labels_to_number = {}
-    lengths = []
     gender_results = []
     vocab = {}
     number_of_tokens = 0
@@ -264,42 +263,6 @@ def get_statistics(samples: Iterator):
     }
 
     return res
-
-    #
-    #     # average length of text
-    #     text_length = len(tokens)
-    #     lengths.append(text_length)
-    #
-    #     # gender bias
-    #     text = ' '.join(tokens)
-    #     results = get_gender_bias.func(text)
-    #     # print('gender res: ',results)
-    #     tag_ts = tag_id2text(tags)
-    #     tag_texts += tag_ts
-    #     # print('tag_ts: ',tag_ts)
-    #     chunk = get_chunks(tag_ts)
-    #     if len(chunk)!=0:
-    #         chunks.append(chunk)
-    #
-    #
-    # label_distribution = dict(Counter(tag_texts))
-    # avg_entityLen,avg_entity_nums_inSent,entity_lengths = get_avg_spanLen(chunks)
-    # entity_length_distribution = dict(Counter(entity_lengths))
-    # res = {
-    #     # "imbalance_ratio": min(labels_to_number.values()) * 1.0 / max(labels_to_number.values()),
-    #     "average_text_length": np.average(lengths),
-    #     "num_samples": num_samples,
-    #     "label_distribution": label_distribution,
-    #     "avg_entity_length": avg_entityLen,
-    #     "avg_num_entity_on_sentence": avg_entity_nums_inSent,
-    #     "num_sentence_without_entity": len(samples)-len(chunks),
-    #     "entity_length_distribution": entity_length_distribution,
-    # }
-    #
-    #
-    #
-    # return res
-
 
 def get_avg_spanLen(chunks):
     entity_lengths = []
