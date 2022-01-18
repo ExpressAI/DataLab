@@ -242,7 +242,7 @@ print(next(res))
             "hate_speech_class":class_,
         }
 
-        if len(sample_infos) < 2:
+        if len(sample_infos) < 10000:
             sample_infos.append(sample_info)
 
     # -------------------------- dataset-level ---------------------------
