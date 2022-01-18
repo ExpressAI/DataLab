@@ -8,6 +8,7 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from operation import DatasetOperation, dataset_operation
 from featurize.summarization import get_all_features
+from featurize import *
 
 class SummarizationAggregating(Aggregating, DatasetOperation):
 
@@ -87,17 +88,31 @@ def get_statistics(samples: Iterator):
     usage:
     you can test it with following code:
 
-    from datalabs import load_dataset
-    from aggregate.summarization import *
-    dataset = load_dataset('xsum')
-    res = dataset['test'].apply(get_statistics)
-    print(next(res))
+from datalabs import load_dataset
+from aggregate.summarization import *
+dataset = load_dataset('xsum')
+res = dataset['test'].apply(get_statistics)
+print(next(res))
 
     """
+
+    # for hate speech
+    from hatesonar import Sonar
+    sonar = Sonar()
+
+
+    sample_infos = []
 
     summary_lengths = []
     text_lengths = []
     attr_jsons = []
+    number_of_tokens = 0
+    gender_results = []
+    vocab = {}
+    hatespeech = {
+                     "hate_speech":{"ratio":0,"texts":[]},
+                        "offensive_language":{"ratio":0,"texts":[]},
+                        "neither":{"ratio":0,"texts":[]}}
 
     for sample in tqdm(samples):
 
@@ -111,10 +126,110 @@ def get_statistics(samples: Iterator):
         summary_length = len(summary.split(" "))
         summary_lengths.append(summary_length)
 
+
+        # update the number of tokens
+        number_of_tokens += len(text.split())
+        number_of_tokens += len(summary.split())
+
+
         # Others
         attr_json = get_all_features(sample)
         attr_jsons.append(attr_json)
 
+        # Vocabulary info
+        for w in (text + summary).split(" "):
+
+            if w in vocab.keys():
+                vocab[w] += 1
+            else:
+                vocab[w] = 1
+
+        # Gender info
+        gender_result_text = get_gender_bias.func(text)
+        gender_result_summary = get_gender_bias.func(summary)
+        gender_results.append(gender_result_text)
+        gender_results.append(gender_result_summary)
+
+
+
+        # hataspeech
+        results = sonar.ping(text=text)
+        class_1 = results['top_class']
+        confidence = 0
+        for value in results['classes']:
+            if value['class_name'] == class_1:
+                confidence = value['confidence']
+                break
+
+        hatespeech[class_1]["ratio"] += 1
+        if class_1 != "neither":
+            hatespeech[class_1]["texts"].append(text)
+
+
+        results = sonar.ping(text=summary)
+        class_2 = results['top_class']
+        confidence = 0
+        for value in results['classes']:
+            if value['class_name'] == class_2:
+                confidence = value['confidence']
+                break
+
+        hatespeech[class_2]["ratio"] += 1
+        if class_2 != "neither":
+            hatespeech[class_2]["texts"].append(summary)
+
+
+
+        sample_info = {
+            "text":text,
+            "summary": summary,
+            "text_length": text_length,
+            "summary_length": summary_length,
+            "gender_result_text":gender_result_text,
+            "gender_result_summary":gender_result_summary,
+            "text1_hate_speech_class":class_1,
+            "text2_hate_speech_class":class_2,
+            "density":attr_json["density"],
+            "coverage": attr_json["coverage"],
+            "compression": attr_json["compression"],
+            "repetition": attr_json["repetition"],
+            "novelty": attr_json["novelty"],
+            "copy_len": attr_json["copy_len"],
+        }
+        if len(sample_infos) < 10000:
+            sample_infos.append(sample_info)
+
+
+    ## --------------------- Dataset-level -----------------------
+    # get vocabulary
+    vocab_sorted = dict(sorted(vocab.items(), key=lambda item: item[1], reverse=True))
+
+
+    # compute dataset-level gender_ratio
+    gender_ratio = {"word":
+                        {"male": 0, "female": 0},
+                    "single_name":
+                        {"male": 0, "female": 0},
+                    }
+    for result in gender_results:
+        res_word = result['word']
+        gender_ratio['word']['male'] += result['word']['male']
+        gender_ratio['word']['female'] += result['word']['female']
+        gender_ratio['single_name']['male'] += result['single_name']['male']
+        gender_ratio['single_name']['female'] += result['single_name']['female']
+
+    n_gender = (gender_ratio['word']['male'] + gender_ratio['word']['female'])
+    gender_ratio['word']['male'] /= n_gender
+    gender_ratio['word']['female'] /= n_gender
+
+    n_gender = (gender_ratio['single_name']['male'] + gender_ratio['single_name']['female'])
+    gender_ratio['single_name']['male'] /= n_gender
+    gender_ratio['single_name']['female'] /= n_gender
+
+
+    # get ratio of hate_speech:offensive_language:neither
+    for k,v in hatespeech.items():
+        hatespeech[k]["ratio"] /= 2* len(samples)
 
     attr_avg = {}
     for attr_json in attr_jsons:
@@ -132,9 +247,25 @@ def get_statistics(samples: Iterator):
 
 
     res = {
-            "average_text_length":np.average(text_lengths),
-            "average_summary_length":np.average(summary_lengths),
-            **attr_avg,
+        "dataset-level":{
+                "average_text_length":np.average(text_lengths),
+                "average_summary_length":np.average(summary_lengths),
+                "length_info": {
+                    "max_text_length": np.max(text_lengths),
+                    "min_text_length": np.min(text_lengths),
+                    "average_text_length": np.average(text_lengths),
+                    "max_summary_length": np.max(summary_lengths),
+                    "min_summary_length": np.min(summary_lengths),
+                    "average_summary_length": np.average(summary_lengths),
+                },
+                "number_of_samples": len(samples),
+                "number_of_tokens": number_of_tokens,
+                "vocabulary_info": vocab_sorted,
+                "gender_info": gender_ratio,
+                "hatespeech_info": hatespeech,
+                **attr_avg,
+        },
+        "sample-level": sample_infos,
     }
 
     return res
