@@ -60,3 +60,29 @@
 
 
 ![image](https://user-images.githubusercontent.com/59123869/149858573-1b494181-1e1d-4ec1-9043-4c7102303a9f.png)
+
+
+## Summarization
+```python
+    res = {
+        "dataset-level":{
+                "average_text_length":np.average(text_lengths),
+                "average_summary_length":np.average(summary_lengths),
+                "length_info": {
+                    "max_text_length": np.max(text_lengths),
+                    "min_text_length": np.min(text_lengths),
+                    "average_text_length": np.average(text_lengths),
+                    "max_summary_length": np.max(summary_lengths),
+                    "min_summary_length": np.min(summary_lengths),
+                    "average_summary_length": np.average(summary_lengths),
+                },
+                "number_of_samples": len(samples),
+                "number_of_tokens": number_of_tokens,
+                "vocabulary_info": vocab_sorted,
+                "gender_info": gender_ratio,
+                "hatespeech_info": hatespeech,
+                **attr_avg,
+        },
+        "sample-level": sample_infos,
+    }
+```
