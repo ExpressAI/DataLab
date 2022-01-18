@@ -229,12 +229,21 @@ print(next(res))
         gender_ratio['single_name']['female'] += result['single_name']['female']
 
     n_gender = (gender_ratio['word']['male'] + gender_ratio['word']['female'])
-    gender_ratio['word']['male'] /= n_gender
-    gender_ratio['word']['female'] /= n_gender
+    if n_gender != 0:
+        gender_ratio['word']['male'] /= n_gender
+        gender_ratio['word']['female'] /= n_gender
+    else:
+        gender_ratio['word']['male'] = 0
+        gender_ratio['word']['female'] = 0
+
 
     n_gender = (gender_ratio['single_name']['male'] + gender_ratio['single_name']['female'])
-    gender_ratio['single_name']['male'] /= n_gender
-    gender_ratio['single_name']['female'] /= n_gender
+    if n_gender != 0:
+        gender_ratio['single_name']['male'] /= n_gender
+        gender_ratio['single_name']['female'] /= n_gender
+    else:
+        gender_ratio['single_name']['male'] = 0
+        gender_ratio['single_name']['female'] = 0
 
     # get ratio of hate_speech:offensive_language:neither
     for k,v in hatespeech.items():
