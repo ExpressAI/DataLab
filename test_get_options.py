@@ -5,7 +5,6 @@ import importlib
 import inspect
 import datalabs
 import json
-from featurize import general
 from inspect import getmembers, isfunction
 
 
@@ -61,151 +60,7 @@ def parse_dec_ast(info):
 ALL_FUNCS = []
 
 
-"""
-featurize.general
-"""
-from featurize import general
-funcs = findDecorators(general)
-for k,v in funcs.items():
-    if len(v) == 0:
-        continue
-    info = v[0]
-    func_metadata = parse_dec_ast(info)
-    ALL_FUNCS.append(func_metadata)
 
-# featurize.summarization
-from featurize import summarization
-funcs = findDecorators(summarization)
-for k,v in funcs.items():
-    if len(v) == 0:
-        continue
-    info = v[0]
-    func_metadata = parse_dec_ast(info)
-    ALL_FUNCS.append(func_metadata)
-
-
-
-"""
-edit.general
-"""
-from edit import general
-funcs = findDecorators(general)
-for k,v in funcs.items():
-    if len(v) == 0:
-        continue
-    info = v[0]
-    func_metadata = parse_dec_ast(info)
-    ALL_FUNCS.append(func_metadata)
-
-
-
-
-
-
-"""
-edit.general.plugins
-"""
-dir_operations = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)),
-    "src/datalabs/operations/edit/plugins/general/",
-)
-sys.path.append(dir_operations)
-
-# print(dir_operations)
-for file_name in os.listdir(dir_operations):
-    if not file_name.endswith(".py") and file_name!="__pycache__":
-        #print(f"{file_name}.transformation.{file_name}")
-        my_module = importlib.import_module(f"{file_name}.transformation")
-
-        # extract metadata information given the module: "my_module:
-        funcs = findDecorators(my_module)
-        for k,v in funcs.items():
-            if len(v) == 0:
-                continue
-            info = v[0]
-            func_metadata = parse_dec_ast(info)
-            ALL_FUNCS.append(func_metadata)
-
-
-
-
-
-
-"""
-preprocess.general
-"""
-
-from preprocess import general
-funcs = findDecorators(general)
-for k,v in funcs.items():
-    if len(v) == 0:
-        continue
-    info = v[0]
-    func_metadata = parse_dec_ast(info)
-    ALL_FUNCS.append(func_metadata)
-
-
-
-"""
-aggregate.general
-"""
-from aggregate import general
-funcs = findDecorators(general)
-for k,v in funcs.items():
-    if len(v) == 0:
-        continue
-    info = v[0]
-    func_metadata = parse_dec_ast(info)
-    ALL_FUNCS.append(func_metadata)
-
-
-
-# aggregate.summarization
-from aggregate import summarization
-funcs = findDecorators(summarization)
-for k,v in funcs.items():
-    if len(v) == 0:
-        continue
-    info = v[0]
-    func_metadata = parse_dec_ast(info)
-    ALL_FUNCS.append(func_metadata)
-
-
-# aggregate.sequence_labeling
-from aggregate import sequence_labeling
-funcs = findDecorators(sequence_labeling)
-for k,v in funcs.items():
-    if len(v) == 0:
-        continue
-    info = v[0]
-    func_metadata = parse_dec_ast(info)
-    ALL_FUNCS.append(func_metadata)
-
-
-# aggregate.text_matching
-from aggregate import text_matching
-funcs = findDecorators(text_matching)
-for k,v in funcs.items():
-    if len(v) == 0:
-        continue
-    info = v[0]
-    func_metadata = parse_dec_ast(info)
-    ALL_FUNCS.append(func_metadata)
-
-
-# aggregate.text_classification
-from aggregate import text_classification
-funcs = findDecorators(text_classification)
-for k,v in funcs.items():
-    if len(v) == 0:
-        continue
-    info = v[0]
-    func_metadata = parse_dec_ast(info)
-    ALL_FUNCS.append(func_metadata)
-
-
-
-# ------------------------- prompt ------------------
 # aggregate.sequence_labeling
 from prompt import topic_classification
 funcs = findDecorators(topic_classification)
@@ -253,13 +108,61 @@ for k,v in funcs.items():
     print(func_metadata)
     ALL_FUNCS.append(func_metadata)
 
+#
+#
+# # aggregate.summarization
+# from aggregate import summarization
+# funcs = findDecorators(summarization)
+# for k,v in funcs.items():
+#     if len(v) == 0:
+#         continue
+#     info = v[0]
+#     func_metadata = parse_dec_ast(info)
+#     print(func_metadata)
+#     ALL_FUNCS.append(func_metadata)
+#
+#
+# # aggregate.sequence_labeling
+# from aggregate import sequence_labeling
+# funcs = findDecorators(sequence_labeling)
+# for k,v in funcs.items():
+#     if len(v) == 0:
+#         continue
+#     info = v[0]
+#     func_metadata = parse_dec_ast(info)
+#     print(func_metadata)
+#     ALL_FUNCS.append(func_metadata)
+
+
+# aggregate.text_matching
+# from aggregate import text_matching
+# print(text_matching)
+# funcs = findDecorators(text_matching)
+# for k,v in funcs.items():
+#     if len(v) == 0:
+#         continue
+#     info = v[0]
+#     func_metadata = parse_dec_ast(info)
+#     print(func_metadata)
+#     ALL_FUNCS.append(func_metadata)
+
+
+# aggregate.text_classification
+# from aggregate import text_classification
+# funcs = findDecorators(text_classification)
+# for k,v in funcs.items():
+#     if len(v) == 0:
+#         continue
+#     info = v[0]
+#     func_metadata = parse_dec_ast(info)
+#     print(func_metadata)
+#     ALL_FUNCS.append(func_metadata)
 
 
 
-
-
-for k in ALL_FUNCS:
-    print(k)
+#
+# for k in ALL_FUNCS:
+#     print(k)
 
 
 with open('operations_info.json', 'w') as f:

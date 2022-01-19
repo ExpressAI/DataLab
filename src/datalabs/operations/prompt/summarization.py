@@ -97,9 +97,11 @@ print(next(res))
 """
 
 
-@summarization_prompting(name="template_p1", contributor="datalab", processed_fields=['text', 'summary'],
+@summarization_prompting(name="template_p1", contributor="datalab",
                          template="{text} Write a TLDR (Too Long Didn\'\'t Read) summary for the above text.",
-                         task="summarization")
+                         description="{text} Write a TLDR (Too Long Didn\'\'t Read) summary for the above text.",
+                         task="summarization",
+                         processed_fields=['text', 'summary'],)
 def template_p1(sample: dict):
     tp1 = "{text} Write a TLDR (Too Long Didn\\'t Read) summary for the above text."
 
@@ -114,9 +116,11 @@ def template_p1(sample: dict):
             "summary_prompt": summary}
 
 
-@summarization_prompting(name="template_p2", contributor="datalab", processed_fields=['text', 'summary'],
+@summarization_prompting(name="template_p2", contributor="datalab",
                          template="{text} Can you summarize the previous text?",
-                         task="summarization")
+                         description="{text} Can you summarize the previous text?",
+                         task="summarization",
+                         processed_fields=['text', 'summary'],)
 def template_p2(sample: dict):
     tp1 = "{text} Can you summarize the previous text?"
 
@@ -131,9 +135,11 @@ def template_p2(sample: dict):
             "summary_prompt": summary}
 
 
-@summarization_prompting(name="template_p3", contributor="datalab", processed_fields=['text', 'summary'],
+@summarization_prompting(name="template_p3", contributor="datalab",
                          template="{text} what are the main points one should remember from this text?",
-                         task="summarization")
+                         description="{text} what are the main points one should remember from this text?",
+                         task="summarization",
+                         processed_fields=['text', 'summary'],)
 def template_p3(sample: dict):
     tp1 = "{text} what are the main points one should remember from this text?"
 
@@ -148,9 +154,11 @@ def template_p3(sample: dict):
             "summary_prompt": summary}
 
 
-@summarization_prompting(name="template_p4", contributor="datalab", processed_fields=['text', 'summary'],
+@summarization_prompting(name="template_p4", contributor="datalab",
                          template="{text} In a few sentences, what does the previous paragraph say?",
-                         task="summarization")
+                         description="{text} In a few sentences, what does the previous paragraph say?",
+                         task="summarization",
+                         processed_fields=['text', 'summary'],)
 def template_p4(sample: dict):
     tp1 = "{text} In a few sentences, what does the previous paragraph say?"
 
@@ -165,9 +173,11 @@ def template_p4(sample: dict):
             "summary_prompt": summary}
 
 
-@summarization_prompting(name="template_p5", contributor="datalab", processed_fields=['text', 'summary'],
+@summarization_prompting(name="template_p5", contributor="datalab",
                          template="{text} Condense the text down to the essentials.",
-                         task="summarization")
+                         description="{text} Condense the text down to the essentials.",
+                         task="summarization",
+                         processed_fields=['text', 'summary'],)
 def template_p5(sample: dict):
     tp1 = "{text} Condense the text down to the essentials."
 
@@ -182,9 +192,11 @@ def template_p5(sample: dict):
             "summary_prompt": summary}
 
 
-@summarization_prompting(name="template_p6", contributor="datalab", processed_fields=['text', 'summary'],
+@summarization_prompting(name="template_p6", contributor="datalab",
                          template="{text} What can be a short description of the text?",
-                         task="summarization")
+                         description="{text} What can be a short description of the text?",
+                         task="summarization",
+                         processed_fields=['text', 'summary'],)
 def template_p6(sample: dict):
     tp1 = "{text} What can be a short description of the text?"
 
@@ -199,9 +211,11 @@ def template_p6(sample: dict):
             "summary_prompt": summary}
 
 
-@summarization_prompting(name="template_p7", contributor="datalab", processed_fields=['text', 'summary'],
+@summarization_prompting(name="template_p7", contributor="datalab",
                          template="{text} How would you summarize the key points of the text?",
-                         task="summarization")
+                         description="{text} How would you summarize the key points of the text?",
+                         task="summarization",
+                         processed_fields=['text', 'summary'],)
 def template_p7(sample: dict):
     tp1 = "{text} How would you summarize the key points of the text?"
 
@@ -216,9 +230,11 @@ def template_p7(sample: dict):
             "summary_prompt": summary}
 
 
-@summarization_prompting(name="template_p8", contributor="datalab", processed_fields=['text', 'summary'],
+@summarization_prompting(name="template_p8", contributor="datalab",
                          template="{text} Can you express the main content of the text?",
-                         task="summarization")
+                         description="{text} Can you express the main content of the text?",
+                         task="summarization",
+                         processed_fields=['text', 'summary'],)
 def template_p8(sample: dict):
     tp1 = "{text} Can you express the main content of the text?"
 

@@ -6,7 +6,7 @@ import numpy as np
 #sklearn is used for tfidf
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-from .aggregating import *
+from .aggregating import Aggregating, aggregating
 
 
 

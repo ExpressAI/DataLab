@@ -22,7 +22,7 @@ import lexicalrichness
 
 
 
-@featurizing(name="length", contributor="datalab",
+@featurizing(name="get_length", contributor="datalab",
              task = "Any",description = "this function is used to calulate the length of a text")
 def get_length(text:str) -> str:
     """
@@ -36,7 +36,7 @@ def get_length(text:str) -> str:
     return len(text.split(" "))
 
 
-@featurizing(name = "get_entities", contributor="spacy",
+@featurizing(name = "get_entities_spacy", contributor="spacy",
              task = "Any",description = "get entities")
 def get_entities_spacy(text:str) -> List[str]:
 
@@ -46,7 +46,7 @@ def get_entities_spacy(text:str) -> List[str]:
     return entities
 
 
-@featurizing(name = "get_postag", contributor="spacy",
+@featurizing(name = "get_postag_spacy", contributor="spacy",
              task="Any", description="get entities")
 def get_postag_spacy(text:str) -> List[str]:
 
@@ -57,7 +57,7 @@ def get_postag_spacy(text:str) -> List[str]:
 
 
 
-@featurizing(name="get_postag", contributor="nltk",
+@featurizing(name="get_postag_nltk", contributor="nltk",
              task="Any", description="get entities")
 def get_postag_nltk(text:str) -> List:
     """

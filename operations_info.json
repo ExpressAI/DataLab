@@ -2,7 +2,7 @@
     {
         "class_type": "featurizing",
         "args": {
-            "name": "length",
+            "name": "get_length",
             "contributor": "datalab",
             "task": "Any",
             "description": "this function is used to calulate the length of a text"
@@ -11,7 +11,7 @@
     {
         "class_type": "featurizing",
         "args": {
-            "name": "get_entities",
+            "name": "get_entities_spacy",
             "contributor": "spacy",
             "task": "Any",
             "description": "get entities"
@@ -20,7 +20,7 @@
     {
         "class_type": "featurizing",
         "args": {
-            "name": "get_postag",
+            "name": "get_postag_spacy",
             "contributor": "spacy",
             "task": "Any",
             "description": "get entities"
@@ -29,7 +29,7 @@
     {
         "class_type": "featurizing",
         "args": {
-            "name": "get_postag",
+            "name": "get_postag_nltk",
             "contributor": "nltk",
             "task": "Any",
             "description": "get entities"
@@ -384,6 +384,393 @@
             "contributor": "nltk",
             "task": "Any",
             "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "aggregating",
+        "args": {
+            "name": "get_average_length",
+            "contributor": "datalab",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "aggregating",
+        "args": {
+            "name": "get_vocabulary",
+            "contributor": "datalab",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "aggregating",
+        "args": {
+            "name": "get_tfidf",
+            "contributor": "scikit-learn",
+            "task": "Any",
+            "description": "this function is used to "
+        }
+    },
+    {
+        "class_type": "summarization_aggregating",
+        "args": {
+            "name": "get_statistics",
+            "contributor": "datalab",
+            "processed_fields": "summarization",
+            "task": "this function is used to compute the overall statistics of the summarization"
+        }
+    },
+    {
+        "class_type": "sequence_labeling_aggregating",
+        "args": {
+            "name": "get_statistics",
+            "contributor": "datalab",
+            "processed_fields": "sequence-labeling",
+            "task": "this function is used to compute the overall statistics of the summarization"
+        }
+    },
+    {
+        "class_type": "text_matching_aggregating",
+        "args": {
+            "name": "get_statistics",
+            "contributor": "datalab",
+            "processed_fields": "text-matching",
+            "task": "this function is used to calculate the overall statistics"
+        }
+    },
+    {
+        "class_type": "text_classification_aggregating",
+        "args": {
+            "name": "get_label_distribution",
+            "contributor": "datalab",
+            "processed_fields": "text",
+            "task": "text-classification",
+            "description": "this function is used to calculate the text length"
+        }
+    },
+    {
+        "class_type": "text_classification_aggregating",
+        "args": {
+            "name": "get_statistics",
+            "contributor": "datalab",
+            "processed_fields": "text",
+            "task": "text-classification",
+            "description": "this function is used to calculate the text length"
+        }
+    },
+    {
+        "class_type": "topic_classification_prompting",
+        "args": {
+            "name": "template_p1",
+            "contributor": "datalab",
+            "task": "topic-classification",
+            "description": "Given the text: {text}, is it about {texture_choices}",
+            "template": "Given the text: {text}, is it about {texture_choices}"
+        }
+    },
+    {
+        "class_type": "topic_classification_prompting",
+        "args": {
+            "name": "template_p2",
+            "contributor": "datalab",
+            "template": "Given the text: {text}, it is about [mask]",
+            "description": "Given the text: {text}, it is about [mask]",
+            "task": "topic-classification"
+        }
+    },
+    {
+        "class_type": "topic_classification_prompting",
+        "args": {
+            "name": "template_p3",
+            "contributor": "datalab",
+            "template": "Given the text: {text} Classify this text. You may choose from {texture_choices}.",
+            "description": "Given the text: {text} Classify this text. You may choose from {texture_choices}.",
+            "task": "topic-classification"
+        }
+    },
+    {
+        "class_type": "topic_classification_prompting",
+        "args": {
+            "name": "template_p4",
+            "contributor": "datalab",
+            "template": "Given the text: {text} Given a list of categories: {texture_choices}, what category does the paragraph belong to?",
+            "description": "Given the text: {text} Given a list of categories: {texture_choices}, what category does the paragraph belong to?",
+            "task": "topic-classification"
+        }
+    },
+    {
+        "class_type": "topic_classification_prompting",
+        "args": {
+            "name": "template_p5",
+            "contributor": "datalab",
+            "template": "Given the text: {text} Pick one category for the previous text. The options are {texture_choices}.",
+            "description": "Given the text: {text} Pick one category for the previous text. The options are {texture_choices}.",
+            "task": "topic-classification"
+        }
+    },
+    {
+        "class_type": "topic_classification_prompting",
+        "args": {
+            "name": "template_p6",
+            "contributor": "datalab",
+            "template": "Given the text: {text} Pick one category for the previous text. The options are {texture_choices}.",
+            "description": "Given the text: {text} Pick one category for the previous text. The options are {texture_choices}.",
+            "task": "topic-classification"
+        }
+    },
+    {
+        "class_type": "topic_classification_prompting",
+        "args": {
+            "name": "template_p7",
+            "contributor": "datalab",
+            "template": "topic-classification"
+        }
+    },
+    {
+        "class_type": "topic_classification_prompting",
+        "args": {
+            "name": "template_p8",
+            "contributor": "datalab",
+            "template": "Given the text: {text} Is this a piece of text regarding {texture_choices}",
+            "description": "Given the text: {text} Is this a piece of text regarding {texture_choices}",
+            "task": "topic-classification"
+        }
+    },
+    {
+        "class_type": "summarization_prompting",
+        "args": {
+            "name": "template_p1",
+            "contributor": "datalab",
+            "template": "summarization"
+        }
+    },
+    {
+        "class_type": "summarization_prompting",
+        "args": {
+            "name": "template_p2",
+            "contributor": "datalab",
+            "template": "{text} Can you summarize the previous text?",
+            "description": "{text} Can you summarize the previous text?",
+            "task": "summarization"
+        }
+    },
+    {
+        "class_type": "summarization_prompting",
+        "args": {
+            "name": "template_p3",
+            "contributor": "datalab",
+            "template": "{text} what are the main points one should remember from this text?",
+            "description": "{text} what are the main points one should remember from this text?",
+            "task": "summarization"
+        }
+    },
+    {
+        "class_type": "summarization_prompting",
+        "args": {
+            "name": "template_p4",
+            "contributor": "datalab",
+            "template": "{text} In a few sentences, what does the previous paragraph say?",
+            "description": "{text} In a few sentences, what does the previous paragraph say?",
+            "task": "summarization"
+        }
+    },
+    {
+        "class_type": "summarization_prompting",
+        "args": {
+            "name": "template_p5",
+            "contributor": "datalab",
+            "template": "{text} Condense the text down to the essentials.",
+            "description": "{text} Condense the text down to the essentials.",
+            "task": "summarization"
+        }
+    },
+    {
+        "class_type": "summarization_prompting",
+        "args": {
+            "name": "template_p6",
+            "contributor": "datalab",
+            "template": "{text} What can be a short description of the text?",
+            "description": "{text} What can be a short description of the text?",
+            "task": "summarization"
+        }
+    },
+    {
+        "class_type": "summarization_prompting",
+        "args": {
+            "name": "template_p7",
+            "contributor": "datalab",
+            "template": "{text} How would you summarize the key points of the text?",
+            "description": "{text} How would you summarize the key points of the text?",
+            "task": "summarization"
+        }
+    },
+    {
+        "class_type": "summarization_prompting",
+        "args": {
+            "name": "template_p8",
+            "contributor": "datalab",
+            "template": "{text} Can you express the main content of the text?",
+            "description": "{text} Can you express the main content of the text?",
+            "task": "summarization"
+        }
+    },
+    {
+        "class_type": "sentiment_classification_prompting",
+        "args": {
+            "name": "template_p1",
+            "contributor": "datalab",
+            "template": "Given the text: {text}, is it {texture_choices}",
+            "description": "Given the text: {text}, is it {texture_choices}",
+            "task": "sentiment-classification"
+        }
+    },
+    {
+        "class_type": "sentiment_classification_prompting",
+        "args": {
+            "name": "template_p2",
+            "contributor": "datalab",
+            "template": "Given the text: {text}, it is [mask]",
+            "description": "Given the text: {text}, it is [mask]",
+            "task": "sentiment-classification"
+        }
+    },
+    {
+        "class_type": "sentiment_classification_prompting",
+        "args": {
+            "name": "template_p3",
+            "contributor": "datalab",
+            "template": "Given the text: {text} Judge the sentiment of this text. You may choose from {texture_choices}.",
+            "description": "Given the text: {text} Judge the sentiment of this text. You may choose from {texture_choices}.",
+            "task": "sentiment-classification"
+        }
+    },
+    {
+        "class_type": "sentiment_classification_prompting",
+        "args": {
+            "name": "template_p4",
+            "contributor": "datalab",
+            "template": "sentiment-classification"
+        }
+    },
+    {
+        "class_type": "sentiment_classification_prompting",
+        "args": {
+            "name": "template_p5",
+            "contributor": "datalab",
+            "template": "Given the text: {text} Can you tell the sentiment of the text? {texture_choices}",
+            "description": "Given the text: {text} Can you tell the sentiment of the text? {texture_choices}",
+            "task": "sentiment-classification"
+        }
+    },
+    {
+        "class_type": "sentiment_classification_prompting",
+        "args": {
+            "name": "template_p6",
+            "contributor": "datalab",
+            "template": "Given the text: {text} The sentiment of the text is [mask]",
+            "description": "Given the text: {text} The sentiment of the text is [mask]",
+            "task": "sentiment-classification"
+        }
+    },
+    {
+        "class_type": "nli_prompting",
+        "args": {
+            "name": "template_p1",
+            "contributor": "datalab",
+            "template": "Given that \"{text1}\" Can we infer that \"{text2}\"? Yes or No or Unknown?",
+            "description": "Given that \"{text1}\" Can we infer that \"{text2}\"? Yes or No or Unknown?",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "nli_prompting",
+        "args": {
+            "name": "template_p2",
+            "contributor": "datalab",
+            "template": "Given text {text1} and text {text2}, is their relationship {texture_choices}",
+            "description": "Given text {text1} and text {text2}, is their relationship {texture_choices}",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "nli_prompting",
+        "args": {
+            "name": "template_p3",
+            "contributor": "datalab",
+            "template": "The relationship of two texts {text1} and {text2} is [mask]",
+            "description": "The relationship of two texts {text1} and {text2} is [mask]",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "nli_prompting",
+        "args": {
+            "name": "template_p4",
+            "contributor": "datalab",
+            "template": "{text1} {text2} True or False or Unknown?",
+            "description": "{text1} {text2} True or False or Unknown?",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "nli_prompting",
+        "args": {
+            "name": "template_p5",
+            "contributor": "datalab",
+            "template": "{text1} Is the following statement True or False or Unknown: {text2}?",
+            "description": "{text1} Is the following statement True or False or Unknown: {text2}?",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "nli_prompting",
+        "args": {
+            "name": "template_p6",
+            "contributor": "datalab",
+            "template": "Premise: {text1} Hypothesis: {text2} Based on the premise, is the hypothesis true or false or undetermined?",
+            "description": "Premise: {text1} Hypothesis: {text2} Based on the premise, is the hypothesis true or false or undetermined?",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "nli_prompting",
+        "args": {
+            "name": "template_p7",
+            "contributor": "datalab",
+            "template": "Premise: {text1} Hypothesis: {text2} The relation between the hypothesis and premise is [mask]",
+            "description": "Premise: {text1} Hypothesis: {text2} The relation between the hypothesis and premise is [mask]",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "nli_prompting",
+        "args": {
+            "name": "template_p8",
+            "contributor": "datalab",
+            "template": "{text1} Based on that information, is the claim \"{text2}\" true, false or inconclusive?",
+            "description": "{text1} Based on that information, is the claim \"{text2}\" true, false or inconclusive?",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "nli_prompting",
+        "args": {
+            "name": "template_p9",
+            "contributor": "datalab",
+            "template": "{text1} Does it imply that \"{text2}\"? Yes, No or Maybe?",
+            "description": "{text1} Does it imply that \"{text2}\"? Yes, No or Maybe?",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "nli_prompting",
+        "args": {
+            "name": "template_p10",
+            "contributor": "datalab",
+            "template": "Assume it is true that {text1}. Therefore, {text2} is guaranteed, possible or impossible?",
+            "task": "natural-language-inference"
         }
     }
 ]

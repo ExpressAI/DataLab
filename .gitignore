@@ -65,3 +65,4 @@ docs/source/_build/
 # Benchmark results
 report.json
 report.md
+test_get_options.py

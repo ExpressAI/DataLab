@@ -82,7 +82,7 @@ def get_similarity_by_sacrebleu(text1, text2):
 
 
 
-@text_matching_aggregating(name = "get_label_distribution", contributor= "datalab", processed_fields= ["text1", "text2"],
+@text_matching_aggregating(name = "get_statistics", contributor= "datalab", processed_fields= ["text1", "text2"],
                                  task="text-matching", description="this function is used to calculate the overall statistics")
 def get_statistics(samples: Iterator):
     """
