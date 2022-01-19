@@ -41,7 +41,7 @@ def generate_sentences(text, prob=0.1, seed=0, max_outputs=1):
     return perturbed_texts
 
 @editing(name = "add_typo", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="this function adds a typo into a text")
 def add_typo(text:str, seed=0, max_outputs=2):
 
     perturbed_texts = generate_sentences(text=text,

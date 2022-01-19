@@ -103,7 +103,7 @@ print(next(res))
 
 @nli_prompting(name="template_p1", contributor="datalab",
                template="Given that \"{text1}\" Can we infer that \"{text2}\"? Yes or No or Unknown?",
-               description="Given that \"{text1}\" Can we infer that \"{text2}\"? Yes or No or Unknown?",
+               description="Prompt template: Given that \"{text1}\" Can we infer that \"{text2}\"? Yes or No or Unknown?",
                task="natural-language-inference",
                processed_fields=['text1', 'text2', 'label'],)
 def template_p1(sample: dict, labels_to_answers: Dict):
@@ -130,7 +130,7 @@ def template_p1(sample: dict, labels_to_answers: Dict):
 
 @nli_prompting(name="template_p2", contributor="datalab",
                template="Given text {text1} and text {text2}, is their relationship {texture_choices}",
-               description="Given text {text1} and text {text2}, is their relationship {texture_choices}",
+               description="Prompt template: Given text {text1} and text {text2}, is their relationship {texture_choices}",
                task="natural-language-inference",
                processed_fields=['text1', 'text2', 'label'],)
 def template_p2(sample: dict, labels_to_answers: Dict):
@@ -153,7 +153,7 @@ def template_p2(sample: dict, labels_to_answers: Dict):
 
 @nli_prompting(name="template_p3", contributor="datalab",
                template="The relationship of two texts {text1} and {text2} is [mask]",
-               description="The relationship of two texts {text1} and {text2} is [mask]",
+               description="Prompt template: The relationship of two texts {text1} and {text2} is [mask]",
                task="natural-language-inference",
                processed_fields=['text1', 'text2', 'label'],)
 def template_p3(sample: dict, labels_to_answers: Dict):
@@ -177,7 +177,7 @@ def template_p3(sample: dict, labels_to_answers: Dict):
 
 @nli_prompting(name="template_p4", contributor="datalab",
                template="{text1} {text2} True or False or Unknown?",
-               description="{text1} {text2} True or False or Unknown?",
+               description="Prompt template: {text1} {text2} True or False or Unknown?",
                task="natural-language-inference",
                processed_fields=['text1', 'text2', 'label'],)
 def template_p4(sample: dict, labels_to_answers: Dict):
@@ -198,7 +198,7 @@ def template_p4(sample: dict, labels_to_answers: Dict):
 
 @nli_prompting(name="template_p5", contributor="datalab",
                template="{text1} Is the following statement True or False or Unknown: {text2}?",
-               description="{text1} Is the following statement True or False or Unknown: {text2}?",
+               description="Prompt template: {text1} Is the following statement True or False or Unknown: {text2}?",
                task="natural-language-inference",
                processed_fields=['text1', 'text2', 'label'],)
 def template_p5(sample: dict, labels_to_answers: Dict):
@@ -219,7 +219,7 @@ def template_p5(sample: dict, labels_to_answers: Dict):
 
 @nli_prompting(name="template_p6", contributor="datalab",
                template="Premise: {text1} Hypothesis: {text2} Based on the premise, is the hypothesis true or false or undetermined?",
-               description="Premise: {text1} Hypothesis: {text2} Based on the premise, is the hypothesis true or false or undetermined?",
+               description="Prompt template: Premise: {text1} Hypothesis: {text2} Based on the premise, is the hypothesis true or false or undetermined?",
                task="natural-language-inference",
                processed_fields=['text1', 'text2', 'label'],)
 def template_p6(sample: dict, labels_to_answers: Dict):
@@ -240,7 +240,7 @@ def template_p6(sample: dict, labels_to_answers: Dict):
 
 @nli_prompting(name="template_p7", contributor="datalab",
                template="Premise: {text1} Hypothesis: {text2} The relation between the hypothesis and premise is [mask]",
-               description="Premise: {text1} Hypothesis: {text2} The relation between the hypothesis and premise is [mask]",
+               description="Prompt template: Premise: {text1} Hypothesis: {text2} The relation between the hypothesis and premise is [mask]",
                task="natural-language-inference",
                processed_fields=['text1', 'text2', 'label'],)
 def template_p7(sample: dict, labels_to_answers: Dict):
@@ -258,7 +258,7 @@ def template_p7(sample: dict, labels_to_answers: Dict):
 
 @nli_prompting(name="template_p8", contributor="datalab",
                template="{text1} Based on that information, is the claim \"{text2}\" true, false or inconclusive?",
-               description="{text1} Based on that information, is the claim \"{text2}\" true, false or inconclusive?",
+               description="Prompt template: {text1} Based on that information, is the claim \"{text2}\" true, false or inconclusive?",
                task="natural-language-inference",
                processed_fields=['text1', 'text2', 'label'],)
 def template_p8(sample: dict, labels_to_answers: Dict):
@@ -279,7 +279,7 @@ def template_p8(sample: dict, labels_to_answers: Dict):
 
 @nli_prompting(name="template_p9", contributor="datalab",
                template="{text1} Does it imply that \"{text2}\"? Yes, No or Maybe?",
-                description="{text1} Does it imply that \"{text2}\"? Yes, No or Maybe?",
+                description="Prompt template: {text1} Does it imply that \"{text2}\"? Yes, No or Maybe?",
                task="natural-language-inference",
                processed_fields=['text1', 'text2', 'label'],)
 def template_p9(sample: dict, labels_to_answers: Dict):
@@ -300,6 +300,7 @@ def template_p9(sample: dict, labels_to_answers: Dict):
 
 @nli_prompting(name="template_p10", contributor="datalab",
                template="Assume it is true that {text1}. Therefore, {text2} is guaranteed, possible or impossible?",
+               description="Prompt template: Assume it is true that {text1}. Therefore, {text2} is guaranteed, possible or impossible?",
                task="natural-language-inference",
                processed_fields=['text1', 'text2', 'label'],)
 def template_p10(sample: dict, labels_to_answers: Dict):

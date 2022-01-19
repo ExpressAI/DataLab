@@ -18,8 +18,8 @@ from checklist.perturb import Perturb
 
 
 
-@editing(name = "strip_punctuation", contributor = "checklist",
-         task = "Any", description="this function is used to ")
+@editing(name = "strip_punctuation_checklist", contributor = "checklist",
+         task = "Any", description="strip the punctuation of a given text")
 def strip_punctuation_checklist(text:str):
 
     nlp = spacy.load('en_core_web_sm')
@@ -27,16 +27,16 @@ def strip_punctuation_checklist(text:str):
     return Perturb.strip_punctuation(pdata)
 
 
-@editing(name = "add_typos", contributor = "checklist",
-         task = "Any", description="this function is used to ")
+@editing(name = "add_typos_checklist", contributor = "checklist",
+         task = "Any", description="add typos randomly into a given text")
 def add_typos_checklist(text:str):
 
     return Perturb.add_typos(text)
 
 
 
-@editing(name = "contract", contributor = "checklist",
-         task = "Any", description="this function is used to ")
+@editing(name = "contract_checklist", contributor = "checklist",
+         task = "Any", description="contracts and expands contractions if present")
 def contract_checklist(text:str):
 
     return Perturb.contract(text)

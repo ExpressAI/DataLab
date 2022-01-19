@@ -9,7 +9,7 @@ from .preprocessing import *
 
 
 @preprocessing(name="lower", contributor="datalab",
-               task="Any", description="this function is used to ")
+               task="Any", description="this function is used to lowercase a given text")
 def lower(text:str) -> str:
     """
     Package: python
@@ -24,7 +24,7 @@ def lower(text:str) -> str:
 
 
 @preprocessing(name="tokenize_nltk", contributor="nltk",
-               task="Any", description="this function is used to ")
+               task="Any", description="this function is used to tokenize a text using NLTK")
 def tokenize_nltk(text:str) -> List:
     """
     Package: nltk.word_tokenize
@@ -39,7 +39,7 @@ def tokenize_nltk(text:str) -> List:
 
 
 @preprocessing(name="tokenize_huggingface", contributor="huggingface",
-               task="Any", description="this function is used to ")
+               task="Any", description="this function is used to tokenize a text using huggingface library")
 def tokenize_huggingface(text:str) -> List:
     """
     Package: huggingface:tokenizer
@@ -60,7 +60,7 @@ def tokenize_huggingface(text:str) -> List:
 
 
 @preprocessing(name="stem", contributor="nltk",
-               task="Any", description="this function is used to ")
+               task="Any", description="this function is used to stem a text using NLTK")
 def stem(text:str) -> List:
     """
     Package: nltk.stem

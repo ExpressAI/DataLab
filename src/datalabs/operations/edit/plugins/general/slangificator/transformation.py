@@ -60,7 +60,7 @@ def slangifyPoS(
         modified_toks.append(token.text + token.whitespace_)
 
 @editing(name = "slangificator", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="This transformation replaces some of the words (in particular, nouns, adjectives, and adverbs) of the original text with their corresponding slang. ")
 def slangificator(
     text,
     probReplaceNoun=1.0,

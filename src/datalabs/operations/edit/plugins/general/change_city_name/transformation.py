@@ -64,7 +64,7 @@ def create_ents_dict(doc):
     return spans
 
 @editing(name = "change_city_name", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="replaces instances of populous and well-known cities in a sentence with instances of less populous and less well-known cities.")
 def change_city_name(text:str, seed=None):
 
     spacy_nlp = spacy.load("en_core_web_sm")

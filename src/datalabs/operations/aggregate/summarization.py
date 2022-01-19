@@ -73,9 +73,9 @@ class summarization_aggregating(aggregating, dataset_operation):
 
 
 
-@summarization_aggregating(name="get_statistics", contributor="datalab", processed_fields=["text","summary"],
+@summarization_aggregating(name="get_statistics", contributor="datalab",
                                  task="summarization",
-                                 description="this function is used to compute the overall statistics of the summarization")
+                                 description="Calculate the overall statistics (e.g., density) of a given summarization dataset")
 def get_statistics(samples: Iterator):
     """
     Input:

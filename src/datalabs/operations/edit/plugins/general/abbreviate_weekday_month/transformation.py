@@ -29,7 +29,7 @@ def weekday_month_abbreviate(text, abbreviations, expansions, max_outputs=1):
     ]
 
 @editing(name = "abbreviate_weekday_month", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="this function adds noise to all types of text sources (sentence, paragraph, etc.) containing names of weekdays or months.")
 def abbreviate_weekday_month(text:str, max_outputs=1):
     abbreviations_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),

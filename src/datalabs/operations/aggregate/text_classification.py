@@ -72,7 +72,7 @@ class text_classification_aggregating(aggregating, dataset_operation):
 
 
 @text_classification_aggregating(name = "get_label_distribution", contributor= "datalab", processed_fields= "text",
-                                 task="text-classification", description="this function is used to calculate the text length")
+                                 task="text-classification", description="Calculate the label distribution of a given text classification dataset")
 def get_label_distribution(samples:Iterator):
     """
     Input:
@@ -104,9 +104,9 @@ def get_label_distribution(samples:Iterator):
     return res
 
 
-@text_classification_aggregating(name="get_statistics", contributor="datalab", processed_fields="text",
+@text_classification_aggregating(name="get_statistics", contributor="datalab",
                                  task="text-classification",
-                                 description="this function is used to calculate the text length")
+                                 description="Calculate the overall statistics (e.g., average length) of a given text classification dataset")
 def get_statistics(samples: Iterator):
     """
     Input:

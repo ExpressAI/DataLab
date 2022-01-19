@@ -74,21 +74,21 @@ class summarization_featurizing(featurizing, dataset_operation):
 
 
 @summarization_featurizing(name = "get_density", contributor="datalab",
-                           task = "summarization", description="this function is used for computing")
+                           task = "summarization", description="This function measures to what extent a summary covers the content in the source text.")
 def get_density(sample:dict):
     summary_attribute = SUMAttribute()
     attribute_info = summary_attribute.cal_attributes_each(sample['text'], sample['summary'])
     return attribute_info["attr_density"]
 
 @summarization_featurizing(name = "get_coverage", contributor="datalab",
-                           task = "summarization", description="this function is used for computing")
+                           task = "summarization", description="This function measures to what extent a summary covers the content in the source text.")
 def get_coverage(sample:dict):
     summary_attribute = SUMAttribute()
     attribute_info = summary_attribute.cal_attributes_each(sample['text'], sample['summary'])
     return attribute_info["attr_coverage"]
 
 @summarization_featurizing(name = "get_compression", contributor="datalab",
-                           task = "summarization", description="this function is used for computing")
+                           task = "summarization", description="This function measures the compression ratio from the source text to the generated summary.")
 def get_compression(sample:dict):
     summary_attribute = SUMAttribute()
     attribute_info = summary_attribute.cal_attributes_each(sample['text'], sample['summary'])
@@ -96,7 +96,7 @@ def get_compression(sample:dict):
 
 
 @summarization_featurizing(name = "get_repetition", contributor="datalab",
-                           task = "summarization", description="this function is used for computing")
+                           task = "summarization", description="This function measures the rate of repeated segments in summaries. The segments are instantiated as trigrams.")
 def get_repetition(sample:dict):
     summary_attribute = SUMAttribute()
     attribute_info = summary_attribute.cal_attributes_each(sample['text'], sample['summary'])
@@ -104,7 +104,7 @@ def get_repetition(sample:dict):
 
 
 @summarization_featurizing(name = "get_novelty", contributor="datalab",
-                           task = "summarization", description="this function is used for computing")
+                           task = "summarization", description="This measures the proportion of segments in the summaries that haven’t appeared in source documents. The segments are instantiated as bigrams.")
 def get_novelty(sample:dict):
     summary_attribute = SUMAttribute()
     attribute_info = summary_attribute.cal_attributes_each(sample['text'], sample['summary'])
@@ -112,7 +112,7 @@ def get_novelty(sample:dict):
 
 
 @summarization_featurizing(name = "get_copy_len", contributor="datalab",
-                           task = "summarization", description="this function is used for computing")
+                           task = "summarization", description="Measures the average length of segments in summary copied from source document.")
 def get_copy_len(sample:dict):
     summary_attribute = SUMAttribute()
     attribute_info = summary_attribute.cal_attributes_each(sample['text'], sample['summary'])
@@ -120,7 +120,7 @@ def get_copy_len(sample:dict):
 
 
 @summarization_featurizing(name = "get_all_features", contributor="datalab",
-                           task = "summarization", description="this function is used for computing")
+                           task = "summarization", description="Calculate all features for summarization datasets (density, coverage, compression, repetition, novelty, copy lenght)")
 def get_all_features(sample:dict):
     summary_attribute = SUMAttribute()
     attribute_info = summary_attribute.cal_attributes_each(sample['text'], sample['summary'])
@@ -135,7 +135,7 @@ def get_all_features(sample:dict):
 
 
 @summarization_featurizing(name = "get_oracle_summary", contributor="datalab",
-                           task = "summarization", description="this function is used for computing")
+                           task = "summarization", description="This function extract the oracle summaries for text summarization")
 def get_oracle_summary(sample:dict) -> Dict:
     """
     Input:
@@ -155,7 +155,7 @@ def get_oracle_summary(sample:dict) -> Dict:
 
 
 @summarization_featurizing(name = "get_lead_k_summary", contributor="datalab",
-                           task = "summarization", description="this function is used for computing")
+                           task = "summarization", description="This function extract the lead k summary for text summarization datasets")
 def get_lead_k_summary(sample:dict) -> Dict:
     """
     Input:

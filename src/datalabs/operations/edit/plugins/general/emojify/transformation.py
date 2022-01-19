@@ -44,7 +44,7 @@ def emoji2icon(
     return perturbed_texts
 
 @editing(name = "emojify", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="augments the input sentence by swapping words into emojis with similar meanings.")
 def emojify(text:str, seed: int = 42, max_outputs: int = 1, emoji_to_icon: bool = False):
     text2emoji_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)), "../../../resources/text2emoji.json"

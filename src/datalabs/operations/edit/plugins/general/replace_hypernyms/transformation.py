@@ -10,7 +10,7 @@ from edit.editing import *
 
 
 @editing(name = "replace_hypernyms", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description=" This operation makes lexical substitutions using hypernyms of the common nouns in a sentence when possible.")
 def replace_hypernyms(text:str, n=1, seed=0, max_outputs=1):
     nlp = spacy.load("en_core_web_sm")
     editor = Editor()

@@ -42,6 +42,8 @@ def findDecorators(target):
 
 def parse_dec_ast(info):
     dec_class_type = info.split("func=Name(id='")[-1].split("',")[0]
+    if dec_class_type.find("_")!=-1:
+        dec_class_type = dec_class_type.split("_")[-1]
 
     arg_keys = []
     for x in info.split("keyword(arg='")[1:]:

@@ -41,7 +41,7 @@ def untokenize(words):
 
 
 @editing(name = "replace_synonym", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="Inserting synonyms of random words excluding punctuations and stopwords.")
 def replace_synonym(text, seed=42, prob=0.5, max_outputs=1):
     nlp = spacy.load("en_core_web_sm")
     nltk.download("wordnet")

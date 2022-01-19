@@ -74,9 +74,9 @@ class sequence_labeling_aggregating(aggregating, dataset_operation):
 
 
 
-@sequence_labeling_aggregating(name="get_statistics", contributor="datalab", processed_fields=["tokens","tags"],
-                                 task="sequence-labeling",
-                                 description="this function is used to compute the overall statistics of the summarization")
+@sequence_labeling_aggregating(name="get_statistics", contributor="datalab",
+                                 task="sequence-labeling, named-entity-recognition, structure-prediction",
+                                 description="Calculate the overall statistics (e.g., average length) of a given sequence labeling datasets (e.g., named entity recognition)")
 def get_statistics(samples: Iterator):
     """
     Input:

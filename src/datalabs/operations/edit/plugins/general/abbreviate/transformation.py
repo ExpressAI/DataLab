@@ -11,7 +11,7 @@ from edit.editing import *
 
 
 @editing(name = "abbreviate", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="Replaces a word or phrase with its abbreviated counterpart")
 def abbreviate(text, prob = 0.5, seed = 0, max_outputs = 1):
     scriptpath = os.path.dirname(__file__)
     with open(os.path.join(scriptpath, '../../../resources/phrase_abbrev_dict.json'), 'r') as file:

@@ -90,7 +90,7 @@ def filler_word(text, prob=0.166, sp_p=True, unc_p=True, fill_p=True, seed=0, ma
 Class for implementing filler words addition
 """
 @editing(name = "add_filler_words", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="this function inserts filler words and phrases (ehh, urr, perhaps, you know) in the text.")
 def add_filler_words(text:str, max_outputs = 1, seed = 0, in_prob = 0.166,
                  speaker_ph=True, uncertain_ph=True, fill_ph=True):
     augmented_texts = filler_word(

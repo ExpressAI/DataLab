@@ -19,7 +19,7 @@ def dict_value_helper(d, key):
         return d[key]
 
 @editing(name = "abbreviate_country_state", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="this function adds Country/State name/abbreviation with flexible options: Pennsylvania -> PA or PA -> Pennsylvania")
 def abbreviate_country_state(text:str, seed=0, country=True, state=True,
                              country_filter='USA', abbr=True, exp=True):
 

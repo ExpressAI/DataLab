@@ -25,7 +25,7 @@ def transformation(sentence, lowercase, acronyms):
     return new_sentence
 
 @editing(name = "replace_acronyms", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="This transformation changes abbreviations and acronyms appearing in a text to their expanded form and respectively,")
 def replace_acronyms(text:str, seed=0, max_outputs=1,lowercase=False):
 
     acronyms_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../resources/acronyms.tsv")

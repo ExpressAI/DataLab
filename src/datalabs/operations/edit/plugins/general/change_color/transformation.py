@@ -16,7 +16,7 @@ def get_(big_list, small_list):
     big_str.index(small_str)
 
 @editing(name = "change_color", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="This transformation augments the input sentence by randomly replacing colors.")
 def change_color(text:str, max_outputs = 1, seed = 0, mapping: dict = None):
 
     scriptpath = os.path.dirname(__file__)

@@ -22,7 +22,7 @@ def load_rules(file):
     return str_rules
 
 @editing(name = "insert_abbreviation", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="This perturbation replaces in texts some well known words or expressions with (one of) their abbreviations.")
 def insert_abbreviation(text:str, max_outputs = 1,  seed = 0, ):
 
     current_path = os.path.realpath(__file__).replace(os.path.basename(__file__), "../../../resources/")

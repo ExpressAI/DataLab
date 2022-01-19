@@ -13,7 +13,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../.
 from edit.editing import *
 
 @editing(name = "reformat_date", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="this function changes the format of dates appearing in text.")
 def reformat_date(text:str, max_outputs = 1, seed = 0):
     spacy_nlp = spacy.load("en_core_web_sm")
 

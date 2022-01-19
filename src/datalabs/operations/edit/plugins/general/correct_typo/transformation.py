@@ -8,7 +8,7 @@ from edit.editing import *
 
 
 @editing(name = "correct_typo", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="This transformation perturbs text to correct common misspellings")
 def correct_typo(text:str):
 
     scriptpath = os.path.dirname(__file__)

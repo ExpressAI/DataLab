@@ -97,7 +97,7 @@ def greetings_and_farewells(text, seed=0, max_outputs=1):
     return output_texts
 
 @editing(name = "replace_greetings", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="This transformation will replace greetings (e.g. Hi, Howdy) and farewells (e.g. See you, Good night) by a similar one.")
 def replace_greetings(text:str, seed=0, max_outputs=1):
 
     processed_text = greetings_and_farewells(

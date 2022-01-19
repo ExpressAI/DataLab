@@ -23,7 +23,7 @@ import lexicalrichness
 
 
 @featurizing(name="get_length", contributor="datalab",
-             task = "Any",description = "this function is used to calulate the length of a text")
+             task = "Any",description = "This function is used to calculate the length of a text")
 def get_length(text:str) -> str:
     """
     Package: python
@@ -37,7 +37,7 @@ def get_length(text:str) -> str:
 
 
 @featurizing(name = "get_entities_spacy", contributor="spacy",
-             task = "Any",description = "get entities")
+             task = "Any",description = "Extract entities of a given text by using spacy library.")
 def get_entities_spacy(text:str) -> List[str]:
 
     nlp = spacy.load('en_core_web_sm') # this should be pre-reloaded
@@ -47,7 +47,7 @@ def get_entities_spacy(text:str) -> List[str]:
 
 
 @featurizing(name = "get_postag_spacy", contributor="spacy",
-             task="Any", description="get entities")
+             task="Any", description="Part-of-speech tagging of a given text by using spacy library.")
 def get_postag_spacy(text:str) -> List[str]:
 
     nlp = spacy.load('en_core_web_sm') # this should be pre-reloaded
@@ -58,7 +58,7 @@ def get_postag_spacy(text:str) -> List[str]:
 
 
 @featurizing(name="get_postag_nltk", contributor="nltk",
-             task="Any", description="get entities")
+             task="Any", description="Part-of-speech tagging of a given text by using NLTK library")
 def get_postag_nltk(text:str) -> List:
     """
     Package: nltk.pos_tag
@@ -82,7 +82,7 @@ def get_postag_nltk(text:str) -> List:
 
 
 @featurizing(name="get_basic_words", contributor="datalab",
-             task="Any", description="get entities")
+             task="Any", description="Calculate the ratio of basic words in a given text")
 def get_basic_words(sentence:str):
 
 
@@ -110,8 +110,8 @@ def get_basic_words(sentence:str):
 
 
 
-@featurizing(name="get_lexical_richness", contributor="datalab",
-             task="Any", description="get entities")
+@featurizing(name="get_lexical_richness", contributor="lexicalrichness",
+             task="Any", description="Calculate the lexical richness (i.e.lexical diversity) of a text")
 def get_lexical_richness(sentence:str):
     # sample level
     # sentence : string  'XXX'
@@ -134,7 +134,7 @@ def get_lexical_richness(sentence:str):
 gendered_dic = load_gender_bias_data()
 
 @featurizing(name="get_gender_bias", contributor="datalab",
-             task="Any", description="get entities")
+             task="Any", description="Calculate the number of man/women tokens of a given text")
 def get_gender_bias(sentence:str):
 
 

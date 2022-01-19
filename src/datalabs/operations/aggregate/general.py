@@ -12,7 +12,8 @@ from .aggregating import Aggregating, aggregating
 
 
 @aggregating(name="get_average_length", contributor="datalab",
-               task="Any", description="this function is used to ")
+               task="Any",
+             description="Get the average length of a list of texts")
 def get_average_length(texts:Iterator) -> int:
     """
     Package: python
@@ -30,7 +31,7 @@ def get_average_length(texts:Iterator) -> int:
 
 
 @aggregating(name="get_vocabulary", contributor="datalab",
-               task="Any", description="this function is used to ")
+               task="Any", description="Get the vocabulary of a list of texts")
 def get_vocabulary(texts:Iterator) -> Dict:
     """
     Package: python
@@ -56,7 +57,7 @@ def get_vocabulary(texts:Iterator) -> Dict:
 
 
 @aggregating(name="get_tfidf", contributor="scikit-learn",
-               task="Any", description="this function is used to ")
+               task="Any", description="Calculate the tif-idf of a list of texts")
 def get_tfidf(texts:Iterator) -> int:
     """
     Package: python

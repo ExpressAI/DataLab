@@ -87,7 +87,7 @@ def substitute_homoglyphs(sentence, rng):
   return newSentence
 
 @editing(name = "simple_cipher", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="This transformation modifies text using a variety of very simple ciphers, that make the input sequence very dissimilar at the token level from its original form, but without losing any information in the input sequence")
 def simple_cipher(text:str, seed=0, max_outputs=2):
     return [
             double_characters(text),

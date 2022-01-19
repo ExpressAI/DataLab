@@ -71,6 +71,6 @@ class text_classification_featurizing(featurizing, dataset_operation):
 
 
 @text_classification_featurizing(name = "get_text_length", contributor= "datalab", processed_fields= "text",
-                                 task="text-classification", description="this function is used to calculate the text length")
+                                 task="text-classification", description="This function is used to calculate the text length")
 def get_text_length(sample:dict):
     return len(sample['text'].split(" "))

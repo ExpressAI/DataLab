@@ -7,7 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../.
 from edit.editing import *
 
 @editing(name = "change_person_name", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="Changes person named entities")
 def change_person_name(text:str, max_outputs = 1):
 
     spacy_nlp = spacy.load("en_core_web_sm")

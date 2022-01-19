@@ -9,7 +9,7 @@ from edit.editing import *
 
 
 @editing(name = "britishize_americanize", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="This transformation takes a sentence and converts it from british english to american english and vice-versa")
 def britishize_americanize(text:str):
     """
     Parameters:

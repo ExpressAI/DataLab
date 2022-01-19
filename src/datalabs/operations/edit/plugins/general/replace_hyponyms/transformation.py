@@ -8,7 +8,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../.
 from edit.editing import *
 
 @editing(name = "replace_hyponyms", contributor = "xl_augmenter",
-         task = "Any", description="this function is used to ")
+         task = "Any", description="This operation makes lexical substitutions using hyponyms of the common nouns in a sentence when possible")
 def replace_hyponyms(text:str, n=1, seed=0, max_outputs=1):
     nlp = spacy.load("en_core_web_sm")
     editor = Editor()
