@@ -1,0 +1,775 @@
+[
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_length",
+            "contributor": "datalab",
+            "task": "Any",
+            "description": "This function is used to calculate the length of a text"
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_entities_spacy",
+            "contributor": "spacy",
+            "task": "Any",
+            "description": "Extract entities of a given text by using spacy library."
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_postag_spacy",
+            "contributor": "spacy",
+            "task": "Any",
+            "description": "Part-of-speech tagging of a given text by using spacy library."
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_postag_nltk",
+            "contributor": "nltk",
+            "task": "Any",
+            "description": "Part-of-speech tagging of a given text by using NLTK library"
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_basic_words",
+            "contributor": "datalab",
+            "task": "Any",
+            "description": "Calculate the ratio of basic words in a given text"
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_lexical_richness",
+            "contributor": "lexicalrichness",
+            "task": "Any",
+            "description": "Calculate the lexical richness (i.e.lexical diversity) of a text"
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_gender_bias",
+            "contributor": "datalab",
+            "task": "Any",
+            "description": "Calculate the number of man/women tokens of a given text"
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_density",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "This function measures to what extent a summary covers the content in the source text."
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_coverage",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "This function measures to what extent a summary covers the content in the source text."
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_compression",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "This function measures the compression ratio from the source text to the generated summary."
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_repetition",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "This function measures the rate of repeated segments in summaries. The segments are instantiated as trigrams."
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_novelty",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "This measures the proportion of segments in the summaries that haven\u2019t appeared in source documents. The segments are instantiated as bigrams."
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_copy_len",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "Measures the average length of segments in summary copied from source document."
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_all_features",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "Calculate all features for summarization datasets (density, coverage, compression, repetition, novelty, copy lenght)"
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_oracle_summary",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "This function extract the oracle summaries for text summarization"
+        }
+    },
+    {
+        "class_type": "featurizing",
+        "args": {
+            "name": "get_lead_k_summary",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "This function extract the lead k summary for text summarization datasets"
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "strip_punctuation_checklist",
+            "contributor": "checklist",
+            "task": "Any",
+            "description": "strip the punctuation of a given text"
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "add_typos_checklist",
+            "contributor": "checklist",
+            "task": "Any",
+            "description": "add typos randomly into a given text"
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "contract_checklist",
+            "contributor": "checklist",
+            "task": "Any",
+            "description": "contracts and expands contractions if present"
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "abbreviate",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "Replaces a word or phrase with its abbreviated counterpart"
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "abbreviate_country_state",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function adds Country/State name/abbreviation with flexible options: Pennsylvania -> PA or PA -> Pennsylvania"
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "abbreviate_weekday_month",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function adds noise to all types of text sources (sentence, paragraph, etc.) containing names of weekdays or months."
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "add_filler_words",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function inserts filler words and phrases (ehh, urr, perhaps, you know) in the text."
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "add_typo",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function adds a typo into a text"
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "britishize_americanize",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "This transformation takes a sentence and converts it from british english to american english and vice-versa"
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "change_city_name",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "replaces instances of populous and well-known cities in a sentence with instances of less populous and less well-known cities."
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "change_color",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "This transformation augments the input sentence by randomly replacing colors."
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "change_person_name",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "Changes person named entities"
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "correct_typo",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "This transformation perturbs text to correct common misspellings"
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "emojify",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "augments the input sentence by swapping words into emojis with similar meanings."
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "insert_abbreviation",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "This perturbation replaces in texts some well known words or expressions with (one of) their abbreviations."
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "reformat_date",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "this function changes the format of dates appearing in text."
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "replace_acronyms",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "This transformation changes abbreviations and acronyms appearing in a text to their expanded form and respectively,"
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "replace_greetings",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "This transformation will replace greetings (e.g. Hi, Howdy) and farewells (e.g. See you, Good night) by a similar one."
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "replace_hypernyms",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": " This operation makes lexical substitutions using hypernyms of the common nouns in a sentence when possible."
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "replace_hyponyms",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "This operation makes lexical substitutions using hyponyms of the common nouns in a sentence when possible"
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "replace_synonym",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "Inserting synonyms of random words excluding punctuations and stopwords."
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "simple_cipher",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "This transformation modifies text using a variety of very simple ciphers, that make the input sequence very dissimilar at the token level from its original form, but without losing any information in the input sequence"
+        }
+    },
+    {
+        "class_type": "editing",
+        "args": {
+            "name": "slangificator",
+            "contributor": "xl_augmenter",
+            "task": "Any",
+            "description": "This transformation replaces some of the words (in particular, nouns, adjectives, and adverbs) of the original text with their corresponding slang. "
+        }
+    },
+    {
+        "class_type": "preprocessing",
+        "args": {
+            "name": "lower",
+            "contributor": "datalab",
+            "task": "Any",
+            "description": "this function is used to lowercase a given text"
+        }
+    },
+    {
+        "class_type": "preprocessing",
+        "args": {
+            "name": "tokenize_nltk",
+            "contributor": "nltk",
+            "task": "Any",
+            "description": "this function is used to tokenize a text using NLTK"
+        }
+    },
+    {
+        "class_type": "preprocessing",
+        "args": {
+            "name": "tokenize_huggingface",
+            "contributor": "huggingface",
+            "task": "Any",
+            "description": "this function is used to tokenize a text using huggingface library"
+        }
+    },
+    {
+        "class_type": "preprocessing",
+        "args": {
+            "name": "stem",
+            "contributor": "nltk",
+            "task": "Any",
+            "description": "this function is used to stem a text using NLTK"
+        }
+    },
+    {
+        "class_type": "aggregating",
+        "args": {
+            "name": "get_average_length",
+            "contributor": "datalab",
+            "task": "Any",
+            "description": "Get the average length of a list of texts"
+        }
+    },
+    {
+        "class_type": "aggregating",
+        "args": {
+            "name": "get_vocabulary",
+            "contributor": "datalab",
+            "task": "Any",
+            "description": "Get the vocabulary of a list of texts"
+        }
+    },
+    {
+        "class_type": "aggregating",
+        "args": {
+            "name": "get_tfidf",
+            "contributor": "scikit-learn",
+            "task": "Any",
+            "description": "Calculate the tif-idf of a list of texts"
+        }
+    },
+    {
+        "class_type": "aggregating",
+        "args": {
+            "name": "get_statistics",
+            "contributor": "datalab",
+            "task": "summarization",
+            "description": "Calculate the overall statistics (e.g., density) of a given summarization dataset"
+        }
+    },
+    {
+        "class_type": "aggregating",
+        "args": {
+            "name": "get_statistics",
+            "contributor": "datalab",
+            "task": "sequence-labeling, named-entity-recognition, structure-prediction",
+            "description": "Calculate the overall statistics (e.g., average length) of a given sequence labeling datasets (e.g., named entity recognition)"
+        }
+    },
+    {
+        "class_type": "aggregating",
+        "args": {
+            "name": "get_statistics",
+            "contributor": "datalab",
+            "task": "text-matching, natural-language-inference",
+            "description": "Calculate the overall statistics (e.g., average length) of a given text pair classification datasets. e,g. natural language inference"
+        }
+    },
+    {
+        "class_type": "aggregating",
+        "args": {
+            "name": "get_label_distribution",
+            "contributor": "datalab",
+            "processed_fields": "text",
+            "task": "text-classification",
+            "description": "Calculate the label distribution of a given text classification dataset"
+        }
+    },
+    {
+        "class_type": "aggregating",
+        "args": {
+            "name": "get_statistics",
+            "contributor": "datalab",
+            "task": "text-classification",
+            "description": "Calculate the overall statistics (e.g., average length) of a given text classification dataset"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p1",
+            "contributor": "datalab",
+            "task": "topic-classification, text-classification",
+            "description": "Prompt template: Given the text: {text}, is it about {texture_choices}",
+            "template": "Given the text: {text}, is it about {texture_choices}"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p2",
+            "contributor": "datalab",
+            "template": "Given the text: {text}, it is about [mask]",
+            "description": "Prompt template: Given the text: {text}, it is about [mask]",
+            "task": "topic-classification, text-classification"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p3",
+            "contributor": "datalab",
+            "template": "Given the text: {text} Classify this text. You may choose from {texture_choices}.",
+            "description": "Prompt template: Given the text: {text} Classify this text. You may choose from {texture_choices}.",
+            "task": "topic-classification, text-classification"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p4",
+            "contributor": "datalab",
+            "template": "Given the text: {text} Given a list of categories: {texture_choices}, what category does the paragraph belong to?",
+            "description": "Prompt template: Given the text: {text} Given a list of categories: {texture_choices}, what category does the paragraph belong to?",
+            "task": "topic-classification, text-classification"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p5",
+            "contributor": "datalab",
+            "template": "Given the text: {text} Pick one category for the previous text. The options are {texture_choices}.",
+            "description": "Prompt template: Given the text: {text} Pick one category for the previous text. The options are {texture_choices}.",
+            "task": "topic-classification, text-classification"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p6",
+            "contributor": "datalab",
+            "template": "Given the text: {text} Pick one category for the previous text. The options are {texture_choices}.",
+            "description": "Prompt template: Given the text: {text} Pick one category for the previous text. The options are {texture_choices}.",
+            "task": "topic-classification, text-classification"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p7",
+            "contributor": "datalab",
+            "template": "topic-classification, text-classification"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p8",
+            "contributor": "datalab",
+            "template": "Given the text: {text} Is this a piece of text regarding {texture_choices}",
+            "description": "Prompt template: Prompt template: Given the text: {text} Is this a piece of text regarding {texture_choices}",
+            "task": "topic-classification, text-classification"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p1",
+            "contributor": "datalab",
+            "template": "summarization"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p2",
+            "contributor": "datalab",
+            "template": "{text} Can you summarize the previous text?",
+            "description": "Prompt template: {text} Can you summarize the previous text?",
+            "task": "summarization"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p3",
+            "contributor": "datalab",
+            "template": "{text} what are the main points one should remember from this text?",
+            "description": "Prompt template: {text} what are the main points one should remember from this text?",
+            "task": "summarization"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p4",
+            "contributor": "datalab",
+            "template": "{text} In a few sentences, what does the previous paragraph say?",
+            "description": "Prompt template: {text} In a few sentences, what does the previous paragraph say?",
+            "task": "summarization"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p5",
+            "contributor": "datalab",
+            "template": "{text} Condense the text down to the essentials.",
+            "description": "Prompt template: {text} Condense the text down to the essentials.",
+            "task": "summarization"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p6",
+            "contributor": "datalab",
+            "template": "{text} What can be a short description of the text?",
+            "description": "Prompt template: {text} What can be a short description of the text?",
+            "task": "summarization"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p7",
+            "contributor": "datalab",
+            "template": "{text} How would you summarize the key points of the text?",
+            "description": "Prompt template: {text} How would you summarize the key points of the text?",
+            "task": "summarization"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p8",
+            "contributor": "datalab",
+            "template": "{text} Can you express the main content of the text?",
+            "description": "Prompt template: {text} Can you express the main content of the text?",
+            "task": "summarization"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p1",
+            "contributor": "datalab",
+            "template": "Given the text: {text}, is it {texture_choices}",
+            "description": "Prompt template: Given the text: {text}, is it {texture_choices}",
+            "task": "sentiment-classification"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p2",
+            "contributor": "datalab",
+            "template": "Given the text: {text}, it is [mask]",
+            "description": "Prompt template: Given the text: {text}, it is [mask]",
+            "task": "sentiment-classification"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p3",
+            "contributor": "datalab",
+            "template": "Given the text: {text} Judge the sentiment of this text. You may choose from {texture_choices}.",
+            "description": "Prompt template: Given the text: {text} Judge the sentiment of this text. You may choose from {texture_choices}.",
+            "task": "sentiment-classification"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p4",
+            "contributor": "datalab",
+            "template": "sentiment-classification"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p5",
+            "contributor": "datalab",
+            "template": "Given the text: {text} Can you tell the sentiment of the text? {texture_choices}",
+            "description": "Prompt template: Given the text: {text} Can you tell the sentiment of the text? {texture_choices}",
+            "task": "sentiment-classification"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p6",
+            "contributor": "datalab",
+            "template": "Given the text: {text} The sentiment of the text is [mask]",
+            "description": "Prompt template: Prompt template: Given the text: {text} The sentiment of the text is [mask]",
+            "task": "sentiment-classification"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p1",
+            "contributor": "datalab",
+            "template": "Given that \"{text1}\" Can we infer that \"{text2}\"? Yes or No or Unknown?",
+            "description": "Prompt template: Given that \"{text1}\" Can we infer that \"{text2}\"? Yes or No or Unknown?",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p2",
+            "contributor": "datalab",
+            "template": "Given text {text1} and text {text2}, is their relationship {texture_choices}",
+            "description": "Prompt template: Given text {text1} and text {text2}, is their relationship {texture_choices}",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p3",
+            "contributor": "datalab",
+            "template": "The relationship of two texts {text1} and {text2} is [mask]",
+            "description": "Prompt template: The relationship of two texts {text1} and {text2} is [mask]",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p4",
+            "contributor": "datalab",
+            "template": "{text1} {text2} True or False or Unknown?",
+            "description": "Prompt template: {text1} {text2} True or False or Unknown?",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p5",
+            "contributor": "datalab",
+            "template": "{text1} Is the following statement True or False or Unknown: {text2}?",
+            "description": "Prompt template: {text1} Is the following statement True or False or Unknown: {text2}?",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p6",
+            "contributor": "datalab",
+            "template": "Premise: {text1} Hypothesis: {text2} Based on the premise, is the hypothesis true or false or undetermined?",
+            "description": "Prompt template: Premise: {text1} Hypothesis: {text2} Based on the premise, is the hypothesis true or false or undetermined?",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p7",
+            "contributor": "datalab",
+            "template": "Premise: {text1} Hypothesis: {text2} The relation between the hypothesis and premise is [mask]",
+            "description": "Prompt template: Premise: {text1} Hypothesis: {text2} The relation between the hypothesis and premise is [mask]",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p8",
+            "contributor": "datalab",
+            "template": "{text1} Based on that information, is the claim \"{text2}\" true, false or inconclusive?",
+            "description": "Prompt template: {text1} Based on that information, is the claim \"{text2}\" true, false or inconclusive?",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p9",
+            "contributor": "datalab",
+            "template": "{text1} Does it imply that \"{text2}\"? Yes, No or Maybe?",
+            "description": "Prompt template: {text1} Does it imply that \"{text2}\"? Yes, No or Maybe?",
+            "task": "natural-language-inference"
+        }
+    },
+    {
+        "class_type": "prompting",
+        "args": {
+            "name": "template_p10",
+            "contributor": "datalab",
+            "template": "Assume it is true that {text1}. Therefore, {text2} is guaranteed, possible or impossible?",
+            "task": "natural-language-inference"
+        }
+    }
+]
