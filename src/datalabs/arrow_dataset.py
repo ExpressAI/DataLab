@@ -705,6 +705,10 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         mapfile.write(eof)
 
     def apply_save(self, func, attr):
+        if func._type == 'Aggregating':
+            self.info[attr] = self.apply(func)
+            return
+
         attr_name = attr if attr != None else re.findall("\w+", str(func))[1] 
         attr_column = [item for item in self.apply(func)]
         return self.add_column(attr_name, attr_column)
