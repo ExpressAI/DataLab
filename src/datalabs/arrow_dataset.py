@@ -678,15 +678,17 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             for sample in self.__iter__():
                 yield func(sample)
 
+    def __table_path(self):
+        return self.cache_files[0]["filename"]
 
     def __load_disk(self):
-        filename = self.cache_files[0]["filename"]
+        filename = self.__table_path()
         mapfile = pa.memory_map(filename, "r")
         return pa.ipc.open_stream(mapfile).read_all()
-    
+
     def __write_disk(self, pa_table):
-        filename = self.cache_files[0]["filename"]
-        schema = self._data.table.schema.serialize()
+        filename = self.__table_path()
+        schema = pa_table.schema.serialize()
         batches = list(map(lambda batch: batch.serialize(), pa_table.to_batches()))
         eof = b"\xFF\xFF\xFF\xFF\x00\x00\x00\x00"
 
@@ -707,21 +709,21 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         attr_column = [item for item in self.apply(func)]
         return self.add_column(attr_name, attr_column)
 
-    def apply_reload(self, func, attr):
+    def apply_local(self, func, attr):
         attr_name = attr if attr != None else re.findall("\w+", str(func))[1] 
         attr_column = [item for item in self.apply(func)]
 
         pa_table = self.__load_disk()
         if attr in pa_table.column_names:
             pa_table = pa_table.drop(attr)
-        new_dataset = self.add_column(attr_name, attr_column)
-        pa_table = new_dataset._data.table
-        # pa_table = pa_table.append_column(attr_name, pa.array(attr_column))
+        pa_table = pa_table.append_column(attr_name, pa.array(attr_column))
         self.__write_disk(pa_table)
 
-        return new_dataset
-        # return load_dataset(*self.args, **self.kwargs)
-
+        column_table = InMemoryTable.from_pydict({attr_name: attr_column})
+        table = MemoryMappedTable(pa_table, self.__table_path())
+        info = self.info.copy()
+        info.features.update(Features.from_arrow_schema(column_table.schema))
+        return Dataset(table, info=info, split=self.split, indices_table=self._indices)
 
     def write_arrow(self, path: str):
         with open(path, "wb") as file_obj:
