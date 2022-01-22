@@ -20,6 +20,7 @@ import contextlib
 import copy
 import json
 import os
+import re
 import shutil
 import tempfile
 import weakref
@@ -678,7 +679,48 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                 yield func(sample)
 
 
+    def __load_disk(self):
+        filename = self.cache_files[0]["filename"]
+        mapfile = pa.memory_map(filename, "r")
+        return pa.ipc.open_stream(mapfile).read_all()
+    
+    def __write_disk(self, pa_table):
+        filename = self.cache_files[0]["filename"]
+        schema = self._data.table.schema.serialize()
+        batches = list(map(lambda batch: batch.serialize(), pa_table.to_batches()))
+        eof = b"\xFF\xFF\xFF\xFF\x00\x00\x00\x00"
 
+        total = schema.size + len(eof)
+        for batch in batches:
+            total += batch.size
+        mapfile = pa.memory_map(filename, "r+")
+        mapfile.resize(total)
+        mapfile.seek(0)
+
+        mapfile.write(schema)
+        for batch in batches:
+            mapfile.write(batch)
+        mapfile.write(eof)
+
+    def apply_save(self, func, attr):
+        attr_name = attr if attr != None else re.findall("\w+", str(func))[1] 
+        attr_column = [item for item in self.apply(func)]
+        return self.add_column(attr_name, attr_column)
+
+    def apply_reload(self, func, attr):
+        attr_name = attr if attr != None else re.findall("\w+", str(func))[1] 
+        attr_column = [item for item in self.apply(func)]
+
+        pa_table = self.__load_disk()
+        if attr in pa_table.column_names:
+            pa_table = pa_table.drop(attr)
+        new_dataset = self.add_column(attr_name, attr_column)
+        pa_table = new_dataset._data.table
+        # pa_table = pa_table.append_column(attr_name, pa.array(attr_column))
+        self.__write_disk(pa_table)
+
+        return new_dataset
+        # return load_dataset(*self.args, **self.kwargs)
 
 
     def write_arrow(self, path: str):
