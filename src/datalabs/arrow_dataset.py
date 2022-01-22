@@ -758,7 +758,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
 
         pa_table = self.__load_disk()
         if attr_name in pa_table.column_names:
-            pa_table = pa_table.drop(attr_name)
+            pa_table = pa_table.drop([attr_name])
         pa_table = pa_table.append_column(attr_name, pa.array(attr_column))
         self.__write_disk(pa_table)
 
