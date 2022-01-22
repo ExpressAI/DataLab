@@ -745,7 +745,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
 
     def apply_save(self, func, attr):
         if func._type == 'Aggregating':
-            self.info[attr] = self.apply(func)
+            self.info.__dict__[attr] = self.apply(func)
             return
 
         attr_name = attr if attr != None else re.findall("\w+", str(func))[1] 
