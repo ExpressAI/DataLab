@@ -95,6 +95,6 @@ one can use `dataset[SPLIT]._info.task_templates` to get more useful task-depend
 
    
 
-## Acknowledge
+## Acknowledgment
 This code is developed based on huggingface dataset.
 
