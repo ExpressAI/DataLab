@@ -4,7 +4,7 @@
 
 
 
-(1) Choice 2
+(1) Choice 1
 ```python
     from datalabs import load_dataset
     from featurize import *
