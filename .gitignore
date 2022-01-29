@@ -37,6 +37,7 @@ venv.bak/
 
 # Tests
 .pytest_cache/
+/local.py
 
 # Other
 *.DS_Store

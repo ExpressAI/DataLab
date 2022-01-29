@@ -20,6 +20,7 @@ import contextlib
 import copy
 import json
 import os
+import re
 import shutil
 import tempfile
 import weakref
@@ -570,6 +571,24 @@ class NonExistentDatasetError(Exception):
 class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData):
     """A Dataset backed by an Arrow table."""
 
+    def __schema_load(self):
+        filename = self.cache_files[0]["filename"]
+        (filepath, filename) = os.path.split(filename)
+        (filename, extent) = os.path.splitext(filename)
+        path = os.path.join(filepath, filename + ".json")
+        obj = {}
+        if not os.path.exists(path):
+            open(path, "w")
+        with open(path, "r") as obj_file:
+            try:
+                obj = json.load(obj_file)
+            except:
+                pass
+        if obj.__len__():
+            from .features import Value
+            for item in obj:
+                self.info.features[item] = Value(obj[item])
+
     def __init__(
         self,
         arrow_table: Table,
@@ -608,6 +627,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         if self.info.features is None:
             self.info.features = inferred_features
         else:  # make sure the nested columns are in the right order
+            self.__schema_load()
             self.info.features = self.info.features.reorder_fields_as(inferred_features)
 
         # Infer fingerprint if None
@@ -678,9 +698,79 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             for sample in self.__iter__():
                 yield func(sample)
 
+    def __table_path(self):
+        return self.cache_files[0]["filename"]
 
+    def __load_disk(self):
+        filename = self.__table_path()
+        mapfile = pa.memory_map(filename, "r")
+        return pa.ipc.open_stream(mapfile).read_all()
 
+    def __write_disk(self, pa_table):
+        filename = self.__table_path()
+        schema = pa_table.schema.serialize()
+        batches = list(map(lambda batch: batch.serialize(), pa_table.to_batches()))
+        eof = b"\xFF\xFF\xFF\xFF\x00\x00\x00\x00"
 
+        total = schema.size + len(eof)
+        for batch in batches:
+            total += batch.size
+        mapfile = pa.memory_map(filename, "r+")
+        mapfile.resize(total)
+        mapfile.seek(0)
+
+        mapfile.write(schema)
+        for batch in batches:
+            mapfile.write(batch)
+        mapfile.write(eof)
+
+    def __schema_backup(self, field, dtype=None):
+        filename = self.__table_path()
+        (filepath, filename) = os.path.split(filename)
+        (filename, extent) = os.path.splitext(filename)
+        path = os.path.join(filepath, filename + ".json")
+        obj = {}
+        if not os.path.exists(path):
+            open(path, "w")
+        with open(path, "r") as obj_file:
+            try:
+                obj = json.load(obj_file)
+            except:
+                pass
+        if (dtype != None):
+            obj[field] = dtype
+        else:
+            del obj[field]
+        with open(path, "w") as obj_file:
+            json.dump(obj, obj_file)
+
+    def apply_save(self, func, attr):
+        if func._type == 'Aggregating':
+            self.info.__dict__[attr] = self.apply(func)
+            return
+
+        attr_name = attr if attr != None else re.findall("\w+", str(func))[1] 
+        attr_column = [item for item in self.apply(func)]
+        return self.add_column(attr_name, attr_column)
+
+    def apply_local(self, func, attr):
+        attr_name = attr if attr != None else re.findall("\w+", str(func))[1] 
+        attr_column = [item for item in self.apply(func)]
+
+        pa_table = self.__load_disk()
+        if attr_name in pa_table.column_names:
+            pa_table = pa_table.drop([attr_name])
+        pa_table = pa_table.append_column(attr_name, pa.array(attr_column))
+        self.__write_disk(pa_table)
+
+        column_table = InMemoryTable.from_pydict({attr_name: attr_column})
+        inferred_feature = Features.from_arrow_schema(column_table.schema)
+        table = MemoryMappedTable(pa_table, self.__table_path())
+        info = self.info.copy()
+        info.features.update(inferred_feature)
+        self.__schema_backup(attr_name, inferred_feature[attr_name].dtype)
+
+        return Dataset(table, info=info, split=self.split, indices_table=self._indices)
 
     def write_arrow(self, path: str):
         with open(path, "wb") as file_obj:
