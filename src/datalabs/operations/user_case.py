@@ -34,7 +34,7 @@ def tokenize(document):
 def template1(text1, text2, labels):
     return text1 + text2 + " ".join(labels)
 
-@datalab.feature
+@datalabs.feature
 def get_length(text):
     return len(text.split(" "))
 
