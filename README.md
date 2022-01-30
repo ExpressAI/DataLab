@@ -96,5 +96,5 @@ one can use `dataset[SPLIT]._info.task_templates` to get more useful task-depend
    
 
 ## Acknowledgment
-This code is developed based on huggingface dataset.
+DataLab originated from a fork of the awesome Huggingface Datasets and TensorFlow Datasets. We highly thank the Huggingface/TensorFlow Datasets for building this amazing library. More details on the differences between DataLab and them can be found in the section
 
