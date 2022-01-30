@@ -1,6 +1,6 @@
 # flake8: noqa
 # coding=utf-8
-# Copyright 2020 The HuggingFace Datasets Authors and the TensorFlow Datasets Authors.
+# Copyright 2020 The HuggingFace Datasets Authors and the TensorFlow Datasets Authors, DataLab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

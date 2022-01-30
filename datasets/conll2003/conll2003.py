@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 HuggingFace datalab Authors.
+# Copyright 2020 HuggingFace datasets and DataLab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
