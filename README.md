@@ -1,4 +1,4 @@
-# DataLab API CN
+# DataLab
 
 ## Installation
 #### Install
