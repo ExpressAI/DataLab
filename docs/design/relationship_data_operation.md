@@ -92,4 +92,4 @@ Learn from [batch](https://huggingface.co/docs/datasets/processing.html#processi
 
 ## Unify the returned format of operations
 
-
+## Design Refinement of Operation Classes
