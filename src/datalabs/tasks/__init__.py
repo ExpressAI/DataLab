@@ -9,6 +9,7 @@ from .summarization import Summarization
 from .text_classification import TextClassification
 from .text_matching import TextMatching
 from .sequence_labeling import SequenceLabeling
+from .sql_generation import SQLGeneration,SQLGenerationSpider
 
 __all__ = [
     "TaskTemplate",
@@ -20,6 +21,8 @@ __all__ = [
     "ImageClassification",
     "TextMatching",
     "SequenceLabeling",
+    "SQLGeneration",
+    "SQLGenerationSpider",
 ]
 
 logger = get_logger(__name__)
@@ -34,6 +37,8 @@ NAME2TEMPLATE = {
     ImageClassification.task_category: ImageClassification,
     TextMatching.task_category:TextMatching,
     SequenceLabeling.task_category: SequenceLabeling,
+    SQLGeneration.task_category: SQLGeneration,
+    SQLGenerationSpider.task_category: SQLGenerationSpider,
 }
 
 
