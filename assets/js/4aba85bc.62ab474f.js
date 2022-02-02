@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[978],{7025:function(a){a.exports=JSON.parse('{"allTagsPath":"/DataLab/blog/tags","slug":"/DataLab/blog/tags/hola","name":"hola","count":1,"permalink":"/DataLab/blog/tags/hola"}')}}]);
