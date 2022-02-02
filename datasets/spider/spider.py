@@ -21,7 +21,7 @@ import os
 # import datasets
 
 import datalabs
-from datalabs.tasks import QuestionAnsweringExtractive,QuestionAnsweringHotpot
+from datalabs.tasks import SQLGenerationSpider
 
 
 # logger = datasets.logging.get_logger(__name__)
@@ -76,6 +76,11 @@ class Spider(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             license=_LICENSE,
             citation=_CITATION,
+            task_templates=[
+                SQLGenerationSpider(
+                    question_column="question", query_column="query"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
