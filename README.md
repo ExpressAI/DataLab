@@ -12,7 +12,11 @@
 
 [DataLab](http://datalab.nlpedia.ai/) is a unified platform that allows for NLP researchers to perform a number of data-related tasks in an efficient and easy-to-use manner. In particular, DataLab supports the following functionalities:
 
-<p style="text-align:center;">
+    
+
+    
+    
+<p align="center">
 <img src="./docs/resources/figs/datalab_overview.png" width="300"/>
 </p>
 
