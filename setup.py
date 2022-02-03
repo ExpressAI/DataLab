@@ -11,7 +11,7 @@ from setuptools import find_packages, setup
 
 REQUIRED_PKGS = [
     # We use numpy>=1.17 to have np.random.Generator (Dataset shuffling)
-    "numpy>=1.17",
+    "numpy",
     # Backend and serialization.
     # Minimum 3.0.0 to support mix of struct and list types in parquet, and batch iterators of parquet data
     "pyarrow>=3.0.0,!=4.0.0",
