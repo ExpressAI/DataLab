@@ -3,11 +3,11 @@ from .featurizing import Featurizing, featurizing
 # from ..operation import DatasetOperation, dataset_operation
 from typing import Callable, Mapping
 
-# from ...tasks.summarization import Summarization
-from .plugins.summarization.sum_attribute import *
-from .plugins.summarization.extractive_methods import _ext_oracle
-from .plugins.summarization.extractive_methods import _lead_k
-from .plugins.summarization.extractive_methods import _compute_rouge
+
+# from .plugins.summarization.sum_attribute import *
+# from .plugins.summarization.extractive_methods import _ext_oracle
+# from .plugins.summarization.extractive_methods import _lead_k
+# from .plugins.summarization.extractive_methods import _compute_rouge
 # store all featurizing class
 
 import os
@@ -134,39 +134,39 @@ def get_all_features(sample:dict):
     }
 
 
-@summarization_featurizing(name = "get_oracle_summary", contributor="datalab",
-                           task = "summarization", description="This function extract the oracle summaries for text summarization")
-def get_oracle_summary(sample:dict) -> Dict:
-    """
-    Input:
-        SummarizationDataset: dict
-    Output:
-        return {"source":src,
-            "reference":ref,
-            "oracle_summary":oracle,
-            "oracle_labels":labels,
-            "oracle_score":max_score}
-    """
-    document = sent_tokenize(sample["text"]) # List
-    summary = sample['summary']
-    oracle_info = _ext_oracle(document, summary, _compute_rouge, max_sent=3)
-    return oracle_info
-
-
-
-@summarization_featurizing(name = "get_lead_k_summary", contributor="datalab",
-                           task = "summarization", description="This function extract the lead k summary for text summarization datasets")
-def get_lead_k_summary(sample:dict) -> Dict:
-    """
-    Input:
-        SummarizationDataset: dict
-    Output:
-        return {"source":src,
-                "reference":ref,
-                "lead_k_summary":src,
-                "lead_k_score":score}
-    """
-    document = sent_tokenize(sample["text"]) # List
-    summary = sample['summary']
-    lead_k_info = _lead_k(document, summary, _compute_rouge, k = 3)
-    return lead_k_info
+# @summarization_featurizing(name = "get_oracle_summary", contributor="datalab",
+#                            task = "summarization", description="This function extract the oracle summaries for text summarization")
+# def get_oracle_summary(sample:dict) -> Dict:
+#     """
+#     Input:
+#         SummarizationDataset: dict
+#     Output:
+#         return {"source":src,
+#             "reference":ref,
+#             "oracle_summary":oracle,
+#             "oracle_labels":labels,
+#             "oracle_score":max_score}
+#     """
+#     document = sent_tokenize(sample["text"]) # List
+#     summary = sample['summary']
+#     oracle_info = _ext_oracle(document, summary, _compute_rouge, max_sent=3)
+#     return oracle_info
+#
+#
+#
+# @summarization_featurizing(name = "get_lead_k_summary", contributor="datalab",
+#                            task = "summarization", description="This function extract the lead k summary for text summarization datasets")
+# def get_lead_k_summary(sample:dict) -> Dict:
+#     """
+#     Input:
+#         SummarizationDataset: dict
+#     Output:
+#         return {"source":src,
+#                 "reference":ref,
+#                 "lead_k_summary":src,
+#                 "lead_k_score":score}
+#     """
+#     document = sent_tokenize(sample["text"]) # List
+#     summary = sample['summary']
+#     lead_k_info = _lead_k(document, summary, _compute_rouge, k = 3)
+#     return lead_k_info
