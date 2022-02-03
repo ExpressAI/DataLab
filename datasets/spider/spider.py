@@ -21,7 +21,7 @@ import os
 # import datasets
 
 import datalabs
-from datalabs.tasks import SQLGenerationSpider
+from datalabs.tasks import SemanticParsing
 
 
 # logger = datasets.logging.get_logger(__name__)
@@ -77,7 +77,7 @@ class Spider(datalabs.GeneratorBasedBuilder):
             license=_LICENSE,
             citation=_CITATION,
             task_templates=[
-                SQLGenerationSpider(
+                SemanticParsing(
                     question_column="question", query_column="query"
                 )
             ],
