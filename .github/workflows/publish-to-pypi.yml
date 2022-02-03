@@ -27,5 +27,5 @@ jobs:
     - name: Publish distribution 📦 to PyPI
       uses: pypa/gh-action-pypi-publish@master
       with:
-        password: ${{ PYPI_API_TOKEN_DATALAB }}
+        password: ${{ PYPI_API_TOKEN_DATALABS }}
         skip_existing: true
