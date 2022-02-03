@@ -22,6 +22,7 @@ import os
 
 import datalabs
 from datalabs.tasks import TextMatching
+from datalabs.task_dataset import TextMatchingDataset
 
 _CITATION = """\
 @inproceedings{snli:emnlp2015,
@@ -46,7 +47,9 @@ _DATA_URL = "https://nlp.stanford.edu/projects/snli/snli_1.0.zip"
 class Snli(datalabs.GeneratorBasedBuilder):
     """The Stanford Natural Language Inference (SNLI) Corpus."""
 
-
+    def __init__(self,*args, **kwargs):
+        super(Snli, self).__init__(*args, **kwargs)
+        self.dataset_class = TextMatchingDataset
 
     def _info(self):
         return datalabs.DatasetInfo(
