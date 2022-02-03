@@ -21,7 +21,7 @@ normalized.
 
 ## Semantic Parsing
 
-[schema](class SemanticParsing(TaskTemplate):)
+[schema][https://github.com/ExpressAI/DataLab/blob/main/src/datalabs/tasks/semantic_parsing.py]
 
 
 ### Datasets (To be Complete)
