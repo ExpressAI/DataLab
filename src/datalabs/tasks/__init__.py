@@ -4,21 +4,25 @@ from ..utils.logging import get_logger
 from .automatic_speech_recognition import AutomaticSpeechRecognition
 from .base import TaskTemplate
 from .image_classification import ImageClassification
-from .question_answering import QuestionAnsweringExtractive
+from .question_answering import QuestionAnsweringExtractive,QuestionAnsweringHotpot
 from .summarization import Summarization
 from .text_classification import TextClassification
 from .text_matching import TextMatching
 from .sequence_labeling import SequenceLabeling
+from .semantic_parsing import SemanticParsing
+
 
 __all__ = [
     "TaskTemplate",
     "QuestionAnsweringExtractive",
+    "QuestionAnsweringHotpot",
     "TextClassification",
     "Summarization",
     "AutomaticSpeechRecognition",
     "ImageClassification",
     "TextMatching",
     "SequenceLabeling",
+    "SemanticParsing",
 ]
 
 logger = get_logger(__name__)
@@ -26,12 +30,14 @@ logger = get_logger(__name__)
 
 NAME2TEMPLATE = {
     QuestionAnsweringExtractive.task_category: QuestionAnsweringExtractive,
+    QuestionAnsweringHotpot.task_category: QuestionAnsweringHotpot,
     TextClassification.task_category: TextClassification,
     AutomaticSpeechRecognition.task_category: AutomaticSpeechRecognition,
     Summarization.task_category: Summarization,
     ImageClassification.task_category: ImageClassification,
     TextMatching.task_category:TextMatching,
     SequenceLabeling.task_category: SequenceLabeling,
+    SemanticParsing.task_category: SemanticParsing,
 }
 
 
