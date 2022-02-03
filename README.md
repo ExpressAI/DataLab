@@ -12,9 +12,9 @@
 
 [DataLab](http://datalab.nlpedia.ai/) is a unified platform that allows for NLP researchers to perform a number of data-related tasks in an efficient and easy-to-use manner. In particular, DataLab supports the following functionalities:
 
-<center>
+<p style="text-align:center;">
 <img src="./docs/resources/figs/datalab_overview.png" width="300"/>
-    </center>
+</p>
 
 * **Data Diagnostics**: DataLab allows for analysis and understanding of data to uncover undesirable traits such as hate speech, gender bias, or label imbalance.
 * **Operation Standardization**: DataLab provides and standardizes a large number of data processing operations, including aggregating, preprocessing, featurizing, editing and prompting operations.
