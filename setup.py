@@ -45,7 +45,7 @@ REQUIRED_PKGS = [
     "checklist",
     "lexicalrichness",
     "sacrebleu",
-    "compare_mt",
+    # "compare_mt",
     "scikit-learn",
     "py7zr",
     # for hate speech
