@@ -27,12 +27,12 @@ class MyTestCase(unittest.TestCase):
         res = dataset["test"].apply(get_all_features)
         print(next(res))
 
-        subdataset = Dataset.from_dict(dataset["test"][0:3])
-        res = subdataset.apply(get_oracle_summary)
-        # print(next(res))
-
-        subdataset = Dataset.from_dict(dataset["test"][0:3])
-        res = subdataset.apply(get_lead_k_summary)
+        # subdataset = Dataset.from_dict(dataset["test"][0:3])
+        # res = subdataset.apply(get_oracle_summary)
+        # # print(next(res))
+        #
+        # subdataset = Dataset.from_dict(dataset["test"][0:3])
+        # res = subdataset.apply(get_lead_k_summary)
         # print(next(res))
 
 
