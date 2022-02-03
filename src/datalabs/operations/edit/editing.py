@@ -8,33 +8,16 @@ from operation import TextOperation, text_operation
 
 class Editing(TextOperation):
 
-    def __init__(self,
-                 name:str = None,
-                 func:Callable[...,Any] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor: str = None,
-                 task = "Any",
-                 description = None,
-                 ):
-        super().__init__(name, func, resources, contributor,
-                         task = task, description=description,)
-        self._type = "Editing"
+    def __init__(self,*args,**kwargs,):
+        super(Editing, self).__init__(*args, **kwargs)
         self._data_type = "TextData"
-        self.processed_fields = ["text"]
+
 
 
 
 class editing(text_operation):
-    def __init__(self,
-                 name: Optional[str] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor: str = None,
-                 task="Any",
-                 description=None,
-                 ):
-        super().__init__(name, resources, contributor,
-                         task = task, description=description,
-                         )
+    def __init__(self, *args,**kwargs):
+        super(editing, self).__init__(*args, **kwargs)
 
 
     def __call__(self, *param_arg):

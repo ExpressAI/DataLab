@@ -1,5 +1,5 @@
 import unittest
-import datasets
+import datalabs
 from data import Data, TextData
 from operation import OperationFunction, operation_function
 from featurize import *
@@ -32,11 +32,11 @@ class MyTestCase(unittest.TestCase):
         a = ['I love this movie', 'do you love this movie']
         A = TextData(a)
 
-        print(A.data)
+        # print(A.data)
 
         B = A.apply(get_length)
-        for b in B:
-            print(b)
+        # for b in B:
+        #     print(b)
 
 
 
@@ -60,45 +60,21 @@ class MyTestCase(unittest.TestCase):
         A = TextData(a)
 
         B = A.apply(get_length)
-        for b in B:
-            print(b)
-
-        B = A.apply(get_entities_spacy)
-        for b in B:
-            print(b)
-
-        B = A.apply(get_postag_nltk)
-        for b in B:
-            print(b)
-
-        B = A.apply(get_postag_spacy)
-        for b in B:
-            print(b)
-
-    #
-    # def test_Data_editing(self):
-    #     print("\n---- test_Data_editing ---")
-    #
-    #     a = ['Peter loves Jack.', 'apple is looking at buying U.K. startup for $1 billion.']
-    #     A = TextData(a)
-    #
-    #     B = A.apply(edit.core.strip_punctuation_checklist)
-    #     for b in B:
-    #         print(b)
-    #
-    #
-    #     B = A.apply(edit.core.add_typos_checklist)
-    #     for b in B:
-    #         print(b)
-    #
-    #
-    #     B = A.apply(edit.core.contract_checklist)
-    #     for b in B:
-    #         print(b)
-
-        # B = A.apply(edit.core.change_names_checklist)
         # for b in B:
         #     print(b)
+
+        B = A.apply(get_entities_spacy)
+        # for b in B:
+        #     print(b)
+
+        B = A.apply(get_postag_nltk)
+        # for b in B:
+        #     print(b)
+
+        B = A.apply(get_postag_spacy)
+        # for b in B:
+        #     print(b)
+
 
 
 

@@ -1,8 +1,7 @@
 import unittest
-import datasets
-from datasets import load_dataset
+from datalabs import load_dataset
+from datalabs import Dataset
 
-from datasets import Dataset
 from featurize import *
 
 class MyTestCase(unittest.TestCase):
@@ -30,11 +29,11 @@ class MyTestCase(unittest.TestCase):
 
         subdataset = Dataset.from_dict(dataset["test"][0:3])
         res = subdataset.apply(get_oracle_summary)
-        print(next(res))
+        # print(next(res))
 
         subdataset = Dataset.from_dict(dataset["test"][0:3])
         res = subdataset.apply(get_lead_k_summary)
-        print(next(res))
+        # print(next(res))
 
 
 

@@ -104,8 +104,7 @@ print(next(res))
 @nli_prompting(name="template_p1", contributor="datalab",
                template="Given that \"{text1}\" Can we infer that \"{text2}\"? Yes or No or Unknown?",
                description="Prompt template: Given that \"{text1}\" Can we infer that \"{text2}\"? Yes or No or Unknown?",
-               task="natural-language-inference",
-               processed_fields=['text1', 'text2', 'label'],)
+               task="natural-language-inference")
 def template_p1(sample: dict, labels_to_answers: Dict):
     # labels=('contradiction', 'entailment', 'neutral'))
     answers_to_desc = {'contradiction': "No",

@@ -9,33 +9,15 @@ import sys
 
 class Featurizing(TextOperation):
 
-    def __init__(self,
-                 name:str = None,
-                 func:Callable[...,Any] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor: str = None,
-                 task = "Any",
-                 description = None,
-                 processed_fields = ["text"],
-                 ):
-        super().__init__(name, func, resources, contributor, task, description)
-        self._type = "Featurizing"
+    def __init__(self,*args,**kwargs,):
+        super(Featurizing, self).__init__(*args, **kwargs)
         self._data_type = "TextData"
-        self.processed_fields = processed_fields
 
 
 
 class featurizing(text_operation):
-    def __init__(self,
-                 name: Optional[str] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor: str = None,
-                 task = "Any",
-                 description = None,
-                 processed_fields = ["text"],
-                 ):
-        super().__init__(name, resources, contributor, task, description)
-        self.processed_fields = processed_fields
+    def __init__(self, *args,**kwargs):
+        super(featurizing, self).__init__(*args, **kwargs)
 
     def __call__(self, *param_arg):
         if callable(self.name):
@@ -49,7 +31,7 @@ class featurizing(text_operation):
                                    contributor = self.contributor,
                                    task = self.task,
                                  description=self.description,
-                                 processed_fields = self.processed_fields,)
+                                 )
             return tf_cls
 
 

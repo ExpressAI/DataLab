@@ -9,30 +9,15 @@ import sys
 
 class Prompting(TextOperation):
 
-    def __init__(self,
-                 name:str = None,
-                 func:Callable[...,Any] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor: str = None,
-                 task = "Any",
-                 description = None,
-                 ):
-        super().__init__(name, func, resources, contributor, task, description)
-        self._type = "Prompting"
+    def __init__(self,*args,**kwargs,):
+        super(Prompting, self).__init__(*args, **kwargs)
         self._data_type = "TextData"
-        self.processed_fields = ["text"]
 
 
 
 class prompting(text_operation):
-    def __init__(self,
-                 name: Optional[str] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor: str = None,
-                 task = "Any",
-                 description = None,
-                 ):
-        super().__init__(name, resources, contributor, task, description)
+    def __init__(self, *args,**kwargs):
+        super(prompting, self).__init__(*args, **kwargs)
 
 
     def __call__(self, *param_arg):

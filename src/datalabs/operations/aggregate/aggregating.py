@@ -8,29 +8,16 @@ from operation import TextOperation, text_operation
 
 class Aggregating(TextOperation):
 
-    def __init__(self,
-                 name:str = None,
-                 func:Callable[...,Any] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor: str = None,
-                 task:str = None,
-                 description:str = None,
-                 ):
-        super().__init__(name, func, resources, contributor, task = task, description= description)
-        self._type = "Aggregating"
+    def __init__(self,*args,**kwargs,):
+        super(Aggregating, self).__init__(*args, **kwargs)
         self._data_type = "TextData"
 
 
 
 class aggregating(text_operation):
-    def __init__(self,
-                 name: Optional[str] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor: str = None,
-                 task = None,
-                 description = None,
-                 ):
-        super().__init__(name, resources, contributor, task = task, description=description)
+
+    def __init__(self, *args,**kwargs):
+        super(aggregating, self).__init__(*args, **kwargs)
 
 
     def __call__(self, *param_arg):
