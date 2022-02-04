@@ -213,4 +213,5 @@ setup(
 )
 
 os.system("python -m spacy download en_core_web_sm")
-os.system("import nltk;nltk.download('omw-1.4')")
+import nltk
+nltk.download('omw-1.4')
