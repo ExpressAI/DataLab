@@ -25,9 +25,9 @@ def correct_typo(text:str):
         else COMMON_MISSPELLINGS_DICT.get(token.text, token.text)
         for token in doc
     ]
-    return ["".join(perturbed_text)]
+    # return ["".join(perturbed_text)]
 
-
+    return {"text_correct_typo":"".join(perturbed_text)}
 
 # sentence = "Andrew andd Alice finally returnd the French book that I bought lastr week"
 # perturbed = correct_typo(text=sentence)

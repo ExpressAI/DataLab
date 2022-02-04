@@ -72,7 +72,9 @@ def emojify(text:str, seed: int = 42, max_outputs: int = 1, emoji_to_icon: bool 
         max_outputs=max_outputs,
         emoji_to_icon=emoji_to_icon,
     )
-    return perturbed_texts
+
+    return {"text_emojify":perturbed_texts[0]}
+    # return perturbed_texts
 
 
 # sentence = "I am happy :) but you are sad :("

@@ -90,7 +90,8 @@ def abbreviate_country_state(text:str, seed=0, country=True, state=True,
         lambda y: y[1] + dict_value_helper(state_mapping, y[2]) + y[3],
         perturbed_text,
     )
-    return [perturbed_text]
+    # return [perturbed_text]
+    return {"text_abbreviate_country_state":perturbed_text}
 
 
 # sentence = "Texas and Oklahoma are also seeing extreme and exceptional drought."

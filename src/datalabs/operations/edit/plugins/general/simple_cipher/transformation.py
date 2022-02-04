@@ -89,15 +89,17 @@ def substitute_homoglyphs(sentence, rng):
 @editing(name = "simple_cipher", contributor = "xl_augmenter",
          task = "Any", description="This transformation modifies text using a variety of very simple ciphers, that make the input sequence very dissimilar at the token level from its original form, but without losing any information in the input sequence")
 def simple_cipher(text:str, seed=0, max_outputs=2):
-    return [
-            double_characters(text),
-            double_words(text),
-            space_characters(text),
-            reverse_characters(text),
-            reverse_each_word(text),
-            reverse_words(text),
-            substitute_homoglyphs(text, random.Random(seed)),
-            rot13(text)]
+    # return [
+    #         double_characters(text),
+    #         double_words(text),
+    #         space_characters(text),
+    #         reverse_characters(text),
+    #         reverse_each_word(text),
+    #         reverse_words(text),
+    #         substitute_homoglyphs(text, random.Random(seed)),
+    #         rot13(text)]
+
+    return {"text_double_characters":double_characters(text)}
 
 # sentence = "Andrew finally returned the French book to Chris that I bought last week."
 # perturbed = simple_cipher(text=sentence)

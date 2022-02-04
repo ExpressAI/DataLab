@@ -33,7 +33,8 @@ def get_length(text:str) -> str:
         integer
     """
     # text = sample["text"]
-    return len(text.split(" "))
+    return {"text_length":len(text.split(" "))}
+    # return
 
 
 @featurizing(name = "get_entities_spacy", contributor="spacy",
@@ -43,7 +44,8 @@ def get_entities_spacy(text:str) -> List[str]:
     nlp = spacy.load('en_core_web_sm') # this should be pre-reloaded
     doc = nlp(text)
     entities = [(ent.text,ent.label_) for ent in doc.ents]
-    return entities
+    return {"entities": entities}
+    # return entities
 
 
 @featurizing(name = "get_postag_spacy", contributor="spacy",
@@ -52,8 +54,10 @@ def get_postag_spacy(text:str) -> List[str]:
 
     nlp = spacy.load('en_core_web_sm') # this should be pre-reloaded
     doc = nlp(text)
-    token_postags = [(token.text, token.tag_) for token in doc]
-    return token_postags
+    # token_postags = [(token.text, token.tag_) for token in doc]
+    tokens = [token.text for token in doc]
+    tags =   [token.tag_ for token in doc]
+    return {"tokens":tokens, "pos_tags":tags}
 
 
 
@@ -75,8 +79,10 @@ def get_postag_nltk(text:str) -> List:
         nltk.download('averaged_perceptron_tagger')
 
     token_tag_tuples = pos_tag(text.split(" "))
+    tokens = [xx[0] for xx in token_tag_tuples]
+    tags =   [xx[1] for xx in token_tag_tuples]
     # pos_tags = [(res[0], res[1]) for res in token_tag_tuples]
-    return token_tag_tuples
+    return {"tokens":tokens, "pos_tags":tags}
 
 
 
@@ -105,7 +111,9 @@ def get_basic_words(sentence:str):
         if lower in BASIC_WORDS:
             n_basic_words = n_basic_words + 1
 
-    return n_basic_words*1.0/n_words
+
+    return {"basic_word_ratio": n_basic_words*1.0/n_words}
+    # return n_basic_words*1.0/n_words
 
 
 
@@ -128,7 +136,8 @@ def get_lexical_richness(sentence:str):
     except ZeroDivisionError:
         print(f'the sentence "{sentence}" contain no effective words, we will return 0 instead!')
     finally:
-        return results
+        # return results
+        return {"lexical_diversity": results}
 
 
 gendered_dic = load_gender_bias_data()
@@ -164,7 +173,8 @@ def get_gender_bias(sentence:str):
         # }
     }
 
-    return results
+    # return results
+    return {"gender_bias_info":results}
 
 
 def get_gender_bias_one_word(words_m, words_f, single_name_m, single_name_f, sentence):

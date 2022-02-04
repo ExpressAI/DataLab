@@ -37,7 +37,8 @@ def abbreviate(text, prob = 0.5, seed = 0, max_outputs = 1):
                 trans.append(word)
         trans1 = " ".join([str(word) for word in trans])
         transf.append(trans1)
-    return transf
+    #return transf
+    return {"text_abbreviate":transf[0]}
 
 
 

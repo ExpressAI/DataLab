@@ -76,7 +76,9 @@ def replace_synonym(text, seed=42, prob=0.5, max_outputs=1):
         if result not in results:
             # make sure there is no dup in results
             results.append(result)
-    return results
+
+    return {"text_replace_synonym":results[0]}
+    # return results
 
 
 # sentence = "The hooligans in balaclavas have attempted to steal jewellery."
