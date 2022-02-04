@@ -264,7 +264,7 @@ for k in ALL_FUNCS:
     print(k)
 
 
-with open('operations_info.json', 'w') as f:
+with open('./docs/resources/operations_info.json', 'w') as f:
     json.dump(ALL_FUNCS, f, indent = 4)
 
 # json_string = json.dumps(ALL_FUNCS, indent = 4)
