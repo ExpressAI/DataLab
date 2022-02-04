@@ -51,6 +51,7 @@ REQUIRED_PKGS = [
     # for hate speech
     "hatesonar",
     "dateparser",
+    "torch",
 ]
 
 AUDIO_REQUIRE = [
