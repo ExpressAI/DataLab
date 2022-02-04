@@ -16,6 +16,4 @@ jobs:
           pip install .
           python -c "import nltk; nltk.download('omw-1.4')"
       - name: Run tests with unittest
-        run: |
-          cd src
-          python -m unittest
+        run: python -m unittest discover
