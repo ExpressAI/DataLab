@@ -75,7 +75,7 @@ class AGNews(datalabs.GeneratorBasedBuilder):
             ),
             homepage="http://groups.di.unipi.it/~gulli/AG_corpus_of_news_articles.html",
             citation=_CITATION,
-            languages=["zh"],
+            languages=["en"],
             task_templates=[TextClassification(text_column="text", label_column="label")],
         )
 
