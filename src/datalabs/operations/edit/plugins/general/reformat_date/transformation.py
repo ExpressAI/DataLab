@@ -6,9 +6,16 @@ Babel==2.9.1
 import dateparser
 import numpy as np
 import spacy
-from babel.dates import format_date
 import os
 import sys
+
+try:
+  from babel.dates import format_date
+except ImportError:
+  print("Trying to Install required module: babel\n")
+  os.system('python -m pip install babel')
+
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../')))
 from edit.editing import *
 
