@@ -211,3 +211,6 @@ setup(
     zip_safe=False,
     include_package_data=True
 )
+
+os.system("python -m spacy download en_core_web_sm")
+os.system("import nltk;nltk.download('omw-1.4')")
