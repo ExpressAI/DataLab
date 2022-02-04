@@ -43,7 +43,9 @@ def insert_abbreviation(text:str, max_outputs = 1,  seed = 0, ):
         from_token = v[1][0]
         to_token = v[1][1]
         perturbed_texts = perturbed_texts[:from_token] + v[0] + perturbed_texts[to_token:]
-    return [perturbed_texts]
+    # return [perturbed_texts]
+
+    return {"text_insert_abbreviation":perturbed_texts}
 
 
 

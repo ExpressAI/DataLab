@@ -102,7 +102,8 @@ def add_filler_words(text:str, max_outputs = 1, seed = 0, in_prob = 0.166,
         seed=seed,
         max_outputs=max_outputs,
     )
-    return augmented_texts
+    # return augmented_texts
+    return {"text_add_filler_words":augmented_texts[0]}
 
 # sentence = "Andrew finally returned the French book to Chris that I bought last week"
 # perturbed = add_filler_words(text=sentence)

@@ -173,7 +173,8 @@ def slangificator(
 
         perturbed_texts.append(modified_toks)
 
-    return perturbed_texts
+    return {"text_slangificator":perturbed_texts[0]}
+    # return perturbed_texts
 
 
 

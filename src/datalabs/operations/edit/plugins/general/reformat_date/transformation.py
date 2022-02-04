@@ -89,7 +89,8 @@ def reformat_date(text:str, max_outputs = 1, seed = 0):
                     text = text.replace(entity.text, str(new_value))
         transformed_texts.append(text)
 
-    return transformed_texts
+    # return transformed_texts
+    return {"text_reformat_date":transformed_texts[0]}
 
 
 

@@ -94,7 +94,9 @@ def britishize_americanize(text:str):
 
 
     text = " ".join([final_dict.get(word, word) for word in text.split()])
-    return [text]
+
+    return {"text_britishize_americanize":text}
+    # return [text]
 
 
 

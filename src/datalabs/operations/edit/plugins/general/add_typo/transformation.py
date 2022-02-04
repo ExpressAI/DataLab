@@ -49,7 +49,8 @@ def add_typo(text:str, seed=0, max_outputs=2):
                                          seed=seed,
                                          max_outputs=max_outputs,
                                          )
-    return perturbed_texts
+    # return perturbed_texts
+    return {"text_add_typo":perturbed_texts[0]}
 
 
 # sentence = "Andrew finally returned the French book to Chris that I bought last week"

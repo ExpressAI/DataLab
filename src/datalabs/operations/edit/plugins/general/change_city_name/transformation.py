@@ -99,7 +99,8 @@ def change_city_name(text:str, seed=None):
         ]
         new_sentence = new_sentence.replace("<CITY>", rand_city, 1)
 
-    return new_sentence
+    # return new_sentence
+    return {"text_change_city_name":new_sentence}
 
 
 # sentence = "The team was established in Dallas in 1898 and was a charter member of the NFL in 1920."

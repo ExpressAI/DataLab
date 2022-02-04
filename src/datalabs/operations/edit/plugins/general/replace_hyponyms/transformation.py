@@ -36,7 +36,9 @@ def replace_hyponyms(text:str, n=1, seed=0, max_outputs=1):
         if len(perturbed_texts) > 0
         else [text]
     )
-    return perturbed_texts
+
+    return {"text_replace_hyponyms":perturbed_texts[0]}
+    # return perturbed_texts
 
 
 # sentence = "Andrew finally returned the French book to Chris that I bought last week."
