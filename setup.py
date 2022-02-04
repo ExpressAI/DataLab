@@ -50,6 +50,7 @@ REQUIRED_PKGS = [
     "py7zr",
     # for hate speech
     "hatesonar",
+    "dateparser",
 ]
 
 AUDIO_REQUIRE = [
