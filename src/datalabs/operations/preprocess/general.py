@@ -19,7 +19,7 @@ def lower(text:str) -> str:
         str
     """
     # text = sample['text']
-    return text.lower()
+    return {"text_lower":text.lower()}
 
 
 
@@ -34,7 +34,7 @@ def tokenize_nltk(text:str) -> List:
         List
     """
     # text = sample['text']
-    return nltk.word_tokenize(text)
+    return {"text_tokenize":nltk.word_tokenize(text)}
 
 
 
@@ -53,7 +53,7 @@ def tokenize_huggingface(text:str) -> List:
     tokenizer = Tokenizer(BPE())
     # text = sample['text']
     output = tokenizer.encode(text)
-    return output.tokens
+    return {"text_tokenize":output.tokens}
 
 
 
@@ -73,7 +73,7 @@ def stem(text:str) -> List:
     porter = PorterStemmer()
     # text = sample['text']
     stem_words = [porter.stem(word) for word in text.split(" ")]
-    return stem_words
+    return {"text_stem":stem_words}
 
 
 
