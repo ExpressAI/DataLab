@@ -4,7 +4,7 @@
 Take the `ag_news` (English), for example, 
 
 
-we just need to assign value (`List[str]`) to the variable `languages`.
+we just need to assign value (`List[str]`) to the variable `languages` in the `_info(self)` function.
 * where `str` represents the ISO code of a language, which you can obtain from this [look-up table](https://huggingface.co/languages).
 If the dataset involves multiple languages, add all of them. For example, for the Chinese-English machine translation dataset, we have
   `languages = ['en','zh']`
