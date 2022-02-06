@@ -12,8 +12,6 @@
 # limitations under the License.
 
 
-"""Dataset config script for atis （this code is originally from huggingface, then modified by datalab）"""
-
 import csv
 
 import datalabs

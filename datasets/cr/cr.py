@@ -11,9 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-"""Dataset config script for cr （this code is originally from huggingface, then modified by datalab）"""
-
 import csv
 
 import datalabs
