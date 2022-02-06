@@ -1,4 +1,5 @@
-"""TODO(drop): Add a description here."""
+"""Dataset config script for ag_news （this code is originally from huggingface, them modified by datalab）"""
+
 
 
 import json
