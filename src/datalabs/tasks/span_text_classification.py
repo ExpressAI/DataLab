@@ -19,17 +19,17 @@ from .base import TaskTemplate
 
 
 @dataclass
-class TextMatching(TaskTemplate):
+class SpanTextClassification(TaskTemplate):
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
-    task_category:str = "text-matching"
-    task: str = "natural-language-inference"
-    input_schema: ClassVar[Features] = Features({"text1": Value("string"),
-                                                 "text2":Value("string"),
+    task_category:str = "span-text-classification"
+    task: str = "aspect-based-sentiment-classification"
+    input_schema: ClassVar[Features] = Features({"span": Value("string"),
+                                                 "text":Value("string"),
                                                  })
     # TODO(lewtun): Find a more elegant approach without descriptors.
     label_schema: ClassVar[Features] = Features({"labels": ClassLabel})
-    text1_column: str = "text1"
-    text2_column: str = "text2"
+    span_column: str = "span"
+    text_column: str = "text"
     label_column: str = "label"
     labels: Optional[Tuple[str]] = None
 
@@ -49,7 +49,7 @@ class TextMatching(TaskTemplate):
     @property
     def column_mapping(self) -> Dict[str, str]:
         return {
-            self.text1_column: "text1",
-            self.text2_column: "text2",
+            self.span_column: "span",
+            self.text_column: "text",
             self.label_column: "label",
         }
