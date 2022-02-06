@@ -55,7 +55,7 @@ class SUBJ(datalabs.GeneratorBasedBuilder):
             homepage="https://www.cs.cornell.edu/people/pabo/movie-review-data/",
             citation=_CITATION,
             languages=["en"],
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[TextClassification(text_column="text", label_column="label", task="sentiment-classification")],
         )
 
     def _split_generators(self, dl_manager):
