@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import ClassVar, Dict
 
-from ..features import Features, Sequence, Value
+from ..features import Features, Sequence, Value, ClassLabel
 from .base import TaskTemplate
 
 
@@ -79,3 +79,30 @@ class QuestionAnsweringHotpot(TaskTemplate):
     @property
     def column_mapping(self) -> Dict[str, str]:
         return {self.question_column: "question", self.context_column: "context", self.answers_column: "answers", self.supporting_column:"supporting_facts"}
+
+@dataclass
+class MultipleChoiceQA(TaskTemplate):
+    # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
+    task_category: str = "multiple-choice-qa"
+    task: str = "multiple-choice-qa"
+    input_schema: ClassVar[Features] = Features({
+        "context": Value("string"),
+        "question": Value("string"),
+        "choice": Sequence(Value("string")),
+    })
+    label_schema: ClassVar[Features] = Features({
+        "label": ClassLabel,
+    })
+    context_column: str = "context"
+    question_column: str = "question"
+    choice_colomn:str = "choice"
+    label_colomn: str = "label"
+
+    @property
+    def column_mapping(self) -> Dict[str, str]:
+        return {
+            context_column: "context",
+            question_column: "question",
+            choice_colomn: "choice",
+            label_colomn: "label"
+        }
