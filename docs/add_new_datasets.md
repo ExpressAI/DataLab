@@ -45,4 +45,5 @@ Suppose the dataset name to be added is `ag_news`, we need to:
    print(dataset['train']._info.task_templates)
 ```
 
-
+NOTE:
+* Usually, using the lower case string for the script name (arxiv_sum.py) while camel case for class name (`ArxivSum`).
