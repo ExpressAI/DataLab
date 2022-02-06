@@ -45,5 +45,11 @@ Suppose the dataset name to be added is `ag_news`, we need to:
    print(dataset['train']._info.task_templates)
 ```
 
+## 4. Update your update information of your dataset
+Once you successfully add a new dataset, please update the [table](https://github.com/ExpressAI/DataLab/blob/main/docs/task_normalization/progress.md).
+
+
+
+
 NOTE:
 * Usually, using the lower case string for the script name (arxiv_sum.py) while camel case for class name (`ArxivSum`).

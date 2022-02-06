@@ -16,6 +16,7 @@ We need to creat a script (`sequence_labeling.py`) in the [folder](https://githu
 We then need to register the information of new class at [`__init__.py`](https://github.com/ExpressAI/DataLab/blob/main/src/datalabs/tasks/__init__.py)
 
 
+
 ### Tips
 
 * The motivation of introducing task schema is to help us easily standardize (normalize) different datasets from the same task category.
