@@ -7,6 +7,7 @@ from .base import TaskTemplate
 
 @dataclass
 class QuestionAnsweringExtractive(TaskTemplate):
+    # adapt datasets: suqad-1, suqad-2, duorc, ...
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
     task_category: str = "question-answering-extractive"
     task: str = "question-answering-extractive"
@@ -33,6 +34,7 @@ class QuestionAnsweringExtractive(TaskTemplate):
 
 @dataclass
 class QuestionAnsweringExtractiveType(TaskTemplate):
+    # adaptive datasets: drop
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
     task_category: str = "question-answering-extractive-type"
     task: str = "question-answering-extractive-type"
@@ -60,6 +62,7 @@ class QuestionAnsweringExtractiveType(TaskTemplate):
 
 @dataclass
 class QuestionAnsweringHotpot(TaskTemplate):
+    # adapt datasets: hotpot
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
     task_category: str = "question-answering-hotpot"
     task: str = "question-answering-hotpot"
