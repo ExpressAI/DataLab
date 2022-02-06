@@ -19,6 +19,7 @@ We then need to register the information of new class at [`__init__.py`](https:/
 ### Tips
 
 * The motivation of introducing task schema is to help us easily standardize (normalize) different datasets from the same task category.
+For example, the samples from both `ag_news` (topic classification) and `sst2` (sentiment classification) should be [formatted as `text` and `label`](https://github.com/ExpressAI/DataLab/blob/da463705e983b771131c74ee5cef222d6d59d56e/src/datalabs/tasks/text_classification.py#L29). The advantage of doing this is we can easily process all datasets within this task category in a unified way (without any additional preprocessing).
 * Once we introduce a new task schema, we can first refer to the schema of similar tasks and incrementally extend it. (`incrementally` kinda means partially `inherit` the similar task schema.)
 For example, 
 * you can refer to [QuestionAnsweringExtractive](https://github.com/ExpressAI/DataLab/blob/604656cdce05d539e94949f0c842fbbb5b368188/src/datalabs/tasks/question_answering.py#L9) if you aim to introduce other QA-based tasks.
