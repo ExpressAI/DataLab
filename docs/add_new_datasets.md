@@ -5,7 +5,7 @@ We will walk through how to add a new dataset into datalab.
 
 ## 1. Clouding your raw dataset
 Put your dataset into a server with downloadable links.
-For example, you can place your datasets in this shared gdrive [folder](https://drive.google.com/drive/folders/1JttBMEoUmVZ8wF7Qa6C8h32XJpqEOd7u?usp=sharing)
+For example, you can place your datasets in gdrive [folder](https://drive.google.com/drive/folders/1JttBMEoUmVZ8wF7Qa6C8h32XJpqEOd7u?usp=sharing) (But you don't need to put your data here since this is just one example.)
 
 
 ## 2. Get the downloadable url for datasets
