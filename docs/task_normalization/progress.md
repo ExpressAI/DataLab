@@ -6,7 +6,7 @@ normalized.
 
 |Datasets|Updated Date|Task Schema|Normalized State|Comments|
 |:---    |:---        |:---       |:---       |:---    |
-}[duorc](https://github.com/ExpressAI/DataLab/blob/main/datasets/duorc/duorc.py)|2022-02-03|[QuestionAnsweringExtractive](https://github.com/ExpressAI/DataLab/blob/adddf0071d0826e090b9ddecd7a98a09e8b625e4/src/datalabs/tasks/question_answering.py#L9)|Done|finish normalization|
+[duorc](https://github.com/ExpressAI/DataLab/blob/main/datasets/duorc/duorc.py)|2022-02-03|[QuestionAnsweringExtractive](https://github.com/ExpressAI/DataLab/blob/adddf0071d0826e090b9ddecd7a98a09e8b625e4/src/datalabs/tasks/question_answering.py#L9)|Done|finish normalization|
 
 
 
