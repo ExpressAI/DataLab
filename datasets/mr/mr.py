@@ -91,7 +91,7 @@ class MR(datalabs.GeneratorBasedBuilder):
             ),
             homepage="http://www.cs.cornell.edu/people/pabo/movie-review-data/",
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[TextClassification(text_column="text", label_column="label", task="sentiment-classification")],
         )
 
     def _split_generators(self, dl_manager):
