@@ -51,7 +51,7 @@ class QC(datalabs.GeneratorBasedBuilder):
             homepage="https://aclanthology.org/C02-1150.pdf",
             citation=_CITATION,
             languages=["en"],
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[TextClassification(text_column="text", label_column="label", task="question-classification")],
         )
 
     def _split_generators(self, dl_manager):
