@@ -16,3 +16,12 @@ We need to creat a script (`sequence_labeling.py`) in the [folder](https://githu
 We then need to register the information of new class at [`__init__.py`](https://github.com/ExpressAI/DataLab/blob/main/src/datalabs/tasks/__init__.py)
 
 
+### Tips
+
+* The motivation of introducing task schema is to help us easily standardize (normalize) different datasets from the same task category.
+* Once we introduce a new task schema, we can first refer to the schema of similar tasks and incrementally extend it. (`incrementally` kinda means partially `inherit` the similar task schema.)
+For example, 
+* you can refer to [QuestionAnsweringExtractive](https://github.com/ExpressAI/DataLab/blob/604656cdce05d539e94949f0c842fbbb5b368188/src/datalabs/tasks/question_answering.py#L9) if you aim to introduce other QA-based tasks.
+* you can refer to [Summarization](https://github.com/ExpressAI/DataLab/blob/604656cdce05d539e94949f0c842fbbb5b368188/src/datalabs/tasks/summarization.py#L22) if other new generation tasks are being added.
+
+
