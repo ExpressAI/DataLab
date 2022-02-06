@@ -48,7 +48,7 @@ class QC(datalabs.GeneratorBasedBuilder):
                                                                  "human", "location", "numeric value"]),
                 }
             ),
-            homepage="http://l2r.cs.uiuc.edu/~cogcomp/",
+            homepage="https://aclanthology.org/C02-1150.pdf",
             citation=_CITATION,
             languages=["en"],
             task_templates=[TextClassification(text_column="text", label_column="label")],
