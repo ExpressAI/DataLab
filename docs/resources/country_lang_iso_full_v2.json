@@ -1,0 +1,5014 @@
+[   
+    {
+        "country": "Russia",
+        "languages": [
+            "Russian",
+            "Tatar",
+            "Hiri Motu"
+        ],
+        "languages_iso": [
+            "ru",
+            "tt",
+            "ce"
+        ],
+        "languages_ratio": [
+            85.7,
+            3.2,
+            1.0
+        ]
+    },
+    {
+        "country": "Nigeria",
+        "languages": [
+            "English",
+            "Hausa",
+            "Yoruba",
+            "Igbo",
+            "Ido",
+            "Bambara",
+            "Efik",
+            "Fula",
+            "Ganda",
+            "Gun",
+            "Gun",
+            "Isoko",
+            "Kanuri",
+            "Tiv"
+        ],
+        "languages_iso": [
+            "en",
+            "ha",
+            "yo",
+            "ig",
+            "io",
+            "bm",
+            "efi",
+            "ff",
+            "lg",
+            "guw",
+            "guw",
+            "iso",
+            "kr",
+            "tiv"
+        ],
+        "languages_ratio": [
+            15.0,
+            15.0,
+            15.0,
+            15.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0
+        ]
+    },
+    {
+        "country": "Papua New Guinea",
+        "languages": [
+            "Tok Pisin",
+            "English",
+            "Hiri Motu"
+        ],
+        "languages_iso": [
+            "tpi",
+            "en",
+            "ho"
+        ],
+        "languages_ratio": [
+            96.0,
+            2.0,
+            2.0
+        ]
+    },
+    {
+        "country": "Italy",
+        "languages": [
+            "Italian",
+            "German",
+            "French",
+            "Catalan",
+            "Corsican",
+            "Greek",
+            "English",
+            "Friulian",
+            "Ladin",
+            "Neapolitan",
+            "Occitan",
+            "Sicilian",
+            "Slovenian",
+            "Venetian"
+        ],
+        "languages_iso": [
+            "it",
+            "de",
+            "fr",
+            "ca",
+            "co",
+            "el",
+            "en",
+            "fur",
+            "lld",
+            "nap",
+            "oc",
+            "scn",
+            "sl",
+            "vec"
+        ],
+        "languages_ratio": [
+            20.0,
+            20.0,
+            20.0,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5
+        ]
+    },
+    {
+        "country": "India",
+        "languages": [
+            "Hindi",
+            "Bengali",
+            "Marathi",
+            "Telugu",
+            "Tamil",
+            "Gujarati",
+            "Urdu",
+            "Kannada",
+            "Malayalam",
+            "Assamese"
+        ],
+        "languages_iso": [
+            "hi",
+            "bn",
+            "mr",
+            "te",
+            "ta",
+            "gu",
+            "ur",
+            "kn",
+            "ml",
+            "as"
+        ],
+        "languages_ratio": [
+            43.6,
+            8.0,
+            6.9,
+            6.7,
+            5.7,
+            4.6,
+            4.2,
+            3.6,
+            2.9,
+            1.3
+        ]
+    },
+    {
+        "country": "Cameroon",
+        "languages": [
+            "English",
+            "French",
+            "Fula",
+            "Hausa",
+            "Kanuri",
+            "Luo",
+            "Tiv"
+        ],
+        "languages_iso": [
+            "en",
+            "fr",
+            "ff",
+            "ha",
+            "kr",
+            "luo",
+            "tiv"
+        ],
+        "languages_ratio": [
+            20.0,
+            20.0,
+            12.0,
+            12.0,
+            12.0,
+            12.0,
+            12.0
+        ]
+    },
+    {
+        "country": "Brazil",
+        "languages": [
+            "Portuguese",
+            "Brazilian Sign Language",
+            "Italian",
+            "Guaraní",
+            "Low German",
+            "Spanish",
+            "Ukrainian",
+            "Venetian"
+        ],
+        "languages_iso": [
+            "pt",
+            "bzs",
+            "it",
+            "gn",
+            "nds",
+            "es",
+            "uk",
+            "vec"
+        ],
+        "languages_ratio": [
+            50.0,
+            7.1,
+            7.1,
+            7.1,
+            7.1,
+            7.1,
+            7.1,
+            7.1
+        ]
+    },
+    {
+        "country": "Algeria",
+        "languages": [
+            "Arabic",
+            "French",
+            "Kabyle"
+        ],
+        "languages_iso": [
+            "ar",
+            "fr",
+            "kab"
+        ],
+        "languages_ratio": [
+            40.0,
+            40.0,
+            20.0
+        ]
+    },
+    {
+        "country": "Egypt",
+        "languages": [
+            "Arabic",
+            "English",
+            "French"
+        ],
+        "languages_iso": [
+            "ar",
+            "en",
+            "fr"
+        ],
+        "languages_ratio": [
+            70.0,
+            15.0,
+            15.0
+        ]
+    },
+    {
+        "country": "Niger",
+        "languages": [
+            "French",
+            "Hausa",
+            "Fula",
+            "Fula",
+            "Kanuri",
+            "Kanuri"
+        ],
+        "languages_iso": [
+            "fr",
+            "ha",
+            "ff",
+            "ff",
+            "kr",
+            "kr"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            12.5,
+            12.5,
+            12.5,
+            12.5
+        ]
+    },
+    {
+        "country": "United States",
+        "languages": [
+            "English",
+            "Spanish",
+            "Chinese"
+        ],
+        "languages_iso": [
+            "en",
+            "es",
+            "zh"
+        ],
+        "languages_ratio": [
+            85.5,
+            13.4,
+            1.1
+        ]
+    },
+    {
+        "country": "Djibouti",
+        "languages": [
+            "French",
+            "Arabic",
+            "Somali",
+            "Afar"
+        ],
+        "languages_iso": [
+            "fr",
+            "ar",
+            "so",
+            "aa"
+        ],
+        "languages_ratio": [
+            25.0,
+            25.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Eritrea",
+        "languages": [
+            "Tigrinya",
+            "Arabic",
+            "English",
+            "Afar",
+            "Italian"
+        ],
+        "languages_iso": [
+            "ti",
+            "ar",
+            "en",
+            "aa",
+            "it"
+        ],
+        "languages_ratio": [
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0
+        ]
+    },
+    {
+        "country": "Ethiopia",
+        "languages": [
+            "Oromo",
+            "Amharic",
+            "Somali",
+            "Afar",
+            "English",
+            "Arabic"
+        ],
+        "languages_iso": [
+            "om",
+            "am",
+            "so",
+            "aa",
+            "en",
+            "ar"
+        ],
+        "languages_ratio": [
+            33.8,
+            29.3,
+            6.2,
+            1.7,
+            6.2,
+            6.2
+        ]
+    },
+    {
+        "country": "Tanzania",
+        "languages": [
+            "Swahili",
+            "English",
+            "Arabic",
+            "Gujarati",
+            "Luo",
+            "Sango"
+        ],
+        "languages_iso": [
+            "sw",
+            "en",
+            "ar",
+            "gu",
+            "luo",
+            "sg"
+        ],
+        "languages_ratio": [
+            20.0,
+            20.0,
+            20.0,
+            16.7,
+            16.7,
+            16.7
+        ]
+    },
+    {
+        "country": "Greece",
+        "languages": [
+            "Greek",
+            "Bulgarian",
+            "English",
+            "French",
+            "Ladino",
+            "Turkish"
+        ],
+        "languages_iso": [
+            "el",
+            "bg",
+            "en",
+            "fr",
+            "lad",
+            "tr"
+        ],
+        "languages_ratio": [
+            95.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ]
+    },
+    {
+        "country": "Indonesia",
+        "languages": [
+            "Indonesian",
+            "English",
+            "Dutch",
+            "Javanese",
+            "Kodi",
+            "Komi",
+            "Sundanese",
+            "Malay"
+        ],
+        "languages_iso": [
+            "id",
+            "en",
+            "nl",
+            "jv",
+            "kod",
+            "kv",
+            "su",
+            "ms"
+        ],
+        "languages_ratio": [
+            60.0,
+            10.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0
+        ]
+    },
+    {
+        "country": "Côte d’Ivoire",
+        "languages": [
+            "American Sign Language",
+            "Bambara",
+            "French",
+            "Hausa",
+            "Yoruba"
+        ],
+        "languages_iso": [
+            "ase",
+            "bm",
+            "fr",
+            "ha",
+            "yo"
+        ],
+        "languages_ratio": [
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0
+        ]
+    },
+    {
+        "country": "Philippines",
+        "languages": [
+            "Cebuano",
+            "Hiligaynon",
+            "Waray",
+            "Pangasinan",
+            "American Sign Language",
+            "Malay",
+            "English",
+            "Basque",
+            "Iloko",
+            "Sindhi",
+            "Spanish",
+            "Tagalog"
+        ],
+        "languages_iso": [
+            "ceb",
+            "hil",
+            "war",
+            "pag",
+            "ase",
+            "ms",
+            "en",
+            "eu",
+            "ilo",
+            "sd",
+            "es",
+            "tl"
+        ],
+        "languages_ratio": [
+            15.0,
+            15.0,
+            15.0,
+            15.0,
+            6.2,
+            6.2,
+            6.2,
+            6.2,
+            6.2,
+            6.2,
+            6.2,
+            6.2
+        ]
+    },
+    {
+        "country": "Canada",
+        "languages": [
+            "English",
+            "French",
+            "Italian",
+            "Spanish",
+            "German",
+            "Tagalog",
+            "Arabic"
+        ],
+        "languages_iso": [
+            "en",
+            "fr",
+            "it",
+            "es",
+            "de",
+            "tl",
+            "ar"
+        ],
+        "languages_ratio": [
+            58.7,
+            22.0,
+            1.3,
+            1.3,
+            1.3,
+            1.2,
+            1.1
+        ]
+    },
+    {
+        "country": "Malaysia",
+        "languages": [
+            "English",
+            "Chinese",
+            "Tamil",
+            "Telugu",
+            "Malayalam",
+            "Panjabi",
+            "Thai",
+            "Javanese",
+            "Tonga",
+            "Malay"
+        ],
+        "languages_iso": [
+            "en",
+            "zh",
+            "ta",
+            "te",
+            "ml",
+            "pa",
+            "th",
+            "jv",
+            "to",
+            "ms"
+        ],
+        "languages_ratio": [
+            20.0,
+            30.0,
+            5.0,
+            5.0,
+            20.0,
+            2.0,
+            2.0,
+            3.0,
+            3.0,
+            10.0
+        ]
+    },
+    {
+        "country": "Afghanistan",
+        "languages": [
+            "Pashto",
+            "Uzbek",
+            "English",
+            "Turkmen",
+            "Urdu",
+            "Arabic"
+        ],
+        "languages_iso": [
+            "ps",
+            "uz",
+            "en",
+            "tk",
+            "ur",
+            "ar"
+        ],
+        "languages_ratio": [
+            48.0,
+            11.0,
+            6.0,
+            3.0,
+            3.0,
+            1.0
+        ]
+    },
+    {
+        "country": "Tajikistan",
+        "languages": [
+            "Tajik",
+            "Uzbek",
+            "Kyrgyz",
+            "Russian"
+        ],
+        "languages_iso": [
+            "tg",
+            "uz",
+            "ky",
+            "ru"
+        ],
+        "languages_ratio": [
+            84.4,
+            11.9,
+            0.8,
+            0.5
+        ]
+    },
+    {
+        "country": "Georgia",
+        "languages": [
+            "Georgian",
+            "Armenian",
+            "Russian"
+        ],
+        "languages_iso": [
+            "ka",
+            "hy",
+            "ru"
+        ],
+        "languages_ratio": [
+            87.6,
+            3.9,
+            1.2
+        ]
+    },
+    {
+        "country": "Turkey",
+        "languages": [
+            "Turkish",
+            "Kurdish",
+            "Abkhaz",
+            "Adyghe",
+            "Bulgarian",
+            "Crimean Tatar",
+            "Greek",
+            "Georgian",
+            "Kazakh",
+            "Kabardian",
+            "Kyrgyz",
+            "Ladino",
+            "Serbian",
+            "Classical Syriac",
+            "Tatar",
+            "Turkmen",
+            "Uyghur",
+            "Uighur"
+        ],
+        "languages_iso": [
+            "tr",
+            "ku",
+            "ab",
+            "ady",
+            "bg",
+            "crh",
+            "el",
+            "ka",
+            "kk",
+            "kbd",
+            "ky",
+            "lad",
+            "sr",
+            "syc",
+            "tt",
+            "tk",
+            "ug",
+            "uig"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            3.1,
+            3.1,
+            3.1,
+            3.1,
+            3.1,
+            3.1,
+            3.1,
+            3.1,
+            3.1,
+            3.1,
+            3.1,
+            3.1,
+            3.1,
+            3.1,
+            3.1,
+            3.1
+        ]
+    },
+    {
+        "country": "Ghana",
+        "languages": [
+            "Ewe",
+            "Ga"
+        ],
+        "languages_iso": [
+            "ee",
+            "gaa"
+        ],
+        "languages_ratio": [
+            14.0,
+            3.1
+        ]
+    },
+    {
+        "country": "Bahrain",
+        "languages": [
+            "Arabic",
+            "English",
+            "Urdu",
+            "Gulf Arabic",
+            "Gujarati"
+        ],
+        "languages_iso": [
+            "ar",
+            "en",
+            "ur",
+            "afb",
+            "gu"
+        ],
+        "languages_ratio": [
+            20.0,
+            20.0,
+            20.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Oman",
+        "languages": [
+            "Arabic",
+            "English",
+            "Swahili",
+            "Urdu",
+            "Gulf Arabic",
+            "Persian"
+        ],
+        "languages_iso": [
+            "ar",
+            "en",
+            "sw",
+            "ur",
+            "afb",
+            "fa"
+        ],
+        "languages_ratio": [
+            50.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0
+        ]
+    },
+    {
+        "country": "Colombia",
+        "languages": [
+            "Spanish",
+            "Colombian Sign Language",
+            "English"
+        ],
+        "languages_iso": [
+            "es",
+            "csn",
+            "en"
+        ],
+        "languages_ratio": [
+            80.0,
+            10.0,
+            10.0
+        ]
+    },
+    {
+        "country": "Dominica",
+        "languages": [
+            "English",
+            "French"
+        ],
+        "languages_iso": [
+            "en",
+            "fr"
+        ],
+        "languages_ratio": [
+            60.0,
+            40.0
+        ]
+    },
+    {
+        "country": "Grenada",
+        "languages": [
+            "English",
+            "French",
+            "American Sign Language"
+        ],
+        "languages_iso": [
+            "en",
+            "fr",
+            "ase"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Saint Lucia",
+        "languages": [
+            "American Sign Language",
+            "English"
+        ],
+        "languages_iso": [
+            "ase",
+            "en"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Martinique",
+        "languages": [
+            "French"
+        ],
+        "languages_iso": [
+            "fr"
+        ],
+        "languages_ratio": [
+            100.0
+        ]
+    },
+    {
+        "country": "Trinidad and Tobago",
+        "languages": [
+            "English",
+            "French",
+            "Spanish",
+            "Chinese"
+        ],
+        "languages_iso": [
+            "en",
+            "fr",
+            "es",
+            "zh"
+        ],
+        "languages_ratio": [
+            60.0,
+            15.0,
+            15.0,
+            10.0
+        ]
+    },
+    {
+        "country": "South Sudan",
+        "languages": [
+            "English",
+            "Arabic",
+            "Acoli",
+            "Twi",
+            "Luo"
+        ],
+        "languages_iso": [
+            "en",
+            "ar",
+            "ach",
+            "tw",
+            "luo"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            16.7,
+            16.7,
+            16.7
+        ]
+    },
+    {
+        "country": "Uganda",
+        "languages": [
+            "English",
+            "Ganda",
+            "Luganda",
+            "Ga",
+            "Swahili",
+            "Arabic",
+            "Acoli",
+            "Kinyarwanda"
+        ],
+        "languages_iso": [
+            "en",
+            "lg",
+            "lug",
+            "gaa",
+            "sw",
+            "ar",
+            "ach",
+            "rw"
+        ],
+        "languages_ratio": [
+            50.0,
+            15.0,
+            15.0,
+            4.0,
+            4.0,
+            4.0,
+            4.0,
+            4.0
+        ]
+    },
+    {
+        "country": "Iraq",
+        "languages": [
+            "Arabic",
+            "Kurdish",
+            "Turkmen",
+            "Adyghe",
+            "Gulf Arabic",
+            "English",
+            "Persian"
+        ],
+        "languages_iso": [
+            "ar",
+            "ku",
+            "tk",
+            "ady",
+            "afb",
+            "en",
+            "fa"
+        ],
+        "languages_ratio": [
+            20.0,
+            20.0,
+            20.0,
+            12.5,
+            12.5,
+            12.5,
+            12.5
+        ]
+    },
+    {
+        "country": "Iran",
+        "languages": [
+            "Persian",
+            "Kurdish",
+            "Arabic",
+            "Gulf Arabic",
+            "Avestan",
+            "Tajik",
+            "Armenian",
+            "Georgian",
+            "Kazakh",
+            "Northern Kurdish",
+            "Turkmen"
+        ],
+        "languages_iso": [
+            "fa",
+            "ku",
+            "ar",
+            "afb",
+            "ae",
+            "tg",
+            "hy",
+            "ka",
+            "kk",
+            "kmr",
+            "tk"
+        ],
+        "languages_ratio": [
+            20.0,
+            20.0,
+            20.0,
+            6.2,
+            6.2,
+            6.2,
+            6.2,
+            6.2,
+            6.2,
+            6.2,
+            6.2
+        ]
+    },
+    {
+        "country": "Syria",
+        "languages": [
+            "Arabic",
+            "Kurdish",
+            "Armenian",
+            "Aramaic",
+            "French",
+            "English",
+            "Adyghe",
+            "Turkmen",
+            "Kabardian",
+            "Turkmen"
+        ],
+        "languages_iso": [
+            "ar",
+            "ku",
+            "hy",
+            "arc",
+            "fr",
+            "en",
+            "ady",
+            "tk",
+            "kbd",
+            "tk"
+        ],
+        "languages_ratio": [
+            40.0,
+            10.0,
+            10.0,
+            10.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            2.5,
+            2.5
+        ]
+    },
+    {
+        "country": "China",
+        "languages": [
+            "Chinese",
+            "Tibetan",
+            "Buriat",
+            "English",
+            "Evenki",
+            "Nuosu",
+            "Kazakh",
+            "Kyrgyz",
+            "Khakas",
+            "Korean",
+            "Ludian",
+            "Russian",
+            "Tajik",
+            "Tatar",
+            "Tajik",
+            "Uyghur",
+            "Uighur",
+            "Vietnamese"
+        ],
+        "languages_iso": [
+            "zh",
+            "bo",
+            "bua",
+            "en",
+            "evn",
+            "ii",
+            "kk",
+            "ky",
+            "kjh",
+            "ko",
+            "lud",
+            "ru",
+            "tg",
+            "tt",
+            "tg",
+            "ug",
+            "uig",
+            "vi"
+        ],
+        "languages_ratio": [
+            80.0,
+            3.0,
+            1.0,
+            7.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.05,
+            0.05,
+            0.05,
+            0.05
+        ]
+    },
+    {
+        "country": "Myanmar",
+        "languages": [
+            "Portuguese",
+            "Tsonga"
+        ],
+        "languages_iso": [
+            "pt",
+            "ts"
+        ],
+        "languages_ratio": [
+            16.6,
+            8.6
+        ]
+    },
+    {
+        "country": "Yemen",
+        "languages": [
+            "Arabic",
+            "English"
+        ],
+        "languages_iso": [
+            "ar",
+            "en"
+        ],
+        "languages_ratio": [
+            70.0,
+            30.0
+        ]
+    },
+    {
+        "country": "Guatemala",
+        "languages": [
+            "Spanish"
+        ],
+        "languages_iso": [
+            "es"
+        ],
+        "languages_ratio": [
+            69.9
+        ]
+    },
+    {
+        "country": "Netherlands",
+        "languages": [
+            "Dutch",
+            "English",
+            "French",
+            "Limburgish",
+            "Limburgan"
+        ],
+        "languages_iso": [
+            "nl",
+            "en",
+            "fr",
+            "li",
+            "lim"
+        ],
+        "languages_ratio": [
+            50.0,
+            12.5,
+            12.5,
+            12.5,
+            12.5
+        ]
+    },
+    {
+        "country": "Ecuador",
+        "languages": [
+            "Spanish",
+            "Quechua"
+        ],
+        "languages_iso": [
+            "es",
+            "qu"
+        ],
+        "languages_ratio": [
+            93.0,
+            4.1
+        ]
+    },
+    {
+        "country": "Peru",
+        "languages": [
+            "Spanish",
+            "Quechua",
+            "Aymara",
+            "Ashaninka"
+        ],
+        "languages_iso": [
+            "es",
+            "qu",
+            "ay",
+            "cni"
+        ],
+        "languages_ratio": [
+            82.9,
+            13.6,
+            1.6,
+            0.3
+        ]
+    },
+    {
+        "country": "United Arab Emirates",
+        "languages": [
+            "Arabic",
+            "English",
+            "Hindi",
+            "Urdu",
+            "Pashto",
+            "Tagalog",
+            "Persian",
+            "Gulf Arabic",
+            "French"
+        ],
+        "languages_iso": [
+            "ar",
+            "en",
+            "hi",
+            "ur",
+            "ps",
+            "tl",
+            "fa",
+            "afb",
+            "fr"
+        ],
+        "languages_ratio": [
+            50.0,
+            15.0,
+            10.0,
+            10.0,
+            5.0,
+            2.5,
+            2.5,
+            2.5,
+            2.5
+        ]
+    },
+    {
+        "country": "Saudi Arabia",
+        "languages": [
+            "Arabic"
+        ],
+        "languages_iso": [
+            "ar"
+        ],
+        "languages_ratio": [
+            100.0
+        ]
+    },
+    {
+        "country": "Kenya",
+        "languages": [
+            "English",
+            "Oromo",
+            "Gujarati",
+            "Kikuyu",
+            "Luo",
+            "Somali",
+            "Swahili"
+        ],
+        "languages_iso": [
+            "en",
+            "om",
+            "gu",
+            "ki",
+            "luo",
+            "so",
+            "sw"
+        ],
+        "languages_ratio": [
+            40.0,
+            40.0,
+            4.0,
+            4.0,
+            4.0,
+            4.0,
+            4.0
+        ]
+    },
+    {
+        "country": "Kuwait",
+        "languages": [
+            "Arabic",
+            "English",
+            "Hindi"
+        ],
+        "languages_iso": [
+            "ar",
+            "en",
+            "hi"
+        ],
+        "languages_ratio": [
+            40.0,
+            50.0,
+            10.0
+        ]
+    },
+    {
+        "country": "Cyprus",
+        "languages": [
+            "Greek",
+            "Turkish",
+            "English",
+            "Romanian",
+            "Russian",
+            "Bulgarian",
+            "Arabic"
+        ],
+        "languages_iso": [
+            "el",
+            "tr",
+            "en",
+            "ro",
+            "ru",
+            "bg",
+            "ar"
+        ],
+        "languages_ratio": [
+            80.9,
+            0.2,
+            4.1,
+            2.9,
+            2.5,
+            2.2,
+            1.2
+        ]
+    },
+    {
+        "country": "Sudan",
+        "languages": [
+            "Arabic",
+            "English",
+            "Hausa",
+            "Kanuri"
+        ],
+        "languages_iso": [
+            "ar",
+            "en",
+            "ha",
+            "kr"
+        ],
+        "languages_ratio": [
+            40.0,
+            40.0,
+            10.0,
+            10.0
+        ]
+    },
+    {
+        "country": "East Timor",
+        "languages": [
+            "Spanish",
+            "Portuguese",
+            "Tetun Dili"
+        ],
+        "languages_iso": [
+            "es",
+            "pt",
+            "tdt"
+        ],
+        "languages_ratio": [
+            50.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Togo",
+        "languages": [
+            "French",
+            "Ewe",
+            "American Sign Language",
+            "Fon",
+            "Mossi"
+        ],
+        "languages_iso": [
+            "fr",
+            "ee",
+            "ase",
+            "fon",
+            "mos"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            16.7,
+            16.7,
+            16.7
+        ]
+    },
+    {
+        "country": "Australia",
+        "languages": [
+            "English",
+            "Arabic",
+            "Vietnamese",
+            "Italian",
+            "Greek"
+        ],
+        "languages_iso": [
+            "en",
+            "ar",
+            "vi",
+            "it",
+            "el"
+        ],
+        "languages_ratio": [
+            72.7,
+            1.4,
+            1.2,
+            1.2,
+            1.0
+        ]
+    },
+    {
+        "country": "Israel",
+        "languages": [
+            "Hebrew",
+            "Arabic",
+            "English",
+            "Adyghe",
+            "Amharic",
+            "French",
+            "Hungarian",
+            "Ladino",
+            "Ladino",
+            "Polish",
+            "Romanian",
+            "Russian",
+            "Tigrinya",
+            "Yiddish"
+        ],
+        "languages_iso": [
+            "he",
+            "ar",
+            "en",
+            "ady",
+            "am",
+            "fr",
+            "hu",
+            "lad",
+            "lad",
+            "pl",
+            "ro",
+            "ru",
+            "ti",
+            "yi"
+        ],
+        "languages_ratio": [
+            20.0,
+            20.0,
+            20.0,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5
+        ]
+    },
+    {
+        "country": "Jordan",
+        "languages": [
+            "Arabic",
+            "English",
+            "Adyghe",
+            "Chechen",
+            "Kabardian"
+        ],
+        "languages_iso": [
+            "ar",
+            "en",
+            "ady",
+            "ce",
+            "kbd"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            16.7,
+            16.7,
+            16.7
+        ]
+    },
+    {
+        "country": "Tunisia",
+        "languages": [
+            "Arabic",
+            "French",
+            "English"
+        ],
+        "languages_iso": [
+            "ar",
+            "fr",
+            "en"
+        ],
+        "languages_ratio": [
+            40.0,
+            50.0,
+            10.0
+        ]
+    },
+    {
+        "country": "Argentina",
+        "languages": [
+            "Spanish",
+            "Italian",
+            "English",
+            "German",
+            "French",
+            "Argentine Sign Language",
+            "Mapudungun",
+            "Welsh",
+            "Galician"
+        ],
+        "languages_iso": [
+            "es",
+            "it",
+            "en",
+            "de",
+            "fr",
+            "aed",
+            "arn",
+            "cy",
+            "gl"
+        ],
+        "languages_ratio": [
+            60.0,
+            8.0,
+            8.0,
+            8.0,
+            8.0,
+            2.0,
+            2.0,
+            2.0,
+            2.0
+        ]
+    },
+    {
+        "country": "New Caledonia",
+        "languages": [
+            "Bislama",
+            "French",
+            "Wallisian"
+        ],
+        "languages_iso": [
+            "bi",
+            "fr",
+            "wls"
+        ],
+        "languages_ratio": [
+            20.0,
+            60.0,
+            20.0
+        ]
+    },
+    {
+        "country": "Laos",
+        "languages": [
+            "Lao",
+            "French",
+            "English",
+            "Khmer"
+        ],
+        "languages_iso": [
+            "lo",
+            "fr",
+            "en",
+            "km"
+        ],
+        "languages_ratio": [
+            60.0,
+            20.0,
+            10.0,
+            10.0
+        ]
+    },
+    {
+        "country": "Viet Nam",
+        "languages": [
+            "Khmer",
+            "Lao",
+            "Lao",
+            "Vietnamese"
+        ],
+        "languages_iso": [
+            "km",
+            "lo",
+            "lo",
+            "vi"
+        ],
+        "languages_ratio": [
+            25.0,
+            25.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Armenia",
+        "languages": [
+            "Armenian",
+            "Kurdish"
+        ],
+        "languages_iso": [
+            "hy",
+            "ku"
+        ],
+        "languages_ratio": [
+            97.9,
+            1.0
+        ]
+    },
+    {
+        "country": "Pakistan",
+        "languages": [
+            "Sindhi",
+            "Pashto",
+            "Urdu",
+            "English"
+        ],
+        "languages_iso": [
+            "sd",
+            "ps",
+            "ur",
+            "en"
+        ],
+        "languages_ratio": [
+            12.0,
+            8.0,
+            8.0,
+            9.1
+        ]
+    },
+    {
+        "country": "Thailand",
+        "languages": [
+            "Thai",
+            "Thai"
+        ],
+        "languages_iso": [
+            "th",
+            "th"
+        ],
+        "languages_ratio": [
+            90.7,
+            6.4
+        ]
+    },
+    {
+        "country": "Qatar",
+        "languages": [
+            "Arabic",
+            "Gulf Arabic",
+            "French",
+            "Persian"
+        ],
+        "languages_iso": [
+            "ar",
+            "afb",
+            "fr",
+            "fa"
+        ],
+        "languages_ratio": [
+            50.0,
+            16.7,
+            16.7,
+            16.7
+        ]
+    },
+    {
+        "country": "Botswana",
+        "languages": [
+            "English",
+            "Shona"
+        ],
+        "languages_iso": [
+            "en",
+            "sn"
+        ],
+        "languages_ratio": [
+            2.8,
+            2.0
+        ]
+    },
+    {
+        "country": "Malawi",
+        "languages": [
+            "English",
+            "Chewa",
+            "Tonga",
+            "Tumbuka",
+            "Afrikaans",
+            "Chichewa",
+            "Chichewa",
+            "Zulu"
+        ],
+        "languages_iso": [
+            "en",
+            "nya",
+            "to",
+            "tum",
+            "af",
+            "ny",
+            "ny",
+            "zu"
+        ],
+        "languages_ratio": [
+            15.0,
+            15.0,
+            15.0,
+            15.0,
+            12.5,
+            12.5,
+            12.5,
+            12.5
+        ]
+    },
+    {
+        "country": "Namibia",
+        "languages": [
+            "Afrikaans",
+            "Herero",
+            "English"
+        ],
+        "languages_iso": [
+            "af",
+            "hz",
+            "en"
+        ],
+        "languages_ratio": [
+            9.4,
+            9.2,
+            2.3
+        ]
+    },
+    {
+        "country": "Eswatini",
+        "languages": [
+            "English",
+            "Afrikaans",
+            "Swati",
+            "Tsonga",
+            "Zulu"
+        ],
+        "languages_iso": [
+            "en",
+            "af",
+            "ss",
+            "ts",
+            "zu"
+        ],
+        "languages_ratio": [
+            50.0,
+            12.5,
+            12.5,
+            12.5,
+            12.5
+        ]
+    },
+    {
+        "country": "South Africa",
+        "languages": [
+            "Afrikaans",
+            "English"
+        ],
+        "languages_iso": [
+            "af",
+            "en"
+        ],
+        "languages_ratio": [
+            12.1,
+            8.4
+        ]
+    },
+    {
+        "country": "Zambia",
+        "languages": [
+            "Bemba",
+            "Tonga",
+            "Lozi",
+            "Chewa",
+            "Tumbuka",
+            "Lunda",
+            "Kaonde",
+            "English",
+            "Luvale"
+        ],
+        "languages_iso": [
+            "bem",
+            "to",
+            "loz",
+            "nya",
+            "tum",
+            "lun",
+            "kqn",
+            "en",
+            "lue"
+        ],
+        "languages_ratio": [
+            33.4,
+            11.4,
+            5.5,
+            4.5,
+            2.5,
+            1.9,
+            1.8,
+            1.7,
+            1.5
+        ]
+    },
+    {
+        "country": "Mexico",
+        "languages": [
+            "Spanish",
+            "Spanish"
+        ],
+        "languages_iso": [
+            "es",
+            "es"
+        ],
+        "languages_ratio": [
+            92.7,
+            5.7
+        ]
+    },
+    {
+        "country": "Democratic Republic of the Congo",
+        "languages": [
+            "Bemba",
+            "French",
+            "Kinyarwanda",
+            "Kongo",
+            "Kaonde",
+            "Lingala",
+            "Luba-Lulua",
+            "Luba-Katanga",
+            "Lunda",
+            "Ruund",
+            "Sango",
+            "Tetela"
+        ],
+        "languages_iso": [
+            "bem",
+            "fr",
+            "rw",
+            "kg",
+            "kqn",
+            "ln",
+            "lua",
+            "lu",
+            "lun",
+            "rnd",
+            "sg",
+            "tll"
+        ],
+        "languages_ratio": [
+            8.3,
+            8.3,
+            8.3,
+            8.3,
+            8.3,
+            8.3,
+            8.3,
+            8.3,
+            8.3,
+            8.3,
+            8.3,
+            8.3
+        ]
+    },
+    {
+        "country": "Solomon Islands",
+        "languages": [
+            "English",
+            "Gilbertese",
+            "Pijin"
+        ],
+        "languages_iso": [
+            "en",
+            "gil",
+            "pis"
+        ],
+        "languages_ratio": [
+            50.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Vanuatu",
+        "languages": [
+            "Bislama",
+            "English",
+            "French"
+        ],
+        "languages_iso": [
+            "bi",
+            "en",
+            "fr"
+        ],
+        "languages_ratio": [
+            33.7,
+            2.0,
+            0.6
+        ]
+    },
+    {
+        "country": "Antigua and Barbuda",
+        "languages": [
+            "English"
+        ],
+        "languages_iso": [
+            "en"
+        ],
+        "languages_ratio": [
+            70.0
+        ]
+    },
+    {
+        "country": "Anguilla",
+        "languages": [
+            "English"
+        ],
+        "languages_iso": [
+            "en"
+        ],
+        "languages_ratio": [
+            70.0
+        ]
+    },
+    {
+        "country": "Saint Kitts and Nevis",
+        "languages": [
+            "American Sign Language",
+            "English"
+        ],
+        "languages_iso": [
+            "ase",
+            "en"
+        ],
+        "languages_ratio": [
+            55.0,
+            45.0
+        ]
+    },
+    {
+        "country": "Saint Martin",
+        "languages": [
+            "English",
+            "French"
+        ],
+        "languages_iso": [
+            "en",
+            "fr"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Montserrat",
+        "languages": [
+            "English"
+        ],
+        "languages_iso": [
+            "en"
+        ],
+        "languages_ratio": [
+            100.0
+        ]
+    },
+    {
+        "country": "Sint Maarten",
+        "languages": [
+            "English",
+            "Dutch",
+            "Papiamento",
+            "Spanish"
+        ],
+        "languages_iso": [
+            "en",
+            "nl",
+            "pap",
+            "es"
+        ],
+        "languages_ratio": [
+            25.0,
+            25.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Japan",
+        "languages": [
+            "Japanese",
+            "Korean"
+        ],
+        "languages_iso": [
+            "ja",
+            "ko"
+        ],
+        "languages_ratio": [
+            80.0,
+            20.0
+        ]
+    },
+    {
+        "country": "Central African Republic",
+        "languages": [
+            "French",
+            "American Sign Language",
+            "Sango"
+        ],
+        "languages_iso": [
+            "fr",
+            "ase",
+            "sg"
+        ],
+        "languages_ratio": [
+            50.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Benin",
+        "languages": [
+            "French",
+            "Yoruba",
+            "American Sign Language",
+            "Fon",
+            "Gun",
+            "Hausa"
+        ],
+        "languages_iso": [
+            "fr",
+            "yo",
+            "ase",
+            "fon",
+            "guw",
+            "ha"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            12.5,
+            12.5,
+            12.5,
+            12.5
+        ]
+    },
+    {
+        "country": "Palestine",
+        "languages": [
+            "Hebrew"
+        ],
+        "languages_iso": [
+            "he"
+        ],
+        "languages_ratio": [
+            100.0
+        ]
+    },
+    {
+        "country": "Morocco",
+        "languages": [
+            "Arabic",
+            "French",
+            "English",
+            "Spanish"
+        ],
+        "languages_iso": [
+            "ar",
+            "fr",
+            "en",
+            "es"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Guyana",
+        "languages": [
+            "English",
+            "Chinese",
+            "American Sign Language",
+            "Urdu"
+        ],
+        "languages_iso": [
+            "en",
+            "zh",
+            "ase",
+            "ur"
+        ],
+        "languages_ratio": [
+            50.0,
+            20.0,
+            20.0,
+            10.0
+        ]
+    },
+    {
+        "country": "Venezuela",
+        "languages": [
+            "Spanish",
+            "Venezuelan Sign Language"
+        ],
+        "languages_iso": [
+            "es",
+            "vsl"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Suriname",
+        "languages": [
+            "Dutch",
+            "English",
+            "Javanese",
+            "Sranan Tongo"
+        ],
+        "languages_iso": [
+            "nl",
+            "en",
+            "jv",
+            "srn"
+        ],
+        "languages_ratio": [
+            40.0,
+            50.0,
+            5.0,
+            5.0
+        ]
+    },
+    {
+        "country": "Azerbaijan",
+        "languages": [
+            "Azerbaijani",
+            "Russian",
+            "Armenian"
+        ],
+        "languages_iso": [
+            "az",
+            "ru",
+            "hy"
+        ],
+        "languages_ratio": [
+            92.5,
+            1.4,
+            1.4
+        ]
+    },
+    {
+        "country": "Congo",
+        "languages": [
+            "American Sign Language",
+            "French",
+            "Kongo",
+            "Lingala"
+        ],
+        "languages_iso": [
+            "ase",
+            "fr",
+            "kg",
+            "ln"
+        ],
+        "languages_ratio": [
+            25.0,
+            25.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Chile",
+        "languages": [
+            "Spanish",
+            "English"
+        ],
+        "languages_iso": [
+            "es",
+            "en"
+        ],
+        "languages_ratio": [
+            99.5,
+            10.2
+        ]
+    },
+    {
+        "country": "Albania",
+        "languages": [
+            "Albanian",
+            "Greek"
+        ],
+        "languages_iso": [
+            "sq",
+            "el"
+        ],
+        "languages_ratio": [
+            98.8,
+            0.5
+        ]
+    },
+    {
+        "country": "Montenegro",
+        "languages": [
+            "Serbian",
+            "Bosnian",
+            "Albanian"
+        ],
+        "languages_iso": [
+            "sr",
+            "bs",
+            "sq"
+        ],
+        "languages_ratio": [
+            42.9,
+            5.3,
+            5.3
+        ]
+    },
+    {
+        "country": "North Macedonia",
+        "languages": [
+            "Macedonian",
+            "Albanian",
+            "Turkish",
+            "Serbian"
+        ],
+        "languages_iso": [
+            "mk",
+            "sq",
+            "tr",
+            "sr"
+        ],
+        "languages_ratio": [
+            66.5,
+            25.1,
+            3.5,
+            1.2
+        ]
+    },
+    {
+        "country": "Romania",
+        "languages": [
+            "Romanian",
+            "Hungarian"
+        ],
+        "languages_iso": [
+            "ro",
+            "hu"
+        ],
+        "languages_ratio": [
+            85.4,
+            6.3
+        ]
+    },
+    {
+        "country": "Serbia",
+        "languages": [
+            "Serbian",
+            "Hungarian",
+            "Bosnian"
+        ],
+        "languages_iso": [
+            "sr",
+            "hu",
+            "bs"
+        ],
+        "languages_ratio": [
+            88.1,
+            3.4,
+            1.9
+        ]
+    },
+    {
+        "country": "China–Taiwan",
+        "languages": [],
+        "languages_iso": [],
+        "languages_ratio": []
+    },
+    {
+        "country": "Chad",
+        "languages": [
+            "French",
+            "Arabic",
+            "Komi",
+            "Hausa",
+            "Kanuri",
+            "Kanuri",
+            "Sango"
+        ],
+        "languages_iso": [
+            "fr",
+            "ar",
+            "kv",
+            "ha",
+            "kr",
+            "kr",
+            "sg"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0
+        ]
+    },
+    {
+        "country": "Bangladesh",
+        "languages": [
+            "Bengali",
+            "English",
+            "Lushai",
+            "Bihari",
+            "Urdu"
+        ],
+        "languages_iso": [
+            "bn",
+            "en",
+            "lus",
+            "bh",
+            "ur"
+        ],
+        "languages_ratio": [
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0
+        ]
+    },
+    {
+        "country": "Nepal",
+        "languages": [
+            "Nepali",
+            "Urdu"
+        ],
+        "languages_iso": [
+            "ne",
+            "ur"
+        ],
+        "languages_ratio": [
+            44.6,
+            2.6
+        ]
+    },
+    {
+        "country": "São Tomé e Príncipe",
+        "languages": [
+            "French",
+            "Tonga",
+            "Portuguese"
+        ],
+        "languages_iso": [
+            "fr",
+            "to",
+            "pt"
+        ],
+        "languages_ratio": [
+            33.3,
+            33.3,
+            33.3
+        ]
+    },
+    {
+        "country": "Lebanon",
+        "languages": [
+            "Arabic",
+            "French",
+            "English",
+            "Armenian"
+        ],
+        "languages_iso": [
+            "ar",
+            "fr",
+            "en",
+            "hy"
+        ],
+        "languages_ratio": [
+            25.0,
+            25.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Mali",
+        "languages": [
+            "French",
+            "Bambara"
+        ],
+        "languages_iso": [
+            "fr",
+            "bm"
+        ],
+        "languages_ratio": [
+            7.7,
+            46.3
+        ]
+    },
+    {
+        "country": "Paraguay",
+        "languages": [
+            "Spanish",
+            "Spanish"
+        ],
+        "languages_iso": [
+            "es",
+            "es"
+        ],
+        "languages_ratio": [
+            46.3,
+            15.2
+        ]
+    },
+    {
+        "country": "Western Sahara",
+        "languages": [],
+        "languages_iso": [],
+        "languages_ratio": []
+    },
+    {
+        "country": "Comoros",
+        "languages": [
+            "Arabic",
+            "French",
+            "Malagasy"
+        ],
+        "languages_iso": [
+            "ar",
+            "fr",
+            "mg"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Libya",
+        "languages": [
+            "Arabic",
+            "Italian",
+            "English"
+        ],
+        "languages_iso": [
+            "ar",
+            "it",
+            "en"
+        ],
+        "languages_ratio": [
+            33.3,
+            33.3,
+            33.3
+        ]
+    },
+    {
+        "country": "Mauritania",
+        "languages": [
+            "Arabic",
+            "Wolof",
+            "French"
+        ],
+        "languages_iso": [
+            "ar",
+            "wo",
+            "fr"
+        ],
+        "languages_ratio": [
+            20.0,
+            20.0,
+            20.0
+        ]
+    },
+    {
+        "country": "Somalia",
+        "languages": [
+            "Somali",
+            "Arabic",
+            "Italian",
+            "English",
+            "Swahili"
+        ],
+        "languages_iso": [
+            "so",
+            "ar",
+            "it",
+            "en",
+            "sw"
+        ],
+        "languages_ratio": [
+            15.0,
+            15.0,
+            15.0,
+            15.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Spain",
+        "languages": [
+            "Spanish",
+            "Catalan",
+            "Galician",
+            "Basque"
+        ],
+        "languages_iso": [
+            "es",
+            "ca",
+            "gl",
+            "eu"
+        ],
+        "languages_ratio": [
+            74.0,
+            17.0,
+            7.0,
+            2.0
+        ]
+    },
+    {
+        "country": "Bolivia",
+        "languages": [
+            "Spanish",
+            "Quechua",
+            "Aymara"
+        ],
+        "languages_iso": [
+            "es",
+            "qu",
+            "ay"
+        ],
+        "languages_ratio": [
+            60.7,
+            21.2,
+            14.6
+        ]
+    },
+    {
+        "country": "French Guiana",
+        "languages": [
+            "French"
+        ],
+        "languages_iso": [
+            "fr"
+        ],
+        "languages_ratio": [
+            100.0
+        ]
+    },
+    {
+        "country": "Barbados",
+        "languages": [
+            "English",
+            "American Sign Language"
+        ],
+        "languages_iso": [
+            "en",
+            "ase"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Burkina Faso",
+        "languages": [
+            "French",
+            "American Sign Language",
+            "Twi",
+            "Gã",
+            "Hausa",
+            "Fula",
+            "Mossi"
+        ],
+        "languages_iso": [
+            "fr",
+            "ase",
+            "tw",
+            "gaa",
+            "ha",
+            "ff",
+            "mos"
+        ],
+        "languages_ratio": [
+            50.0,
+            8.3,
+            8.3,
+            8.3,
+            8.3,
+            8.3,
+            8.3
+        ]
+    },
+    {
+        "country": "Bermuda",
+        "languages": [
+            "American Sign Language",
+            "English"
+        ],
+        "languages_iso": [
+            "ase",
+            "en"
+        ],
+        "languages_ratio": [
+            40.0,
+            60.0
+        ]
+    },
+    {
+        "country": "Bahamas",
+        "languages": [
+            "Azerbaijani",
+            "Russian",
+            "Armenian"
+        ],
+        "languages_iso": [
+            "az",
+            "ru",
+            "hy"
+        ],
+        "languages_ratio": [
+            92.5,
+            1.4,
+            1.4
+        ]
+    },
+    {
+        "country": "Gabon",
+        "languages": [
+            "French",
+            "American Sign Language"
+        ],
+        "languages_iso": [
+            "fr",
+            "ase"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Guam",
+        "languages": [
+            "American Sign Language",
+            "Chamorro",
+            "Chamorro",
+            "English",
+            "Tagalog"
+        ],
+        "languages_iso": [
+            "ase",
+            "ch",
+            "ch",
+            "en",
+            "tl"
+        ],
+        "languages_ratio": [
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0
+        ]
+    },
+    {
+        "country": "Haiti",
+        "languages": [
+            "French",
+            "American Sign Language",
+            "Haitian"
+        ],
+        "languages_iso": [
+            "fr",
+            "ase",
+            "ht"
+        ],
+        "languages_ratio": [
+            50.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Cayman Islands",
+        "languages": [
+            "American Sign Language",
+            "English"
+        ],
+        "languages_iso": [
+            "ase",
+            "en"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "El Salvador",
+        "languages": [
+            "Spanish",
+            "American Sign Language"
+        ],
+        "languages_iso": [
+            "es",
+            "ase"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Saint Vincent and the Grenadines",
+        "languages": [
+            "American Sign Language",
+            "English"
+        ],
+        "languages_iso": [
+            "ase",
+            "en"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "U.S. Virgin Islands",
+        "languages": [
+            "American Sign Language",
+            "English",
+            "Spanish"
+        ],
+        "languages_iso": [
+            "ase",
+            "en",
+            "es"
+        ],
+        "languages_ratio": [
+            33.3,
+            33.3,
+            33.3
+        ]
+    },
+    {
+        "country": "Austria",
+        "languages": [
+            "German",
+            "Turkish",
+            "Serbian",
+            "Croatian"
+        ],
+        "languages_iso": [
+            "de",
+            "tr",
+            "sr",
+            "hr"
+        ],
+        "languages_ratio": [
+            88.6,
+            2.3,
+            2.2,
+            1.6
+        ]
+    },
+    {
+        "country": "Portugal",
+        "languages": [
+            "Portuguese",
+            "Asturian",
+            "English",
+            "French",
+            "Galician",
+            "Mirandese",
+            "Spanish"
+        ],
+        "languages_iso": [
+            "pt",
+            "ast",
+            "en",
+            "fr",
+            "gl",
+            "mwl",
+            "es"
+        ],
+        "languages_ratio": [
+            50.0,
+            8.3,
+            8.3,
+            8.3,
+            8.3,
+            8.3,
+            8.3
+        ]
+    },
+    {
+        "country": "French Polynesia",
+        "languages": [
+            "French",
+            "Tahitian"
+        ],
+        "languages_iso": [
+            "fr",
+            "ty"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Uzbekistan",
+        "languages": [
+            "Uzbek",
+            "Russian",
+            "Tajik"
+        ],
+        "languages_iso": [
+            "uz",
+            "ru",
+            "tg"
+        ],
+        "languages_ratio": [
+            74.3,
+            14.2,
+            4.4
+        ]
+    },
+    {
+        "country": "Guinea-Bissau",
+        "languages": [
+            "Portuguese",
+            "English",
+            "Spanish"
+        ],
+        "languages_iso": [
+            "pt",
+            "en",
+            "es"
+        ],
+        "languages_ratio": [
+            50.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Senegal",
+        "languages": [
+            "French",
+            "Wolof",
+            "Bambara"
+        ],
+        "languages_iso": [
+            "fr",
+            "wo",
+            "bm"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Czechia",
+        "languages": [
+            "Czech",
+            "English",
+            "French",
+            "Polish",
+            "Slovak"
+        ],
+        "languages_iso": [
+            "cs",
+            "en",
+            "fr",
+            "pl",
+            "sk"
+        ],
+        "languages_ratio": [
+            20.0,
+            20.0,
+            20.0,
+            20.0,
+            20.0
+        ]
+    },
+    {
+        "country": "Germany",
+        "languages": [
+            "German",
+            "Danish",
+            "English",
+            "French",
+            "Limburgish",
+            "Limburgan",
+            "Luxembourgish",
+            "Low German",
+            "Polish",
+            "Saterfriesisch",
+            "Turkish",
+            "Yiddish",
+            "Yiddish"
+        ],
+        "languages_iso": [
+            "de",
+            "da",
+            "en",
+            "fr",
+            "li",
+            "lim",
+            "lb",
+            "nds",
+            "pl",
+            "stq",
+            "tr",
+            "yi",
+            "yi"
+        ],
+        "languages_ratio": [
+            50.0,
+            4.2,
+            4.2,
+            4.2,
+            4.2,
+            4.2,
+            4.2,
+            4.2,
+            4.2,
+            4.2,
+            4.2,
+            4.2,
+            4.2
+        ]
+    },
+    {
+        "country": "Guinea",
+        "languages": [
+            "French"
+        ],
+        "languages_iso": [
+            "fr"
+        ],
+        "languages_ratio": [
+            20.0
+        ]
+    },
+    {
+        "country": "Brunei",
+        "languages": [
+            "Malay",
+            "English",
+            "Chinese"
+        ],
+        "languages_iso": [
+            "ms",
+            "en",
+            "zh"
+        ],
+        "languages_ratio": [
+            60.0,
+            20.0,
+            20.0
+        ]
+    },
+    {
+        "country": "Belarus",
+        "languages": [
+            "Russian",
+            "Belarusian"
+        ],
+        "languages_iso": [
+            "ru",
+            "be"
+        ],
+        "languages_ratio": [
+            70.2,
+            23.4
+        ]
+    },
+    {
+        "country": "Lithuania",
+        "languages": [
+            "Lithuanian",
+            "Russian",
+            "Polish"
+        ],
+        "languages_iso": [
+            "lt",
+            "ru",
+            "pl"
+        ],
+        "languages_ratio": [
+            82.0,
+            8.0,
+            5.6
+        ]
+    },
+    {
+        "country": "Poland",
+        "languages": [
+            "Polish",
+            "Belarusian",
+            "Czech",
+            "Kashubian",
+            "English",
+            "Esperanto",
+            "Lithuanian",
+            "Russian",
+            "Ukrainian",
+            "Wymysorys"
+        ],
+        "languages_iso": [
+            "pl",
+            "be",
+            "cs",
+            "csb",
+            "en",
+            "eo",
+            "lt",
+            "ru",
+            "uk",
+            "wym"
+        ],
+        "languages_ratio": [
+            50.0,
+            5.6,
+            5.6,
+            5.6,
+            5.6,
+            5.6,
+            5.6,
+            5.6,
+            5.6,
+            5.6
+        ]
+    },
+    {
+        "country": "Ukraine",
+        "languages": [
+            "Ukrainian",
+            "Russian"
+        ],
+        "languages_iso": [
+            "uk",
+            "ru"
+        ],
+        "languages_ratio": [
+            67.5,
+            29.6
+        ]
+    },
+    {
+        "country": "Singapore",
+        "languages": [
+            "English",
+            "Chinese",
+            "Malay",
+            "Tamil"
+        ],
+        "languages_iso": [
+            "en",
+            "zh",
+            "ms",
+            "ta"
+        ],
+        "languages_ratio": [
+            36.9,
+            12.2,
+            10.7,
+            3.3
+        ]
+    },
+    {
+        "country": "United Kingdom",
+        "languages": [
+            "English",
+            "Cornish",
+            "Welsh",
+            "French",
+            "Scottish Gaelic",
+            "Irish",
+            "Romany",
+            "Spanish"
+        ],
+        "languages_iso": [
+            "en",
+            "kw",
+            "cy",
+            "fr",
+            "gd",
+            "ga",
+            "rom",
+            "es"
+        ],
+        "languages_ratio": [
+            50.0,
+            7.1,
+            7.1,
+            7.1,
+            7.1,
+            7.1,
+            7.1,
+            7.1
+        ]
+    },
+    {
+        "country": "Isle of Man",
+        "languages": [
+            "English",
+            "Manx"
+        ],
+        "languages_iso": [
+            "en",
+            "gv"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Turkmenistan",
+        "languages": [
+            "Turkmen",
+            "Russian",
+            "Uzbek"
+        ],
+        "languages_iso": [
+            "tk",
+            "ru",
+            "uz"
+        ],
+        "languages_ratio": [
+            72.0,
+            12.0,
+            9.0
+        ]
+    },
+    {
+        "country": "Bulgaria",
+        "languages": [
+            "Bulgarian",
+            "Turkish"
+        ],
+        "languages_iso": [
+            "bg",
+            "tr"
+        ],
+        "languages_ratio": [
+            76.8,
+            8.2
+        ]
+    },
+    {
+        "country": "Mauritius",
+        "languages": [
+            "French",
+            "English",
+            "Morisyen",
+            "Tamil",
+            "Urdu"
+        ],
+        "languages_iso": [
+            "fr",
+            "en",
+            "mfe",
+            "ta",
+            "ur"
+        ],
+        "languages_ratio": [
+            50.0,
+            12.5,
+            12.5,
+            12.5,
+            12.5
+        ]
+    },
+    {
+        "country": "Madagascar",
+        "languages": [
+            "French",
+            "Malagasy",
+            "English"
+        ],
+        "languages_iso": [
+            "fr",
+            "mg",
+            "en"
+        ],
+        "languages_ratio": [
+            23.6,
+            99.9,
+            8.2
+        ]
+    },
+    {
+        "country": "Liberia",
+        "languages": [
+            "English"
+        ],
+        "languages_iso": [
+            "en"
+        ],
+        "languages_ratio": [
+            20.0
+        ]
+    },
+    {
+        "country": "Angola",
+        "languages": [
+            "Portuguese",
+            "Umbundu",
+            "Luvale"
+        ],
+        "languages_iso": [
+            "pt",
+            "umb",
+            "lue"
+        ],
+        "languages_ratio": [
+            71.2,
+            23.0,
+            1.0
+        ]
+    },
+    {
+        "country": "Sierra Leone",
+        "languages": [
+            "English",
+            "Fula"
+        ],
+        "languages_iso": [
+            "en",
+            "ff"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Equatorial Guinea",
+        "languages": [
+            "Spanish",
+            "French"
+        ],
+        "languages_iso": [
+            "es",
+            "fr"
+        ],
+        "languages_ratio": [
+            67.6,
+            32.4
+        ]
+    },
+    {
+        "country": "Bosnia and Herzegovina",
+        "languages": [
+            "Bosnian",
+            "Serbian",
+            "Croatian"
+        ],
+        "languages_iso": [
+            "bs",
+            "sr",
+            "hr"
+        ],
+        "languages_ratio": [
+            52.9,
+            30.8,
+            14.6
+        ]
+    },
+    {
+        "country": "Croatia",
+        "languages": [
+            "Croatian",
+            "Serbian"
+        ],
+        "languages_iso": [
+            "hr",
+            "sr"
+        ],
+        "languages_ratio": [
+            95.6,
+            1.2
+        ]
+    },
+    {
+        "country": "Slovenia",
+        "languages": [
+            "Italian",
+            "Hungarian",
+            "Bosnian",
+            "English",
+            "French",
+            "Croatian",
+            "Slovenian",
+            "Serbian",
+            "Venetian"
+        ],
+        "languages_iso": [
+            "it",
+            "hu",
+            "bs",
+            "en",
+            "fr",
+            "hr",
+            "sl",
+            "sr",
+            "vec"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            7.1,
+            7.1,
+            7.1,
+            7.1,
+            7.1,
+            7.1,
+            7.1
+        ]
+    },
+    {
+        "country": "Cambodia",
+        "languages": [
+            "English",
+            "French",
+            "Khmer",
+            "Lao",
+            "Thai",
+            "Vietnamese"
+        ],
+        "languages_iso": [
+            "en",
+            "fr",
+            "km",
+            "lo",
+            "th",
+            "vi"
+        ],
+        "languages_ratio": [
+            16.7,
+            16.7,
+            16.7,
+            16.7,
+            16.7,
+            16.7
+        ]
+    },
+    {
+        "country": "France",
+        "languages": [
+            "French",
+            "Breton",
+            "Catalan",
+            "Corsican",
+            "English",
+            "Basque",
+            "Norman",
+            "Italian",
+            "Luxembourgish",
+            "Occitan",
+            "Portuguese",
+            "Spanish"
+        ],
+        "languages_iso": [
+            "fr",
+            "br",
+            "ca",
+            "co",
+            "en",
+            "eu",
+            "xno",
+            "it",
+            "lb",
+            "oc",
+            "pt",
+            "es"
+        ],
+        "languages_ratio": [
+            50.0,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5,
+            4.5
+        ]
+    },
+    {
+        "country": "Zimbabwe",
+        "languages": [
+            "Shona",
+            "English",
+            "Sotho",
+            "Lozi",
+            "Tonga",
+            "Northern Ndebele",
+            "Chichewa",
+            "Tonga",
+            "Tswana",
+            "Tsonga",
+            "Tonga",
+            "Venda"
+        ],
+        "languages_iso": [
+            "sn",
+            "en",
+            "sot",
+            "loz",
+            "to",
+            "nd",
+            "ny",
+            "to",
+            "tn",
+            "ts",
+            "to",
+            "ve"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0,
+            5.0
+        ]
+    },
+    {
+        "country": "Costa Rica",
+        "languages": [
+            "Spanish",
+            "English",
+            "Low German"
+        ],
+        "languages_iso": [
+            "es",
+            "en",
+            "nds"
+        ],
+        "languages_ratio": [
+            70.0,
+            20.0,
+            10.0
+        ]
+    },
+    {
+        "country": "Bhutan",
+        "languages": [
+            "Dzongkha",
+            "English",
+            "Nepali"
+        ],
+        "languages_iso": [
+            "dz",
+            "en",
+            "ne"
+        ],
+        "languages_ratio": [
+            50.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Mayotte",
+        "languages": [
+            "French"
+        ],
+        "languages_iso": [
+            "fr"
+        ],
+        "languages_ratio": [
+            100.0
+        ]
+    },
+    {
+        "country": "Hungary",
+        "languages": [
+            "Hungarian",
+            "English",
+            "German",
+            "Russian",
+            "Romanian",
+            "French"
+        ],
+        "languages_iso": [
+            "hu",
+            "en",
+            "de",
+            "ru",
+            "ro",
+            "fr"
+        ],
+        "languages_ratio": [
+            99.6,
+            16.0,
+            11.2,
+            1.6,
+            1.3,
+            1.2
+        ]
+    },
+    {
+        "country": "Moldova",
+        "languages": [
+            "Romanian",
+            "Russian",
+            "Gagauz",
+            "Ukrainian",
+            "Bulgarian"
+        ],
+        "languages_iso": [
+            "ro",
+            "ru",
+            "gag",
+            "uk",
+            "bg"
+        ],
+        "languages_ratio": [
+            23.5,
+            9.7,
+            4.2,
+            3.9,
+            1.5
+        ]
+    },
+    {
+        "country": "Fiji",
+        "languages": [
+            "English",
+            "Fijian",
+            "Gilbertese",
+            "Gujarati",
+            "Tamil",
+            "Telugu",
+            "Urdu"
+        ],
+        "languages_iso": [
+            "en",
+            "fj",
+            "gil",
+            "gu",
+            "ta",
+            "te",
+            "ur"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0
+        ]
+    },
+    {
+        "country": "Mozambique",
+        "languages": [
+            "Portuguese",
+            "Tsonga"
+        ],
+        "languages_iso": [
+            "pt",
+            "ts"
+        ],
+        "languages_ratio": [
+            16.6,
+            8.6
+        ]
+    },
+    {
+        "country": "Mongolia",
+        "languages": [
+            "Mongolian",
+            "Russian"
+        ],
+        "languages_iso": [
+            "mn",
+            "ru"
+        ],
+        "languages_ratio": [
+            90.0,
+            33.3
+        ]
+    },
+    {
+        "country": "Belize",
+        "languages": [
+            "English",
+            "Spanish",
+            "German"
+        ],
+        "languages_iso": [
+            "en",
+            "es",
+            "de"
+        ],
+        "languages_ratio": [
+            62.9,
+            56.6,
+            3.2
+        ]
+    },
+    {
+        "country": "Nicaragua",
+        "languages": [
+            "Spanish"
+        ],
+        "languages_iso": [
+            "es"
+        ],
+        "languages_ratio": [
+            95.3
+        ]
+    },
+    {
+        "country": "Honduras",
+        "languages": [
+            "Spanish",
+            "English"
+        ],
+        "languages_iso": [
+            "es",
+            "en"
+        ],
+        "languages_ratio": [
+            80.0,
+            5.0
+        ]
+    },
+    {
+        "country": "Northern Mariana Islands",
+        "languages": [
+            "Chamorro",
+            "English"
+        ],
+        "languages_iso": [
+            "ch",
+            "en"
+        ],
+        "languages_ratio": [
+            24.1,
+            17.0
+        ]
+    },
+    {
+        "country": "Andorra",
+        "languages": [
+            "Catalan",
+            "French",
+            "Portuguese",
+            "Spanish"
+        ],
+        "languages_iso": [
+            "ca",
+            "fr",
+            "pt",
+            "en",
+            "es"
+        ],
+        "languages_ratio": [
+            60.0,
+            20.0,
+            10.0,
+            10.0
+        ]
+    },
+    {
+        "country": "Slovakia",
+        "languages": [
+            "Slovak",
+            "Hungarian"
+        ],
+        "languages_iso": [
+            "sk",
+            "hu"
+        ],
+        "languages_ratio": [
+            78.6,
+            9.4
+        ]
+    },
+    {
+        "country": "Micronesia",
+        "languages": [
+            "Spanish",
+            "Spanish"
+        ],
+        "languages_iso": [
+            "es",
+            "es"
+        ],
+        "languages_ratio": [
+            92.7,
+            5.7
+        ]
+    },
+    {
+        "country": "China–Hong Kong",
+        "languages": [
+            "English",
+            "Chinese"
+        ],
+        "languages_iso": [
+            "en",
+            "zh"
+        ],
+        "languages_ratio": [
+            80.0,
+            20.0
+        ]
+    },
+    {
+        "country": "China–Macao",
+        "languages": [
+            "English",
+            "Portuguese"
+        ],
+        "languages_iso": [
+            "en",
+            "pt"
+        ],
+        "languages_ratio": [
+            60.0,
+            20.0
+        ]
+    },
+    {
+        "country": "Cocos (Keeling) Islands",
+        "languages": [
+            "Malay",
+            "English"
+        ],
+        "languages_iso": [
+            "msa",
+            "en"
+        ],
+        "languages_ratio": [
+            68.8,
+            22.3
+        ]
+    },
+    {
+        "country": "Christmas Island",
+        "languages": [
+            "English",
+            "Malay"
+        ],
+        "languages_iso": [
+            "en",
+            "msa"
+        ],
+        "languages_ratio": [
+            27.6,
+            17.1
+        ]
+    },
+    {
+        "country": "Nauru",
+        "languages": [
+            "English",
+            "Nauru"
+        ],
+        "languages_iso": [
+            "en",
+            "na"
+        ],
+        "languages_ratio": [
+            2.0,
+            93.0
+        ]
+    },
+    {
+        "country": "Seychelles",
+        "languages": [
+            "English",
+            "French"
+        ],
+        "languages_iso": [
+            "en",
+            "fr"
+        ],
+        "languages_ratio": [
+            5.1,
+            0.7
+        ]
+    },
+    {
+        "country": "Cuba",
+        "languages": [
+            "Spanish"
+        ],
+        "languages_iso": [
+            "es"
+        ],
+        "languages_ratio": [
+            100.0
+        ]
+    },
+    {
+        "country": "Panama",
+        "languages": [
+            "Spanish",
+            "English",
+            "English",
+            "Chinese",
+            "Arabic",
+            "French"
+        ],
+        "languages_iso": [
+            "es",
+            "en",
+            "en",
+            "zh",
+            "ar",
+            "fr"
+        ],
+        "languages_ratio": [
+            7.1,
+            7.1,
+            7.1,
+            7.1,
+            7.1,
+            7.1
+        ]
+    },
+    {
+        "country": "Denmark",
+        "languages": [
+            "Danish",
+            "Faroese",
+            "German",
+            "English",
+            "French",
+            "Greenlandic",
+            "Inuktitut",
+            "Kalaallisut",
+            "Swedish"
+        ],
+        "languages_iso": [
+            "da",
+            "fo",
+            "de",
+            "en",
+            "fr",
+            "kal",
+            "iu",
+            "kl",
+            "sv"
+        ],
+        "languages_ratio": [
+            20.0,
+            20.0,
+            20.0,
+            8.3,
+            8.3,
+            8.3,
+            8.3,
+            8.3,
+            8.3
+        ]
+    },
+    {
+        "country": "Faroe Islands",
+        "languages": [
+            "Danish",
+            "Faroese"
+        ],
+        "languages_iso": [
+            "da",
+            "fo"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Greenland",
+        "languages": [
+            "Danish",
+            "Kalaallisut",
+            "Greenlandic",
+            "Kalaallisut"
+        ],
+        "languages_iso": [
+            "da",
+            "kl",
+            "kal",
+            "kl"
+        ],
+        "languages_ratio": [
+            25.0,
+            25.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Sweden",
+        "languages": [
+            "Swedish",
+            "Danish",
+            "English",
+            "Finnish",
+            "French",
+            "Tagalog"
+        ],
+        "languages_iso": [
+            "sv",
+            "da",
+            "en",
+            "fi",
+            "fr",
+            "tl"
+        ],
+        "languages_ratio": [
+            50.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0
+        ]
+    },
+    {
+        "country": "Belgium",
+        "languages": [
+            "Dutch",
+            "French",
+            "German"
+        ],
+        "languages_iso": [
+            "nl",
+            "fr",
+            "de"
+        ],
+        "languages_ratio": [
+            60.0,
+            40.0,
+            1.0
+        ]
+    },
+    {
+        "country": "Switzerland",
+        "languages": [
+            "German",
+            "French",
+            "Italian",
+            "English",
+            "Portuguese",
+            "Albanian",
+            "Spanish",
+            "Romansh"
+        ],
+        "languages_iso": [
+            "de",
+            "fr",
+            "it",
+            "en",
+            "pt",
+            "sq",
+            "es",
+            "rm"
+        ],
+        "languages_ratio": [
+            62.6,
+            22.9,
+            8.2,
+            5.4,
+            3.7,
+            3.2,
+            2.4,
+            0.5
+        ]
+    },
+    {
+        "country": "Estonia",
+        "languages": [
+            "Estonian",
+            "Russian",
+            "Ukrainian"
+        ],
+        "languages_iso": [
+            "et",
+            "ru",
+            "uk"
+        ],
+        "languages_ratio": [
+            68.5,
+            29.6,
+            0.6
+        ]
+    },
+    {
+        "country": "Finland",
+        "languages": [
+            "Finnish",
+            "Swedish",
+            "Russian"
+        ],
+        "languages_iso": [
+            "fi",
+            "sv",
+            "ru"
+        ],
+        "languages_ratio": [
+            87.6,
+            5.2,
+            1.4
+        ]
+    },
+    {
+        "country": "Ireland",
+        "languages": [
+            "English",
+            "Irish",
+            "French"
+        ],
+        "languages_iso": [
+            "en",
+            "ga",
+            "fr"
+        ],
+        "languages_ratio": [
+            50.0,
+            39.8,
+            10.0
+        ]
+    },
+    {
+        "country": "Kyrgyzstan",
+        "languages": [
+            "Kyrgyz",
+            "Uzbek",
+            "Russian"
+        ],
+        "languages_iso": [
+            "ky",
+            "uz",
+            "ru"
+        ],
+        "languages_ratio": [
+            71.4,
+            14.4,
+            9.0
+        ]
+    },
+    {
+        "country": "Kazakhstan",
+        "languages": [
+            "Kazakh",
+            "English",
+            "Low German",
+            "Russian",
+            "Tatar",
+            "Tajik",
+            "Turkish",
+            "Uyghur",
+            "Uighur"
+        ],
+        "languages_iso": [
+            "kk",
+            "en",
+            "nds",
+            "ru",
+            "tt",
+            "tg",
+            "tr",
+            "ug",
+            "uig"
+        ],
+        "languages_ratio": [
+            50.0,
+            6.2,
+            6.2,
+            6.2,
+            6.2,
+            6.2,
+            6.2,
+            6.2,
+            6.2
+        ]
+    },
+    {
+        "country": "Liechtenstein",
+        "languages": [
+            "German",
+            "Italian",
+            "Turkish",
+            "Portuguese"
+        ],
+        "languages_iso": [
+            "de",
+            "it",
+            "tr",
+            "pt"
+        ],
+        "languages_ratio": [
+            91.5,
+            1.5,
+            1.3,
+            1.1
+        ]
+    },
+    {
+        "country": "Luxembourg",
+        "languages": [
+            "Luxembourgish",
+            "Portuguese",
+            "French",
+            "German",
+            "Italian",
+            "English"
+        ],
+        "languages_iso": [
+            "lb",
+            "pt",
+            "fr",
+            "de",
+            "it",
+            "en"
+        ],
+        "languages_ratio": [
+            55.8,
+            15.7,
+            12.1,
+            3.1,
+            2.9,
+            2.1
+        ]
+    },
+    {
+        "country": "Latvia",
+        "languages": [
+            "Latvian",
+            "Russian"
+        ],
+        "languages_iso": [
+            "lv",
+            "ru"
+        ],
+        "languages_ratio": [
+            56.3,
+            33.8
+        ]
+    },
+    {
+        "country": "Monaco",
+        "languages": [
+            "French",
+            "English",
+            "Italian",
+            "Occitan"
+        ],
+        "languages_iso": [
+            "fr",
+            "en",
+            "it",
+            "oc"
+        ],
+        "languages_ratio": [
+            60.0,
+            15.0,
+            15.0,
+            10.0
+        ]
+    },
+    {
+        "country": "Malta",
+        "languages": [
+            "Maltese",
+            "English"
+        ],
+        "languages_iso": [
+            "mt",
+            "en"
+        ],
+        "languages_ratio": [
+            90.1,
+            6.0
+        ]
+    },
+    {
+        "country": "Uruguay",
+        "languages": [
+            "Spanish",
+            "Portuguese"
+        ],
+        "languages_iso": [
+            "es",
+            "pt"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Maldives",
+        "languages": [
+            "Sinhala",
+            "English"
+        ],
+        "languages_iso": [
+            "si",
+            "en"
+        ],
+        "languages_ratio": [
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Dominican Republic",
+        "languages": [
+            "Spanish",
+            "English",
+            "French",
+            "Haitian"
+        ],
+        "languages_iso": [
+            "es",
+            "en",
+            "fr",
+            "ht"
+        ],
+        "languages_ratio": [
+            50.0,
+            16.7,
+            16.7,
+            16.7
+        ]
+    },
+    {
+        "country": "Aruba",
+        "languages": [
+            "English",
+            "Dutch",
+            "French",
+            "Spanish"
+        ],
+        "languages_iso": [
+            "en",
+            "nl",
+            "fr",
+            "es"
+        ],
+        "languages_ratio": [
+            7.1,
+            6.1,
+            69.4,
+            13.7
+        ]
+    },
+    {
+        "country": "Caribbean Netherlands",
+        "languages": [
+            "English",
+            "Dutch",
+            "Papiamento",
+            "Spanish"
+        ],
+        "languages_iso": [
+            "en",
+            "nl",
+            "pap",
+            "es"
+        ],
+        "languages_ratio": [
+            25.0,
+            25.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Curacao",
+        "languages": [
+            "English",
+            "Dutch",
+            "Papiamento",
+            "Spanish"
+        ],
+        "languages_iso": [
+            "en",
+            "nl",
+            "pap",
+            "es"
+        ],
+        "languages_ratio": [
+            3.1,
+            8.8,
+            20.0,
+            5.6
+        ]
+    },
+    {
+        "country": "Gambia",
+        "languages": [
+            "French",
+            "English",
+            "Wolof"
+        ],
+        "languages_iso": [
+            "fr",
+            "en",
+            "wo"
+        ],
+        "languages_ratio": [
+            50.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "American Samoa",
+        "languages": [
+            "English",
+            "Samoan"
+        ],
+        "languages_iso": [
+            "en",
+            "sm"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Saint Barthélemy",
+        "languages": [
+            "English",
+            "French"
+        ],
+        "languages_iso": [
+            "en",
+            "fr"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Cook Islands",
+        "languages": [
+            "English",
+            "Maori"
+        ],
+        "languages_iso": [
+            "en",
+            "mao"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Falkland Islands",
+        "languages": [
+            "English"
+        ],
+        "languages_iso": [
+            "en"
+        ],
+        "languages_ratio": [
+            89.0
+        ]
+    },
+    {
+        "country": "Guernsey",
+        "languages": [
+            "English",
+            "French"
+        ],
+        "languages_iso": [
+            "en",
+            "fr"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Gibraltar",
+        "languages": [
+            "English",
+            "Spanish"
+        ],
+        "languages_iso": [
+            "en",
+            "es"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "British Indian Ocean Territory",
+        "languages": [
+            "English"
+        ],
+        "languages_iso": [
+            "en"
+        ],
+        "languages_ratio": [
+            50.0
+        ]
+    },
+    {
+        "country": "Iceland",
+        "languages": [
+            "English",
+            "German",
+            "Icelandic"
+        ],
+        "languages_iso": [
+            "en",
+            "de",
+            "is"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Jersey",
+        "languages": [
+            "English",
+            "French",
+            "Jèrriais"
+        ],
+        "languages_iso": [
+            "en",
+            "fr",
+            "nrf"
+        ],
+        "languages_ratio": [
+            50.0,
+            20.0,
+            20.0
+        ]
+    },
+    {
+        "country": "Jamaica",
+        "languages": [
+            "English"
+        ],
+        "languages_iso": [
+            "en"
+        ],
+        "languages_ratio": [
+            50.0
+        ]
+    },
+    {
+        "country": "Kiribati",
+        "languages": [
+            "English",
+            "Gilbertese"
+        ],
+        "languages_iso": [
+            "en",
+            "gil"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "South Korea",
+        "languages": [
+            "English",
+            "Korean"
+        ],
+        "languages_iso": [
+            "en",
+            "ko"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Sri Lanka",
+        "languages": [
+            "Sinhala",
+            "Tamil",
+            "English"
+        ],
+        "languages_iso": [
+            "si",
+            "ta",
+            "en"
+        ],
+        "languages_ratio": [
+            87.0,
+            28.5,
+            23.8
+        ]
+    },
+    {
+        "country": "Lesotho",
+        "languages": [
+            "English",
+            "Zulu",
+            "Xhosa"
+        ],
+        "languages_iso": [
+            "en",
+            "zu",
+            "xh"
+        ],
+        "languages_ratio": [
+            25.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Marshall Islands",
+        "languages": [
+            "Marshallese",
+            "English"
+        ],
+        "languages_iso": [
+            "mh",
+            "en"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Norfolk Island",
+        "languages": [
+            "English"
+        ],
+        "languages_iso": [
+            "en"
+        ],
+        "languages_ratio": [
+            100.0
+        ]
+    },
+    {
+        "country": "Norway",
+        "languages": [
+            "Norwegian",
+            "Norwegian",
+            "English",
+            "French"
+        ],
+        "languages_iso": [
+            "no",
+            "no",
+            "en",
+            "fr"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            25.0,
+            25.0
+        ]
+    },
+    {
+        "country": "Niue",
+        "languages": [
+            "English",
+            "Niuean"
+        ],
+        "languages_iso": [
+            "en",
+            "niu"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "New Zealand",
+        "languages": [
+            "English",
+            "Maori",
+            "Samoan",
+            "Chinese",
+            "Hindi",
+            "French"
+        ],
+        "languages_iso": [
+            "en",
+            "mao",
+            "sm",
+            "zh",
+            "hi",
+            "fr"
+        ],
+        "languages_ratio": [
+            95.4,
+            4.0,
+            2.2,
+            2.0,
+            1.5,
+            1.2
+        ]
+    },
+    {
+        "country": "Pitcairn",
+        "languages": [
+            "English"
+        ],
+        "languages_iso": [
+            "en"
+        ],
+        "languages_ratio": [
+            60.0
+        ]
+    },
+    {
+        "country": "Puerto Rico",
+        "languages": [
+            "English",
+            "American Sign Language",
+            "Spanish"
+        ],
+        "languages_iso": [
+            "en",
+            "ase",
+            "es"
+        ],
+        "languages_ratio": [
+            33.3,
+            33.3,
+            33.3
+        ]
+    },
+    {
+        "country": "Palau",
+        "languages": [
+            "English",
+            "Chinese"
+        ],
+        "languages_iso": [
+            "en",
+            "zh"
+        ],
+        "languages_ratio": [
+            19.1,
+            1.2
+        ]
+    },
+    {
+        "country": "Rwanda",
+        "languages": [
+            "French",
+            "English",
+            "Kinyarwanda"
+        ],
+        "languages_iso": [
+            "fr",
+            "en",
+            "rw"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Saint Helena",
+        "languages": [
+            "English"
+        ],
+        "languages_iso": [
+            "en"
+        ],
+        "languages_ratio": [
+            60.0
+        ]
+    },
+    {
+        "country": "Turks and Caicos Islands",
+        "languages": [
+            "English"
+        ],
+        "languages_iso": [
+            "en"
+        ],
+        "languages_ratio": [
+            60.0
+        ]
+    },
+    {
+        "country": "Tokelau",
+        "languages": [
+            "English"
+        ],
+        "languages_iso": [
+            "en"
+        ],
+        "languages_ratio": [
+            100.0
+        ]
+    },
+    {
+        "country": "Tonga",
+        "languages": [
+            "English"
+        ],
+        "languages_iso": [
+            "en"
+        ],
+        "languages_ratio": [
+            12.5
+        ]
+    },
+    {
+        "country": "Tuvalu",
+        "languages": [
+            "English",
+            "Samoan",
+            "Gilbertese"
+        ],
+        "languages_iso": [
+            "en",
+            "sm",
+            "gil"
+        ],
+        "languages_ratio": [
+            30.0,
+            30.0,
+            50.0
+        ]
+    },
+    {
+        "country": "British Virgin Islands",
+        "languages": [
+            "English",
+            "Spanish"
+        ],
+        "languages_iso": [
+            "en",
+            "es"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Samoa",
+        "languages": [
+            "Samoan",
+            "English"
+        ],
+        "languages_iso": [
+            "sm",
+            "en",
+            "en"
+        ],
+        "languages_ratio": [
+            91.1,
+            6.7
+        ]
+    },
+    {
+        "country": "Aland Islands",
+        "languages": [
+            "Finnish",
+            "Swedish"
+        ],
+        "languages_iso": [
+            "fi",
+            "sv"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Burundi",
+        "languages": [
+            "Kirundi",
+            "French",
+            "Swahili",
+            "English",
+            "French",
+            "Kirundi",
+            "French"
+        ],
+        "languages_iso": [
+            "rn",
+            "fr",
+            "sw",
+            "en",
+            "fr",
+            "rn",
+            "fr"
+        ],
+        "languages_ratio": [
+            29.7,
+            0.3,
+            0.2,
+            0.1,
+            8.4,
+            10.0,
+            10.0
+        ]
+    },
+    {
+        "country": "Guadeloupe",
+        "languages": [
+            "French"
+        ],
+        "languages_iso": [
+            "fr"
+        ],
+        "languages_ratio": [
+            100.0
+        ]
+    },
+    {
+        "country": "Saint Pierre and Miquelon",
+        "languages": [
+            "French"
+        ],
+        "languages_iso": [
+            "fr"
+        ],
+        "languages_ratio": [
+            100.0
+        ]
+    },
+    {
+        "country": "Réunion",
+        "languages": [
+            "French",
+            "Tamil"
+        ],
+        "languages_iso": [
+            "fr",
+            "ta"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Wallis and Futuna",
+        "languages": [
+            "French",
+            "Wallisian"
+        ],
+        "languages_iso": [
+            "fr",
+            "wls"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "San Marino",
+        "languages": [
+            "Italian"
+        ],
+        "languages_iso": [
+            "it"
+        ],
+        "languages_ratio": [
+            100.0
+        ]
+    },
+    {
+        "country": "Vatican State",
+        "languages": [
+            "Italian",
+            "Latin"
+        ],
+        "languages_iso": [
+            "it",
+            "la"
+        ],
+        "languages_ratio": [
+            50.0,
+            50.0
+        ]
+    },
+    {
+        "country": "Cape Verde Islands",
+        "languages": [
+            "Portuguese"
+        ],
+        "languages_iso": [
+            "pt"
+        ],
+        "languages_ratio": [
+            100.0
+        ]
+    },
+    {
+        "country": "North Korea",
+        "languages": [
+            "Korean"
+        ],
+        "languages_iso": [
+            "ko"
+        ],
+        "languages_ratio": [
+            100.0
+        ]
+    }
+]
