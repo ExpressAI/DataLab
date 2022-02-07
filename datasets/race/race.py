@@ -1,10 +1,22 @@
-"""TODO(race): Add a description here."""
+# coding=utf-8
+# Copyright 2020 The HuggingFace Datasets Authors and DataLab Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 
 
 import json
 
 import datalabs
-from datalabs.tasks import QuestionAnsweringChoiceWithContext
+from datalabs.tasks import QuestionAnsweringMultipleChoices
 
 _CITATION = """\
 @article{lai2017large,
@@ -46,14 +58,14 @@ class Race(datalabs.GeneratorBasedBuilder):
             # datasets.features.FeatureConnectors
             features=datalabs.Features(
                 {
-                    "example_id": datalabs.Value("string"),
+                    "id": datalabs.Value("string"),
+                    "document_id": datalabs.Value("string"),
                     "context": datalabs.Value("string"), # context ->article
                     "question": datalabs.Value("string"),
-                    # "answers": datalabs.Value("string"),  # answers ->answer
                     "answers": # answers -> answer
                         {
                             "text": datalabs.features.Sequence(datalabs.Value("string")),
-                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
+                            "option_index": datalabs.features.Sequence(datalabs.Value("int32")),
                         },
                     "options": datalabs.features.Sequence(datalabs.Value("string"))
                     # These are the features of your dataset like images, labels ...
@@ -67,8 +79,9 @@ class Race(datalabs.GeneratorBasedBuilder):
             homepage="http://www.cs.cmu.edu/~glai1/data/race/",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringChoiceWithContext(
-                    question_column="question", context_column="context", answers_column="answers", options_column="options"
+                QuestionAnsweringMultipleChoices(
+                    question_column="question", context_column="context", answers_column="answers", options_column="options",
+                    task="question-answering-multiple-choices-with-context",
                 )
             ],
         )
@@ -101,6 +114,8 @@ class Race(datalabs.GeneratorBasedBuilder):
 
     def _generate_examples(self, train_test_or_eval, files):
         """Yields examples."""
+        dict_map = {"A":0, "B":1, "C":2, "D":3, "E":4}
+        id_sample = 0
         for file_idx, (path, f) in enumerate(files):
             if path.startswith(train_test_or_eval) and path.endswith(".txt"):
                 data = json.loads(f.read().decode("utf-8"))
@@ -111,14 +126,17 @@ class Race(datalabs.GeneratorBasedBuilder):
                     question = questions[i]
                     answer = answers[i]
                     option = options[i]
-                    # answers = [example["answer"].strip()]
+                    option_index = dict_map[answer]
+                    id_sample += 1
                     yield f"{file_idx}_{i}", {
-                        "example_id": data["id"],
+
+                        "id": str(id_sample-1),
+                        "document_id": data["id"],
                         "context": data["article"],
                         "question": question,
                         "answers": {
-                            "answer_start": [-1] * len(answers),
-                            "text": [answer],
+                            "option_index": [option_index], # convert A->0, B->1, C->2, D->3
+                            "text": [option[option_index]],
                         },
                         # "answers": answer,
                         "options": option,

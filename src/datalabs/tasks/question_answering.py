@@ -113,18 +113,17 @@ class QuestionAnsweringHotpot(TaskTemplate):
 
 
 @dataclass
-class QuestionAnsweringChoiceWithContext(TaskTemplate):
-    # adapt datasets: suqad-1, suqad-2, duorc, ...
+class QuestionAnsweringMultipleChoices(TaskTemplate):
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
-    task_category: str = "question-answering-choice-with-context"
-    task: str = "question-answering-choice-with-context"
+    task_category: str = "question-answering-multiple-choices"
+    task: str = "question-answering-multiple-choices-with-context"
     input_schema: ClassVar[Features] = Features({"question": Value("string"), "context": Value("string"), "options": Sequence(Value("string"))})
     label_schema: ClassVar[Features] = Features(
         {
             "answers": Sequence(
                 {
                     "text": Value("string"),
-                    "answer_start": Value("int32"),
+                    "option_index": Value("int32"),
                 }
             )
         }
