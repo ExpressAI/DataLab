@@ -109,3 +109,30 @@ class QuestionAnsweringHotpot(TaskTemplate):
     @property
     def column_mapping(self) -> Dict[str, str]:
         return {self.question_column: "question", self.context_column: "context", self.answers_column: "answers", self.supporting_column:"supporting_facts"}
+
+
+
+@dataclass
+class QuestionAnsweringMultipleChoices(TaskTemplate):
+    # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
+    task_category: str = "question-answering-multiple-choices"
+    task: str = "question-answering-multiple-choices-with-context"
+    input_schema: ClassVar[Features] = Features({"question": Value("string"), "context": Value("string"), "options": Sequence(Value("string"))})
+    label_schema: ClassVar[Features] = Features(
+        {
+            "answers": Sequence(
+                {
+                    "text": Value("string"),
+                    "option_index": Value("int32"),
+                }
+            )
+        }
+    )
+    question_column: str = "question"
+    context_column: str = "context"
+    answers_column: str = "answers"
+    options_column: str = "options"
+
+    @property
+    def column_mapping(self) -> Dict[str, str]:
+        return {self.question_column: "question", self.context_column: "context", self.answers_column: "answers", self.options_column: "options"}

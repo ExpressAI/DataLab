@@ -1,5 +1,5 @@
 import unittest
-import datasets
+import datalabs
 from data import Data, TextData
 
 
@@ -27,7 +27,6 @@ class MyTestCase(unittest.TestCase):
         print(A.data)
 
 
-        self.assertEqual(A.name, "Data")
         self.assertEqual(A.data, a)
 
 
@@ -37,7 +36,6 @@ class MyTestCase(unittest.TestCase):
         print(A.data)
 
 
-        self.assertEqual(A.name, "textData")
         self.assertEqual(A.data, [{"text":text} for text in a])
 if __name__ == '__main__':
     unittest.main()

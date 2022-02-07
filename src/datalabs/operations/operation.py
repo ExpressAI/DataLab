@@ -8,7 +8,7 @@ class OperationFunction:
                  func:Callable[...,Any] = None,
                  resources: Optional[Mapping[str, Any]] = None,
                  contributor:str = None,
-                 processed_fields = None,
+                 processed_fields = ["text"],
                  task = "Any",
                  description = None,
                  ):
@@ -16,8 +16,7 @@ class OperationFunction:
         self.func = func
         self.resources = resources or {}
         self.contributor = contributor
-        self._type = "OperationFunction"
-        self.target_filed = "sentence"
+        self._type = self.__class__.__name__
         self.task = task
 
         self.processed_fields = ["text"]
@@ -28,7 +27,7 @@ class OperationFunction:
 
         # self.processed_fields = ["text"]
         self.generated_field = None
-        self._data_type = "Data"
+        self._data_type = self.__class__.__name__
         self.description = description
 
 
@@ -39,11 +38,6 @@ class OperationFunction:
                                  contributor=self.contributor,
                                  description= self.description,
                                  processed_fields = processed_fields)
-        # if isinstance(processed_field,str):
-        #     cls(processed_fields = processed_field)
-        # else:
-        #     self.processed_fields = processed_field
-        # return cls
 
 
     def __call__(self, x:str) -> Any: # str?
@@ -90,58 +84,20 @@ class operation_function:
 
 
 class TextOperation(OperationFunction):
-    def __init__(self,
-                 name:str = None,
-                 func:Callable[...,Any] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor:str = None,
-                 task = "Any",
-                 description = None,
-                 ):
-        super().__init__(name = name, func = func, resources =resources,
-                         contributor=contributor, task=task,
-                         description=description)
-        self.name = name
-        self.func = func
-        self.resources = resources or {}
-        self.contributor = contributor
-        self._type = "TextOperation"
-        self.target_filed = "sentence"
-        self.processed_fields = ["text"]
-        self.generated_field = None
+    def __init__(self,*args,**kwargs,):
+        super(TextOperation, self).__init__(*args, **kwargs)
         self._data_type = "TextData"
-        self.task = task
-
-    def __call__(self, x:str) -> Any: # str?
-        """
-        Parameters
-        x: Text
-
-        Returns
-        Transformed Text
-        """
-        return self.func(x, **self.resources)
 
 
+# x = TextOperation(name = "x")
+# print(x._type)
 
 class text_operation(operation_function):
     """
 
     """
-    def __init__(self,
-                 name: Optional[str] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor:str = None,
-                 task = "Any",
-                 description = None,
-                 ):
-        super().__init__(name = name, resources = resources, contributor = contributor,
-                         task = task, description= description)
-
-        self.name = name
-        self.resources = resources or {}
-        self.contributor = contributor
-        self.task = task
+    def __init__(self, *args,**kwargs):
+        super(text_operation, self).__init__(*args, **kwargs)
 
 
     def __call__(self, *param_arg):
@@ -156,38 +112,22 @@ class text_operation(operation_function):
                                  description = self.description)
 
 
+
+# @text_operation(name="test",task="a",description="this is a test function")
+# def get_sum(a,b):
+#     return a+b
+#
+#
+# print(get_sum.__dict__)
+
+
+
 class StructuredTextOperation(TextOperation):
-    def __init__(self,
-                 name:str = None,
-                 func:Callable[...,Any] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor:str = None,
-                 task = "Any",
-                 description = None,
-                 ):
-        super().__init__(name = name, func = func, resources =resources,
-                         contributor=contributor, task=task,
-                         description=description)
-        self.name = name
-        self.func = func
-        self.resources = resources or {}
-        self.contributor = contributor
-        self._type = "StructuredTextOperation"
-        self.target_filed = "structured_data"
-        self.processed_fields = ["structured_data"]
-        self.generated_field = None
+    def __init__(self,*args,**kwargs,):
+        super(StructuredTextOperation, self).__init__(*args, **kwargs)
         self._data_type = "StructuredText"
-        self.task = task
 
-    def __call__(self, x:str) -> Any: # str?
-        """
-        Parameters
-        x: Text
 
-        Returns
-        Transformed Text
-        """
-        return self.func(x, **self.resources)
 
 
 
@@ -195,20 +135,8 @@ class structured_text_operation(text_operation):
     """
 
     """
-    def __init__(self,
-                 name: Optional[str] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor:str = None,
-                 task = "Any",
-                 description = None,
-                 ):
-        super().__init__(name = name, resources = resources, contributor = contributor,
-                         task = task, description= description)
-
-        self.name = name
-        self.resources = resources or {}
-        self.contributor = contributor
-        self.task = task
+    def __init__(self, *args,**kwargs):
+        super(structured_text_operation, self).__init__(*args, **kwargs)
 
 
     def __call__(self, *param_arg):
@@ -227,33 +155,14 @@ class structured_text_operation(text_operation):
 
 class DatasetOperation(TextOperation):
 
-    def __init__(self,
-                 name:str = None,
-                 func:Callable[...,Any] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor: str = None,
-                 task = "Any",
-                 description = None,
-                 ):
-        super().__init__(name, func, resources, contributor, task, description)
-        self._type = "DatasetOperation"
+    def __init__(self,*args,**kwargs,):
+        super(DatasetOperation, self).__init__(*args, **kwargs)
         self._data_type = "Dataset"
-        self.target_filed = "text"
-        self.processed_fields = ["text"]
-        self.generated_field = None
-        self.task = task
 
 
 class dataset_operation(text_operation):
-    def __init__(self,
-                 name: Optional[str] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor: str = None,
-                 task = "Any",
-                 description = None,
-                 ):
-        super().__init__(name = name, resources = resources, contributor = contributor, task = task, description= description)
-
+    def __init__(self, *args,**kwargs):
+        super(dataset_operation, self).__init__(*args, **kwargs)
 
     def __call__(self, *param_arg):
         if callable(self.name):
@@ -268,5 +177,4 @@ class dataset_operation(text_operation):
                                    description=self.description)
 
             return tf_cls
-
 

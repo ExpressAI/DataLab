@@ -4,7 +4,7 @@ from ..utils.logging import get_logger
 from .automatic_speech_recognition import AutomaticSpeechRecognition
 from .base import TaskTemplate
 from .image_classification import ImageClassification
-from .question_answering import QuestionAnsweringExtractive,QuestionAnsweringHotpot,QuestionAnsweringExtractiveType
+from .question_answering import QuestionAnsweringExtractive,QuestionAnsweringHotpot,QuestionAnsweringExtractiveType,QuestionAnsweringMultipleChoices
 from .summarization import Summarization
 from .text_classification import TextClassification
 from .text_matching import TextMatching
@@ -17,6 +17,7 @@ __all__ = [
     "QuestionAnsweringExtractive",
     "QuestionAnsweringHotpot",
     "QuestionAnsweringExtractiveType",
+    "QuestionAnsweringMultipleChoices",
     "TextClassification",
     "Summarization",
     "AutomaticSpeechRecognition",
@@ -30,6 +31,7 @@ logger = get_logger(__name__)
 
 
 NAME2TEMPLATE = {
+    QuestionAnsweringMultipleChoices.task_category: QuestionAnsweringMultipleChoices,
     QuestionAnsweringExtractive.task_category: QuestionAnsweringExtractive,
     QuestionAnsweringExtractiveType.task_category: QuestionAnsweringExtractiveType,
     QuestionAnsweringHotpot.task_category: QuestionAnsweringHotpot,

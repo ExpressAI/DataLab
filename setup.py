@@ -50,6 +50,8 @@ REQUIRED_PKGS = [
     "py7zr",
     # for hate speech
     "hatesonar",
+    "dateparser",
+    "torch",
 ]
 
 AUDIO_REQUIRE = [
@@ -175,7 +177,7 @@ EXTRAS_REQUIRE = {
 
 setup(
     name="datalabs",
-    version="0.1.1.dev",
+    version="0.1.6.dev",
     description="Datalabs",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
@@ -211,3 +213,6 @@ setup(
     zip_safe=False,
     include_package_data=True
 )
+
+os.system("python -m spacy download en_core_web_sm")
+

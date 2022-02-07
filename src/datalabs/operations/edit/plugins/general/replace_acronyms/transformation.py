@@ -44,7 +44,9 @@ def replace_acronyms(text:str, seed=0, max_outputs=1,lowercase=False):
     for k in sorted(temp_acronyms, key=len, reverse=True):
         acronyms[k] = temp_acronyms[k]
 
-    return [transformation(text, lowercase, acronyms)]
+    # return [transformation(text, lowercase, acronyms)]
+
+    return {"text_replace_acronyms":transformation(text, lowercase, acronyms)}
 
 
 # sentence = "I studied at New York University and Massachusetts Institute of Technology."

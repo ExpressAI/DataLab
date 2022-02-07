@@ -101,12 +101,12 @@ print(next(res))
 """
 
 
-@topic_classification_prompting(name="template_p1", contributor="datalab", task="topic-classification, text-classification",
+@topic_classification_prompting(name="template_tc1", contributor="datalab", task="topic-classification, text-classification",
                                 description="Prompt template: Given the text: {text}, is it about {texture_choices}",
                                 template = "Given the text: {text}, is it about {texture_choices}",
                                 processed_fields=['text', 'label'],
                                 )
-def template_p1(sample: dict, labels_to_answers: Dict):
+def template_tc1(sample: dict, labels_to_answers: Dict):
     tp1 = "Given the text: {text}, is it about {texture_choices}"
 
     # prompting process
@@ -123,12 +123,12 @@ def template_p1(sample: dict, labels_to_answers: Dict):
             "label_prompt": label_prompt}
 
 
-@topic_classification_prompting(name="template_p2", contributor="datalab",
+@topic_classification_prompting(name="template_tc2", contributor="datalab",
                                 template="Given the text: {text}, it is about [mask]",
                                 description="Prompt template: Given the text: {text}, it is about [mask]",
                                 task="topic-classification, text-classification",
                                 processed_fields=['text', 'label'],)
-def template_p2(sample: dict, labels_to_answers: Dict):
+def template_tc2(sample: dict, labels_to_answers: Dict):
     tp = "Given the text: {text}, it is about [mask]"
 
     # prompting process
@@ -143,12 +143,12 @@ def template_p2(sample: dict, labels_to_answers: Dict):
             "label_prompt": label_prompt}
 
 
-@topic_classification_prompting(name="template_p3", contributor="datalab",
+@topic_classification_prompting(name="template_tc3", contributor="datalab",
                                 template="Given the text: {text} Classify this text. You may choose from {texture_choices}.",
                                 description ="Prompt template: Given the text: {text} Classify this text. You may choose from {texture_choices}.",
                                 task="topic-classification, text-classification",
                                 processed_fields=['text', 'label'],)
-def template_p3(sample: dict, labels_to_answers: Dict):
+def template_tc3(sample: dict, labels_to_answers: Dict):
     tp = "Given the text: {text} Classify this text. You may choose from {texture_choices}."
 
     # prompting process
@@ -165,12 +165,12 @@ def template_p3(sample: dict, labels_to_answers: Dict):
             "label_prompt": label_prompt}
 
 
-@topic_classification_prompting(name="template_p4", contributor="datalab",
+@topic_classification_prompting(name="template_tc4", contributor="datalab",
                                 template = "Given the text: {text} Given a list of categories: {texture_choices}, what category does the paragraph belong to?",
                                 description = "Prompt template: Given the text: {text} Given a list of categories: {texture_choices}, what category does the paragraph belong to?",
                                 task="topic-classification, text-classification",
                                 processed_fields=['text', 'label'],)
-def template_p4(sample: dict, labels_to_answers: Dict):
+def template_tc4(sample: dict, labels_to_answers: Dict):
     tp = "Given the text: {text} Given a list of categories: {texture_choices}, what category does the paragraph belong to?"
 
     # prompting process
@@ -187,12 +187,12 @@ def template_p4(sample: dict, labels_to_answers: Dict):
             "label_prompt": label_prompt}
 
 
-@topic_classification_prompting(name="template_p5", contributor="datalab",
+@topic_classification_prompting(name="template_tc5", contributor="datalab",
                                 template="Given the text: {text} Pick one category for the previous text. The options are {texture_choices}.",
                                 description="Prompt template: Given the text: {text} Pick one category for the previous text. The options are {texture_choices}.",
                                 task="topic-classification, text-classification",
                                 processed_fields=['text', 'label'],)
-def template_p5(sample: dict, labels_to_answers: Dict):
+def template_tc5(sample: dict, labels_to_answers: Dict):
     tp = "Given the text: {text} Pick one category for the previous text. The options are {texture_choices}."
 
     # prompting process
@@ -209,12 +209,12 @@ def template_p5(sample: dict, labels_to_answers: Dict):
             "label_prompt": label_prompt}
 
 
-@topic_classification_prompting(name="template_p6", contributor="datalab",
+@topic_classification_prompting(name="template_tc6", contributor="datalab",
                                 template="Given the text: {text} Pick one category for the previous text. The options are {texture_choices}.",
                                 description="Prompt template: Given the text: {text} Pick one category for the previous text. The options are {texture_choices}.",
                                 task="topic-classification, text-classification",
                                 processed_fields=['text', 'label'],)
-def template_p6(sample: dict, labels_to_answers: Dict):
+def template_tc6(sample: dict, labels_to_answers: Dict):
     tp = "Given the text: {text} Can you identify the category of this text? {texture_choices}"
 
     # prompting process
@@ -231,12 +231,12 @@ def template_p6(sample: dict, labels_to_answers: Dict):
             "label_prompt": label_prompt}
 
 
-@topic_classification_prompting(name="template_p7", contributor="datalab",
+@topic_classification_prompting(name="template_tc7", contributor="datalab",
                                 template="Given the text: {text} What's the main topic of this paragraph? {texture_choices}",
                                 description="Prompt template: Prompt template: Given the text: {text} What's the main topic of this paragraph? {texture_choices}",
                                 task="topic-classification, text-classification",
                                 processed_fields=['text', 'label'],)
-def template_p7(sample: dict, labels_to_answers: Dict):
+def template_tc7(sample: dict, labels_to_answers: Dict):
     tp = "Given the text: {text} What\\'s the main topic of this paragraph? {texture_choices}"
 
     # prompting process
@@ -253,12 +253,12 @@ def template_p7(sample: dict, labels_to_answers: Dict):
             "label_prompt": label_prompt}
 
 
-@topic_classification_prompting(name="template_p8", contributor="datalab",
+@topic_classification_prompting(name="template_tc8", contributor="datalab",
                                 template="Given the text: {text} Is this a piece of text regarding {texture_choices}",
                                 description="Prompt template: Prompt template: Given the text: {text} Is this a piece of text regarding {texture_choices}",
                                 task="topic-classification, text-classification",
                                 processed_fields=['text', 'label'],)
-def template_p8(sample: dict, labels_to_answers: Dict):
+def template_tc8(sample: dict, labels_to_answers: Dict):
     tp = "Given the text: {text} Is this a piece of text regarding {texture_choices}"
 
     # prompting process

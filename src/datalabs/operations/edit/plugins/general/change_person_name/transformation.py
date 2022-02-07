@@ -20,8 +20,8 @@ def change_person_name(text:str, max_outputs = 1):
         if len(perturbed.data) > 0
         else [text]
     )
-    return perturbed_texts
-
+    # return perturbed_texts
+    return {"text_change_person_name":perturbed_texts[0]}
 # sentence = "Andrew finally returned the French book to Chris that I bought last week"
 # perturbed = change_person_name(text=sentence)
 # print(perturbed)

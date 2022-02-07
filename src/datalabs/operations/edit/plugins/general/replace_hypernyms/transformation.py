@@ -38,7 +38,8 @@ def replace_hypernyms(text:str, n=1, seed=0, max_outputs=1):
         if len(perturbed_texts) > 0
         else [text]
     )
-    return perturbed_texts
+    # return perturbed_texts
+    return {"text_replace_hypernyms":perturbed_texts[0]}
 
 
 # sentence = "Andrew finally returned the French book to Chris that I bought last week."

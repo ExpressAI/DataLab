@@ -103,7 +103,8 @@ def replace_greetings(text:str, seed=0, max_outputs=1):
     processed_text = greetings_and_farewells(
         text=text, seed=seed, max_outputs=max_outputs
     )
-    return processed_text
+    # return processed_text
+    return {"text_replace_greetings":processed_text[0]}
 
 
 # sentence = "Good morning, John. I've sent a memo to your desk, let me know if you need anything else. Best regards"

@@ -1,5 +1,5 @@
 import unittest
-import datasets
+import datalabs
 from data import Data, TextData
 import featurize.general
 

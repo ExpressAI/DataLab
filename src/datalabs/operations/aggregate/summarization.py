@@ -90,7 +90,7 @@ def get_statistics(samples: Iterator):
 
 from datalabs import load_dataset
 from aggregate.summarization import *
-dataset = load_dataset('xsum')
+dataset = load_dataset('govreport')
 res = dataset['test'].apply(get_statistics)
 print(next(res))
 
@@ -133,8 +133,8 @@ print(next(res))
 
 
         # Others
-        attr_json = get_all_features(sample)
-        attr_jsons.append(attr_json)
+        # attr_json = get_all_features(sample)
+        # attr_jsons.append(attr_json)
 
         # Vocabulary info
         for w in (text + summary).split(" "):
@@ -145,59 +145,59 @@ print(next(res))
                 vocab[w] = 1
 
         # Gender info
-        gender_result_text = get_gender_bias.func(text)
-        gender_result_summary = get_gender_bias.func(summary)
-        gender_results.append(gender_result_text)
-        gender_results.append(gender_result_summary)
+        # gender_result_text = get_gender_bias.func(text)
+        # gender_result_summary = get_gender_bias.func(summary)
+        # gender_results.append(gender_result_text)
+        # gender_results.append(gender_result_summary)
 
 
 
         # hataspeech
-        results = sonar.ping(text=text)
-        class_1 = results['top_class']
-        confidence = 0
-        for value in results['classes']:
-            if value['class_name'] == class_1:
-                confidence = value['confidence']
-                break
+        # results = sonar.ping(text=text)
+        # class_1 = results['top_class']
+        # confidence = 0
+        # for value in results['classes']:
+        #     if value['class_name'] == class_1:
+        #         confidence = value['confidence']
+        #         break
+        #
+        # hatespeech[class_1]["ratio"] += 1
+        # if class_1 != "neither":
+        #     hatespeech[class_1]["texts"].append(text)
+        #
+        #
+        # results = sonar.ping(text=summary)
+        # class_2 = results['top_class']
+        # confidence = 0
+        # for value in results['classes']:
+        #     if value['class_name'] == class_2:
+        #         confidence = value['confidence']
+        #         break
+        #
+        # hatespeech[class_2]["ratio"] += 1
+        # if class_2 != "neither":
+        #     hatespeech[class_2]["texts"].append(summary)
 
-        hatespeech[class_1]["ratio"] += 1
-        if class_1 != "neither":
-            hatespeech[class_1]["texts"].append(text)
 
 
-        results = sonar.ping(text=summary)
-        class_2 = results['top_class']
-        confidence = 0
-        for value in results['classes']:
-            if value['class_name'] == class_2:
-                confidence = value['confidence']
-                break
-
-        hatespeech[class_2]["ratio"] += 1
-        if class_2 != "neither":
-            hatespeech[class_2]["texts"].append(summary)
-
-
-
-        sample_info = {
-            "text":text,
-            "summary": summary,
-            "text_length": text_length,
-            "summary_length": summary_length,
-            "gender_result_text":gender_result_text,
-            "gender_result_summary":gender_result_summary,
-            "text1_hate_speech_class":class_1,
-            "text2_hate_speech_class":class_2,
-            "density":attr_json["density"],
-            "coverage": attr_json["coverage"],
-            "compression": attr_json["compression"],
-            "repetition": attr_json["repetition"],
-            "novelty": attr_json["novelty"],
-            "copy_len": attr_json["copy_len"],
-        }
-        if len(sample_infos) < 10000:
-            sample_infos.append(sample_info)
+        # sample_info = {
+        #     "text":text,
+        #     "summary": summary,
+        #     "text_length": text_length,
+        #     "summary_length": summary_length,
+        #     "gender_result_text":gender_result_text,
+        #     "gender_result_summary":gender_result_summary,
+        #     "text1_hate_speech_class":class_1,
+        #     "text2_hate_speech_class":class_2,
+        #     # "density":attr_json["density"],
+        #     # "coverage": attr_json["coverage"],
+        #     # "compression": attr_json["compression"],
+        #     # "repetition": attr_json["repetition"],
+        #     # "novelty": attr_json["novelty"],
+        #     # "copy_len": attr_json["copy_len"],
+        # }
+        # if len(sample_infos) < 10000:
+        #     sample_infos.append(sample_info)
 
 
     ## --------------------- Dataset-level -----------------------
@@ -211,44 +211,44 @@ print(next(res))
                     "single_name":
                         {"male": 0, "female": 0},
                     }
-    for result in gender_results:
-        res_word = result['word']
-        gender_ratio['word']['male'] += result['word']['male']
-        gender_ratio['word']['female'] += result['word']['female']
-        gender_ratio['single_name']['male'] += result['single_name']['male']
-        gender_ratio['single_name']['female'] += result['single_name']['female']
-
-    n_gender = (gender_ratio['word']['male'] + gender_ratio['word']['female'])
-    if n_gender != 0:
-        gender_ratio['word']['male'] /= n_gender
-        gender_ratio['word']['female'] /= n_gender
-    else:
-        gender_ratio['word']['male'] = 0
-        gender_ratio['word']['female'] = 0
-
-
-    n_gender = (gender_ratio['single_name']['male'] + gender_ratio['single_name']['female'])
-    if n_gender != 0:
-        gender_ratio['single_name']['male'] /= n_gender
-        gender_ratio['single_name']['female'] /= n_gender
-    else:
-        gender_ratio['single_name']['male'] = 0
-        gender_ratio['single_name']['female'] = 0
+    # for result in gender_results:
+    #     res_word = result['word']
+    #     gender_ratio['word']['male'] += result['word']['male']
+    #     gender_ratio['word']['female'] += result['word']['female']
+    #     gender_ratio['single_name']['male'] += result['single_name']['male']
+    #     gender_ratio['single_name']['female'] += result['single_name']['female']
+    #
+    # n_gender = (gender_ratio['word']['male'] + gender_ratio['word']['female'])
+    # if n_gender != 0:
+    #     gender_ratio['word']['male'] /= n_gender
+    #     gender_ratio['word']['female'] /= n_gender
+    # else:
+    #     gender_ratio['word']['male'] = 0
+    #     gender_ratio['word']['female'] = 0
+    #
+    #
+    # n_gender = (gender_ratio['single_name']['male'] + gender_ratio['single_name']['female'])
+    # if n_gender != 0:
+    #     gender_ratio['single_name']['male'] /= n_gender
+    #     gender_ratio['single_name']['female'] /= n_gender
+    # else:
+    #     gender_ratio['single_name']['male'] = 0
+    #     gender_ratio['single_name']['female'] = 0
 
 
     # get ratio of hate_speech:offensive_language:neither
-    for k,v in hatespeech.items():
-        hatespeech[k]["ratio"] /= 2* len(samples)
+    # for k,v in hatespeech.items():
+    #     hatespeech[k]["ratio"] /= 2* len(samples)
 
-    attr_avg = {}
-    for attr_json in attr_jsons:
-        for attr_name, val in attr_json.items():
-            if attr_name not in attr_avg.keys():
-                attr_avg[attr_name] = val
-            else:
-                attr_avg[attr_name] += val
-    for attr_name, val in attr_avg.items():
-        attr_avg[attr_name] /= len(attr_jsons)
+    # attr_avg = {}
+    # for attr_json in attr_jsons:
+    #     for attr_name, val in attr_json.items():
+    #         if attr_name not in attr_avg.keys():
+    #             attr_avg[attr_name] = val
+    #         else:
+    #             attr_avg[attr_name] += val
+    # for attr_name, val in attr_avg.items():
+    #     attr_avg[attr_name] /= len(attr_jsons)
 
 
 
@@ -269,12 +269,12 @@ print(next(res))
                 },
                 "number_of_samples": len(samples),
                 "number_of_tokens": number_of_tokens,
-                "vocabulary_info": vocab_sorted,
-                "gender_info": gender_ratio,
-                "hatespeech_info": hatespeech,
-                **attr_avg,
+                # "vocabulary_info": vocab_sorted,
+                # "gender_info": gender_ratio,
+                # "hatespeech_info": hatespeech,
+                # **attr_avg,
         },
-        "sample-level": sample_infos,
+        # "sample-level": sample_infos,
     }
 
     return res

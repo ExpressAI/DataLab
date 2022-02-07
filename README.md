@@ -1,30 +1,50 @@
-# DataLab
+<p align="center">
+    <br>
+    <img src="./docs/resources/figs/readme_logo.png" width="400"/>
+    <br>
+  <a href="https://github.com/expressai/DataLab/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/expressai/DataLab" /></a>
+  <a href="https://github.com/expressai/DataLab/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/expressai/DataLab" /></a>
+  <a href="https://pypi.org/project//"><img alt="PyPI" src="https://img.shields.io/pypi/v/datalabs" /></a>
+  <a href="https://github.com/psf/black"><img alt="Code Style" src="https://img.shields.io/badge/code%20style-black-black" /></a>
+  <a href=".github/workflows/ci.yml"><img alt="Integration Tests", src="https://github.com/neulab/ExplainaBoard/actions/workflows/ci.yml/badge.svg?event=push" />
+</p>
 
-## Installation
-#### Install
 
-   
-    pip install --upgrade pip
-    pip install datalabs
- 
+[DataLab](http://datalab.nlpedia.ai/) is a unified platform that allows for NLP researchers to perform a number of data-related tasks in an efficient and easy-to-use manner. In particular, DataLab supports the following functionalities:
 
-   or 
+    
 
-    # This is suitable for SDK developers
-    pip install --upgrade pip
-    git clone git@github.com:ExpressAI/DataLab.git
-    cd Datalab
-    pip install .
- 
+    
+    
+<!-- <p align="center"> -->
+<img src="./docs/resources/figs/datalab_overview.png" width="300"/>
+<!-- </p> -->
 
- 
-#### Dataset Operation
- 
+* **Data Diagnostics**: DataLab allows for analysis and understanding of data to uncover undesirable traits such as hate speech, gender bias, or label imbalance.
+* **Operation Standardization**: DataLab provides and standardizes a large number of data processing operations, including aggregating, preprocessing, featurizing, editing and prompting operations.
+* **Data Search**: DataLab provides a semantic dataset search tool to help identify appropriate datasets given a textual description of an idea.
+* **Global Analysis**: DataLab provides tools to perform global analyses over a variety of datasets.
 
- 
+
+# Installation
+DataLab can be installed from PyPi
+```bash
+pip install --upgrade pip
+pip install datalabs
+```
+or from the source
+```bash
+# This is suitable for SDK developers
+pip install --upgrade pip
+git clone git@github.com:ExpressAI/DataLab.git
+cd Datalab
+pip install .
+```
+
+# Getting started
+Here we give several examples to showcase the usage of DataLab. For more information, please refer to the corresponding sections in our [documentation](https://expressai.github.io/DataLab/).
 
 ```python
-
 # pip install datalabs
 from datalabs import operations, load_dataset
 from featurize import *
@@ -56,12 +76,8 @@ print(next(res))
 #  change person name
 res = dataset["test"].apply(change_person_name)
 print(next(res))
-
-
-
 ```
-
-### Task Schema
+# Task Schema
 
 * `text-classification`
     * `text`:str
@@ -90,11 +106,13 @@ one can use `dataset[SPLIT]._info.task_templates` to get more useful task-depend
 `SPLIT` could be `train` or `validation` or `test`.
 
 
-### Supported Datasets
+# Supported Datasets
 * [here](https://github.com/ExpressAI/DataLab/tree/main/datasets)
 
    
 
-## Acknowledgment
-DataLab originated from a fork of the awesome Huggingface Datasets and TensorFlow Datasets. We highly thank the Huggingface/TensorFlow Datasets for building this amazing library. More details on the differences between DataLab and them can be found in the section
+# Acknowledgment
+DataLab originated from a fork of the awesome [Huggingface Datasets](https://github.com/huggingface/datasets) and [TensorFlow Datasets](https://github.com/tensorflow/datasets). We highly thank the Huggingface/TensorFlow Datasets for building this amazing library. More details on the differences between DataLab and them can be found in the section
+
+
 

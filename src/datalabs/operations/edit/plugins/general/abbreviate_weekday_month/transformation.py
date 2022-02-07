@@ -54,7 +54,8 @@ def abbreviate_weekday_month(text:str, max_outputs=1):
         expansions = expansions,
         max_outputs =  max_outputs
     )
-    return perturbed_texts
+    #return perturbed_texts
+    return {"text_weekday_month_abbreviate":perturbed_texts[0]}
 
 
 # sentence = "I am busy Saturday night."

@@ -1,6 +1,6 @@
 import unittest
 
-from datasets import operations, load_dataset
+from datalabs import operations, load_dataset
 from edit import *
 
 

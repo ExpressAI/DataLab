@@ -65,7 +65,8 @@ def change_color(text:str, max_outputs = 1, seed = 0, mapping: dict = None):
             )
         new_sentences.append(new_sentence)
 
-    return new_sentences
+    # return new_sentences
+    return {"text_change_color":new_sentences[0]}
 
 
 # sentence = "I bought this pink pair of shoes today! Isn't it pretty?"
