@@ -4,19 +4,20 @@ from ..utils.logging import get_logger
 from .automatic_speech_recognition import AutomaticSpeechRecognition
 from .base import TaskTemplate
 from .image_classification import ImageClassification
-from .question_answering import QuestionAnsweringExtractive,QuestionAnsweringHotpot
+from .question_answering import QuestionAnsweringExtractive,QuestionAnsweringHotpot,QuestionAnsweringExtractiveType,QuestionAnsweringChoiceWithContext
 from .summarization import Summarization
 from .text_classification import TextClassification
 from .text_matching import TextMatching
 from .sequence_labeling import SequenceLabeling
 from .semantic_parsing import SemanticParsing
-from .span_text_classification import SpanTextClassification
 
 
 __all__ = [
     "TaskTemplate",
     "QuestionAnsweringExtractive",
     "QuestionAnsweringHotpot",
+    "QuestionAnsweringExtractiveType",
+    "QuestionAnsweringChoiceWithContext",
     "TextClassification",
     "Summarization",
     "AutomaticSpeechRecognition",
@@ -24,14 +25,15 @@ __all__ = [
     "TextMatching",
     "SequenceLabeling",
     "SemanticParsing",
-    "SpanTextClassification",
 ]
 
 logger = get_logger(__name__)
 
 
 NAME2TEMPLATE = {
+    QuestionAnsweringChoiceWithContext.task_category: QuestionAnsweringChoiceWithContext,
     QuestionAnsweringExtractive.task_category: QuestionAnsweringExtractive,
+    QuestionAnsweringExtractiveType.task_category: QuestionAnsweringExtractiveType,
     QuestionAnsweringHotpot.task_category: QuestionAnsweringHotpot,
     TextClassification.task_category: TextClassification,
     AutomaticSpeechRecognition.task_category: AutomaticSpeechRecognition,
@@ -40,7 +42,6 @@ NAME2TEMPLATE = {
     TextMatching.task_category:TextMatching,
     SequenceLabeling.task_category: SequenceLabeling,
     SemanticParsing.task_category: SemanticParsing,
-    SpanTextClassification.task_category: SpanTextClassification,
 }
 
 
