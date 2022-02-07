@@ -11,6 +11,7 @@ from .text_matching import TextMatching
 from .sequence_labeling import SequenceLabeling
 from .semantic_parsing import SemanticParsing
 from .relation_extraction import RelationExtraction
+from .span_text_classification import SpanTextClassification
 
 
 __all__ = [
@@ -26,6 +27,7 @@ __all__ = [
     "SequenceLabeling",
     "SemanticParsing",
     "RelationExtraction",
+    "SpanTextClassification",
 ]
 
 logger = get_logger(__name__)
@@ -43,6 +45,7 @@ NAME2TEMPLATE = {
     SequenceLabeling.task_category: SequenceLabeling,
     SemanticParsing.task_category: SemanticParsing,
     RelationExtraction.task_category: RelationExtraction,
+    SpanTextClassification.task_category: SpanTextClassification,
 }
 
 

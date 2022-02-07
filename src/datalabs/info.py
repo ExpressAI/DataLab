@@ -41,6 +41,7 @@ from typing import List, Optional, Union
 from datalabs.tasks.text_classification import TextClassification
 from datalabs.tasks.sequence_labeling import SequenceLabeling
 from datalabs.tasks.text_matching import TextMatching
+from datalabs.tasks.span_text_classification import SpanTextClassification
 
 from . import config
 from .features import Features, Value, ClassLabel
@@ -312,6 +313,17 @@ class DatasetInfo:
                         self.task_templates[idx] = TextMatching(
                             text1_column=template.text1_column,
                             text2_column=template.text2_column,
+                            label_column=template.label_column,
+                            task=template.task,
+                            labels=labels
+                        )
+                    if isinstance(template, SpanTextClassification):
+                        labels = None
+                        if isinstance(self.features[template.label_column], ClassLabel):
+                            labels = self.features[template.label_column].names
+                        self.task_templates[idx] = SpanTextClassification(
+                            span_column=template.span_column,
+                            text_column=template.text_column,
                             label_column=template.label_column,
                             task=template.task,
                             labels=labels
