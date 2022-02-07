@@ -9,7 +9,7 @@ from .base import TaskTemplate
 class SemanticParsing(TaskTemplate):
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
     task_category: str = "semantic-parsing"
-    task: str = "TextToSql"
+    task: str = "text-to-sql"
     # task_category: str = "sql-generation-spider"
     # task: str = "sql-generation-spider"
     # input_schema: ClassVar[Features] = Features({"question": Value("string"), "context": Value("string")})

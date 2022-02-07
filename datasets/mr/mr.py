@@ -15,12 +15,10 @@
 
 """Text Classification dataset."""
 
-
 import csv
 
 import datalabs
 from datalabs.tasks import TextClassification
-
 
 _DESCRIPTION = """\
  Movie-review data for use in sentiment-analysis experiments. Available are collections 
@@ -82,10 +80,6 @@ class MR(datalabs.GeneratorBasedBuilder):
     #     super(MR, self).__init__(*args, **kwargs)
     #     self.dataset_class = MRDataset
 
-
-
-
-
     def _info(self):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
@@ -97,7 +91,7 @@ class MR(datalabs.GeneratorBasedBuilder):
             ),
             homepage="http://www.cs.cornell.edu/people/pabo/movie-review-data/",
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[TextClassification(text_column="text", label_column="label", task="sentiment-classification")],
         )
 
     def _split_generators(self, dl_manager):
@@ -112,15 +106,12 @@ class MR(datalabs.GeneratorBasedBuilder):
     def _generate_examples(self, filepath):
         """Generate dataset examples."""
 
-        textualize_label = {"0":"negative",
-                                 "1":"positive",
-                            }
-
+        textualize_label = {"0": "negative",
+                            "1": "positive"}
 
         with open(filepath, encoding="utf-8") as csv_file:
             csv_reader = csv.reader(csv_file, delimiter='\t')
             for id_, row in enumerate(csv_reader):
-
                 text, label = row[0], row[1]
 
                 label = textualize_label[label]

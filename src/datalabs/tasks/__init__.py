@@ -10,6 +10,7 @@ from .text_classification import TextClassification
 from .text_matching import TextMatching
 from .sequence_labeling import SequenceLabeling
 from .semantic_parsing import SemanticParsing
+from .span_text_classification import SpanTextClassification
 
 
 __all__ = [
@@ -24,6 +25,7 @@ __all__ = [
     "TextMatching",
     "SequenceLabeling",
     "SemanticParsing",
+    "SpanTextClassification",
 ]
 
 logger = get_logger(__name__)
@@ -40,6 +42,7 @@ NAME2TEMPLATE = {
     TextMatching.task_category:TextMatching,
     SequenceLabeling.task_category: SequenceLabeling,
     SemanticParsing.task_category: SemanticParsing,
+    SpanTextClassification.task_category: SpanTextClassification,
 }
 
 
