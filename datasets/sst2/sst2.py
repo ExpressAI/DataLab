@@ -50,6 +50,7 @@ _CITATION = """\
 
 _TRAIN_DOWNLOAD_URL = "https://drive.google.com/u/0/uc?id=15OBrIXbzXo0ZpGt_5sretefO80-pVVmz&export=download"
 _VALIDATION_DOWNLOAD_URL = "https://drive.google.com/u/0/uc?id=1yw3rYnE2wycgzowM_7kGbBYT_5tKqb3Z&export=download"
+_TEST_DOWNLOAD_URL = "https://drive.google.com/u/0/uc?id=1hcsXapnDkKhu8OZsJIXGUGnM9YYIEMlb&export=download"
 
 
 class SST2(datalabs.GeneratorBasedBuilder):
@@ -72,9 +73,13 @@ class SST2(datalabs.GeneratorBasedBuilder):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         print(f"train_path: \t{train_path}")
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        print(f"validation_path: \t{validation_path}")
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        print(f"test_path: \t{test_path}")
         return [
             datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
             datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 
     def _generate_examples(self, filepath):
