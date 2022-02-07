@@ -64,7 +64,7 @@ class QC(datalabs.GeneratorBasedBuilder):
         ]
 
     def _generate_examples(self, filepath):
-        """Generate AG News examples."""
+        """Generate QC examples."""
 
         # map the label into textual string
         textualize_label = {
