@@ -4,7 +4,10 @@ from ..utils.logging import get_logger
 from .automatic_speech_recognition import AutomaticSpeechRecognition
 from .base import TaskTemplate
 from .image_classification import ImageClassification
-from .question_answering import QuestionAnsweringExtractive,QuestionAnsweringHotpot,QuestionAnsweringExtractiveType,QuestionAnsweringMultipleChoices
+from .question_answering import QuestionAnsweringExtractive
+from .question_answering import QuestionAnsweringHotpot
+from .question_answering import   QuestionAnsweringExtractiveType
+from .question_answering import QuestionAnsweringMultipleChoices
 from .summarization import Summarization
 from .text_classification import TextClassification
 from .text_matching import TextMatching

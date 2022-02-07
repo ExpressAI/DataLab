@@ -75,6 +75,7 @@ class Drop(datalabs.GeneratorBasedBuilder):
             # datasets.features.FeatureConnectors
             features=datalabs.Features(
                 {
+                    "id": datalabs.Value("string"),
                     "section_id": datalabs.Value("string"),
                     "query_id": datalabs.Value("string"),
                     "context": datalabs.Value("string"), # context->passage
@@ -136,6 +137,7 @@ class Drop(datalabs.GeneratorBasedBuilder):
                 for j, qa in enumerate(section["qa_pairs"]):
 
                     example = {
+                        "id":str(id_),
                         "section_id": section_id,
                         "query_id": qa["query_id"],
                         "context": section["passage"],
