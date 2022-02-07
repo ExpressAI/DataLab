@@ -4,14 +4,21 @@ from ..utils.logging import get_logger
 from .automatic_speech_recognition import AutomaticSpeechRecognition
 from .base import TaskTemplate
 from .image_classification import ImageClassification
-from .question_answering import MultipleChoiceQA, QuestionAnsweringExtractive, QuestionAnsweringHotpot
+
+from .question_answering import  MultipleChoiceQA
+from .question_answering import QuestionAnsweringExtractive
+from .question_answering import QuestionAnsweringHotpot
+from .question_answering import   QuestionAnsweringExtractiveType
+from .question_answering import QuestionAnsweringMultipleChoices
 from .summarization import Summarization
 from .text_classification import TextClassification
 from .text_matching import TextMatching
 from .sequence_labeling import SequenceLabeling
 from .semantic_parsing import SemanticParsing
+
 from .relation_extraction import RelationExtraction
 from .span_text_classification import SpanTextClassification
+
 
 
 __all__ = [
@@ -19,6 +26,8 @@ __all__ = [
     "MultipleChoiceQA",
     "QuestionAnsweringExtractive",
     "QuestionAnsweringHotpot",
+    "QuestionAnsweringExtractiveType",
+    "QuestionAnsweringMultipleChoices",
     "TextClassification",
     "Summarization",
     "AutomaticSpeechRecognition",
@@ -28,14 +37,18 @@ __all__ = [
     "SemanticParsing",
     "RelationExtraction",
     "SpanTextClassification",
+
 ]
 
 logger = get_logger(__name__)
 
 
 NAME2TEMPLATE = {
+
     MultipleChoiceQA.task_category: MultipleChoiceQA,
+    QuestionAnsweringMultipleChoices.task_category: QuestionAnsweringMultipleChoices,
     QuestionAnsweringExtractive.task_category: QuestionAnsweringExtractive,
+    QuestionAnsweringExtractiveType.task_category: QuestionAnsweringExtractiveType,
     QuestionAnsweringHotpot.task_category: QuestionAnsweringHotpot,
     TextClassification.task_category: TextClassification,
     AutomaticSpeechRecognition.task_category: AutomaticSpeechRecognition,

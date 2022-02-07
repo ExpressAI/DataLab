@@ -69,7 +69,7 @@ class CR(datalabs.GeneratorBasedBuilder):
         ]
 
     def _generate_examples(self, filepath):
-        """Generate AG News examples."""
+        """Generate CR examples."""
 
         # map the label into textual string
         textualize_label = {
