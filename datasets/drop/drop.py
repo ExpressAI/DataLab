@@ -1,12 +1,22 @@
-"""Dataset config script for ag_news （this code is originally from huggingface, them modified by datalab）"""
-
+# coding=utf-8
+# Copyright 2020 The HuggingFace Datasets Authors and DataLab Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 
 import json
 import os
 
 import datalabs
-from datalabs.tasks import QuestionAnsweringExtractiveType
+from datalabs.tasks import QuestionAnsweringAbstractive
 
 
 _CITATION = """\
@@ -83,7 +93,6 @@ class Drop(datalabs.GeneratorBasedBuilder):
                     "answers":
                         {
                             "text": datalabs.features.Sequence(datalabs.Value("string")),
-                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
                             "types": datalabs.features.Sequence(datalabs.Value("string"))
                         },
                     # "answers_spans": datalabs.features.Sequence(
@@ -101,7 +110,7 @@ class Drop(datalabs.GeneratorBasedBuilder):
             homepage="https://allennlp.org/drop",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringExtractiveType(
+                QuestionAnsweringAbstractive(
                     question_column="question", context_column="context", answers_column="answers"
                 )
             ],
@@ -152,11 +161,9 @@ class Drop(datalabs.GeneratorBasedBuilder):
                     try:
                         qa_answers = self.build_answers(answers)
                         answer_texts = [answer.strip() for answer in qa_answers["spans"]]
-                        answer_start = [-1] * len(answer_texts)
                         answer_type = [type1.strip() for type1 in qa_answers["types"]]
 
                         answers= {
-                            "answer_start": answer_start,
                             "text": answer_texts,
                             "types": answer_type
                         }
