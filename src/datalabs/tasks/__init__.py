@@ -8,7 +8,7 @@ from .image_classification import ImageClassification
 from .question_answering import  MultipleChoiceQA
 from .question_answering import QuestionAnsweringExtractive
 from .question_answering import QuestionAnsweringHotpot
-from .question_answering import QuestionAnsweringAbstractive
+from .question_answering import   QuestionAnsweringExtractiveType
 from .question_answering import QuestionAnsweringMultipleChoices
 from .summarization import Summarization
 from .text_classification import TextClassification
