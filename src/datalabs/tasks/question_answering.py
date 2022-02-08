@@ -32,18 +32,17 @@ class QuestionAnsweringExtractive(TaskTemplate):
 
 
 @dataclass
-class QuestionAnsweringExtractiveType(TaskTemplate):
+class QuestionAnsweringAbstractive(TaskTemplate):
     # adaptive datasets: drop
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
-    task_category: str = "question-answering-extractive-type"
-    task: str = "question-answering-extractive-type"
+    task_category: str = "question-answering-abstractive"
+    task: str = "question-answering-abstractive"
     input_schema: ClassVar[Features] = Features({"question": Value("string"), "context": Value("string")})
     label_schema: ClassVar[Features] = Features(
         {
             "answers": Sequence(
                 {
                     "text": Value("string"),
-                    "answer_start": Value("int32"),
                     "types": Value("string"),
                 }
             )

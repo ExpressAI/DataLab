@@ -8,7 +8,7 @@ from .image_classification import ImageClassification
 from .question_answering import  MultipleChoiceQA
 from .question_answering import QuestionAnsweringExtractive
 from .question_answering import QuestionAnsweringHotpot
-from .question_answering import   QuestionAnsweringExtractiveType
+from .question_answering import QuestionAnsweringAbstractive
 from .question_answering import QuestionAnsweringMultipleChoices
 from .summarization import Summarization
 from .text_classification import TextClassification
@@ -26,7 +26,7 @@ __all__ = [
     "MultipleChoiceQA",
     "QuestionAnsweringExtractive",
     "QuestionAnsweringHotpot",
-    "QuestionAnsweringExtractiveType",
+    "QuestionAnsweringAbstractive",
     "QuestionAnsweringMultipleChoices",
     "TextClassification",
     "Summarization",
@@ -48,7 +48,7 @@ NAME2TEMPLATE = {
     MultipleChoiceQA.task_category: MultipleChoiceQA,
     QuestionAnsweringMultipleChoices.task_category: QuestionAnsweringMultipleChoices,
     QuestionAnsweringExtractive.task_category: QuestionAnsweringExtractive,
-    QuestionAnsweringExtractiveType.task_category: QuestionAnsweringExtractiveType,
+    QuestionAnsweringAbstractive.task_category: QuestionAnsweringAbstractive,
     QuestionAnsweringHotpot.task_category: QuestionAnsweringHotpot,
     TextClassification.task_category: TextClassification,
     AutomaticSpeechRecognition.task_category: AutomaticSpeechRecognition,
