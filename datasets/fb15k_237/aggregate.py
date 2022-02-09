@@ -16,7 +16,7 @@
 
 from typing import Dict, List, Any, Optional
 from typing import Callable, Mapping, Iterator
-from tqdm import tqdm
+
 from datalabs.operations.aggregate import Aggregating, aggregating
 
 

@@ -6,6 +6,8 @@ import csv
 from datalabs.tasks import KGLinkPrediction
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
 import importlib
+from typing import Iterator
+from tqdm import tqdm
 from .aggregate import fb15k_237_aggregating
 
 
