@@ -56,17 +56,17 @@ class MultiNewsDataset(datalabs.GeneratorBasedBuilder):
         ),
         MultiNewsConfig(
             name="raw-cleaned",
-            version=datalabs.Version("2.0.0"),
+            version=datalabs.Version("1.0.0"),
             description="MultiNews dataset for summarization, with cleaned raw data, see issue https://github.com/Alex-Fabbri/Multi-News/issues/11",
         ),
         MultiNewsConfig(
             name="preprocessed",
-            version=datalabs.Version("3.0.0"),
+            version=datalabs.Version("1.0.0"),
             description="MultiNews dataset for summarization, with preprocessed data",
         ),
         MultiNewsConfig(
             name="truncated",
-            version=datalabs.Version("4.0.0"),
+            version=datalabs.Version("1.0.0"),
             description="MultiNews dataset for summarization, with preprocessed and truncated data",
         ),
         
