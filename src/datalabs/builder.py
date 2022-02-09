@@ -55,6 +55,10 @@ from .utils.filelock import FileLock
 from .utils.info_utils import get_size_checksum_dict, verify_checksums, verify_splits
 from .utils.streaming_download_manager import StreamingDownloadManager
 
+import sys
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
 
 
@@ -566,14 +570,14 @@ class DatasetBuilder:
             # information needed to cancel download/preparation if needed.
             # This comes right before the progress bar.
             if self.info.size_in_bytes:
-                print(
+                eprint(
                     f"Downloading and preparing dataset {self.info.builder_name}/{self.info.config_name} "
                     f"(download: {utils.size_str(self.info.download_size)}, generated: {utils.size_str(self.info.dataset_size)}, "
                     f"post-processed: {utils.size_str(self.info.post_processing_size)}, "
                     f"total: {utils.size_str(self.info.size_in_bytes)}) to {self._cache_dir}..."
                 )
             else:
-                print(
+                eprint(
                     f"Downloading and preparing dataset {self.info.builder_name}/{self.info.config_name} to {self._cache_dir}..."
                 )
 
@@ -599,8 +603,8 @@ class DatasetBuilder:
                             dl_manager=dl_manager, verify_infos=verify_infos, **download_and_prepare_kwargs
                         )
                     # Sync info
-                    print(f"self.info.dataset_size: {self.info.dataset_size}")
-                    print(f"self.info.download_size: {self.info.download_size}")
+                    eprint(f"self.info.dataset_size: {self.info.dataset_size}")
+                    eprint(f"self.info.download_size: {self.info.download_size}")
 
 
                     self.info.dataset_size = sum(split.num_bytes for split in self.info.splits.values())
@@ -613,7 +617,7 @@ class DatasetBuilder:
             # Download post processing resources
             self.download_post_processing_resources(dl_manager)
 
-            print(
+            eprint(
                 f"Dataset {self.name} downloaded and prepared to {self._cache_dir}. "
                 f"Subsequent calls will reuse this data."
             )
