@@ -6,7 +6,41 @@ import csv
 from datalabs.tasks import KGLinkPrediction
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
 import importlib
-from .aggregate import *
+from .aggregate import fb15k_237_aggregating
+
+
+
+
+@fb15k_237_aggregating(name = "get_statistics", contributor= "datalab",
+                                 task="kg-link-prediction", description="aggregation function",
+                                 )
+def get_statistics(samples: Iterator):
+    dict_head = {}
+    dict_link = {}
+    dict_tail = {}
+
+    for sample in tqdm(samples):
+
+        if sample['head'] not in dict_head.keys():
+            dict_head[sample['head']] = 1
+        else:
+            dict_head[sample['head']] += 1
+
+        if sample['link'] not in dict_head.keys():
+            dict_head[sample['link']] = 1
+        else:
+            dict_head[sample['link']] += 1
+
+        if sample['tail'] not in dict_head.keys():
+            dict_head[sample['tail']] = 1
+        else:
+            dict_head[sample['tail']] += 1
+
+    return {
+        "head_fre":dict_head,
+        "link_fre":dict_link,
+        "tail_fre":dict_tail,
+    }
 
 
 _DESCRIPTION = """
