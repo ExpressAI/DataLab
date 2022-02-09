@@ -703,10 +703,11 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
 
     def apply_test(self, func, mode="memory"):
         if func._type.find("Aggregating") != -1:
-            self.info.__dict__.update(next(self.apply(func)))
+            result = next(self.apply(func))
+            self.info.__dict__.update(result)
             if (mode == "local"):
                 self.__write_stat()
-            return self.apply(func)
+            return result
         else:
             map = { "memory": self.apply, "save": self.apply_save, "local": self.apply_local }
             return map[mode](func)
