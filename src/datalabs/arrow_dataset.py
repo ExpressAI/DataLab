@@ -698,8 +698,24 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             for sample in self.__iter__():
                 yield func(sample)
 
+    def apply_test(self, func, mode="memory"):
+        if func._type.find("Aggregating") != -1:
+            self.info.__dict__.update(next(self.apply(func)))
+            return self.apply(func)
+        else:
+            map = { "memory": self.apply, "save": self.apply_save, "local": self.apply_local }
+            return map[mode](func)
+
     def __table_path(self):
         return self.cache_files[0]["filename"]
+
+    def __load_stat(self):
+        dirname = os.path.dirname(self.__table_path())
+        filename = os.path.join(dirname, "stat.json")
+
+    def __write_stat(self):
+        dirname = os.path.dirname(self.__table_path())
+        filename = os.path.join(dirname, "stat.json")
 
     def __load_disk(self):
         filename = self.__table_path()
@@ -745,11 +761,6 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             json.dump(obj, obj_file)
 
     def apply_save(self, func, attr):
-        # if func._type == 'Aggregating':
-        if func._type.find("Aggregating")!=-1:
-            self.info.__dict__[attr] = next(self.apply(func))
-            return self
-
         attr_name = attr if attr != None else re.findall("\w+", str(func))[1] 
         attr_column = [item for item in self.apply(func)]
         return self.add_column(attr_name, attr_column)
