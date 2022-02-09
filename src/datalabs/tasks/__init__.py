@@ -7,6 +7,7 @@ from .image_classification import ImageClassification
 from .question_answering import QuestionAnsweringExtractive,QuestionAnsweringHotpot
 from .summarization import Summarization
 from .text_classification import TextClassification
+from .aspect_based_sentiment_classification import AspectBasedSentimentClassification
 from .text_matching import TextMatching
 from .sequence_labeling import SequenceLabeling
 from .semantic_parsing import SemanticParsing
@@ -17,6 +18,7 @@ __all__ = [
     "QuestionAnsweringExtractive",
     "QuestionAnsweringHotpot",
     "TextClassification",
+    "AspectBasedSentimentClassification",
     "Summarization",
     "AutomaticSpeechRecognition",
     "ImageClassification",
@@ -32,6 +34,7 @@ NAME2TEMPLATE = {
     QuestionAnsweringExtractive.task_category: QuestionAnsweringExtractive,
     QuestionAnsweringHotpot.task_category: QuestionAnsweringHotpot,
     TextClassification.task_category: TextClassification,
+    AspectBasedSentimentClassification.task_category: AspectBasedSentimentClassification,
     AutomaticSpeechRecognition.task_category: AutomaticSpeechRecognition,
     Summarization.task_category: Summarization,
     ImageClassification.task_category: ImageClassification,
