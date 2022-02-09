@@ -2,7 +2,8 @@
 
 
 The basic idea of artifact identification is to use PMI (Pointwise mutual information) to detect whether there
-is an association between TWO features (e.g., sentence length v.s category).
+is an association between **TWO** features (e.g., sentence length v.s category).
+
 For example, given two feature_i, and feature_j, a higher absolute value of PMI(feature_i, feature_j) 
 suggests: (1) higher association between feature_i, and feature_j; (2) a potential artifact pattern with feature_i, and feature_j 
 (e.g., longer sentences tend to have a positive sentiment.)
@@ -62,7 +63,7 @@ We define
 * `ideal count` as the number of samples with features x and y who are independent: N * P(x) * P(y)
 * `PMI` = log p(x,y)/(p(x)p(y))
 
-
+Then for each entry of the matrix, we can see one floating text box, showing following statistics:
 * `label` (neutral): one feature
 * `hypothesis_length` (8.4~12.1): another feature
 * `actual count`: the actual number of samples whose `label` is neutral and `hypothesis_length` is in [8.4~12.1].
