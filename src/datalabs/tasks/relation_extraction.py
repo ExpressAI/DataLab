@@ -34,7 +34,7 @@ class RelationExtraction(TaskTemplate):
     })
     text_column: str = "text"
     subject_column: str = "subject"
-    object_column: str = "object",
+    object_column: str = "object"
     predicates_column: str = "predicates"
     predicates: Optional[Tuple[str]] = None
 

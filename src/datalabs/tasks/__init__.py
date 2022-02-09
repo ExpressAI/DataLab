@@ -19,6 +19,8 @@ from .semantic_parsing import SemanticParsing
 from .relation_extraction import RelationExtraction
 from .span_text_classification import SpanTextClassification
 
+from .kg_link_prediction import KGLinkPrediction
+
 
 
 __all__ = [
@@ -37,6 +39,7 @@ __all__ = [
     "SemanticParsing",
     "RelationExtraction",
     "SpanTextClassification",
+    "KGLinkPrediction",
 
 ]
 
@@ -59,6 +62,7 @@ NAME2TEMPLATE = {
     SemanticParsing.task_category: SemanticParsing,
     RelationExtraction.task_category: RelationExtraction,
     SpanTextClassification.task_category: SpanTextClassification,
+    KGLinkPrediction.task_category:KGLinkPrediction,
 }
 
 
