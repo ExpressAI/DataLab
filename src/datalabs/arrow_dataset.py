@@ -745,9 +745,10 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             json.dump(obj, obj_file)
 
     def apply_save(self, func, attr):
-        if func._type == 'Aggregating':
-            self.info.__dict__[attr] = self.apply(func)
-            return
+        # if func._type == 'Aggregating':
+        if func._type.find("Aggregating")!=-1:
+            self.info.__dict__[attr] = next(self.apply(func))
+            return self
 
         attr_name = attr if attr != None else re.findall("\w+", str(func))[1] 
         attr_column = [item for item in self.apply(func)]

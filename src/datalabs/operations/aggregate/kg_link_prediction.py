@@ -20,35 +20,35 @@ from tqdm import tqdm
 from datalabs.operations.aggregate import Aggregating, aggregating
 
 
-class FB15k237Aggregating(Aggregating):
+class KGLinkPredictionAggregating(Aggregating):
 
 
     def __init__(self, *args, **kwargs
                  ):
 
-        super(FB15k237Aggregating, self).__init__(*args, **kwargs)
+        super(KGLinkPredictionAggregating, self).__init__(*args, **kwargs)
         self._data_type = "ag_news"
 
 
 
-class fb15k_237_aggregating(aggregating):
+class kg_link_prediction_aggregating(aggregating):
     def __init__(self, *args, **kwargs
                  ):
 
 
-        super(fb15k_237_aggregating, self).__init__(*args, **kwargs)
+        super(kg_link_prediction_aggregating, self).__init__(*args, **kwargs)
         # print(self.__dict__)
 
 
     def __call__(self, *param_arg):
         if callable(self.name):
 
-            tf_class = FB15k237Aggregating(name = self.name.__name__, func=self.name)
+            tf_class = KGLinkPredictionAggregating(name = self.name.__name__, func=self.name)
             return tf_class(*param_arg)
         else:
             f = param_arg[0]
             name = self.name or f.__name__
-            tf_cls = FB15k237Aggregating(name=name, func = f,
+            tf_cls = KGLinkPredictionAggregating(name=name, func = f,
                                    resources = self.resources,
                                    contributor = self.contributor,
                                    task = self.task,
@@ -68,7 +68,7 @@ print(next(res))
 
 
 
-@fb15k_237_aggregating(name = "get_statistics", contributor= "datalab",
+@kg_link_prediction_aggregating(name = "get_statistics", contributor= "datalab",
                                  task="kg-link-prediction", description="aggregation function",
                                  )
 def get_statistics(samples: Iterator):
@@ -101,4 +101,5 @@ def get_statistics(samples: Iterator):
         "link_fre":dict_link,
         "tail_fre":dict_tail,
     }
+
 
