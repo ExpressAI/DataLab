@@ -696,7 +696,6 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                 labels = self._info.task_templates[0].labels
                 labels_to_answers = dict(zip(range(len(labels)), labels))
                 yield func(sample, labels_to_answers)
-
         else:
             for sample in self.__iter__():
                 yield func(sample)
@@ -704,10 +703,10 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
     def apply_test(self, func, mode="memory"):
         if func._type.find("Aggregating") != -1:
             result = next(self.apply(func))
-            self.info.__dict__.update(result)
+            self._stat.update(result)
             if (mode == "local"):
                 self.__write_stat()
-            return result
+            return self
         else:
             map = { "memory": self.apply, "save": self.apply_save, "local": self.apply_local }
             return map[mode](func)
