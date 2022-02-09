@@ -761,22 +761,30 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         with open(path, "w") as obj_file:
             json.dump(obj, obj_file)
 
-    def apply_save(self, func, attr):
-        attr_name = attr if attr != None else re.findall("\w+", str(func))[1] 
-        attr_column = [item for item in self.apply(func)]
-        return self.add_column(attr_name, attr_column)
+    def apply_save(self, func):
+        result = self
+        attr_columns = [item for item in self.apply(func)]
+        attr_names = attr_columns[0].keys()
+        for attr_name in attr_names:
+            result = result.add_column(attr_name, [item[attr_name] for item in attr_columns])
+        return result
 
-    def apply_local(self, func, attr):
-        attr_name = attr if attr != None else re.findall("\w+", str(func))[1] 
-        attr_column = [item for item in self.apply(func)]
-
+    def apply_local(self, func):
+        result = self
+        attr_columns = [item for item in self.apply(func)]
+        attr_names = attr_columns[0].keys()
         pa_table = self.__load_disk()
-        if attr_name in pa_table.column_names:
-            pa_table = pa_table.drop([attr_name])
-        pa_table = pa_table.append_column(attr_name, pa.array(attr_column))
+        column_dict = {}
+
+        for attr_name in attr_names:
+            if attr_name in pa_table.column_names:
+                pa_table = pa_table.drop([attr_name])
+            items = [item[attr_name] for item in attr_columns]
+            pa_table = pa_table.append_column(attr_name, pa.array(items))
+            column_dict[attr_name] = items
         self.__write_disk(pa_table)
 
-        column_table = InMemoryTable.from_pydict({attr_name: attr_column})
+        column_table = InMemoryTable.from_pydict(column_dict)
         inferred_feature = Features.from_arrow_schema(column_table.schema)
         table = MemoryMappedTable(pa_table, self.__table_path())
         info = self.info.copy()
