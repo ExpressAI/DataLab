@@ -571,19 +571,22 @@ class NonExistentDatasetError(Exception):
 class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData):
     """A Dataset backed by an Arrow table."""
 
+    def __load_json(self, path):
+        if not os.path.exists(path):
+            open(path, "w")
+            return {}
+        with open(path, "r") as obj_file:
+            try:
+                return json.load(obj_file)
+            except:
+                return {}
+
     def __schema_load(self):
         filename = self.cache_files[0]["filename"]
         (filepath, filename) = os.path.split(filename)
         (filename, extent) = os.path.splitext(filename)
         path = os.path.join(filepath, filename + ".json")
-        obj = {}
-        if not os.path.exists(path):
-            open(path, "w")
-        with open(path, "r") as obj_file:
-            try:
-                obj = json.load(obj_file)
-            except:
-                pass
+        obj = self.__load_json(path)
         if obj.__len__():
             from .features import Value
             for item in obj:
@@ -655,9 +658,9 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                 f"The table can't have duplicated columns but columns {duplicated_columns} are duplicated."
             )
 
-        # Update metadata
-
+        # Update metadata and statistics info
         self._data = update_metadata_with_features(self._data, self.features)
+        self.__load_stat()
 
     # def apply(self, func):
     #     for sample in self.__iter__():
@@ -701,6 +704,8 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
     def apply_test(self, func, mode="memory"):
         if func._type.find("Aggregating") != -1:
             self.info.__dict__.update(next(self.apply(func)))
+            if (mode == "local"):
+                self.__write_stat()
             return self.apply(func)
         else:
             map = { "memory": self.apply, "save": self.apply_save, "local": self.apply_local }
@@ -711,11 +716,14 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
 
     def __load_stat(self):
         dirname = os.path.dirname(self.__table_path())
-        filename = os.path.join(dirname, "stat.json")
+        path = os.path.join(dirname, "stat.json")
+        self._stat = self.__load_json(path)
 
     def __write_stat(self):
         dirname = os.path.dirname(self.__table_path())
-        filename = os.path.join(dirname, "stat.json")
+        path = os.path.join(dirname, "stat.json")
+        with open(path, "w") as obj_file:
+            json.dump(self._stat, obj_file)
 
     def __load_disk(self):
         filename = self.__table_path()
@@ -745,14 +753,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         (filepath, filename) = os.path.split(filename)
         (filename, extent) = os.path.splitext(filename)
         path = os.path.join(filepath, filename + ".json")
-        obj = {}
-        if not os.path.exists(path):
-            open(path, "w")
-        with open(path, "r") as obj_file:
-            try:
-                obj = json.load(obj_file)
-            except:
-                pass
+        obj = self.__load_json(path)
         if (dtype != None):
             obj[field] = dtype
         else:
