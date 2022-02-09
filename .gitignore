@@ -31,6 +31,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+envs/
 
 # pyenv
 .python-version
@@ -67,3 +68,4 @@ docs/source/_build/
 report.json
 report.md
 test_get_options.py
+
