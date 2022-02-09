@@ -5,8 +5,9 @@ The basic idea of artifact identification is to use PMI (Pointwise mutual inform
 is an association between **TWO** features (e.g., sentence length v.s category).
 
 For example, given two feature_i, and feature_j, a higher absolute value of PMI(feature_i, feature_j) 
-suggests: (1) higher association between feature_i, and feature_j; (2) a potential artifact pattern with feature_i, and feature_j 
-(e.g., longer sentences tend to have a positive sentiment.)
+suggests: 
+* higher association between feature_i, and feature_j; 
+* a potential artifact pattern with feature_i, and feature_j, (e.g., longer sentences tend to have a positive sentiment.)
 
 
 
