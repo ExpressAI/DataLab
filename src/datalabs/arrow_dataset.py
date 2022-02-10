@@ -675,7 +675,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
 
 
 
-    def apply(self, func):
+    def apply_basic(self, func):
         # if isinstance(func, str):
         #     if self._info.task_templates[0].task_category == "text-classification":
         #
@@ -700,16 +700,50 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             for sample in self.__iter__():
                 yield func(sample)
 
-    def apply_test(self, func, mode="memory"):
+    def apply(self, func, mode="realtime"):
         if func._type.find("Aggregating") != -1:
-            result = next(self.apply(func))
+            result = next(self.apply_basic(func))
             self._stat.update(result)
             if (mode == "local"):
                 self.__write_stat()
             return self
         else:
-            map = { "memory": self.apply, "save": self.apply_save, "local": self.apply_local }
+            map = { "realtime": self.apply_basic, "memory": self.apply_memory, "local": self.apply_local }
             return map[mode](func)
+
+
+    def apply_memory(self, func):
+        result = self
+        attr_columns = [item for item in self.apply_basic(func)]
+        attr_names = attr_columns[0].keys()
+        for attr_name in attr_names:
+            result = result.add_column(attr_name, [item[attr_name] for item in attr_columns])
+        return result
+
+    def apply_local(self, func):
+        result = self
+        attr_columns = [item for item in self.apply_basic(func)]
+        attr_names = attr_columns[0].keys()
+        pa_table = self.__load_disk()
+        column_dict = {}
+
+        for attr_name in attr_names:
+            if attr_name in pa_table.column_names:
+                pa_table = pa_table.drop([attr_name])
+            items = [item[attr_name] for item in attr_columns]
+            pa_table = pa_table.append_column(attr_name, pa.array(items))
+            column_dict[attr_name] = items
+        self.__write_disk(pa_table)
+
+        column_table = InMemoryTable.from_pydict(column_dict)
+        inferred_feature = Features.from_arrow_schema(column_table.schema)
+        table = MemoryMappedTable(pa_table, self.__table_path())
+        info = self.info.copy()
+        info.features.update(inferred_feature)
+        self.__schema_backup(attr_name, inferred_feature[attr_name].dtype)
+
+        return Dataset(table, info=info, split=self.split, indices_table=self._indices)
+
 
     def __table_path(self):
         return self.cache_files[0]["filename"]
@@ -761,37 +795,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         with open(path, "w") as obj_file:
             json.dump(obj, obj_file)
 
-    def apply_save(self, func):
-        result = self
-        attr_columns = [item for item in self.apply(func)]
-        attr_names = attr_columns[0].keys()
-        for attr_name in attr_names:
-            result = result.add_column(attr_name, [item[attr_name] for item in attr_columns])
-        return result
 
-    def apply_local(self, func):
-        result = self
-        attr_columns = [item for item in self.apply(func)]
-        attr_names = attr_columns[0].keys()
-        pa_table = self.__load_disk()
-        column_dict = {}
-
-        for attr_name in attr_names:
-            if attr_name in pa_table.column_names:
-                pa_table = pa_table.drop([attr_name])
-            items = [item[attr_name] for item in attr_columns]
-            pa_table = pa_table.append_column(attr_name, pa.array(items))
-            column_dict[attr_name] = items
-        self.__write_disk(pa_table)
-
-        column_table = InMemoryTable.from_pydict(column_dict)
-        inferred_feature = Features.from_arrow_schema(column_table.schema)
-        table = MemoryMappedTable(pa_table, self.__table_path())
-        info = self.info.copy()
-        info.features.update(inferred_feature)
-        self.__schema_backup(attr_name, inferred_feature[attr_name].dtype)
-
-        return Dataset(table, info=info, split=self.split, indices_table=self._indices)
 
     def write_arrow(self, path: str):
         with open(path, "wb") as file_obj:
