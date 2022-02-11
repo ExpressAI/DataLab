@@ -214,6 +214,7 @@ class DatasetInfo:
     homepage: str = field(default_factory=str)
     license: str = field(default_factory=str)
     features: Optional[Features] = None
+    features_dataset: Optional[Features] = None
     post_processed: Optional[PostProcessedInfo] = None
     supervised_keys: Optional[SupervisedKeysData] = None
     task_templates: Optional[List[TaskTemplate]] = None

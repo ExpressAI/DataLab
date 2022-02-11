@@ -19,6 +19,8 @@ import csv
 
 import datalabs
 from datalabs.tasks import TextClassification
+from featurize.general import get_features_sample_level
+from aggregate.general import get_features_dataset_level
 
 _DESCRIPTION = """\
  Movie-review data for use in sentiment-analysis experiments. Available are collections 
@@ -72,7 +74,41 @@ _TEST_DOWNLOAD_URL = "https://drive.google.com/uc?id=1t-2aRCGru5yJzpJ-o4uB6UmHbN
 #             for sample in self.__iter__():
 #                 yield func(sample)
 
+def get_feature_arguments(dict_output, field = "text", feature_level = "sample_level"):
+    """Automate following code based on the output of `get_features_sample_level`
+     additional_features = datalabs.Features(
+        {
+            TEXT+ "_" + "length": datalabs.Value(dtype="int64",
+                                     is_bucket=True,
+                                     ),
+        }
+    )
+    """
+    dict_feature_argument = {}
+    for func_name, func_value in dict_output.items():
+        key = field + "_" + func_name
+        value = "int64"
+        is_bucket = True
+        if isinstance(func_value, int):
+            value = "int64"
+            is_bucket = True
+        elif isinstance(func_value, str):
+            value = "string"
+            is_bucket = True
+        elif isinstance(func_value, dict):
+            value = "dict"
+            is_bucket = False
 
+        if feature_level == "dataset_level":
+            is_bucket = False
+        dict_feature_argument[key] = datalabs.Value(dtype=value, is_bucket=is_bucket, feature_level = feature_level)
+
+    return dict_feature_argument
+
+
+
+EXPAND = True
+FIELD = "text"
 class MR(datalabs.GeneratorBasedBuilder):
     """AG News topic classification dataset."""
 
@@ -80,19 +116,69 @@ class MR(datalabs.GeneratorBasedBuilder):
     #     super(MR, self).__init__(*args, **kwargs)
     #     self.dataset_class = MRDataset
 
+
+
     def _info(self):
-        return datalabs.DatasetInfo(
-            description=_DESCRIPTION,
-            features=datalabs.Features(
+
+        features_dataset = {}
+        features_sample = datalabs.Features(
                 {
-                    "text": datalabs.Value("string"),
+                     FIELD: datalabs.Value("string"),
                     "label": datalabs.features.ClassLabel(names=["positive", "negative"]),
                 }
-            ),
+            )
+
+
+
+        if EXPAND:
+
+            # dict_feature_argument = {}
+            # for func_name, func_value in get_features_sample_level("").items():
+            #     key = TEXT + "_" + func_name
+            #     value = "int64"
+            #     is_bucket = True
+            #     if isinstance(func_value,int):
+            #         value = "int64"
+            #         is_bucket = True
+            #     elif isinstance(func_value,str):
+            #         value = "string"
+            #         is_bucket = True
+            #     elif isinstance(func_value,dict):
+            #         value = "dict"
+            #         is_bucket = False
+            #
+            #     dict_feature_argument[key] = datalabs.Value(dtype=value, is_bucket=is_bucket, feature_level="sample_level")
+
+            dict_feature_argument = get_feature_arguments(get_features_sample_level(""), field=FIELD, feature_level="sample_level")
+            additional_features = datalabs.Features(dict_feature_argument)
+            features_sample.update(additional_features)
+
+
+
+
+            dict_feature_argument = get_feature_arguments(get_features_dataset_level([""]), field=FIELD, feature_level="dataset_level")
+            features_dataset = datalabs.Features(dict_feature_argument)
+
+            # features_dataset= datalabs.Features(
+            #     {
+            #         TEXT+ "_" + "avg_length": datalabs.Value(dtype="int64",
+            #                                  is_bucket=False,
+            #                                  ),
+            #     }
+            # )
+
+
+        return datalabs.DatasetInfo(
+            description=_DESCRIPTION,
+            features=features_sample,
+            features_dataset=features_dataset,
             homepage="http://www.cs.cornell.edu/people/pabo/movie-review-data/",
             citation=_CITATION,
             task_templates=[TextClassification(text_column="text", label_column="label", task="sentiment-classification")],
         )
+
+
+
 
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
@@ -116,4 +202,18 @@ class MR(datalabs.GeneratorBasedBuilder):
 
                 label = textualize_label[label]
                 text = text
-                yield id_, {"text": text, "label": label}
+
+                raw_feature_info = {"text": text, "label": label}
+
+                if not EXPAND:
+                    yield id_, raw_feature_info
+                else:
+                    additional_feature_info = get_features_sample_level(text)
+
+                    additional_feature_info_modify = {}
+                    for k, v in additional_feature_info.items():
+                        additional_feature_info_modify[FIELD + "_" + k] = v
+
+                    raw_feature_info.update(additional_feature_info_modify)
+                    yield id_, raw_feature_info
+

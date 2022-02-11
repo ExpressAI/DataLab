@@ -11,6 +11,26 @@ from .aggregating import Aggregating, aggregating
 
 
 
+@aggregating(name="get_features_dataset_level", contributor="datalab",
+               task="Any",
+             description="Get the average length of a list of texts")
+def get_features_dataset_level(texts:Iterator) -> int:
+    """
+    Package: python
+    Input:
+        texts: Iterator
+    Output:
+        int
+    """
+    lengths = []
+    for text in texts:
+        lengths.append(len(text.split(" ")))
+    return {"avg_length":np.average(lengths)}
+
+
+
+
+
 @aggregating(name="get_average_length", contributor="datalab",
                task="Any",
              description="Get the average length of a list of texts")

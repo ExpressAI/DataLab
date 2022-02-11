@@ -675,7 +675,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
 
 
 
-    def apply_basic(self, func):
+    def apply_basic(self, func, prefix = ""):
         # if isinstance(func, str):
         #     if self._info.task_templates[0].task_category == "text-classification":
         #
@@ -700,27 +700,36 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             for sample in self.__iter__():
                 yield func(sample)
 
-    def apply(self, func, mode="realtime"):
+    def apply(self, func, mode="realtime", prefix=""):
         if func._type.find("Aggregating") != -1:
             result = next(self.apply_basic(func))
-            self._stat.update(result)
+
+            result_new = {}
+            for attr_name, value in result.items():
+                attr_name = prefix + "_" + attr_name if prefix != "" else attr_name
+                result_new[attr_name] = value
+
+            self._stat.update(result_new)
             if (mode == "local"):
                 self.__write_stat()
             return self
         else:
             map = { "realtime": self.apply_basic, "memory": self.apply_memory, "local": self.apply_local }
-            return map[mode](func)
+            return map[mode](func, prefix = prefix)
 
 
-    def apply_memory(self, func):
+    def apply_memory(self, func, prefix = ""):
         result = self
         attr_columns = [item for item in self.apply_basic(func)]
         attr_names = attr_columns[0].keys()
         for attr_name in attr_names:
-            result = result.add_column(attr_name, [item[attr_name] for item in attr_columns])
+            if prefix == "":
+                result = result.add_column(attr_name, [item[attr_name] for item in attr_columns])
+            else:
+                result = result.add_column(prefix + "_" + attr_name, [item[attr_name] for item in attr_columns])
         return result
 
-    def apply_local(self, func):
+    def apply_local(self, func, prefix = ""):
         result = self
         attr_columns = [item for item in self.apply_basic(func)]
         attr_names = attr_columns[0].keys()
@@ -728,9 +737,11 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         column_dict = {}
 
         for attr_name in attr_names:
+            attr_name_origin = attr_name
+            attr_name = prefix+ "_" + attr_name if prefix !="" else attr_name
             if attr_name in pa_table.column_names:
                 pa_table = pa_table.drop([attr_name])
-            items = [item[attr_name] for item in attr_columns]
+            items = [item[attr_name_origin] for item in attr_columns]
             pa_table = pa_table.append_column(attr_name, pa.array(items))
             column_dict[attr_name] = items
         self.__write_disk(pa_table)

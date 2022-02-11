@@ -71,6 +71,7 @@ class AGNews(datalabs.GeneratorBasedBuilder):
                 {
                     "text": datalabs.Value("string"),
                     "label": datalabs.features.ClassLabel(names=["World", "Sports", "Business", "Science and Technology"]),
+
                 }
             ),
             homepage="http://groups.di.unipi.it/~gulli/AG_corpus_of_news_articles.html",
@@ -78,6 +79,9 @@ class AGNews(datalabs.GeneratorBasedBuilder):
             languages=["en"],
             task_templates=[TextClassification(text_column="text", label_column="label")],
         )
+
+
+
 
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
@@ -107,3 +111,6 @@ class AGNews(datalabs.GeneratorBasedBuilder):
                 label = textualize_label[label]
                 text = " ".join((title, description))
                 yield id_, {"text": text, "label": label}
+
+
+

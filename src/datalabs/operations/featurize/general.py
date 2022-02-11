@@ -202,12 +202,39 @@ def get_gender_bias_one_word(words_m, words_f, single_name_m, single_name_f, sen
     return results
 
 
-# def get_gender_bias_two_words(gender_dic, sentence):
-#     sentence = ' ' + sentence.lower().strip() + ' '
-#
-#     results = 0
-#     for value in gender_dic:
-#         count = sentence.count(' ' + value + ' ')
-#         results += count
-#
-#     return results
+
+"""
+from datalabs import load_dataset
+dataset = load_dataset("mr")
+from featurize import *
+res = dataset['test'].apply(get_features_sample_level, mode = "memory")
+"""
+
+
+@featurizing(name="get_features_sample_level", contributor="datalab",
+             task="Any", description="calculate a set of features for general text")
+def get_features_sample_level(text:str):
+
+
+    # for hate speech
+    # from hatesonar import Sonar
+    # sonar = Sonar()
+
+    # text length
+    length = len(text.split(" "))
+
+
+
+    # # hataspeech
+    # hatespeech = {}
+    # results = sonar.ping(text=text)
+    # class_ = results['top_class']
+    # confidence = 0
+    # for value in results['classes']:
+    #     if value['class_name'] == class_:
+    #         confidence = value['confidence']
+    #         break
+
+
+
+    return {"length":length}
