@@ -60,19 +60,6 @@ _TRAIN_DOWNLOAD_URL = "https://drive.google.com/uc?id=1FCqdCBYNahOmoMOW7L29EZGan
 _TEST_DOWNLOAD_URL = "https://drive.google.com/uc?id=1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb&export=download"
 
 
-# class MRDataset(datalabs.Dataset):
-#     def apply(self, func):
-#         if func._type == 'Aggregating':
-#             texts = [" ".join(tokens) for tokens in self["tokens"]] # [tokens] -> texts
-#             yield func(texts)
-#         elif func._type == "SequenceLabelingAggregating":
-#             yield func(self)
-#         elif func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
-#             for sample in self.__iter__():
-#                 yield func(" ".join(sample[func.processed_fields[0]])) # convert tokens -> a text
-#         else:
-#             for sample in self.__iter__():
-#                 yield func(sample)
 
 def get_feature_arguments(dict_output, field = "text", feature_level = "sample_level"):
     """Automate following code based on the output of `get_features_sample_level`
@@ -109,14 +96,9 @@ def get_feature_arguments(dict_output, field = "text", feature_level = "sample_l
 
 EXPAND = True
 FIELD = "text"
+
 class MR(datalabs.GeneratorBasedBuilder):
-    """AG News topic classification dataset."""
-
-    # def __init__(self,*args, **kwargs):
-    #     super(MR, self).__init__(*args, **kwargs)
-    #     self.dataset_class = MRDataset
-
-
+    """Movie Review Dataset."""
 
     def _info(self):
 
@@ -127,8 +109,6 @@ class MR(datalabs.GeneratorBasedBuilder):
                     "label": datalabs.features.ClassLabel(names=["positive", "negative"]),
                 }
             )
-
-
 
         if EXPAND:
 
@@ -174,7 +154,7 @@ class MR(datalabs.GeneratorBasedBuilder):
             features_dataset=features_dataset,
             homepage="http://www.cs.cornell.edu/people/pabo/movie-review-data/",
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label", task="sentiment-classification")],
+            task_templates=[TextClassification(text_column=FIELD, label_column="label", task="sentiment-classification")],
         )
 
 
@@ -203,7 +183,7 @@ class MR(datalabs.GeneratorBasedBuilder):
                 label = textualize_label[label]
                 text = text
 
-                raw_feature_info = {"text": text, "label": label}
+                raw_feature_info = {FIELD: text, "label": label}
 
                 if not EXPAND:
                     yield id_, raw_feature_info
