@@ -31,6 +31,7 @@ class QuestionAnsweringExtractive(TaskTemplate):
         return {self.question_column: "question", self.context_column: "context", self.answers_column: "answers"}
 
 
+
 @dataclass
 class QuestionAnsweringAbstractive(TaskTemplate):
     # adaptive datasets: drop
@@ -55,6 +56,65 @@ class QuestionAnsweringAbstractive(TaskTemplate):
     @property
     def column_mapping(self) -> Dict[str, str]:
         return {self.question_column: "question", self.context_column: "context", self.answers_column: "answers"}
+
+
+
+@dataclass
+class QuestionAnsweringAbstractiveNQ(TaskTemplate):
+    # adaptive datasets: natural_question dataset
+    task_category: str = "question-answering-abstractive"
+    task: str = "question-answering-abstractive-nq"
+    input_schema: ClassVar[Features] = Features(
+        {
+            "context": {
+                "title": Value("string"),
+                "url": Value("string"),
+                "html": Value("string"),
+                "tokens": Sequence(
+                    {"token": Value("string"), "is_html": Value("bool")}
+                ),
+            },
+            "question": {
+                "text": Value("string"),
+                "tokens": Sequence(Value("string")),
+            }
+        }
+    )
+    label_schema: ClassVar[Features] = Features(
+        {
+            "answers": Sequence(
+                {
+                    "id": Value("string"),
+                    "long_answer": {
+                        "start_token": Value("int64"),
+                        "end_token": Value("int64"),
+                        "start_byte": Value("int64"),
+                        "end_byte": Value("int64"),
+                    },
+                    "short_answers": Sequence(
+                        {
+                            "start_token": Value("int64"),
+                            "end_token": Value("int64"),
+                            "start_byte": Value("int64"),
+                            "end_byte": Value("int64"),
+                            "text": Value("string"),
+                        }
+                    ),
+                    "yes_no_answer": ClassLabel(
+                        names=["NO", "YES"]
+                    ),  # Can also be -1 for NONE.
+                }
+            )
+        }
+    )
+    question_column: str = "question"
+    context_column: str = "context"
+    answers_column: str = "answers"
+
+    @property
+    def column_mapping(self) -> Dict[str, str]:
+        return {self.question_column: "question", self.context_column: "context", self.answers_column: "answers"}
+
 
 
 
@@ -187,5 +247,16 @@ class QuestionAnsweringMultipleChoicesWithoutContext(TaskTemplate):
     @property
     def column_mapping(self) -> Dict[str, str]:
         return {self.question_column: "question", self.answers_column: "answers", self.options_column: "options"}
+
+
+
+
+
+
+
+
+
+
+
 
 

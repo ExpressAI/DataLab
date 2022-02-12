@@ -11,6 +11,8 @@ from .question_answering import QuestionAnsweringHotpot
 from .question_answering import QuestionAnsweringAbstractive
 from .question_answering import QuestionAnsweringMultipleChoices
 from .question_answering import QuestionAnsweringMultipleChoicesWithoutContext
+from .question_answering import QuestionAnsweringAbstractiveNQ
+
 from .summarization import Summarization
 from .text_classification import TextClassification
 from .aspect_based_sentiment_classification import AspectBasedSentimentClassification
@@ -33,6 +35,7 @@ __all__ = [
     "QuestionAnsweringAbstractive",
     "QuestionAnsweringMultipleChoices",
     "QuestionAnsweringMultipleChoicesWithoutContext",
+    "QuestionAnsweringAbstractiveNQ",
     "TextClassification",
     "AspectBasedSentimentClassification",
     "Summarization",
@@ -58,6 +61,7 @@ NAME2TEMPLATE = {
     QuestionAnsweringAbstractive.task_category: QuestionAnsweringAbstractive,
     QuestionAnsweringHotpot.task_category: QuestionAnsweringHotpot,
     QuestionAnsweringMultipleChoicesWithoutContext.task_category: QuestionAnsweringMultipleChoicesWithoutContext,
+    QuestionAnsweringAbstractiveNQ.task_category: QuestionAnsweringAbstractiveNQ,
     TextClassification.task_category: TextClassification,
     AspectBasedSentimentClassification.task_category: AspectBasedSentimentClassification,
     AutomaticSpeechRecognition.task_category: AutomaticSpeechRecognition,
