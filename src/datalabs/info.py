@@ -137,6 +137,54 @@ class Popularity:
     number_of_visits: Optional[int] = None
 
 
+@dataclass
+class PromptResult:
+    setting = "zero-shot"
+    value:float = 0.0
+    plm:str = None
+    metric:str= None
+
+
+
+"""Example
+{
+      "language": "en",
+      "template": "{Text}, Overall it is a {Answer} movie.",
+      "answer_mapping": {
+        "positive": ["fantastic", "interesting"],
+        "negative": ["boring"]
+      },
+      "supported_plms": ["masked_lm", "left_to_right", "encoder_decoder"],
+      "results": [
+        {
+          "plm": "BERT",
+          "metric": "accuracy",
+          "setting": "zero-shot",
+          "value": "87"
+        },
+        {
+          "plm": "BART",
+          "metric": "accuracy",
+          "setting": "zero-shot",
+          "value": "80"
+        }
+
+      ]
+    }
+"""
+@dataclass
+class Prompt:
+    language:str = "en"
+    description:str = "prompt description"
+    contributor: str = "Datalab"
+    template:str = None
+    answers:dict = None
+    supported_plm_types:List[str] = None
+    results:List[PromptResult] = None
+
+
+
+
 class MongoDBClientCore:
     def __init__(self, cluster: str):
         assert(re.match(r'cluster[01]', cluster))
@@ -231,6 +279,9 @@ class DatasetInfo:
     # post_processing_size: Optional[int] = None
     # dataset_size: Optional[int] = None
     # size_in_bytes: Optional[int] = None
+
+    # Newly Added
+    prompts: List[Prompt] = None
 
     # Needed by MongoDB
     # string
