@@ -5,9 +5,9 @@ from enum import Enum
 
 
 class PLMType(str, Enum):
-    masked_language_model = "masked-language-model"
-    left_to_right = "left-to-right"
-    encoder_decoder = "encoder-decoder"
+    masked_language_model:str = "masked-language-model"
+    left_to_right:str = "left-to-right"
+    encoder_decoder:str = "encoder-decoder"
 
     @staticmethod
     def list():
@@ -16,11 +16,11 @@ class PLMType(str, Enum):
 
 
 class SettingType(str, Enum):
-    zero_shot = "zero-shot"
-    few_shot = "few-shot"
-    full_dataset = "full-dataset"
+    zero_shot:str = "zero-shot"
+    few_shot:str = "few-shot"
+    full_dataset:str = "full-dataset"
 
 
 class SignalType(str, Enum):
-    text_compression = "text-compression"
-    text_summarization = "text-summarization"
+    text_compression:str = "text-compression"
+    text_summarization:str = "text-summarization"

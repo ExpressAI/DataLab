@@ -193,7 +193,13 @@ class Prompt:
     def __post_init__(self):
         # Convert back to the correct classes when we reload from dict
         if self.template is not None and self.answers is not None:
-            self.id = hashlib.md5((self.template + self.answers).encode()).hexdigest()
+            if isinstance(self.answers, dict):
+                self.id = hashlib.md5((self.template + json.dumps(self.answers)).encode()).hexdigest()
+            if isinstance(self.answers, str):
+                self.id = hashlib.md5((self.template + self.answers).encode()).hexdigest()
+            else:
+                self.id = hashlib.md5(self.template.encode()).hexdigest()
+
 
 
 
