@@ -3,7 +3,7 @@ from featurize.general import get_features_sample_level
 from aggregate.general import get_features_dataset_level
 from dataclasses import asdict, dataclass, field
 import json
-
+from datalabs.utils.more_features import prefix_dict_key
 
 
 
@@ -36,12 +36,14 @@ def get_info(dataset_name:str, field = "text"):
         # add dataset-level features
         dataset[split_name] = dataset[split_name].apply(get_features_dataset_level, mode="memory", prefix=field)
         features_dataset = asdict(dataset[split_name]._info)["features_dataset"]
-        features_dataset_new = {}
+
+
         for attr, feat_info in features_dataset.items():
             value = dataset[split_name]._stat[attr]
             feat_info["value"] = value
-            features_dataset_new[split_name + "_" + attr] = feat_info
+            features_dataset[attr] = feat_info
 
+        features_dataset_new = prefix_dict_key(features_dataset, prefix=split_name)
 
         features_mongodb.update(features_dataset_new)
 

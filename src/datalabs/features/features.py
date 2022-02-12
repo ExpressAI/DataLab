@@ -276,6 +276,7 @@ class Value:
 
     dtype: str
     feature_level: str = "sample_level"
+    raw_feature: str = True
     id: Optional[str] = None
     is_bucket: bool = False
     # Automatically constructed
@@ -628,6 +629,7 @@ class ClassLabel:
     id: Optional[str] = None
     is_bucket: bool = False
     feature_level:str = "sample_level"
+    raw_feature: str = True
     # Automatically constructed
     dtype: ClassVar[str] = "int64"
     pa_type: ClassVar[Any] = pa.int64()
@@ -742,6 +744,7 @@ class Sequence:
 
     feature: Any
     feature_level:str = "sample_level"
+    raw_feature: str = True
     length: int = -1
     id: Optional[str] = None
     is_bucket: bool = False
