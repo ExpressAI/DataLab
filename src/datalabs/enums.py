@@ -19,3 +19,8 @@ class SettingType(str, Enum):
     zero_shot = "zero-shot"
     few_shot = "few-shot"
     full_dataset = "full-dataset"
+
+
+class SignalType(str, Enum):
+    text_compression = "text-compression"
+    text_summarization = "text-summarization"

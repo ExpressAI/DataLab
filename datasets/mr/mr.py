@@ -22,7 +22,7 @@ from datalabs.tasks import TextClassification
 from featurize.general import get_features_sample_level
 from aggregate.general import get_features_dataset_level
 from datalabs.utils.more_features import prefix_dict_key, get_feature_arguments
-from datalabs import PLMType, SettingType
+from datalabs import PLMType, SettingType, SignalType
 
 _DESCRIPTION = """\
  Movie-review data for use in sentiment-analysis experiments. Available are collections 
@@ -174,10 +174,12 @@ class MR(datalabs.GeneratorBasedBuilder):
             task_templates=[TextClassification(text_column=FIELD, label_column="label", task="sentiment-classification")],
             prompts=[datalabs.Prompt(template="{text}, Overall it is a [mask] movie.",
                                      answers={"0":"positive","1":"negative"},
-                                     supported_plm_types=[PLMType.masked_language_model]),
+                                     supported_plm_types=[PLMType.masked_language_model],
+                                     signal_type=[SignalType.text_summarization]),
                      datalabs.Prompt(template="{text}, Overall it is a [mask] movie.",
                                      answers={"0": "positive", "1": "negative"},
-                                     supported_plm_types=[PLMType.masked_language_model]),
+                                     supported_plm_types=[PLMType.masked_language_model],
+                                     signal_type=[SignalType.text_summarization],),
                      ]
         )
 

@@ -85,7 +85,8 @@ from .splits import (
 from .utils import *
 from .enums import (
     PLMType,
-    SettingType
+    SettingType,
+    SignalType,
 )
 
 SCRIPTS_VERSION = "master" if _version.parse(__version__).is_devrelease else __version__

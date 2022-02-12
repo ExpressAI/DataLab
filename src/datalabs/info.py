@@ -42,6 +42,7 @@ from datalabs.tasks.text_classification import TextClassification
 from datalabs.tasks.sequence_labeling import SequenceLabeling
 from datalabs.tasks.text_matching import TextMatching
 from datalabs.tasks.span_text_classification import SpanTextClassification
+import hashlib # for mdb ids of prompts
 
 from . import config
 from .features import Features, Value, ClassLabel
@@ -150,11 +151,11 @@ class PromptResult:
 {
       "language": "en",
       "template": "{Text}, Overall it is a {Answer} movie.",
-      "answer_mapping": {
+      "answer": {
         "positive": ["fantastic", "interesting"],
         "negative": ["boring"]
       },
-      "supported_plms": ["masked_lm", "left_to_right", "encoder_decoder"],
+      "supported_plm_types": ["masked_lm", "left_to_right", "encoder_decoder"],
       "results": [
         {
           "plm": "BERT",
@@ -174,14 +175,25 @@ class PromptResult:
 """
 @dataclass
 class Prompt:
+    id:str = "null" # this will be automatically assigned
     language:str = "en"
     description:str = "prompt description"
-    contributor: str = "Datalab"
     template:str = None
     answers:dict = None
     supported_plm_types:List[str] = None
+    signal_type: List[str] = None
     results:List[PromptResult] = None
+    #features:Optional[Features] = None # {"length":Value("int64"), "shape":Value("string"), "skeleton": Value("string")}
+    features:Optional[dict] = None # {"length":5, "shape":"prefix", "skeleton": "what_about"}
+    reference: str = None
+    contributor: str = "Datalab"
 
+
+
+    def __post_init__(self):
+        # Convert back to the correct classes when we reload from dict
+        if self.template is not None and self.answers is not None:
+            self.id = hashlib.md5((self.template + self.answers).encode()).hexdigest()
 
 
 
