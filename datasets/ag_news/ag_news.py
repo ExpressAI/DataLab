@@ -17,7 +17,7 @@
 import csv
 import os
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs.tasks import TextClassification, TopicClassification
 from datalabs import Dataset, Prompts
 from pathlib import Path
 
@@ -73,8 +73,8 @@ class AGNews(datalabs.GeneratorBasedBuilder):
             homepage="http://groups.di.unipi.it/~gulli/AG_corpus_of_news_articles.html",
             citation=_CITATION,
             languages=["en"],
-            task_templates=[TextClassification(text_column="text", label_column="label")],
-            prompts=Prompts.from_url(_PROMPT_URL)
+            task_templates=[TopicClassification(text_column="text", label_column="label")],
+            prompts=Prompts.from_url(_PROMPT_URL) + TopicClassification.get_prompts()
         )
 
     def _split_generators(self, dl_manager):

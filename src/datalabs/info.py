@@ -40,9 +40,11 @@ from dataclasses import asdict, dataclass, field
 from typing import List, Optional, Union
 
 from datalabs.tasks.text_classification import TextClassification
+from datalabs.tasks.text_classification import TopicClassification
 from datalabs.tasks.sequence_labeling import SequenceLabeling
 from datalabs.tasks.text_matching import TextMatching
 from datalabs.tasks.span_text_classification import SpanTextClassification
+from datalabs.prompt import Prompt
 import hashlib  # for mdb ids of prompts
 
 from . import config
@@ -52,6 +54,7 @@ from .tasks import TaskTemplate, task_template_from_dict
 from .utils import Version
 from .utils.logging import get_logger
 from .utils.py_utils import unique_values
+
 
 logger = get_logger(__name__)
 
@@ -138,12 +141,12 @@ class Popularity:
     number_of_visits: Optional[int] = None
 
 
-@dataclass
-class PromptResult:
-    setting = "zero-shot"
-    value: float = 0.0
-    plm: str = None
-    metric: str = None
+# @dataclass
+# class PromptResult:
+#     setting = "zero-shot"
+#     value: float = 0.0
+#     plm: str = None
+#     metric: str = None
 
 
 """Example
@@ -174,41 +177,33 @@ class PromptResult:
 """
 
 
-@dataclass
-class Prompt:
-    id: str = "null"  # this will be automatically assigned
-    language: str = "en"
-    description: str = "prompt description"
-    template: str = None
-    answers: dict = None
-    supported_plm_types: List[str] = None
-    signal_type: List[str] = None
-    results: List[PromptResult] = None
-    # features:Optional[Features] = None # {"length":Value("int64"), "shape":Value("string"), "skeleton": Value("string")}
-    features: Optional[dict] = None  # {"length":5, "shape":"prefix", "skeleton": "what_about"}
-    reference: str = None
-    contributor: str = "Datalab"
+# @dataclass
+# class Prompt:
+#     id: str = "null"  # this will be automatically assigned
+#     language: str = "en"
+#     description: str = "prompt description"
+#     template: str = None
+#     answers: dict = None
+#     supported_plm_types: List[str] = None
+#     signal_type: List[str] = None
+#     results: List[PromptResult] = None
+#     # features:Optional[Features] = None # {"length":Value("int64"), "shape":Value("string"), "skeleton": Value("string")}
+#     features: Optional[dict] = None  # {"length":5, "shape":"prefix", "skeleton": "what_about"}
+#     reference: str = None
+#     contributor: str = "Datalab"
+#
+#     def __post_init__(self):
+#         # Convert back to the correct classes when we reload from dict
+#         if self.template is not None and self.answers is not None:
+#             if isinstance(self.answers, dict):
+#                 self.id = hashlib.md5((self.template + json.dumps(self.answers)).encode()).hexdigest()
+#             if isinstance(self.answers, str):
+#                 self.id = hashlib.md5((self.template + self.answers).encode()).hexdigest()
+#             else:
+#                 self.id = hashlib.md5(self.template.encode()).hexdigest()
 
-    def __post_init__(self):
-        # Convert back to the correct classes when we reload from dict
-        if self.template is not None and self.answers is not None:
-            if isinstance(self.answers, dict):
-                self.id = hashlib.md5((self.template + json.dumps(self.answers)).encode()).hexdigest()
-            if isinstance(self.answers, str):
-                self.id = hashlib.md5((self.template + self.answers).encode()).hexdigest()
-            else:
-                self.id = hashlib.md5(self.template.encode()).hexdigest()
 
 
-class Prompts:
-    @classmethod
-    def from_url(cls, URL):
-        res = requests.get(URL)
-        dics = json.loads(res.text)
-        prompts = []
-        for dic in dics:
-            prompts.append(Prompt(**dic))
-        return prompts
 
 
 class MongoDBClientCore:
@@ -383,6 +378,17 @@ class DatasetInfo:
                             label_column=template.label_column,
                             task=template.task,
                             labels=labels
+                        )
+                    if isinstance(template, TopicClassification):
+                        labels = None
+                        if isinstance(self.features[template.label_column], ClassLabel):
+                            labels = self.features[template.label_column].names
+                        self.task_templates[idx] = TopicClassification(
+                            text_column=template.text_column,
+                            label_column=template.label_column,
+                            task=template.task,
+                            labels=labels,
+                            prompts=template.prompts,
                         )
                     if isinstance(template, TextMatching):
                         labels = None

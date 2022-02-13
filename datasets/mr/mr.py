@@ -175,7 +175,7 @@ class MR(datalabs.GeneratorBasedBuilder):
             prompts=[datalabs.Prompt(template="{text}, Overall it is a [mask] movie.",
                                      answers={"0":"positive","1":"negative"},
                                      supported_plm_types=["masked-language-model"], # PLMType.masked_language_model.value == "masked-language-model"
-                                     signal_type=[SignalType.text_summarization].value),
+                                     signal_type=[SignalType.text_summarization.value]),
                      datalabs.Prompt(template="{text}, Overall it is a [mask] movie.",
                                      answers={"0": "positive", "1": "negative"},
                                      supported_plm_types=[PLMType.masked_language_model.value],

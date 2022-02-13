@@ -13,6 +13,7 @@ from .question_answering import QuestionAnsweringMultipleChoices
 from .question_answering import QuestionAnsweringMultipleChoicesWithoutContext
 from .summarization import Summarization
 from .text_classification import TextClassification
+from .text_classification import TopicClassification
 from .aspect_based_sentiment_classification import AspectBasedSentimentClassification
 from .text_matching import TextMatching
 from .sequence_labeling import SequenceLabeling
@@ -44,6 +45,7 @@ __all__ = [
     "RelationExtraction",
     "SpanTextClassification",
     "KGLinkPrediction",
+    "TopicClassification",
 
 ]
 
@@ -59,6 +61,7 @@ NAME2TEMPLATE = {
     QuestionAnsweringHotpot.task_category: QuestionAnsweringHotpot,
     QuestionAnsweringMultipleChoicesWithoutContext.task_category: QuestionAnsweringMultipleChoicesWithoutContext,
     TextClassification.task_category: TextClassification,
+    TopicClassification.task_category: TopicClassification,
     AspectBasedSentimentClassification.task_category: AspectBasedSentimentClassification,
     AutomaticSpeechRecognition.task_category: AutomaticSpeechRecognition,
     Summarization.task_category: Summarization,
