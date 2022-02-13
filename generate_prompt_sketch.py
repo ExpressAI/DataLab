@@ -6,25 +6,7 @@ from typing import List, Optional
 from datalabs import load_dataset
 import json
 import fire
-
-
-@dataclass
-class RawPrompt:
-    id: str = "null"  # this will be automatically assigned
-    language: str = "en"
-    description: str = "We use ||| to separate source and target in a template."
-    template: str = None
-    answers: Optional[dict] = None
-    supported_plm_types: List = None
-    signal_type: str = None
-    results: List = None
-    # features:Optional[Features] = None # {"length":Value("int64"), "shape":Value("string"), "skeleton": Value("string")}
-    features: Optional[dict] = None  # {"length":5, "shape":"prefix", "skeleton": "what_about"}   # TODO
-    reference: str = "null"
-    contributor: str = "Promptsource"
-
-    def to_dict(self):
-        return self.__dict__
+from datalabs import Prompt
 
 
 def read_pickle(file):
@@ -70,8 +52,10 @@ def process_prompt(dataset, signal_type, outpath):
         reference = tgt.reference
         if reference is None or len(reference) == 0:
             reference = "https://arxiv.org/abs/2202.01279"
-        prompt = RawPrompt(
+        prompt = Prompt(
             id=str(count),
+            language="en",
+            description="We use ||| to separate source and target in a template.",
             template=template,
             answers=answers,
             supported_plm_types=["left-to-right", "encoder-decoder"],
@@ -80,7 +64,7 @@ def process_prompt(dataset, signal_type, outpath):
             reference=reference
         )
         count += 1
-        prompts.append(prompt.to_dict())
+        prompts.append(prompt.__dict__)
     print(json.dumps(prompts, indent=4), file=outfile)
     outfile.flush()
 
@@ -88,4 +72,4 @@ def process_prompt(dataset, signal_type, outpath):
 if __name__ == "__main__":
     fire.Fire(process_prompt)
 
-# python generate_prompt_skeleton.py --dataset ag_news --signal_type text-classification --outpath datasets/ag_news/prompts.json
+# python generate_prompt_sketch.py --dataset ag_news --signal_type text-classification --outpath datasets/ag_news/prompts.json
