@@ -57,7 +57,7 @@ from .features import (
     Value,
 )
 from .fingerprint import is_caching_enabled, set_caching_enabled
-from .info import DatasetInfo, MetricInfo, MongoDBClient, Prompt
+from .info import DatasetInfo, MetricInfo, MongoDBClient, Prompt, Prompts
 from .inspect import (
     get_dataset_config_names,
     get_dataset_infos,

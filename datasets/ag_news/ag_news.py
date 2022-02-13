@@ -14,12 +14,12 @@
 
 """Dataset config script for ag_news （this code is originally from huggingface, them modified by datalab）"""
 
-
 import csv
-
+import os
 import datalabs
 from datalabs.tasks import TextClassification
-from datalabs import Dataset
+from datalabs import Dataset, Prompts
+from pathlib import Path
 
 _DESCRIPTION = """\
 AG is a collection of more than 1 million news articles. News articles have been
@@ -49,9 +49,7 @@ _CITATION = """\
 
 _TRAIN_DOWNLOAD_URL = "https://raw.githubusercontent.com/mhjabreel/CharCnn_Keras/master/data/ag_news_csv/train.csv"
 _TEST_DOWNLOAD_URL = "https://raw.githubusercontent.com/mhjabreel/CharCnn_Keras/master/data/ag_news_csv/test.csv"
-
-
-
+_PROMPT_URL = "https://raw.githubusercontent.com/ExpressAI/DataLab/main/datasets/ag_news/prompts.json"
 
 
 # class AGNewsDataset(Dataset):
@@ -59,10 +57,7 @@ _TEST_DOWNLOAD_URL = "https://raw.githubusercontent.com/mhjabreel/CharCnn_Keras/
 #         if func._type == 'Aggregating':
 
 
-
-
 class AGNews(datalabs.GeneratorBasedBuilder):
-
 
     def _info(self):
         return datalabs.DatasetInfo(
@@ -70,7 +65,8 @@ class AGNews(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["World", "Sports", "Business", "Science and Technology"]),
+                    "label": datalabs.features.ClassLabel(
+                        names=["World", "Sports", "Business", "Science and Technology"]),
 
                 }
             ),
@@ -78,10 +74,8 @@ class AGNews(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["en"],
             task_templates=[TextClassification(text_column="text", label_column="label")],
+            prompts=Prompts.from_url(_PROMPT_URL)
         )
-
-
-
 
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
@@ -96,11 +90,10 @@ class AGNews(datalabs.GeneratorBasedBuilder):
         """Generate AG News examples."""
 
         # map the label into textual string
-        textualize_label = {"1":"World",
-                                 "2":"Sports",
-                                 "3":"Business",
-                                 "4":"Science and Technology"}
-
+        textualize_label = {"1": "World",
+                            "2": "Sports",
+                            "3": "Business",
+                            "4": "Science and Technology"}
 
         with open(filepath, encoding="utf-8") as csv_file:
             csv_reader = csv.reader(
@@ -111,6 +104,3 @@ class AGNews(datalabs.GeneratorBasedBuilder):
                 label = textualize_label[label]
                 text = " ".join((title, description))
                 yield id_, {"text": text, "label": label}
-
-
-

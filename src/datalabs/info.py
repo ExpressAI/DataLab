@@ -34,6 +34,7 @@ import dataclasses
 import json
 import os
 import re
+import requests
 import pymongo
 from dataclasses import asdict, dataclass, field
 from typing import List, Optional, Union
@@ -42,7 +43,7 @@ from datalabs.tasks.text_classification import TextClassification
 from datalabs.tasks.sequence_labeling import SequenceLabeling
 from datalabs.tasks.text_matching import TextMatching
 from datalabs.tasks.span_text_classification import SpanTextClassification
-import hashlib # for mdb ids of prompts
+import hashlib  # for mdb ids of prompts
 
 from . import config
 from .features import Features, Value, ClassLabel
@@ -51,7 +52,6 @@ from .tasks import TaskTemplate, task_template_from_dict
 from .utils import Version
 from .utils.logging import get_logger
 from .utils.py_utils import unique_values
-
 
 logger = get_logger(__name__)
 
@@ -141,10 +141,9 @@ class Popularity:
 @dataclass
 class PromptResult:
     setting = "zero-shot"
-    value:float = 0.0
-    plm:str = None
-    metric:str= None
-
+    value: float = 0.0
+    plm: str = None
+    metric: str = None
 
 
 """Example
@@ -173,22 +172,22 @@ class PromptResult:
       ]
     }
 """
+
+
 @dataclass
 class Prompt:
-    id:str = "null" # this will be automatically assigned
-    language:str = "en"
-    description:str = "prompt description"
-    template:str = None
-    answers:dict = None
-    supported_plm_types:List[str] = None
+    id: str = "null"  # this will be automatically assigned
+    language: str = "en"
+    description: str = "prompt description"
+    template: str = None
+    answers: dict = None
+    supported_plm_types: List[str] = None
     signal_type: List[str] = None
-    results:List[PromptResult] = None
-    #features:Optional[Features] = None # {"length":Value("int64"), "shape":Value("string"), "skeleton": Value("string")}
-    features:Optional[dict] = None # {"length":5, "shape":"prefix", "skeleton": "what_about"}
+    results: List[PromptResult] = None
+    # features:Optional[Features] = None # {"length":Value("int64"), "shape":Value("string"), "skeleton": Value("string")}
+    features: Optional[dict] = None  # {"length":5, "shape":"prefix", "skeleton": "what_about"}
     reference: str = None
     contributor: str = "Datalab"
-
-
 
     def __post_init__(self):
         # Convert back to the correct classes when we reload from dict
@@ -201,11 +200,20 @@ class Prompt:
                 self.id = hashlib.md5(self.template.encode()).hexdigest()
 
 
+class Prompts:
+    @classmethod
+    def from_url(cls, URL):
+        res = requests.get(URL)
+        dics = json.loads(res.text)
+        prompts = []
+        for dic in dics:
+            prompts.append(Prompt(**dic))
+        return prompts
 
 
 class MongoDBClientCore:
     def __init__(self, cluster: str):
-        assert(re.match(r'cluster[01]', cluster))
+        assert (re.match(r'cluster[01]', cluster))
 
         self.cluster = cluster
         self.url = "mongodb+srv://Pengfei:ZT22yRPyskR44*q@%s.yg1db.mongodb.net/" % self.cluster
