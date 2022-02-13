@@ -202,15 +202,6 @@ class Prompt:
 
 class Prompts:
     @classmethod
-    def from_json(cls, json_file):
-        prompts = []
-        with open(json_file, "r") as f:
-            for line in f.readlines():
-                line = json.loads(line)
-                prompts.append(Prompt(**line))
-        return prompts
-
-    @classmethod
     def from_url(cls, URL):
         res = requests.get(URL)
         dics = json.loads(res.text)
@@ -218,7 +209,6 @@ class Prompts:
         for dic in dics:
             prompts.append(Prompt(**dic))
         return prompts
-
 
 
 class MongoDBClientCore:
