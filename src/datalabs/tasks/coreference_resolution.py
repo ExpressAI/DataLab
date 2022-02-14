@@ -60,4 +60,8 @@ class CoreferenceResolution(TaskTemplate):
             self.quote_column: "quote",
             self.quote_idx_column: "quote",
             self.label_column: "labels",
+<<<<<<< HEAD
         }
+=======
+        }
+>>>>>>> 88242f05ccfc4fcdce1cce2d42f5da7570756c98
