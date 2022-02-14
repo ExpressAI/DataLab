@@ -46,12 +46,12 @@ REQUIRED_PKGS = [
     "lexicalrichness",
     "sacrebleu",
     "compare_mt",
-    "scikit-learn",
+    "scikit-learn==0.2.1", # restricted by hatesonar pkg
     "py7zr",
     # for hate speech
     "hatesonar",
     "dateparser",
-    "torch",
+    # "torch", # too larger
 ]
 
 AUDIO_REQUIRE = [

@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import ClassVar, Dict, Optional, Tuple, List
 import json
 import hashlib  # for mdb ids of prompts
@@ -51,6 +51,7 @@ class Prompt:
     answers: dict = None
     supported_plm_types: List[str] = None
     signal_type: List[str] = None
+    #results: List[PromptResult] = None
     results: List[PromptResult] = None
     # features:Optional[Features] = None # {"length":Value("int64"), "shape":Value("string"), "skeleton": Value("string")}
     features: Optional[dict] = None  # {"length":5, "shape":"prefix", "skeleton": "what_about"}

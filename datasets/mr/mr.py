@@ -107,7 +107,7 @@ class MR(datalabs.GeneratorBasedBuilder):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features_sample,
-            features_dataset=features_dataset,
+            features_dataset=features_dataset, # dont' forget this
             homepage="http://www.cs.cornell.edu/people/pabo/movie-review-data/",
             citation=_CITATION,
             task_templates=[TextClassification(text_column=FIELD, label_column="label", task="sentiment-classification")],

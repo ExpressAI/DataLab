@@ -1,6 +1,6 @@
 from datalabs import load_dataset
 
-dataset = load_dataset("../datasets/ag_news")
+dataset = load_dataset("ag_news")
 
 prompts = dataset['test']._info.prompts
 

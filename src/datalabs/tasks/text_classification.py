@@ -13,7 +13,7 @@
 
 from dataclasses import dataclass
 from typing import ClassVar, Dict, Optional, Tuple
-from ..prompt import Prompt
+from ..prompt import Prompt, PromptResult
 from ..features import ClassLabel, Features, Value
 from .base import TaskTemplate
 
@@ -69,7 +69,8 @@ class TopicClassification(TextClassification):
                       supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
                       signal_type=[SignalType.topic_classification.value],
                       features = {"shape":PromptShape.prefix.value,
-                                  }
+                                  },
+                      results = [PromptResult(plm="BERT",metric="accuracy")],
                       ),
                Prompt(template="Given the text: {text}, it is about [mask]",
                       description = "We use [mask] to represent the mask symbol from a given PLM's vocabulary. "
@@ -78,7 +79,8 @@ class TopicClassification(TextClassification):
                       supported_plm_types=[PLMType.masked_language_model.value],
                       signal_type=[SignalType.topic_classification.value],
                       features={"shape": PromptShape.cloze.value,
-                                }
+                                },
+                      results=[PromptResult(plm="BERT", metric="accuracy")],
                       ),
                Prompt(template="Given the text: {text} Classify this text. You may choose from {texture_choices}.",
                       description="task prompt with multiple choice type",
