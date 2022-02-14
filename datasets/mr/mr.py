@@ -20,7 +20,7 @@ import csv
 import datalabs
 from datalabs.tasks import TextClassification
 from featurize.general import get_features_sample_level
-from aggregate.general import get_features_dataset_level
+from aggregate.text_classification import get_features_dataset_level
 from datalabs.utils.more_features import prefix_dict_key, get_feature_arguments
 from datalabs import PLMType, SettingType, SignalType
 
@@ -63,44 +63,15 @@ _TEST_DOWNLOAD_URL = "https://drive.google.com/uc?id=1t-2aRCGru5yJzpJ-o4uB6UmHbN
 
 
 
-# def prefix_dict_key(dict_obj, prefix):
-#     dict_obj_new = {}
-#     for k, v in dict_obj.items():
-#         dict_obj_new[prefix + "_" + k] = v
-#     return dict_obj_new
-#
-#
-#
-# def get_feature_arguments(dict_output, field = "text", feature_level = "sample_level"):
-#     """Automate following code based on the output of `get_features_sample_level`
-#      additional_features = datalabs.Features(
-#         {
-#             TEXT+ "_" + "length": datalabs.Value(dtype="int64",
-#                                      is_bucket=True,
-#                                      ),
-#         }
-#     )
-#     """
-#     dict_feature_argument = {}
-#     for func_name, func_value in dict_output.items():
-#         key = field + "_" + func_name
-#         value = "int64"
-#         is_bucket = True
-#         if isinstance(func_value, int):
-#             value = "int64"
-#             is_bucket = True
-#         elif isinstance(func_value, str):
-#             value = "string"
-#             is_bucket = True
-#         elif isinstance(func_value, dict):
-#             value = "dict"
-#             is_bucket = False
-#
-#         if feature_level == "dataset_level":
-#             is_bucket = False
-#         dict_feature_argument[key] = datalabs.Value(dtype=value, is_bucket=is_bucket, feature_level = feature_level, raw_feature = False)
-#
-#     return dict_feature_argument
+def infer_schema_dataset_level(sample_level_schema:dict):
+
+    dataset_level_schema = {}
+    for feature_name, value in sample_level_schema.items():
+        if isinstance(value, int) or isinstance(value, float):
+            dataset_level_schema[feature_name] = value
+    return dataset_level_schema
+
+
 
 
 
@@ -121,49 +92,17 @@ class MR(datalabs.GeneratorBasedBuilder):
             )
 
         if EXPAND:
-
-            # dict_feature_argument = {}
-            # for func_name, func_value in get_features_sample_level("").items():
-            #     key = TEXT + "_" + func_name
-            #     value = "int64"
-            #     is_bucket = True
-            #     if isinstance(func_value,int):
-            #         value = "int64"
-            #         is_bucket = True
-            #     elif isinstance(func_value,str):
-            #         value = "string"
-            #         is_bucket = True
-            #     elif isinstance(func_value,dict):
-            #         value = "dict"
-            #         is_bucket = False
-            #
-            #     dict_feature_argument[key] = datalabs.Value(dtype=value, is_bucket=is_bucket, feature_level="sample_level")
-
-            dict_feature_argument = get_feature_arguments(get_features_sample_level(""), field=FIELD, feature_level="sample_level")
+            sample_level_schema = get_features_sample_level("This is a test sample")
+            dict_feature_argument = get_feature_arguments(sample_level_schema, field=FIELD, feature_level="sample_level")
             additional_features = datalabs.Features(dict_feature_argument)
             features_sample.update(additional_features)
 
 
-
-
-            dict_feature_argument = get_feature_arguments(get_features_dataset_level([""]), field=FIELD, feature_level="dataset_level")
+            dataset_level_schema = infer_schema_dataset_level(sample_level_schema)
+            dict_feature_argument = get_feature_arguments(dataset_level_schema, field="avg" + "_" + FIELD, feature_level="dataset_level")
             features_dataset = datalabs.Features(dict_feature_argument)
 
-            # features_dataset= datalabs.Features(
-            #     {
-            #         TEXT+ "_" + "avg_length": datalabs.Value(dtype="int64",
-            #                                  is_bucket=False,
-            #                                  ),
-            #     }
-            # )
 
-        # class Prompt:
-        #     language: str = "en"
-        #     description: str = "prompt description"
-        #     template: str = None
-        #     answers: dict = None
-        #     supported_plms: List[str] = None
-        #     results: List[PromptResult] = None
 
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
@@ -215,11 +154,6 @@ class MR(datalabs.GeneratorBasedBuilder):
                     yield id_, raw_feature_info
                 else:
                     additional_feature_info = prefix_dict_key(get_features_sample_level(text), FIELD)
-
-                    # additional_feature_info_modify = {}
-                    # for k, v in additional_feature_info.items():
-                    #     additional_feature_info_modify[FIELD + "_" + k] = v
-
                     raw_feature_info.update(additional_feature_info)
                     yield id_, raw_feature_info
 

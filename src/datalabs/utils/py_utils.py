@@ -47,6 +47,11 @@ except ImportError:
     _typing_extensions = Literal = Final = None
 
 
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
+
 logger = logging.get_logger(__name__)
 
 

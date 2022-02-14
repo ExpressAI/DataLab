@@ -46,6 +46,8 @@ class Prompt:
     language: str = "en"
     description: str = "prompt description"
     template: str = None
+    # in Prompt class, we define `answer` field as the mapping from the category name to a list of answer words.
+    # for example answers={'World': ['World News','World Report']}, {'Sports': ['Sports']}, {'Business': ['Business']}, {'Science and Technology': ['Science and Technology']}
     answers: dict = None
     supported_plm_types: List[str] = None
     signal_type: List[str] = None

@@ -56,17 +56,35 @@ _PROMPT_URL = "https://raw.githubusercontent.com/ExpressAI/DataLab/main/datasets
 #     def apply(self, func):
 #         if func._type == 'Aggregating':
 
+def instantiate_task_prompt(category_names):
+    # instantiate task prompts into dataset prompts
+    category_to_answers = dict(zip(category_names, [[category] for category in category_names]))
+    task_prompts = TopicClassification.get_prompts()
+    texture_choices = ", ".join(category_names[:-1]) + " or " + category_names[-1] + "?"
+
+    for task_prompt in task_prompts:
+        task_prompt.answers = category_to_answers
+        task_prompt.template = task_prompt.template.replace("{texture_choices}", texture_choices)
+        task_prompt.features.update({"length": len(task_prompt.template.split(" ")), })
+
+    return task_prompts
+
 
 class AGNews(datalabs.GeneratorBasedBuilder):
 
     def _info(self):
+
+        category_names = ["World", "Sports", "Business", "Science and Technology"]
+        task_prompts = instantiate_task_prompt(category_names) # instantiate task prompt based on the current dataset
+
+
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
                     "label": datalabs.features.ClassLabel(
-                        names=["World", "Sports", "Business", "Science and Technology"]),
+                        names=category_names),
 
                 }
             ),
@@ -74,7 +92,7 @@ class AGNews(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["en"],
             task_templates=[TopicClassification(text_column="text", label_column="label")],
-            prompts=Prompts.from_url(_PROMPT_URL) + TopicClassification.get_prompts()
+            prompts=Prompts.from_url(_PROMPT_URL) + task_prompts
         )
 
     def _split_generators(self, dl_manager):

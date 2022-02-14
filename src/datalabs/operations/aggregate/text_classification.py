@@ -70,6 +70,36 @@ class text_classification_aggregating(aggregating, dataset_operation):
             return tf_cls
 
 
+@text_classification_aggregating(name="get_features_dataset_level", contributor="datalab",
+             task="Any",
+             description="Get the average length of a list of texts")
+def get_features_dataset_level(samples:Iterator):
+    """
+    Package: python
+    Input:
+        texts: Iterator
+    Output:
+        int
+    """
+
+    res_info = {}
+    for sample in samples:
+        for feature_name, value in sample.items():
+            if feature_name == "label":
+                continue
+            if isinstance(value, int) or isinstance(value, float):
+                if feature_name not in res_info.keys():
+                    res_info[feature_name] = value
+                else:
+                    res_info[feature_name] += value
+
+
+    for feature_name, value in res_info.items():
+        res_info[feature_name] /= len(samples)
+
+    return res_info
+
+
 
 @text_classification_aggregating(name = "get_label_distribution", contributor= "datalab", processed_fields= "text",
                                  task="text-classification", description="Calculate the label distribution of a given text classification dataset")

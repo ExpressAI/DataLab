@@ -1,6 +1,6 @@
 from datalabs import load_dataset
 from featurize.general import get_features_sample_level
-from aggregate.general import get_features_dataset_level
+from aggregate.text_classification import get_features_dataset_level
 from dataclasses import asdict, dataclass, field
 import json
 from datalabs.utils.more_features import prefix_dict_key
@@ -34,7 +34,7 @@ def get_info(dataset_name:str, field = "text"):
         features_mongodb.update(asdict(dataset[split_name]._info)["features"])
 
         # add dataset-level features
-        dataset[split_name] = dataset[split_name].apply(get_features_dataset_level, mode="memory", prefix=field)
+        dataset[split_name] = dataset[split_name].apply(get_features_dataset_level, mode="memory", prefix="avg")
         features_dataset = asdict(dataset[split_name]._info)["features_dataset"]
 
 
@@ -60,4 +60,6 @@ metadata, metadata_features, dataset = get_info(dataset_name, field="text")
 
 print(metadata)
 print(json.dumps(metadata_features, indent=4))
+print("one example:\t",dataset['train'][0])
+print("average statistics:\t",dataset["train"]._stat)
 print(dataset)

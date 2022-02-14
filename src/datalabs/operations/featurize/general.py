@@ -15,8 +15,11 @@ from .utils.util_model import *
 # pre_model_basic_words = load_pre_model(os.path.join(os.path.dirname(__file__),
 #                                                     './pre_models/basic_words.pkl'))
 # pip install lexicalrichness
-import lexicalrichness
+from lexicalrichness import LexicalRichness
 
+
+from hatesonar import Sonar
+sonar = Sonar()
 # print(pre_model_basic_words)
 
 
@@ -225,16 +228,66 @@ def get_features_sample_level(text:str):
 
 
 
+
+
+    # lexical_richness
+    lex = LexicalRichness(text)
+    lexical_richness = float(0.0)
+
+    try:
+        lexical_richness = lex.ttr
+    except ZeroDivisionError:
+        print(f'the sentence "{text}" contain no effective words, we will return 0 instead!')
+
+
+
+    # ratio of basic words
+    if BASIC_WORDS is None:
+        raise ValueError("basic word dictionary is none")
+
+    value_list = text.split(' ')
+    n_words = len(value_list)
+    n_basic_words = 0
+
+    for word in value_list:
+        lower = word.lower()
+        if lower in BASIC_WORDS:
+            n_basic_words = n_basic_words + 1
+
+    basic_words = n_basic_words*1.0/n_words if n_words!=0 else float(0)
+
+
+
+
+    # Gender bias
+    # one_words_results = get_gender_bias_one_word(
+    #     gendered_dic['words']['male'],
+    #     gendered_dic['words']['female'],
+    #     gendered_dic['single_name']['male'],
+    #     gendered_dic['single_name']['female'],
+    #     text,
+    # )
+
+
+
+
     # # hataspeech
-    # hatespeech = {}
-    # results = sonar.ping(text=text)
-    # class_ = results['top_class']
-    # confidence = 0
-    # for value in results['classes']:
-    #     if value['class_name'] == class_:
-    #         confidence = value['confidence']
-    #         break
+    hatespeech = {}
+    results = sonar.ping(text=text)
+    class_ = results['top_class']
+    confidence = float(0)
+    for value in results['classes']:
+        if value['class_name'] == class_:
+            confidence = value['confidence']
+            break
 
+    # hate_speech_detection = {"hate_speech_type":class_, "confidence":confidence} # pyarrow will report error if saving json
 
-
-    return {"length":length}
+    return {"length":length,
+            "lexical_richness":lexical_richness,
+            "basic_words":basic_words,
+            # "gender_bias_word_male":one_words_results['words_m'],
+            # "gender_bias_word_female":one_words_results['words_f'],
+            # "gender_bias_single_name_male":one_words_results['single_name_m'],
+            # "gender_bias_single_name_female":one_words_results['single_name_f'],
+            "hate_speech_detection":class_}

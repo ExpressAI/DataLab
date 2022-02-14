@@ -24,3 +24,10 @@ class SettingType(str, Enum):
 class SignalType(str, Enum):
     text_compression:str = "text-compression"
     text_summarization:str = "text-summarization"
+    text_classification:str = "text-classification"
+    topic_classification: str = "topic-classification"
+
+
+class PromptShape(str, Enum):
+    prefix:str = "prefix"
+    cloze:str = "cloze"

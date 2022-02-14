@@ -27,6 +27,9 @@ def get_feature_arguments(dict_output, field = "text", feature_level = "sample_l
         if isinstance(func_value, int):
             value = "int64"
             is_bucket = True
+        if isinstance(func_value, float):
+            value = "float32"
+            is_bucket = True
         elif isinstance(func_value, str):
             value = "string"
             is_bucket = True
