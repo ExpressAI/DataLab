@@ -59,6 +59,6 @@ class CoreferenceResolution(TaskTemplate):
             self.pronoun_idx_column: "pronoun_idx",
             self.quote_column: "quote",
             self.quote_idx_column: "quote",
-            self.label_column: "labels",
+            self.label_column: "label",
         }
 
