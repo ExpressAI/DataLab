@@ -1,7 +1,7 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import Summarization, ConvoSummarization
+from datalabs.tasks import Summarization, DialogSummarization
 
 _DESCRIPTION = """
  The SAMSum dataset contains about 16k messenger-like conversations with summaries. Conversations were created and written down by linguists fluent in English. Linguists were asked to create conversations similar to those they write on a daily basis, reflecting the proportion of topics of their real-life messenger convesations. The style and register are diversified - conversations could be informal, semi-formal or formal, they may contain slang words, emoticons and typos. Then, the conversations were annotated with summaries. It was assumed that summaries should be a concise brief of what people talked about in the conversation in third person.
@@ -57,10 +57,10 @@ class SAMSumDataset(datalabs.GeneratorBasedBuilder):
                 text_column=_ARTICLE, summary_column=_ABSTRACT)]
         ),
         SAMSumConfig(
-            name="conversation",
+            name="dialogue",
             version=datalabs.Version("1.0.0"),
-            description="SAMSum dataset for summarization, conversation version",
-            task_templates=[ConvoSummarization(
+            description="SAMSum dataset for summarization, dialogue summarization version",
+            task_templates=[DialogSummarization(
                 text_column="dialogue", summary_column=_ABSTRACT)]
         ),
     ]

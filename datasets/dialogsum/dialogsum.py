@@ -1,7 +1,7 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import Summarization, ConvoSummarization
+from datalabs.tasks import Summarization, DialogSummarization
 
 _DESCRIPTION = """
  DialogSum contains face-to-face spoken dialogues that cover a wide range of daily-life topics, including schooling, work, medication, shopping, leisure, travel.
@@ -55,14 +55,14 @@ class DialogSumDataset(datalabs.GeneratorBasedBuilder):
                 text_column=_ARTICLE, summary_column=_ABSTRACT)]
         ),
         DialogSumConfig(
-            name="conversation",
+            name="dialogue",
             version=datalabs.Version("1.0.0"),
-            description="DialogSum dataset for summarization, conversation summarization version",
-            task_templates=[ConvoSummarization(
+            description="DialogSum dataset for summarization, dialogue summarization version",
+            task_templates=[DialogSummarization(
                 text_column="dialogue", summary_column=_ABSTRACT)]
         ),
     ]
-    DEFAULT_CONFIG_NAME = "conversation"
+    DEFAULT_CONFIG_NAME = "dialogue"
 
     def _info(self):
         # Should return a datalab.DatasetInfo object

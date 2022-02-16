@@ -58,8 +58,8 @@ class MultiDocSummarization(TaskTemplate):
 
 
 @dataclass
-class ConvoSummarization(TaskTemplate):
-    """ Conversataional summarization task.
+class DialogSummarization(TaskTemplate):
+    """ Dialogue summarization task.
     data format: {
         "dialogue": {
             "speaker": List[str], (list of speaker names)
@@ -69,8 +69,8 @@ class ConvoSummarization(TaskTemplate):
         }
     """
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
-    task_category: str = "convo_summarization"
-    task: str = "convo_summarization"
+    task_category: str = "dialog_summarization"
+    task: str = "dialog_summarization"
     input_schema: ClassVar[Features] = Features({"dialogue": Sequence(Features({"speaker": Value("string"), "text": Value("string")}))})
     label_schema: ClassVar[Features] = Features({"summary": Sequence(Value("string"))})
     text_column: str = "dialogue"
