@@ -5,7 +5,7 @@ from .automatic_speech_recognition import AutomaticSpeechRecognition
 from .base import TaskTemplate
 from .image_classification import ImageClassification
 from .question_answering import QuestionAnsweringExtractive,QuestionAnsweringHotpot
-from .summarization import Summarization
+from .summarization import Summarization, MultiDocSummarization, ConvoSummarization, QuerySummarization
 from .text_classification import TextClassification
 from .text_matching import TextMatching
 from .sequence_labeling import SequenceLabeling
@@ -19,6 +19,9 @@ __all__ = [
     "QuestionAnsweringHotpot",
     "TextClassification",
     "Summarization",
+    "MultiDocSummarization",
+    "ConvoSummarization",
+    "QuerySummarization",
     "AutomaticSpeechRecognition",
     "ImageClassification",
     "TextMatching",
@@ -36,6 +39,9 @@ NAME2TEMPLATE = {
     TextClassification.task_category: TextClassification,
     AutomaticSpeechRecognition.task_category: AutomaticSpeechRecognition,
     Summarization.task_category: Summarization,
+    MultiDocSummarization.task_category: MultiDocSummarization,
+    ConvoSummarization.task_category: ConvoSummarization,
+    QuerySummarization.task_category: QuerySummarization,
     ImageClassification.task_category: ImageClassification,
     TextMatching.task_category:TextMatching,
     SequenceLabeling.task_category: SequenceLabeling,

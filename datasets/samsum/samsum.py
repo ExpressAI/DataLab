@@ -1,7 +1,7 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs.tasks import Summarization, ConvoSummarization
 
 _DESCRIPTION = """
  The SAMSum dataset contains about 16k messenger-like conversations with summaries. Conversations were created and written down by linguists fluent in English. Linguists were asked to create conversations similar to those they write on a daily basis, reflecting the proportion of topics of their real-life messenger convesations. The style and register are diversified - conversations could be informal, semi-formal or formal, they may contain slang words, emoticons and typos. Then, the conversations were annotated with summaries. It was assumed that summaries should be a concise brief of what people talked about in the conversation in third person.
@@ -36,12 +36,13 @@ def _gdrive_url(id):
 class SAMSumConfig(datalabs.BuilderConfig):
     """BuilderConfig for SAMSum."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, task_templates, **kwargs):
         """BuilderConfig for SAMSum.
         Args:
           **kwargs: keyword arguments forwarded to super.
         """
         super(SAMSumConfig, self).__init__(**kwargs)
+        self.task_templates = task_templates
 
 
 class SAMSumDataset(datalabs.GeneratorBasedBuilder):
@@ -51,29 +52,44 @@ class SAMSumDataset(datalabs.GeneratorBasedBuilder):
         SAMSumConfig(
             name="document",
             version=datalabs.Version("1.0.0"),
-            description="SAMSum dataset for summarization, document",
+            description="SAMSum dataset for summarization, single document version",
+            task_templates=[Summarization(
+                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+        ),
+        SAMSumConfig(
+            name="conversation",
+            version=datalabs.Version("1.0.0"),
+            description="SAMSum dataset for summarization, conversation version",
+            task_templates=[ConvoSummarization(
+                text_column="dialogue", summary_column=_ABSTRACT)]
         ),
     ]
     DEFAULT_CONFIG_NAME = "document"
 
     def _info(self):
         # Should return a datalab.DatasetInfo object
-        return datalabs.DatasetInfo(
-            description=_DESCRIPTION,
-            features=datalabs.Features(
+        if "document" in self.config.name:
+            features = datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
                     _ABSTRACT: datalabs.Value("string"),
-                    # "id": datalab.Value("string"),
                 }
-            ),
+            )
+        else:
+            features = datalabs.Features({
+                "dialogue": datalabs.Sequence(datalabs.Features({
+                        "speaker": datalabs.Value("string"),
+                        "text": datalabs.Value("string")
+                        })),
+                _ABSTRACT: datalabs.Sequence(datalabs.Value("string")),
+            })
+        return datalabs.DatasetInfo(
+            description=_DESCRIPTION,
+            features=features,
             supervised_keys=None,
             homepage=None,
             citation=_CITATION,
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
-            ],
+            task_templates=self.config.task_templates,
         )
 
     def _split_generators(self, dl_manager):
@@ -81,8 +97,6 @@ class SAMSumDataset(datalabs.GeneratorBasedBuilder):
         train_path = os.path.join(f_path, "train.json")
         test_path = os.path.join(f_path, "test.json")
         val_path = os.path.join(f_path, "val.json")
-        
-
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"f_path": train_path}
@@ -100,7 +114,19 @@ class SAMSumDataset(datalabs.GeneratorBasedBuilder):
         with open(f_path, encoding="utf-8") as f:
             data = json.load(f)
         for (id_, article) in enumerate(data):
-            yield id_, {
-                _ARTICLE: article["dialogue"],
-                _ABSTRACT: article["summary"],
-            }
+            if "document" in self.config.name:
+                yield id_, {
+                    _ARTICLE: article["dialogue"],
+                    _ABSTRACT: article["summary"]
+                }
+            else:
+                dialogue = []
+                text = [x.strip() for x in article["dialogue"].split("\n")]
+                text = [x for x in text if len(x) > 0]
+                for x in text:
+                    speaker, content = x.split(":", 1)
+                    dialogue.append({"speaker": speaker, "text": content})
+                yield id_, {
+                    "dialogue": dialogue,
+                    _ABSTRACT: [article["summary"]],
+                }
