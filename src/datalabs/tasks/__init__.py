@@ -5,6 +5,10 @@ from .automatic_speech_recognition import AutomaticSpeechRecognition
 from .base import TaskTemplate
 from .image_classification import ImageClassification
 
+
+from .summarization import Summarization, MultiDocSummarization, DialogSummarization, QuerySummarization
+
+
 from .question_answering import  MultipleChoiceQA
 from .question_answering import QuestionAnsweringExtractive
 from .question_answering import QuestionAnsweringHotpot
@@ -12,6 +16,7 @@ from .question_answering import QuestionAnsweringAbstractive
 from .question_answering import QuestionAnsweringMultipleChoices
 from .question_answering import QuestionAnsweringMultipleChoicesWithoutContext
 from .summarization import Summarization
+
 from .text_classification import TextClassification
 from .text_classification import TopicClassification
 from .aspect_based_sentiment_classification import AspectBasedSentimentClassification
@@ -37,6 +42,9 @@ __all__ = [
     "TextClassification",
     "AspectBasedSentimentClassification",
     "Summarization",
+    "MultiDocSummarization",
+    "DialogSummarization",
+    "QuerySummarization",
     "AutomaticSpeechRecognition",
     "ImageClassification",
     "TextMatching",
@@ -65,6 +73,9 @@ NAME2TEMPLATE = {
     AspectBasedSentimentClassification.task_category: AspectBasedSentimentClassification,
     AutomaticSpeechRecognition.task_category: AutomaticSpeechRecognition,
     Summarization.task_category: Summarization,
+    MultiDocSummarization.task_category: MultiDocSummarization,
+    DialogSummarization.task_category: DialogSummarization,
+    QuerySummarization.task_category: QuerySummarization,
     ImageClassification.task_category: ImageClassification,
     TextMatching.task_category:TextMatching,
     SequenceLabeling.task_category: SequenceLabeling,

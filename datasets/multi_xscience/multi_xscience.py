@@ -1,7 +1,8 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs.tasks import Summarization, MultiDocSummarization
+from datalabs.tasks.summarization import _MDS_TEXT_COLUMN
 import gzip
 
 _DESCRIPTION = """
@@ -37,12 +38,13 @@ def _gdrive_url(id):
 class MultiXScienceConfig(datalabs.BuilderConfig):
     """BuilderConfig for MultiXScience."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, task_templates, **kwargs):
         """BuilderConfig for MultiXScience.
         Args:
           **kwargs: keyword arguments forwarded to super.
         """
         super(MultiXScienceConfig, self).__init__(**kwargs)
+        self.task_templates = task_templates
 
 
 class MultiXScienceDataset(datalabs.GeneratorBasedBuilder):
@@ -52,31 +54,43 @@ class MultiXScienceDataset(datalabs.GeneratorBasedBuilder):
     _TEST_URL = "https://raw.githubusercontent.com/yaolu/Multi-XScience/master/data/test.json.gz"
     BUILDER_CONFIGS = [
         MultiXScienceConfig(
-            name="document",
+            name="single-document",
             version=datalabs.Version("1.0.0"),
-            description="MultiXScience dataset for summarization, document",
+            description="MultiXScience dataset for summarization, single document summarization version",
+            task_templates=[Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT)]
+        ),
+        MultiXScienceConfig(
+            name="multi-document",
+            version=datalabs.Version("1.0.0"),
+            description="MultiXScience dataset for summarization, multi-document summarization version",
+            task_templates=[MultiDocSummarization(text_column=_MDS_TEXT_COLUMN, summary_column=_ABSTRACT)]
         ),
     ]
-    DEFAULT_CONFIG_NAME = "document"
+    DEFAULT_CONFIG_NAME = "multi-document"
 
     def _info(self):
         # Should return a datalab.DatasetInfo object
-        return datalabs.DatasetInfo(
-            description=_DESCRIPTION,
-            features=datalabs.Features(
+        if "single" in self.config.name:
+            features = datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
                     _ABSTRACT: datalabs.Value("string"),
-                    # "id": datalab.Value("string"),
                 }
-            ),
+            )
+        else:
+            features = datalabs.Features(
+                {
+                    _MDS_TEXT_COLUMN: datalabs.Sequence(datalabs.Value("string")),
+                    _ABSTRACT: datalabs.Value("string"),
+                }
+            )
+        return datalabs.DatasetInfo(
+            description=_DESCRIPTION,
+            features=features,
             supervised_keys=None,
             homepage="https://github.com/yaolu/Multi-XScience",
             citation=_CITATION,
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
-            ],
+            task_templates=self.config.task_templates,
         )
 
     def _split_generators(self, dl_manager):
@@ -106,8 +120,14 @@ class MultiXScienceDataset(datalabs.GeneratorBasedBuilder):
                 if len(x["ref_abstract"][k]["abstract"]) > 0:
                     # skip empty abstract
                     text.append("{}: {}".format(k, x["ref_abstract"][k]["abstract"]))
-            text = _MDS_SEP.join(text)
-            yield id_, {
-                _ARTICLE: text,
-                _ABSTRACT: summary,
-            }
+            if "single" in self.config.name:
+                text = _MDS_SEP.join(text)
+                yield id_, {
+                    _ARTICLE: text,
+                    _ABSTRACT: summary,
+                }
+            else:
+                yield id_, {
+                    _MDS_TEXT_COLUMN: text,
+                    _ABSTRACT: summary,
+                }
