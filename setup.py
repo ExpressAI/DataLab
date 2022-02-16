@@ -46,7 +46,7 @@ REQUIRED_PKGS = [
     "lexicalrichness",
     "sacrebleu",
     "compare_mt",
-    "scikit-learn==0.23.2", # restricted by hatesonar pkg
+    "scikit-learn", # restricted by hatesonar pkg ==0.23.2
     "py7zr",
     # for hate speech
     "hatesonar",
@@ -177,7 +177,7 @@ EXTRAS_REQUIRE = {
 
 setup(
     name="datalabs",
-    version="0.2.4.dev",
+    version="0.2.5.dev",
     description="Datalabs",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
