@@ -58,6 +58,7 @@ from .features import (
 )
 from .fingerprint import is_caching_enabled, set_caching_enabled
 from .info import DatasetInfo, MetricInfo, MongoDBClient
+from .prompt import Prompt, Prompts
 from .inspect import (
     get_dataset_config_names,
     get_dataset_infos,
@@ -83,6 +84,10 @@ from .splits import (
     percent,
 )
 from .utils import *
-
+from .enums import (
+    PLMType,
+    SettingType,
+    SignalType,
+)
 
 SCRIPTS_VERSION = "master" if _version.parse(__version__).is_devrelease else __version__

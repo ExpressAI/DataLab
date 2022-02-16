@@ -14,7 +14,8 @@
 import abc
 import dataclasses
 from dataclasses import dataclass
-from typing import ClassVar, Dict, Type, TypeVar
+from typing import ClassVar, Dict, Type, TypeVar, List, Any
+from ..prompt import Prompt
 
 from ..features import Features
 
@@ -28,6 +29,11 @@ class TaskTemplate(abc.ABC):
     task: str
     input_schema: ClassVar[Features]
     label_schema: ClassVar[Features]
+    prompts:List[Prompt] = None
+
+    @classmethod
+    def get_prompts(self):
+        return self.prompts
 
     @property
     def features(self) -> Features:

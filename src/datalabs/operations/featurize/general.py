@@ -15,8 +15,11 @@ from .utils.util_model import *
 # pre_model_basic_words = load_pre_model(os.path.join(os.path.dirname(__file__),
 #                                                     './pre_models/basic_words.pkl'))
 # pip install lexicalrichness
-import lexicalrichness
+from lexicalrichness import LexicalRichness
 
+
+from hatesonar import Sonar
+sonar = Sonar()
 # print(pre_model_basic_words)
 
 
@@ -202,12 +205,89 @@ def get_gender_bias_one_word(words_m, words_f, single_name_m, single_name_f, sen
     return results
 
 
-# def get_gender_bias_two_words(gender_dic, sentence):
-#     sentence = ' ' + sentence.lower().strip() + ' '
-#
-#     results = 0
-#     for value in gender_dic:
-#         count = sentence.count(' ' + value + ' ')
-#         results += count
-#
-#     return results
+
+"""
+from datalabs import load_dataset
+dataset = load_dataset("mr")
+from featurize import *
+res = dataset['test'].apply(get_features_sample_level, mode = "memory")
+"""
+
+
+@featurizing(name="get_features_sample_level", contributor="datalab",
+             task="Any", description="calculate a set of features for general text")
+def get_features_sample_level(text:str):
+
+
+    # for hate speech
+    # from hatesonar import Sonar
+    # sonar = Sonar()
+
+    # text length
+    length = len(text.split(" "))
+
+
+
+
+
+    # lexical_richness
+    lex = LexicalRichness(text)
+    lexical_richness = float(0.0)
+
+    try:
+        lexical_richness = lex.ttr
+    except ZeroDivisionError:
+        print(f'the sentence "{text}" contain no effective words, we will return 0 instead!')
+
+
+
+    # ratio of basic words
+    if BASIC_WORDS is None:
+        raise ValueError("basic word dictionary is none")
+
+    value_list = text.split(' ')
+    n_words = len(value_list)
+    n_basic_words = 0
+
+    for word in value_list:
+        lower = word.lower()
+        if lower in BASIC_WORDS:
+            n_basic_words = n_basic_words + 1
+
+    basic_words = n_basic_words*1.0/n_words if n_words!=0 else float(0)
+
+
+
+
+    # Gender bias
+    # one_words_results = get_gender_bias_one_word(
+    #     gendered_dic['words']['male'],
+    #     gendered_dic['words']['female'],
+    #     gendered_dic['single_name']['male'],
+    #     gendered_dic['single_name']['female'],
+    #     text,
+    # )
+
+
+
+
+    # # hataspeech
+    hatespeech = {}
+    results = sonar.ping(text=text)
+    class_ = results['top_class']
+    confidence = float(0)
+    for value in results['classes']:
+        if value['class_name'] == class_:
+            confidence = value['confidence']
+            break
+
+    # hate_speech_detection = {"hate_speech_type":class_, "confidence":confidence} # pyarrow will report error if saving json
+
+    return {"length":length,
+            "lexical_richness":lexical_richness,
+            "basic_words":basic_words,
+            # "gender_bias_word_male":one_words_results['words_m'],
+            # "gender_bias_word_female":one_words_results['words_f'],
+            # "gender_bias_single_name_male":one_words_results['single_name_m'],
+            # "gender_bias_single_name_female":one_words_results['single_name_f'],
+            "hate_speech_detection":class_}

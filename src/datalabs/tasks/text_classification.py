@@ -13,10 +13,11 @@
 
 from dataclasses import dataclass
 from typing import ClassVar, Dict, Optional, Tuple
-
+from ..prompt import Prompt, PromptResult
 from ..features import ClassLabel, Features, Value
 from .base import TaskTemplate
 
+from ..enums import SettingType,PLMType,SignalType, PromptShape
 
 @dataclass
 class TextClassification(TaskTemplate):
@@ -47,3 +48,91 @@ class TextClassification(TaskTemplate):
             self.text_column: "text",
             self.label_column: "labels",
         }
+
+
+
+
+@dataclass
+class TopicClassification(TextClassification):
+    # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
+    task_category: str = "topic-classification"
+    task: str = "topic-classification"
+    input_schema: ClassVar[Features] = Features({"text": Value("string")})
+    label_schema: ClassVar[Features] = Features({"labels": ClassLabel})
+    text_column: str = "text"
+    label_column: str = "labels"
+    labels: Optional[Tuple[str]] = None
+
+    prompts = [Prompt(template="Given the text: {text}, is it about {texture_choices}",
+                      description="task prompts",
+                      answers={},
+                      supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
+                      signal_type=[SignalType.topic_classification.value],
+                      features = {"shape":PromptShape.prefix.value,
+                                  },
+                      results = [PromptResult(plm="BERT",metric="accuracy")],
+                      ),
+               Prompt(template="Given the text: {text}, it is about [mask]",
+                      description = "We use [mask] to represent the mask symbol from a given PLM's vocabulary. "
+                                    "For example, in BART, [mask] refer to XX",
+                      answers={},
+                      supported_plm_types=[PLMType.masked_language_model.value],
+                      signal_type=[SignalType.topic_classification.value],
+                      features={"shape": PromptShape.cloze.value,
+                                },
+                      results=[PromptResult(plm="BERT", metric="accuracy")],
+                      ),
+               Prompt(template="Given the text: {text} Classify this text. You may choose from {texture_choices}.",
+                      description="task prompt with multiple choice type",
+                      answers={},
+                      supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
+                      signal_type=[SignalType.topic_classification.value],
+                      features={"shape": PromptShape.prefix.value,
+                                }
+                      ),
+               Prompt(template="Given the text: {text} Given a list of categories: {texture_choices}, what category does the paragraph belong to?",
+                      description="task prompt with multiple choice type",
+                      answers={},
+                      supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
+                      signal_type=[SignalType.topic_classification.value],
+                      features={"shape": PromptShape.prefix.value,
+                                }
+                      ),
+               Prompt(template="Given the text: {text} Pick one category for the previous text. The options are {texture_choices}.",
+                      description="task prompt with multiple choice type",
+                      answers={},
+                      supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
+                      signal_type=[SignalType.topic_classification.value],
+                      features={"shape": PromptShape.prefix.value,
+                                }
+                      ),
+               Prompt(
+                   template="Given the text: {text} Can you identify the category of this text? {texture_choices}",
+                   description="task prompt with multiple choice type",
+                   answers={},
+                   supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
+                   signal_type=[SignalType.topic_classification.value],
+                   features={"shape": PromptShape.prefix.value,
+                             }
+                   ),
+               Prompt(
+                   template="Given the text: {text} What\\'s the main topic of this paragraph? {texture_choices}",
+                   description="task prompt with multiple choice type",
+                   answers={},
+                   supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
+                   signal_type=[SignalType.topic_classification.value],
+                   features={"shape": PromptShape.prefix.value,
+                             }
+               ),
+               Prompt(
+                   template="Given the text: {text} Is this a piece of text regarding {texture_choices}",
+                   description="task prompt with multiple choice type",
+                   answers={},
+                   supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
+                   signal_type=[SignalType.topic_classification.value],
+                   features={"shape": PromptShape.prefix.value,
+                             }
+               ),
+               ]
+
+

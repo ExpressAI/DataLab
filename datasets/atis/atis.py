@@ -75,7 +75,7 @@ class ATIS(datalabs.GeneratorBasedBuilder):
         ]
 
     def _generate_examples(self, filepath):
-        """Generate AG News examples."""
+        """Generate ATIS examples."""
 
         # map the label into textual string
         textualize_label = {

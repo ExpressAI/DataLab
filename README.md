@@ -49,7 +49,7 @@ Here we give several examples to showcase the usage of DataLab. For more informa
 from datalabs import operations, load_dataset
 from featurize import *
 
- 
+
 dataset = load_dataset("ag_news")
 
 # print(task schema)
