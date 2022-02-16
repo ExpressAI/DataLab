@@ -11,7 +11,7 @@ class MyTestCase(unittest.TestCase):
 
 
     def test_Data_featurize(self):
-        dataset = load_dataset("ag_news")
+        dataset = load_dataset("qc")
         dataset_test_new = dataset['test'].apply(get_length)
         dataset_test_new2 = dataset['test'].apply(get_length, mode = "realtime")
         dataset_test_new3 = dataset['test'].apply(get_length, mode = "memory")

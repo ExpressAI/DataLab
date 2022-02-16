@@ -51,7 +51,7 @@ REQUIRED_PKGS = [
     # for hate speech
     "hatesonar",
     "dateparser",
-    # "torch", # too larger
+    "torch", # too larger
 ]
 
 AUDIO_REQUIRE = [
@@ -177,7 +177,7 @@ EXTRAS_REQUIRE = {
 
 setup(
     name="datalabs",
-    version="0.2.2.dev",
+    version="0.2.4.dev",
     description="Datalabs",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",

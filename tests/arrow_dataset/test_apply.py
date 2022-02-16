@@ -6,7 +6,7 @@ from aggregate import *
 
 class MyTestCase(unittest.TestCase):
     def test_Data_featurize(self):
-        dataset = load_dataset("ag_news")["test"]
+        dataset = load_dataset("qc")["test"]
         new_dataset_one = dataset.apply(get_length, mode="memory", prefix="test")
         new_dataset_two = dataset.apply(get_average_length)
 
