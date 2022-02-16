@@ -19,8 +19,8 @@ from .base import TaskTemplate
 @dataclass
 class CoreferenceResolution(TaskTemplate):
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
-    task_category: str = "co-reference-resolution"
-    task: str = "co-reference-resolution"
+    task_category: str = "coreference-resolution"
+    task: str = "coreference-resolution"
     input_schema: ClassVar[Features] = Features({
         'text': Value('string'),
         'pronoun': Value('string'),
