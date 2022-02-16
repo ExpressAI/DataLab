@@ -63,6 +63,9 @@ class TopicClassification(TextClassification):
     label_column: str = "labels"
     labels: Optional[Tuple[str]] = None
 
+    # dataset = load_dataset("ag_news")
+    # dataset["test"]._info.promp
+
     prompts = [Prompt(template="Given the text: {text}, is it about {texture_choices}",
                       description="task prompts",
                       answers={},

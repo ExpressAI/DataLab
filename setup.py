@@ -46,7 +46,7 @@ REQUIRED_PKGS = [
     "lexicalrichness",
     "sacrebleu",
     "compare_mt",
-    "scikit-learn", # restricted by hatesonar pkg
+    "scikit-learn==0.23.2", # restricted by hatesonar pkg
     "py7zr",
     # for hate speech
     "hatesonar",
