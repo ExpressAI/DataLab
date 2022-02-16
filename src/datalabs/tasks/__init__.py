@@ -29,6 +29,7 @@ from .span_text_classification import SpanTextClassification
 
 from .kg_link_prediction import KGLinkPrediction
 
+from .coreference_resolution import CoreferenceResolution
 
 
 __all__ = [
@@ -54,14 +55,14 @@ __all__ = [
     "SpanTextClassification",
     "KGLinkPrediction",
     "TopicClassification",
-
+    "CoreferenceResolution",
 ]
 
 logger = get_logger(__name__)
 
 
 NAME2TEMPLATE = {
-
+    CoreferenceResolution.task_category: CoreferenceResolution,
     MultipleChoiceQA.task_category: MultipleChoiceQA,
     QuestionAnsweringMultipleChoices.task_category: QuestionAnsweringMultipleChoices,
     QuestionAnsweringExtractive.task_category: QuestionAnsweringExtractive,
