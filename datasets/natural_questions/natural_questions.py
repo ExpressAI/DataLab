@@ -14,7 +14,8 @@
 # limitations under the License.
 
 # Lint as: python3
-"""Natural Questions: A Benchmark for Question Answering Research."""
+"""Natural Questions: A Benchmark for Question Answering Research. 
+!!!!!! Due to the large size of the natural_questions dataset, testing it requires downloading the original dataset of 135G"""
 
 
 import html
