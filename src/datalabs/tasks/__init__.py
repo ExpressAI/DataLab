@@ -5,13 +5,20 @@ from .automatic_speech_recognition import AutomaticSpeechRecognition
 from .base import TaskTemplate
 from .image_classification import ImageClassification
 
+
+from .summarization import Summarization, MultiDocSummarization, DialogSummarization, QuerySummarization
+
+
 from .question_answering import  MultipleChoiceQA
 from .question_answering import QuestionAnsweringExtractive
 from .question_answering import QuestionAnsweringHotpot
 from .question_answering import QuestionAnsweringAbstractive
 from .question_answering import QuestionAnsweringMultipleChoices
 from .question_answering import QuestionAnsweringMultipleChoicesWithoutContext
+from .question_answering import QuestionAnsweringAbstractiveNQ
+
 from .summarization import Summarization
+
 from .text_classification import TextClassification
 from .text_classification import TopicClassification
 from .aspect_based_sentiment_classification import AspectBasedSentimentClassification
@@ -24,6 +31,7 @@ from .span_text_classification import SpanTextClassification
 
 from .kg_link_prediction import KGLinkPrediction
 
+from .coreference_resolution import CoreferenceResolution
 
 
 __all__ = [
@@ -34,9 +42,13 @@ __all__ = [
     "QuestionAnsweringAbstractive",
     "QuestionAnsweringMultipleChoices",
     "QuestionAnsweringMultipleChoicesWithoutContext",
+    "QuestionAnsweringAbstractiveNQ",
     "TextClassification",
     "AspectBasedSentimentClassification",
     "Summarization",
+    "MultiDocSummarization",
+    "DialogSummarization",
+    "QuerySummarization",
     "AutomaticSpeechRecognition",
     "ImageClassification",
     "TextMatching",
@@ -46,25 +58,29 @@ __all__ = [
     "SpanTextClassification",
     "KGLinkPrediction",
     "TopicClassification",
-
+    "CoreferenceResolution",
 ]
 
 logger = get_logger(__name__)
 
 
 NAME2TEMPLATE = {
-
+    CoreferenceResolution.task_category: CoreferenceResolution,
     MultipleChoiceQA.task_category: MultipleChoiceQA,
     QuestionAnsweringMultipleChoices.task_category: QuestionAnsweringMultipleChoices,
     QuestionAnsweringExtractive.task_category: QuestionAnsweringExtractive,
     QuestionAnsweringAbstractive.task_category: QuestionAnsweringAbstractive,
     QuestionAnsweringHotpot.task_category: QuestionAnsweringHotpot,
     QuestionAnsweringMultipleChoicesWithoutContext.task_category: QuestionAnsweringMultipleChoicesWithoutContext,
+    QuestionAnsweringAbstractiveNQ.task_category: QuestionAnsweringAbstractiveNQ,
     TextClassification.task_category: TextClassification,
     TopicClassification.task_category: TopicClassification,
     AspectBasedSentimentClassification.task_category: AspectBasedSentimentClassification,
     AutomaticSpeechRecognition.task_category: AutomaticSpeechRecognition,
     Summarization.task_category: Summarization,
+    MultiDocSummarization.task_category: MultiDocSummarization,
+    DialogSummarization.task_category: DialogSummarization,
+    QuerySummarization.task_category: QuerySummarization,
     ImageClassification.task_category: ImageClassification,
     TextMatching.task_category:TextMatching,
     SequenceLabeling.task_category: SequenceLabeling,

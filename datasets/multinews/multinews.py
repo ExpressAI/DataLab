@@ -1,7 +1,9 @@
 import json
+from operator import imod
 import os
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs.tasks import Summarization, MultiDocSummarization
+from datalabs.tasks.summarization import _MDS_TEXT_COLUMN
 
 _DESCRIPTION = """
  Multinews dataset for mutlti-document summarization.
@@ -38,77 +40,113 @@ def _gdrive_url(id):
 class MultiNewsConfig(datalabs.BuilderConfig):
     """BuilderConfig for MultiNews."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, name, version, description, task_templates, **kwargs):
         """BuilderConfig for MultiNews.
         Args:
           **kwargs: keyword arguments forwarded to super.
         """
         super(MultiNewsConfig, self).__init__(**kwargs)
+        self.name = name
+        self.version = version
+        self.description = description
+        self.task_templates = task_templates
 
 
 class MultiNewsDataset(datalabs.GeneratorBasedBuilder):
     """MultiNews Dataset."""
     BUILDER_CONFIGS = [
         MultiNewsConfig(
-            name="raw",
+            name="raw-single",
             version=datalabs.Version("1.0.0"),
-            description="MultiNews dataset for summarization, with raw data",
+            description="MultiNews dataset for summarization, single document version, with raw data",
+            task_templates=[Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT)]
         ),
         MultiNewsConfig(
-            name="raw-cleaned",
+            name="raw-cleaned-single",
             version=datalabs.Version("1.0.0"),
-            description="MultiNews dataset for summarization, with cleaned raw data, see issue https://github.com/Alex-Fabbri/Multi-News/issues/11",
+            description="MultiNews dataset for summarization, single document version, with cleaned raw data, see issue https://github.com/Alex-Fabbri/Multi-News/issues/11",
+            task_templates=[Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT)]
         ),
         MultiNewsConfig(
-            name="preprocessed",
+            name="preprocessed-single",
             version=datalabs.Version("1.0.0"),
-            description="MultiNews dataset for summarization, with preprocessed data",
+            description="MultiNews dataset for summarization, single document version, with preprocessed data",
+            task_templates=[Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT)]
         ),
         MultiNewsConfig(
-            name="truncated",
+            name="truncated-single",
             version=datalabs.Version("1.0.0"),
-            description="MultiNews dataset for summarization, with preprocessed and truncated data",
+            description="MultiNews dataset for summarization, single document version, with preprocessed and truncated data",
+            task_templates=[Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT)]
         ),
-        
+        MultiNewsConfig(
+            name="raw-multi",
+            version=datalabs.Version("1.0.0"),
+            description="MultiNews dataset for summarization, multi-document version, with raw data",
+            task_templates=[MultiDocSummarization(text_column=_MDS_TEXT_COLUMN, summary_column=_ABSTRACT)]
+        ),
+        MultiNewsConfig(
+            name="raw-cleaned-multi",
+            version=datalabs.Version("1.0.0"),
+            description="MultiNews dataset for summarization, multi-document version, with cleaned raw data, see issue https://github.com/Alex-Fabbri/Multi-News/issues/11",
+            task_templates=[MultiDocSummarization(text_column=_MDS_TEXT_COLUMN, summary_column=_ABSTRACT)]
+        ),
+        MultiNewsConfig(
+            name="preprocessed-multi",
+            version=datalabs.Version("1.0.0"),
+            description="MultiNews dataset for summarization, multi-document version, with preprocessed data",
+            task_templates=[MultiDocSummarization(text_column=_MDS_TEXT_COLUMN, summary_column=_ABSTRACT)]
+        ),
+        MultiNewsConfig(
+            name="truncated-multi",
+            version=datalabs.Version("1.0.0"),
+            description="MultiNews dataset for summarization, multi-document version, with preprocessed and truncated data",
+            task_templates=[MultiDocSummarization(text_column=_MDS_TEXT_COLUMN, summary_column=_ABSTRACT)]
+        ), 
     ]
-    DEFAULT_CONFIG_NAME = "raw"
+    DEFAULT_CONFIG_NAME = "raw-multi"
 
     def _info(self):
         # Should return a datalab.DatasetInfo object
-        return datalabs.DatasetInfo(
-            description=_DESCRIPTION,
+        if "multi" in self.config.name:
+            features=datalabs.Features(
+                {
+                    _MDS_TEXT_COLUMN: datalabs.Sequence(datalabs.Value("string")),
+                    _ABSTRACT: datalabs.Value("string"),
+                }
+            )
+        else:
             features=datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
                     _ABSTRACT: datalabs.Value("string"),
-                    # "id": datalab.Value("string"),
                 }
-            ),
+            )
+        return datalabs.DatasetInfo(
+            description=_DESCRIPTION,
+            features=features,
             supervised_keys=None,
             homepage="https://github.com/Alex-Fabbri/Multi-News",
             citation=_CITATION,
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
-            ],
+            task_templates=self.config.task_templates,
         )
 
     def _split_generators(self, dl_manager):
-        if self.config.name == "raw":
+        if self.config.name in ["raw-single", "raw-multi"]:
             train_src_path = dl_manager.download(_gdrive_url("1vWfhWIj-UpV_bY-zcu7lw4m9z8hLkF0r"))
             train_tgt_path = dl_manager.download(_gdrive_url("1QVgswwhVTkd3VLCzajK6eVkcrSWEK6kq"))
             val_src_path = dl_manager.download(_gdrive_url("1L2dk4ThZ-Bau9rIQpMG8I75R15FpLE-B"))
             val_tgt_path = dl_manager.download(_gdrive_url("1Y1lBbBU5Q0aJMqLhYEOdEtTqQ85XnRRM"))
             test_src_path = dl_manager.download(_gdrive_url("1_jyJOVkAfRafJQkH2HLYhw4NTKU5f4bq"))
             test_tgt_path = dl_manager.download(_gdrive_url("1CX_YcgQ3WwNC1fXBpMfwMXFPCqsd9Lbp"))
-        elif self.config.name == "raw-cleaned":
+        elif self.config.name in ["raw-cleaned-single", "raw-cleaned-multi"]:
             train_src_path = dl_manager.download(_gdrive_url("1wHAWDOwOoQWSj7HYpyJ3Aeud8WhhaJ7P"))
             val_src_path = dl_manager.download(_gdrive_url("1p_u9_jpz3Zbj0EL05QFX6wvJAahmOn6h"))
             test_src_path = dl_manager.download(_gdrive_url("1-n_6fj-1nM7sWtBSNkQCSfl5Rb3zPVfr"))
             train_tgt_path = dl_manager.download(_gdrive_url("1QVgswwhVTkd3VLCzajK6eVkcrSWEK6kq"))
             val_tgt_path = dl_manager.download(_gdrive_url("1Y1lBbBU5Q0aJMqLhYEOdEtTqQ85XnRRM"))
             test_tgt_path = dl_manager.download(_gdrive_url("1CX_YcgQ3WwNC1fXBpMfwMXFPCqsd9Lbp"))
-        elif self.config.name == "preprocessed":
+        elif self.config.name == ["preprocessed-single", "preprocessed-multi"]:
             train_src_path = dl_manager.download(_gdrive_url("166MtnlB8eEGpH6UZLKgGNsk9u6EDdQ8E"))
             train_tgt_path = dl_manager.download(_gdrive_url("1JniyQbgWdiS-tnDEweTlQxkFE9lRsQJU"))
             val_src_path = dl_manager.download(_gdrive_url("1RzmVVqVMNWhjNTUWKeiBS-HW1UIqnXeS"))
@@ -138,16 +176,31 @@ class MultiNewsDataset(datalabs.GeneratorBasedBuilder):
 
     def _generate_examples(self, src_path, tgt_path):
         """Generate MultiNews examples."""
-        if self.config.name in ["raw", "raw-cleaned"]:
+        if self.config.name in ["raw-single", "raw-cleaned-single"]:
             with open(src_path, encoding="utf-8") as f_src, open(tgt_path, encoding="utf-8") as f_tgt:
                 for (id_, (row_src, row_tgt)) in enumerate(zip(f_src, f_tgt)):
-                    row_src = row_src.strip().replace("NEWLINE_CHAR", ""),
-                    row_tgt = row_tgt.strip().lstrip("- ")
+                    row_src = row_src.strip().replace("NEWLINE_CHAR", "")
+                    row_tgt = row_tgt.strip().lstrip("– ")
                     yield id_, {"text": row_src, "summary": row_tgt}
+        elif self.config.name in ["preprocessed-single", "truncated-single"]:
+            with open(src_path, encoding="utf-8") as f_src, open(tgt_path, encoding="utf-8") as f_tgt:
+                for (id_, (row_src, row_tgt)) in enumerate(zip(f_src, f_tgt)):
+                    row_src = row_src.strip().replace("story_separator_special_tag", "|||||")
+                    row_tgt = row_tgt.strip().lstrip("– ")
+                    yield id_, {"text": row_src, "summary": row_tgt}
+        elif self.config.name in ["raw-multi", "raw-cleaned-multi"]:
+            with open(src_path, encoding="utf-8") as f_src, open(tgt_path, encoding="utf-8") as f_tgt:
+                for (id_, (row_src, row_tgt)) in enumerate(zip(f_src, f_tgt)):
+                    row_src = row_src.strip().replace("NEWLINE_CHAR", "")
+                    row_src = [x.strip() for x in row_src.split("|||||")]
+                    row_src = [x for x in row_src if len(x) > 0]
+                    row_tgt = row_tgt.strip().lstrip("– ")
+                    yield id_, {_MDS_TEXT_COLUMN: row_src, "summary": row_tgt}
         else:
             with open(src_path, encoding="utf-8") as f_src, open(tgt_path, encoding="utf-8") as f_tgt:
                 for (id_, (row_src, row_tgt)) in enumerate(zip(f_src, f_tgt)):
-                    row_src = row_src.strip().replace("story_separator_special_tag", "|||||"),
-                    row_tgt = row_tgt.strip().lstrip("- ")
-                    yield id_, {"text": row_src, "summary": row_tgt}
+                    row_src = [x.strip() for x in row_src.strip().split("story_separator_special_tag")]
+                    row_src = [x for x in row_src if len(x) > 0]
+                    row_tgt = row_tgt.strip().lstrip("– ")
+                    yield id_, {_MDS_TEXT_COLUMN: row_src, "summary": row_tgt}
         
