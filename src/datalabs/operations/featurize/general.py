@@ -18,8 +18,8 @@ from .utils.util_model import *
 from lexicalrichness import LexicalRichness
 
 
-from hatesonar import Sonar
-sonar = Sonar()
+# from hatesonar import Sonar
+# sonar = Sonar()
 # print(pre_model_basic_words)
 
 
@@ -271,15 +271,15 @@ def get_features_sample_level(text:str):
 
 
 
-    # # hataspeech
-    hatespeech = {}
-    results = sonar.ping(text=text)
-    class_ = results['top_class']
-    confidence = float(0)
-    for value in results['classes']:
-        if value['class_name'] == class_:
-            confidence = value['confidence']
-            break
+    # # # hataspeech
+    # hatespeech = {}
+    # results = sonar.ping(text=text)
+    # class_ = results['top_class']
+    # confidence = float(0)
+    # for value in results['classes']:
+    #     if value['class_name'] == class_:
+    #         confidence = value['confidence']
+    #         break
 
     # hate_speech_detection = {"hate_speech_type":class_, "confidence":confidence} # pyarrow will report error if saving json
 
@@ -290,4 +290,5 @@ def get_features_sample_level(text:str):
             # "gender_bias_word_female":one_words_results['words_f'],
             # "gender_bias_single_name_male":one_words_results['single_name_m'],
             # "gender_bias_single_name_female":one_words_results['single_name_f'],
-            "hate_speech_detection":class_}
+            # "hate_speech_detection":class_,
+            }
