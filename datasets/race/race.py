@@ -64,8 +64,8 @@ class Race(datalabs.GeneratorBasedBuilder):
                     "question": datalabs.Value("string"),
                     "answers": # answers -> answer
                         {
-                            "text": datalabs.features.Sequence(datalabs.Value("string")),
-                            "option_index": datalabs.features.Sequence(datalabs.Value("int32")),
+                            "text": datalabs.Value("string"),
+                            "option_index": datalabs.Value("int32"),
                         },
                     "options": datalabs.features.Sequence(datalabs.Value("string"))
                     # These are the features of your dataset like images, labels ...
@@ -135,8 +135,8 @@ class Race(datalabs.GeneratorBasedBuilder):
                         "context": data["article"],
                         "question": question,
                         "answers": {
-                            "option_index": [option_index], # convert A->0, B->1, C->2, D->3
-                            "text": [option[option_index]],
+                            "option_index": option_index, # convert A->0, B->1, C->2, D->3
+                            "text": option[option_index],
                         },
                         # "answers": answer,
                         "options": option,
