@@ -43,6 +43,7 @@ series = {WSDM '08}
 """
 
 _TRAIN_DOWNLOAD_URL = "https://drive.google.com/u/0/uc?id=1Y3zJdDzXwvciuTTUHUvVqmWF7xa1rt-_&export=download"
+_TEST_DOWNLOAD_URL = "https://drive.google.com/u/0/uc?id=1Lpv-1MvlfHTiKJdB3L-ElQ3uF2htvHdx&export=download"
 
 
 class CR(datalabs.GeneratorBasedBuilder):
@@ -64,8 +65,11 @@ class CR(datalabs.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         print(f"train_path: \t{train_path}")
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        print(f"test_path: \t{test_path}")
         return [
             datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
     def _generate_examples(self, filepath):
