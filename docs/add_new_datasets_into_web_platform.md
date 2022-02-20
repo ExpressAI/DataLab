@@ -33,6 +33,9 @@ This is useful when:
 * you just want to add both the metadata and sample information into the database
 * you don't aim to calculate the additional features
 
+
+Note: so far, we only upload the first 20,000 samples into the web database.
+
 This involves two steps:
 
 #### (1) write a data loader script for your new dataset. You can refer to [`how to add new datasets into sdk`](https://github.com/ExpressAI/DataLab/blob/main/docs/add_new_datasets.md)
@@ -55,6 +58,10 @@ This is useful when:
 * you have already implemented a data loader scripts of the new dataset [here](https://github.com/ExpressAI/DataLab/tree/main/datasets).
 * you just want to add both the metadata and sample information into the database
 * you plan to calculate the additional features
+
+Note: so far, we only upload the first 20,000 samples into the web database.
+
+
 
 This involves two steps:
 
