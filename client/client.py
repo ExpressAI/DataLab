@@ -23,16 +23,16 @@ class Client:
                  ):
         self._end_point_add_dataset = "http://datalab.nlpedia.ai:5001/upload_new_dataset"
 
-        self.dataset_name_sdk = dataset_name_sdk
-        self.dataset_name_db = dataset_name_db
-        self.version = version
-        self.languages = languages
-        self.tasks = tasks
-        self.task_categories = task_categories
-        self.split = split
-        self.transformation = transformation
-        self.calculate_features = calculate_features
-        self.field = field
+        self.dataset_name_sdk:str = dataset_name_sdk
+        self.dataset_name_db:str = dataset_name_db
+        self.version:str = version
+        self.languages:List[str] = languages
+        self.tasks:List[str] = tasks
+        self.task_categories:str = task_categories
+        self.split:Dict = split
+        self.transformation:Dict = transformation
+        self.calculate_features:bool = calculate_features
+        self.field:str = field
 
         if dataset_name_db == None:
             raise ValueError(f"the dataset_name_db should not be none:{dataset_name_db}")
@@ -43,6 +43,10 @@ class Client:
 
 
     def add_dataset_metadata(self):
+        """
+        This is a quick introduction of a new dataset into DB by simply adding several pieces of  metadata information
+        without any detailed samples
+        """
 
         metadata_db = validate_generate_db_metadata(dataset_name = self.dataset_name_db,
                                       transformation = self.transformation,
@@ -73,6 +77,10 @@ class Client:
 
 
     def add_dataset_from_sdk(self):
+        """
+            This method of introducing new datasets assumes that we have finished the dataloader of the dataset to be added
+            in the folder: https://github.com/ExpressAI/DataLab/tree/main/datasets
+        """
 
 
         # get metadata and dataset information from sdk by passing the dataset name of the sdk
@@ -120,8 +128,8 @@ class Client:
 
 
 # Example 2
-client = Client(dataset_name_db="test_pf7", dataset_name_sdk="mr", calculate_features = True, field = "text")
-client.add_dataset_from_sdk()
+# client = Client(dataset_name_db="test_pf8", dataset_name_sdk="mr", calculate_features = True, field = "text")
+# client.add_dataset_from_sdk()
 
 
 # Example 3
