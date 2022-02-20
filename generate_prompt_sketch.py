@@ -1,12 +1,11 @@
 # %%
-import pickle
-import pandas as pd
-from dataclasses import dataclass
-from typing import List, Optional
-from datalabs import load_dataset
 import json
+import pickle
+
 import fire
+import pandas as pd
 from datalabs import Prompt
+from datalabs import load_dataset
 
 
 def read_pickle(file):
@@ -16,6 +15,11 @@ def read_pickle(file):
 
 
 def process_prompt(dataset, signal_type, outpath):
+    """
+    dataset: the name of the dataset we want to process prompts
+    signal_type: a list of strings, separated by comma
+    outpath: the path to the output prompts file
+    """
     df = pd.read_pickle("datasets/promptsource.pkl")
     tgts = []
     for row in df.itertuples():
@@ -40,7 +44,7 @@ def process_prompt(dataset, signal_type, outpath):
             datalab_ds = load_dataset(dataset)
             datalab_labels = datalab_ds["train"]._info.__dict__["features"]["label"].names
             assert len(datalab_labels) == len(answers)
-            answers = [{datalab_label: answer} for datalab_label, answer in zip(datalab_labels, answers)]
+            answers = [{datalab_label: [answer]} for datalab_label, answer in zip(datalab_labels, answers)]
             # answers = {idx: label for idx, label in enumerate(answers)}
         else:
             answers = None
@@ -59,7 +63,7 @@ def process_prompt(dataset, signal_type, outpath):
             template=template,
             answers=answers,
             supported_plm_types=["left-to-right", "encoder-decoder"],
-            signal_type=signal_type,
+            signal_type=signal_type.split(","),
             features=features,
             reference=reference
         )

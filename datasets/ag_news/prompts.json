@@ -1,28 +1,38 @@
 [
     {
-        "id": "0",
+        "id": "6bdc30fd74f4e8fa8fce6101fad24fe1",
         "language": "en",
         "description": "We use ||| to separate source and target in a template.",
         "template": "{{text}} \nWhat label best describes this news article? ||| \n{{answers[label] }}",
         "answers": [
             {
-                "World": "World politics"
+                "World": [
+                    "World politics"
+                ]
             },
             {
-                "Sports": "Sports"
+                "Sports": [
+                    "Sports"
+                ]
             },
             {
-                "Business": "Business"
+                "Business": [
+                    "Business"
+                ]
             },
             {
-                "Science and Technology": "Science and technology"
+                "Science and Technology": [
+                    "Science and technology"
+                ]
             }
         ],
         "supported_plm_types": [
             "left-to-right",
             "encoder-decoder"
         ],
-        "signal_type": "text-classification",
+        "signal_type": [
+            "text-classification"
+        ],
         "results": null,
         "features": {
             "length": 11,
@@ -30,32 +40,42 @@
             "skeleton": "classify"
         },
         "reference": "https://arxiv.org/abs/2202.01279",
-        "contributor": "Promptsource"
+        "contributor": "Datalab"
     },
     {
-        "id": "1",
+        "id": "d9a5f741084319da5731009cb6ee579b",
         "language": "en",
         "description": "We use ||| to separate source and target in a template.",
         "template": "What label best describes this news article?\n{{text}} ||| \n{{answers[label] }}",
         "answers": [
             {
-                "World": "World politics"
+                "World": [
+                    "World politics"
+                ]
             },
             {
-                "Sports": "Sports"
+                "Sports": [
+                    "Sports"
+                ]
             },
             {
-                "Business": "Business"
+                "Business": [
+                    "Business"
+                ]
             },
             {
-                "Science and Technology": "Science and technology"
+                "Science and Technology": [
+                    "Science and technology"
+                ]
             }
         ],
         "supported_plm_types": [
             "left-to-right",
             "encoder-decoder"
         ],
-        "signal_type": "text-classification",
+        "signal_type": [
+            "text-classification"
+        ],
         "results": null,
         "features": {
             "length": 10,
@@ -63,32 +83,42 @@
             "skeleton": "classify_question_first"
         },
         "reference": "https://arxiv.org/abs/2202.01279",
-        "contributor": "Promptsource"
+        "contributor": "Datalab"
     },
     {
-        "id": "2",
+        "id": "da69f24d334457c1fb2df368e6d3bec7",
         "language": "en",
         "description": "We use ||| to separate source and target in a template.",
         "template": "{{text}} \nIs this a piece of news regarding {{\"world politics, sports, business, or science and technology\"}}? ||| \n{{answers[label] }}",
         "answers": [
             {
-                "World": "World politics"
+                "World": [
+                    "World politics"
+                ]
             },
             {
-                "Sports": "Sports"
+                "Sports": [
+                    "Sports"
+                ]
             },
             {
-                "Business": "Business"
+                "Business": [
+                    "Business"
+                ]
             },
             {
-                "Science and Technology": "Science and technology"
+                "Science and Technology": [
+                    "Science and technology"
+                ]
             }
         ],
         "supported_plm_types": [
             "left-to-right",
             "encoder-decoder"
         ],
-        "signal_type": "text-classification",
+        "signal_type": [
+            "text-classification"
+        ],
         "results": null,
         "features": {
             "length": 19,
@@ -96,32 +126,42 @@
             "skeleton": "classify_with_choices"
         },
         "reference": "https://arxiv.org/abs/2202.01279",
-        "contributor": "Promptsource"
+        "contributor": "Datalab"
     },
     {
-        "id": "3",
+        "id": "ca047c74422d147dfb68bf086ec726f3",
         "language": "en",
         "description": "We use ||| to separate source and target in a template.",
         "template": "Is this a piece of news regarding {{\"world politics, sports, business, or science and technology\"}}?\n{{text}} \n||| \n{{answers[label] }}",
         "answers": [
             {
-                "World": "World politics"
+                "World": [
+                    "World politics"
+                ]
             },
             {
-                "Sports": "Sports"
+                "Sports": [
+                    "Sports"
+                ]
             },
             {
-                "Business": "Business"
+                "Business": [
+                    "Business"
+                ]
             },
             {
-                "Science and Technology": "Science and technology"
+                "Science and Technology": [
+                    "Science and technology"
+                ]
             }
         ],
         "supported_plm_types": [
             "left-to-right",
             "encoder-decoder"
         ],
-        "signal_type": "text-classification",
+        "signal_type": [
+            "text-classification"
+        ],
         "results": null,
         "features": {
             "length": 18,
@@ -129,32 +169,42 @@
             "skeleton": "classify_with_choices_question_first"
         },
         "reference": "https://arxiv.org/abs/2202.01279",
-        "contributor": "Promptsource"
+        "contributor": "Datalab"
     },
     {
-        "id": "4",
+        "id": "1b1ed080bfbf73cf9b118b4a0f10090a",
         "language": "en",
         "description": "We use ||| to separate source and target in a template.",
         "template": "Would you recommend the following article to a {{\"politician\"}}, an {{\"athlete\"}}, a {{\"business executive\"}}, or a {{\"scientist\"}}?\n\n{{ text }}\n|||\n{{answers[label]}}",
         "answers": [
             {
-                "World": "Politician"
+                "World": [
+                    "Politician"
+                ]
             },
             {
-                "Sports": "Athlete"
+                "Sports": [
+                    "Athlete"
+                ]
             },
             {
-                "Business": "Business executive"
+                "Business": [
+                    "Business executive"
+                ]
             },
             {
-                "Science and Technology": "Scientist"
+                "Science and Technology": [
+                    "Scientist"
+                ]
             }
         ],
         "supported_plm_types": [
             "left-to-right",
             "encoder-decoder"
         ],
-        "signal_type": "text-classification",
+        "signal_type": [
+            "text-classification"
+        ],
         "results": null,
         "features": {
             "length": 19,
@@ -162,32 +212,42 @@
             "skeleton": "recommend"
         },
         "reference": "https://arxiv.org/abs/2202.01279",
-        "contributor": "Promptsource"
+        "contributor": "Datalab"
     },
     {
-        "id": "5",
+        "id": "841fa6ccf50ded58d6321b5d5fb3734d",
         "language": "en",
         "description": "We use ||| to separate source and target in a template.",
         "template": "{{text}} \n\nWhich section of a newspaper would this article likely appear in? ||| \n{{answers[label] }}",
         "answers": [
             {
-                "World": "World News"
+                "World": [
+                    "World News"
+                ]
             },
             {
-                "Sports": "Sports"
+                "Sports": [
+                    "Sports"
+                ]
             },
             {
-                "Business": "Business"
+                "Business": [
+                    "Business"
+                ]
             },
             {
-                "Science and Technology": "Science and Technology"
+                "Science and Technology": [
+                    "Science and Technology"
+                ]
             }
         ],
         "supported_plm_types": [
             "left-to-right",
             "encoder-decoder"
         ],
-        "signal_type": "text-classification",
+        "signal_type": [
+            "text-classification"
+        ],
         "results": null,
         "features": {
             "length": 15,
@@ -195,32 +255,42 @@
             "skeleton": "which_section"
         },
         "reference": "https://arxiv.org/abs/2202.01279",
-        "contributor": "Promptsource"
+        "contributor": "Datalab"
     },
     {
-        "id": "6",
+        "id": "facbd14925e382c3dfd53eb3a76b44e2",
         "language": "en",
         "description": "We use ||| to separate source and target in a template.",
         "template": "{{text}} \n\nWhich of the following sections of a newspaper would this article likely appear in? {{\"World News\"}}, {{\"Sports\"}}, {{\"Business\"}}, or {{\"Science and Technology\"}}? ||| \n{{answers[label] }}",
         "answers": [
             {
-                "World": "World News"
+                "World": [
+                    "World News"
+                ]
             },
             {
-                "Sports": "Sports"
+                "Sports": [
+                    "Sports"
+                ]
             },
             {
-                "Business": "Business"
+                "Business": [
+                    "Business"
+                ]
             },
             {
-                "Science and Technology": "Science and Technology"
+                "Science and Technology": [
+                    "Science and Technology"
+                ]
             }
         ],
         "supported_plm_types": [
             "left-to-right",
             "encoder-decoder"
         ],
-        "signal_type": "text-classification",
+        "signal_type": [
+            "text-classification"
+        ],
         "results": null,
         "features": {
             "length": 26,
@@ -228,6 +298,6 @@
             "skeleton": "which_section_choices"
         },
         "reference": "https://arxiv.org/abs/2202.01279",
-        "contributor": "Promptsource"
+        "contributor": "Datalab"
     }
 ]
