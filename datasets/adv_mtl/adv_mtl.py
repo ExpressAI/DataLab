@@ -26,7 +26,7 @@ year={2017}
 
 # You can copy an official description
 _DESCRIPTION = """\
-This datalab is used in the paper of adversarial multi-task learning in text classification including 16 different fields.
+This dataset is used in the paper of adversarial multi-task learning in text classification including 16 different fields.
 """
 
 _HOMEPAGE = "http://pfliu.com/paper/adv-mtl.html"
