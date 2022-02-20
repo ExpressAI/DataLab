@@ -68,10 +68,11 @@ docs/source/_build/
 report.json
 report.md
 test_get_options.py
-<<<<<<< Updated upstream
-
-=======
 my-website
 sketch.py
-.gitignore
->>>>>>> Stashed changes
+
+client/calculate_feature_ag_news.py
+client/calculate_feature_mr.py
+client/test_*.py
+
+
