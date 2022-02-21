@@ -32,6 +32,8 @@ ENV/
 env.bak/
 venv.bak/
 envs/
+local_cache/
+dev/
 
 # pyenv
 .python-version

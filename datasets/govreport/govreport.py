@@ -2,6 +2,8 @@ import json
 import os
 import datalabs
 from datalabs.tasks import Summarization
+import subprocess
+import tempfile
 
 _DESCRIPTION = """
  GovReport dataset for summarization.
@@ -31,6 +33,22 @@ _CITATION = """\
 _ABSTRACT = "summary"
 _ARTICLE = "text"
 
+def _gdrive_url(id):
+    return f"https://drive.google.com/uc?id={id}&export=download"
+
+def custom_download(url, path):
+    with tempfile.TemporaryDirectory() as tmpdir:
+        response = subprocess.check_output([
+            "wget", "--save-cookies", os.path.join(tmpdir, "cookies.txt"), 
+            f"{url}", "-O-"])
+        with open(os.path.join(tmpdir, "response.txt"), "w") as f:
+            f.write(response.decode("utf-8"))
+        response = subprocess.check_output(["sed", "-rn", 's/.*confirm=([0-9A-Za-z_]+).*/\\1/p', os.path.join(tmpdir, "response.txt")])
+        response = response.decode("utf-8")
+        subprocess.check_output([
+            "wget", "--load-cookies", os.path.join(tmpdir, "cookies.txt"), "-O", path,
+            url+f"&confirm={response}"])
+        
 
 class GovReportConfig(datalabs.BuilderConfig):
     """BuilderConfig for GovReport."""
@@ -45,7 +63,8 @@ class GovReportConfig(datalabs.BuilderConfig):
 
 class GovReportDataset(datalabs.GeneratorBasedBuilder):
     """GovReport Dataset."""
-    _FILE = "https://drive.google.com/uc?id=1AwaWVVlv77gbWXwMzUX46r4kq2yY4Ylh&export=download"
+    # _FILE = "https://drive.google.com/uc?id=1AwaWVVlv77gbWXwMzUX46r4kq2yY4Ylh&export=download"
+    _FILE = _gdrive_url("1AwaWVVlv77gbWXwMzUX46r4kq2yY4Ylh")
     BUILDER_CONFIGS = [
         GovReportConfig(
             name="document",
@@ -76,7 +95,8 @@ class GovReportDataset(datalabs.GeneratorBasedBuilder):
         )
 
     def _split_generators(self, dl_manager):
-        f_path = dl_manager.download_and_extract(self._FILE)
+        f_path = dl_manager.download_custom(self._FILE, custom_download)
+        f_path = dl_manager.extract(f_path)
         train_src_path = os.path.join(f_path, "gov_report_fairseq_format/train.source")
         train_tgt_path = os.path.join(f_path, "gov_report_fairseq_format/train.target")
         val_src_path = os.path.join(f_path, "gov_report_fairseq_format/val.source")
