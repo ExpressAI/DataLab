@@ -46,12 +46,12 @@ REQUIRED_PKGS = [
     "lexicalrichness",
     "sacrebleu",
     "compare_mt",
-    "scikit-learn",
+    "scikit-learn", # restricted by hatesonar pkg
     "py7zr",
     # for hate speech
     "hatesonar",
     "dateparser",
-    "torch",
+    # "torch", # too larger
 ]
 
 AUDIO_REQUIRE = [
@@ -177,7 +177,7 @@ EXTRAS_REQUIRE = {
 
 setup(
     name="datalabs",
-    version="0.1.6.dev",
+    version="0.2.2.dev",
     description="Datalabs",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",

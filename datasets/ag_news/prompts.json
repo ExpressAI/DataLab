@@ -1,0 +1,233 @@
+[
+    {
+        "id": "0",
+        "language": "en",
+        "description": "We use ||| to separate source and target in a template.",
+        "template": "{{text}} \nWhat label best describes this news article? ||| \n{{answers[label] }}",
+        "answers": [
+            {
+                "World": "World politics"
+            },
+            {
+                "Sports": "Sports"
+            },
+            {
+                "Business": "Business"
+            },
+            {
+                "Science and Technology": "Science and technology"
+            }
+        ],
+        "supported_plm_types": [
+            "left-to-right",
+            "encoder-decoder"
+        ],
+        "signal_type": "text-classification",
+        "results": null,
+        "features": {
+            "length": 11,
+            "shape": "prefix",
+            "skeleton": "classify"
+        },
+        "reference": "https://arxiv.org/abs/2202.01279",
+        "contributor": "Promptsource"
+    },
+    {
+        "id": "1",
+        "language": "en",
+        "description": "We use ||| to separate source and target in a template.",
+        "template": "What label best describes this news article?\n{{text}} ||| \n{{answers[label] }}",
+        "answers": [
+            {
+                "World": "World politics"
+            },
+            {
+                "Sports": "Sports"
+            },
+            {
+                "Business": "Business"
+            },
+            {
+                "Science and Technology": "Science and technology"
+            }
+        ],
+        "supported_plm_types": [
+            "left-to-right",
+            "encoder-decoder"
+        ],
+        "signal_type": "text-classification",
+        "results": null,
+        "features": {
+            "length": 10,
+            "shape": "prefix",
+            "skeleton": "classify_question_first"
+        },
+        "reference": "https://arxiv.org/abs/2202.01279",
+        "contributor": "Promptsource"
+    },
+    {
+        "id": "2",
+        "language": "en",
+        "description": "We use ||| to separate source and target in a template.",
+        "template": "{{text}} \nIs this a piece of news regarding {{\"world politics, sports, business, or science and technology\"}}? ||| \n{{answers[label] }}",
+        "answers": [
+            {
+                "World": "World politics"
+            },
+            {
+                "Sports": "Sports"
+            },
+            {
+                "Business": "Business"
+            },
+            {
+                "Science and Technology": "Science and technology"
+            }
+        ],
+        "supported_plm_types": [
+            "left-to-right",
+            "encoder-decoder"
+        ],
+        "signal_type": "text-classification",
+        "results": null,
+        "features": {
+            "length": 19,
+            "shape": "prefix",
+            "skeleton": "classify_with_choices"
+        },
+        "reference": "https://arxiv.org/abs/2202.01279",
+        "contributor": "Promptsource"
+    },
+    {
+        "id": "3",
+        "language": "en",
+        "description": "We use ||| to separate source and target in a template.",
+        "template": "Is this a piece of news regarding {{\"world politics, sports, business, or science and technology\"}}?\n{{text}} \n||| \n{{answers[label] }}",
+        "answers": [
+            {
+                "World": "World politics"
+            },
+            {
+                "Sports": "Sports"
+            },
+            {
+                "Business": "Business"
+            },
+            {
+                "Science and Technology": "Science and technology"
+            }
+        ],
+        "supported_plm_types": [
+            "left-to-right",
+            "encoder-decoder"
+        ],
+        "signal_type": "text-classification",
+        "results": null,
+        "features": {
+            "length": 18,
+            "shape": "prefix",
+            "skeleton": "classify_with_choices_question_first"
+        },
+        "reference": "https://arxiv.org/abs/2202.01279",
+        "contributor": "Promptsource"
+    },
+    {
+        "id": "4",
+        "language": "en",
+        "description": "We use ||| to separate source and target in a template.",
+        "template": "Would you recommend the following article to a {{\"politician\"}}, an {{\"athlete\"}}, a {{\"business executive\"}}, or a {{\"scientist\"}}?\n\n{{ text }}\n|||\n{{answers[label]}}",
+        "answers": [
+            {
+                "World": "Politician"
+            },
+            {
+                "Sports": "Athlete"
+            },
+            {
+                "Business": "Business executive"
+            },
+            {
+                "Science and Technology": "Scientist"
+            }
+        ],
+        "supported_plm_types": [
+            "left-to-right",
+            "encoder-decoder"
+        ],
+        "signal_type": "text-classification",
+        "results": null,
+        "features": {
+            "length": 19,
+            "shape": "prefix",
+            "skeleton": "recommend"
+        },
+        "reference": "https://arxiv.org/abs/2202.01279",
+        "contributor": "Promptsource"
+    },
+    {
+        "id": "5",
+        "language": "en",
+        "description": "We use ||| to separate source and target in a template.",
+        "template": "{{text}} \n\nWhich section of a newspaper would this article likely appear in? ||| \n{{answers[label] }}",
+        "answers": [
+            {
+                "World": "World News"
+            },
+            {
+                "Sports": "Sports"
+            },
+            {
+                "Business": "Business"
+            },
+            {
+                "Science and Technology": "Science and Technology"
+            }
+        ],
+        "supported_plm_types": [
+            "left-to-right",
+            "encoder-decoder"
+        ],
+        "signal_type": "text-classification",
+        "results": null,
+        "features": {
+            "length": 15,
+            "shape": "prefix",
+            "skeleton": "which_section"
+        },
+        "reference": "https://arxiv.org/abs/2202.01279",
+        "contributor": "Promptsource"
+    },
+    {
+        "id": "6",
+        "language": "en",
+        "description": "We use ||| to separate source and target in a template.",
+        "template": "{{text}} \n\nWhich of the following sections of a newspaper would this article likely appear in? {{\"World News\"}}, {{\"Sports\"}}, {{\"Business\"}}, or {{\"Science and Technology\"}}? ||| \n{{answers[label] }}",
+        "answers": [
+            {
+                "World": "World News"
+            },
+            {
+                "Sports": "Sports"
+            },
+            {
+                "Business": "Business"
+            },
+            {
+                "Science and Technology": "Science and Technology"
+            }
+        ],
+        "supported_plm_types": [
+            "left-to-right",
+            "encoder-decoder"
+        ],
+        "signal_type": "text-classification",
+        "results": null,
+        "features": {
+            "length": 26,
+            "shape": "prefix",
+            "skeleton": "which_section_choices"
+        },
+        "reference": "https://arxiv.org/abs/2202.01279",
+        "contributor": "Promptsource"
+    }
+]

@@ -275,7 +275,10 @@ class Value:
     """
 
     dtype: str
+    feature_level: str = "sample_level"
+    raw_feature: str = True
     id: Optional[str] = None
+    is_bucket: bool = False
     # Automatically constructed
     pa_type: ClassVar[Any] = None
     _type: str = field(default="Value", init=False, repr=False)
@@ -624,6 +627,9 @@ class ClassLabel:
     names: List[str] = None
     names_file: Optional[str] = None
     id: Optional[str] = None
+    is_bucket: bool = False
+    feature_level:str = "sample_level"
+    raw_feature: str = True
     # Automatically constructed
     dtype: ClassVar[str] = "int64"
     pa_type: ClassVar[Any] = pa.int64()
@@ -737,8 +743,11 @@ class Sequence:
     """
 
     feature: Any
+    feature_level:str = "sample_level"
+    raw_feature: str = True
     length: int = -1
     id: Optional[str] = None
+    is_bucket: bool = False
     # Automatically constructed
     dtype: ClassVar[str] = "list"
     pa_type: ClassVar[Any] = None
@@ -801,6 +810,24 @@ def encode_nested_example(schema, obj):
     To avoid iterating over possibly long lists, it first checks if the first element that is not None has to be encoded.
     If the first element needs to be encoded, then all the elements of the list will be encoded, otherwise they'll stay the same.
     """
+
+    # print("--------------")
+    # print("schema:\t", schema)
+    # print("obj\t",obj)
+    # print("--------------\n")
+
+
+
+    # if isinstance(schema,dict):
+    #     schema_new = {}
+    #     for k,v in schema.items():
+    #         if v.feature_level == "dataset_level":
+    #             continue
+    #         else:
+    #             schema_new[k] = v
+
+    # print(schema)
+    # print(obj)
     # Nested structures: we allow dict, list/tuples, sequences
     if isinstance(schema, dict):
         return {

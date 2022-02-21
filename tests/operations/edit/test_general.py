@@ -12,74 +12,74 @@ class MyTestCase(unittest.TestCase):
 
         dataset = load_dataset("ag_news")
 
-        res = dataset["test"].apply(add_typos_checklist)
+        res = dataset["test"].apply(add_typos_checklist, mode = "realtime")
         print(next(res))
 
-        res = dataset["test"].apply(strip_punctuation_checklist)
+        res = dataset["test"].apply(strip_punctuation_checklist, mode = "realtime")
         print(next(res))
 
-        res = dataset["test"].apply(abbreviate)
+        res = dataset["test"].apply(abbreviate, mode = "realtime")
         print(next(res))
 
-        res = dataset["test"].apply(abbreviate_country_state)
+        res = dataset["test"].apply(abbreviate_country_state, mode = "realtime")
         print(next(res))
 
-        res = dataset["test"].apply(abbreviate_weekday_month)
+        res = dataset["test"].apply(abbreviate_weekday_month, mode = "realtime")
         print(next(res))
 
 
-        res = dataset["test"].apply(add_filler_words)
+        res = dataset["test"].apply(add_filler_words, mode = "realtime")
         print(next(res))
 
-        res = dataset["test"].apply(add_typo)
+        res = dataset["test"].apply(add_typo, mode = "realtime")
         print(next(res))
 
-        res = dataset["test"].apply(britishize_americanize)
+        res = dataset["test"].apply(britishize_americanize, mode = "realtime")
         print(next(res))
 
-        res = dataset["test"].apply(change_city_name)
+        res = dataset["test"].apply(change_city_name, mode = "realtime")
         print(next(res))
 
-        res = dataset["test"].apply(change_color)
+        res = dataset["test"].apply(change_color, mode = "realtime")
         print(next(res))
 
-        res = dataset["test"].apply(change_person_name)
+        res = dataset["test"].apply(change_person_name, mode = "realtime")
         print(next(res))
 
         # res = dataset["test"].apply(change_person_name_by_culture)
         # print(next(res)) # null result
 
-        res = dataset["test"].apply(emojify)
+        res = dataset["test"].apply(emojify, mode = "realtime")
         print(next(res))
 
         # res = dataset["test"].apply(factive_verb)  # wrong
         # print(next(res))
 
-        res = dataset["test"].apply(insert_abbreviation)
+        res = dataset["test"].apply(insert_abbreviation, mode = "realtime")
         print(next(res))
 
-        res = dataset["test"].apply(reformat_date)
+        res = dataset["test"].apply(reformat_date, mode = "realtime")
         print(next(res))
 
-        res = dataset["test"].apply(replace_acronyms)
+        res = dataset["test"].apply(replace_acronyms, mode = "realtime")
         print(next(res))
 
-        res = dataset["test"].apply(replace_greetings)
+        res = dataset["test"].apply(replace_greetings, mode = "realtime")
         print(next(res))
 
-        res = dataset["test"].apply(replace_hypernyms) # slow
+        res = dataset["test"].apply(replace_hypernyms, mode = "realtime") # slow
         print(next(res))
 
-        res = dataset["test"].apply(replace_hyponyms) # slow
+        res = dataset["test"].apply(replace_hyponyms, mode = "realtime") # slow
         print(next(res))
 
-        res = dataset["test"].apply(replace_synonym)
+        res = dataset["test"].apply(replace_synonym, mode = "realtime")
         print(next(res))
 
-        res = dataset["test"].apply(simple_cipher)
+        res = dataset["test"].apply(simple_cipher, mode = "realtime")
         print(next(res))
 
-        res = dataset["test"].apply(slangificator)
+        res = dataset["test"].apply(slangificator, mode = "realtime")
         print(next(res))
 
 

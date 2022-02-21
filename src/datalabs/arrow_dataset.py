@@ -571,19 +571,22 @@ class NonExistentDatasetError(Exception):
 class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData):
     """A Dataset backed by an Arrow table."""
 
+    def __load_json(self, path):
+        if not os.path.exists(path):
+            open(path, "w")
+            return {}
+        with open(path, "r") as obj_file:
+            try:
+                return json.load(obj_file)
+            except:
+                return {}
+
     def __schema_load(self):
         filename = self.cache_files[0]["filename"]
         (filepath, filename) = os.path.split(filename)
         (filename, extent) = os.path.splitext(filename)
         path = os.path.join(filepath, filename + ".json")
-        obj = {}
-        if not os.path.exists(path):
-            open(path, "w")
-        with open(path, "r") as obj_file:
-            try:
-                obj = json.load(obj_file)
-            except:
-                pass
+        obj = self.__load_json(path)
         if obj.__len__():
             from .features import Value
             for item in obj:
@@ -655,9 +658,9 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                 f"The table can't have duplicated columns but columns {duplicated_columns} are duplicated."
             )
 
-        # Update metadata
-
+        # Update metadata and statistics info
         self._data = update_metadata_with_features(self._data, self.features)
+        self.__load_stat()
 
     # def apply(self, func):
     #     for sample in self.__iter__():
@@ -672,7 +675,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
 
 
 
-    def apply(self, func):
+    def apply_basic(self, func, prefix = ""):
         # if isinstance(func, str):
         #     if self._info.task_templates[0].task_category == "text-classification":
         #
@@ -693,13 +696,79 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                 labels = self._info.task_templates[0].labels
                 labels_to_answers = dict(zip(range(len(labels)), labels))
                 yield func(sample, labels_to_answers)
-
         else:
             for sample in self.__iter__():
                 yield func(sample)
 
+    def apply(self, func, mode="realtime", prefix=""):
+        if func._type.find("Aggregating") != -1:
+            result = next(self.apply_basic(func))
+
+            result_new = {}
+            for attr_name, value in result.items():
+                attr_name = prefix + "_" + attr_name if prefix != "" else attr_name
+                result_new[attr_name] = value
+
+            self._stat.update(result_new)
+            if (mode == "local"):
+                self.__write_stat()
+            return self
+        else:
+            map = { "realtime": self.apply_basic, "memory": self.apply_memory, "local": self.apply_local }
+            return map[mode](func, prefix = prefix)
+
+
+    def apply_memory(self, func, prefix = ""):
+        result = self
+        attr_columns = [item for item in self.apply_basic(func)]
+        attr_names = attr_columns[0].keys()
+        for attr_name in attr_names:
+            if prefix == "":
+                result = result.add_column(attr_name, [item[attr_name] for item in attr_columns])
+            else:
+                result = result.add_column(prefix + "_" + attr_name, [item[attr_name] for item in attr_columns])
+        return result
+
+    def apply_local(self, func, prefix = ""):
+        result = self
+        attr_columns = [item for item in self.apply_basic(func)]
+        attr_names = attr_columns[0].keys()
+        pa_table = self.__load_disk()
+        column_dict = {}
+
+        for attr_name in attr_names:
+            attr_name_origin = attr_name
+            attr_name = prefix+ "_" + attr_name if prefix !="" else attr_name
+            if attr_name in pa_table.column_names:
+                pa_table = pa_table.drop([attr_name])
+            items = [item[attr_name_origin] for item in attr_columns]
+            pa_table = pa_table.append_column(attr_name, pa.array(items))
+            column_dict[attr_name] = items
+        self.__write_disk(pa_table)
+
+        column_table = InMemoryTable.from_pydict(column_dict)
+        inferred_feature = Features.from_arrow_schema(column_table.schema)
+        table = MemoryMappedTable(pa_table, self.__table_path())
+        info = self.info.copy()
+        info.features.update(inferred_feature)
+        self.__schema_backup(attr_name, inferred_feature[attr_name].dtype)
+
+        return Dataset(table, info=info, split=self.split, indices_table=self._indices)
+
+
     def __table_path(self):
         return self.cache_files[0]["filename"]
+
+    def __load_stat(self):
+        dirname = os.path.dirname(self.__table_path())
+        path = os.path.join(dirname, "stat.json")
+        self._stat = self.__load_json(path)
+
+    def __write_stat(self):
+        dirname = os.path.dirname(self.__table_path())
+        path = os.path.join(dirname, "stat.json")
+        with open(path, "w") as obj_file:
+            json.dump(self._stat, obj_file)
 
     def __load_disk(self):
         filename = self.__table_path()
@@ -729,14 +798,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         (filepath, filename) = os.path.split(filename)
         (filename, extent) = os.path.splitext(filename)
         path = os.path.join(filepath, filename + ".json")
-        obj = {}
-        if not os.path.exists(path):
-            open(path, "w")
-        with open(path, "r") as obj_file:
-            try:
-                obj = json.load(obj_file)
-            except:
-                pass
+        obj = self.__load_json(path)
         if (dtype != None):
             obj[field] = dtype
         else:
@@ -744,33 +806,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         with open(path, "w") as obj_file:
             json.dump(obj, obj_file)
 
-    def apply_save(self, func, attr):
-        if func._type == 'Aggregating':
-            self.info.__dict__[attr] = self.apply(func)
-            return
 
-        attr_name = attr if attr != None else re.findall("\w+", str(func))[1] 
-        attr_column = [item for item in self.apply(func)]
-        return self.add_column(attr_name, attr_column)
-
-    def apply_local(self, func, attr):
-        attr_name = attr if attr != None else re.findall("\w+", str(func))[1] 
-        attr_column = [item for item in self.apply(func)]
-
-        pa_table = self.__load_disk()
-        if attr_name in pa_table.column_names:
-            pa_table = pa_table.drop([attr_name])
-        pa_table = pa_table.append_column(attr_name, pa.array(attr_column))
-        self.__write_disk(pa_table)
-
-        column_table = InMemoryTable.from_pydict({attr_name: attr_column})
-        inferred_feature = Features.from_arrow_schema(column_table.schema)
-        table = MemoryMappedTable(pa_table, self.__table_path())
-        info = self.info.copy()
-        info.features.update(inferred_feature)
-        self.__schema_backup(attr_name, inferred_feature[attr_name].dtype)
-
-        return Dataset(table, info=info, split=self.split, indices_table=self._indices)
 
     def write_arrow(self, path: str):
         with open(path, "wb") as file_obj:
