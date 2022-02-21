@@ -130,9 +130,6 @@ class Client:
 # client.add_dataset_metadata()
 
 
-
-
-
 # Example 2
 # client = Client(dataset_name_db="test_pf5", dataset_name_sdk="xsum", calculate_features = False)
 # client.add_dataset_from_sdk()
@@ -140,3 +137,7 @@ class Client:
 # Example 3
 # client = Client(dataset_name_db="test_pf9", dataset_name_sdk="mr", calculate_features = True, field = "text", data_typology = 'textdataset')
 # client.add_dataset_from_sdk()
+
+# Example 3
+client = Client(dataset_name_db="test_metaphor_qa", dataset_name_sdk="metaphor_qa", calculate_features = True, field = "context", data_typology = 'textdataset')
+client.add_dataset_from_sdk()
