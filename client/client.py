@@ -139,5 +139,5 @@ class Client:
 # client.add_dataset_from_sdk()
 
 # Example 3
-client = Client(dataset_name_db="test_metaphor_qa2", dataset_name_sdk="metaphor_qa", calculate_features = True, data_typology = 'textdataset')
-client.add_dataset_from_sdk()
+# client = Client(dataset_name_db="metaphor_qa", dataset_name_sdk="metaphor_qa", calculate_features = True, data_typology = 'textdataset')
+# client.add_dataset_from_sdk()

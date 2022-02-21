@@ -81,6 +81,7 @@ def get_schema_of_sample_level_features():
             "answer_length": 1,
             "option1_length": 1,
             "option2_length": 1,
+            # "option_index": 0,
             }
 
 
@@ -92,6 +93,7 @@ def get_features_sample_level(sample:dict):
     context = sample["context"]
     options = sample["options"]
     answer = sample["answers"]["text"]
+    option_index = sample["answers"]["option_index"]
 
     answer_length = len(answer.split(" "))
     option1_length = len(options[0].split(" "))
@@ -107,6 +109,8 @@ def get_features_sample_level(sample:dict):
 
     res_info_general_new.update({"answer_length":answer_length,
                              "option1_length":option1_length,
-                             "option2_length":option2_length})
+                             "option2_length":option2_length,
+                              # "option_index":int(option_index),
+                                 })
 
     return res_info_general_new

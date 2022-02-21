@@ -170,3 +170,55 @@ def get_lead_k_summary(sample:dict) -> Dict:
     summary = sample['summary']
     lead_k_info = _lead_k(document, summary, _compute_rouge, k = 3)
     return lead_k_info
+
+
+
+def get_schema_of_sample_level_features():
+    return {
+            "text_length":1,
+            "text_lexical_richness":0.2,
+            "text_basic_words":0.2,
+            "text_gender_bias_word_male":1,
+            "text_gender_bias_word_female":2,
+            "text_gender_bias_single_name_male":1,
+            "text_gender_bias_single_name_female":1,
+            "summary_length": 1,
+            "summary_lexical_richness": 0.2,
+            "summary_basic_words": 0.2,
+            "summary_gender_bias_word_male": 1,
+            "summary_gender_bias_word_female": 2,
+            "summary_gender_bias_single_name_male": 1,
+            "summary_gender_bias_single_name_female": 1,
+            }
+
+
+
+@summarization_featurizing(name = "get_features_sample_level", contributor= "datalab", processed_fields= "text",
+                                 task="summarization", description="This function is used to calculate the text length")
+def get_features_sample_level(sample:dict):
+
+
+    text = sample["text"]
+    summary = sample["summary"]
+
+
+
+    res_info_general = get_features_sample_level_general.func(text)
+    res_info_general_new = {}
+    for k,v in res_info_general.items():
+        res_info_general_new["text" + "_" + k] =v
+
+    res_info_general = get_features_sample_level_general.func(summary)
+    for k,v in res_info_general.items():
+        res_info_general_new["summary" + "_" + k] =v
+
+
+
+
+    # res_info_general_new.update({"answer_length":answer_length,
+    #                          "option1_length":option1_length,
+    #                          "option2_length":option2_length,
+    #                           # "option_index":int(option_index),
+    #                              })
+
+    return res_info_general_new

@@ -2,6 +2,13 @@ import json
 import os
 import datalabs
 from datalabs.tasks import Summarization, DialogSummarization
+from featurize.summarization import (
+    get_features_sample_level,
+    get_schema_of_sample_level_features,
+    infer_schema_dataset_level,
+    )
+from datalabs.utils.more_features import prefix_dict_key, get_feature_arguments
+
 
 _DESCRIPTION = """
  The SAMSum dataset contains about 16k messenger-like conversations with summaries. Conversations were created and written down by linguists fluent in English. Linguists were asked to create conversations similar to those they write on a daily basis, reflecting the proportion of topics of their real-life messenger convesations. The style and register are diversified - conversations could be informal, semi-formal or formal, they may contain slang words, emoticons and typos. Then, the conversations were annotated with summaries. It was assumed that summaries should be a concise brief of what people talked about in the conversation in third person.
@@ -68,15 +75,31 @@ class SAMSumDataset(datalabs.GeneratorBasedBuilder):
 
     def _info(self):
         # Should return a datalab.DatasetInfo object
+        features_dataset = {}
+
         if "document" in self.config.name:
-            features = datalabs.Features(
+            features_sample = datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
                     _ABSTRACT: datalabs.Value("string"),
                 }
             )
+            if self.feature_expanding:
+                sample_level_schema = get_schema_of_sample_level_features()
+                dict_feature_argument = get_feature_arguments(sample_level_schema, field="",
+                                                              feature_level="sample_level")
+                additional_features = datalabs.Features(dict_feature_argument)
+                features_sample.update(additional_features)
+
+                # print(features_sample)
+
+                dataset_level_schema = infer_schema_dataset_level(sample_level_schema)
+                dict_feature_argument = get_feature_arguments(dataset_level_schema, field="avg",
+                                                              feature_level="dataset_level")
+                features_dataset.update(datalabs.Features(dict_feature_argument))
+
         else:
-            features = datalabs.Features({
+            features_sample = datalabs.Features({
                 "dialogue": datalabs.Sequence(datalabs.Features({
                         "speaker": datalabs.Value("string"),
                         "text": datalabs.Value("string")
@@ -85,7 +108,8 @@ class SAMSumDataset(datalabs.GeneratorBasedBuilder):
             })
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=features,
+            features=features_sample,
+            features_dataset=features_dataset,
             supervised_keys=None,
             homepage=None,
             citation=_CITATION,
@@ -115,10 +139,20 @@ class SAMSumDataset(datalabs.GeneratorBasedBuilder):
             data = json.load(f)
         for (id_, article) in enumerate(data):
             if "document" in self.config.name:
-                yield id_, {
+
+                raw_feature_info = {
                     _ARTICLE: article["dialogue"],
                     _ABSTRACT: article["summary"]
                 }
+
+                if not self.feature_expanding:
+                    yield id_, raw_feature_info
+                else:
+                    additional_feature_info = get_features_sample_level(raw_feature_info)
+                    raw_feature_info.update(additional_feature_info)
+                    # print(additional_feature_info)
+                    yield id_, raw_feature_info
+
             else:
                 dialogue = []
                 text = [x.strip() for x in article["dialogue"].split("\n")]

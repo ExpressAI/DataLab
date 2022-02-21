@@ -11,6 +11,17 @@ def prefix_dict_key(dict_obj, prefix):
         dict_obj_new[prefix + "_" + k] = v
     return dict_obj_new
 
+
+def infer_schema_dataset_level(sample_level_schema:dict):
+
+    dataset_level_schema = {}
+    for feature_name, value in sample_level_schema.items():
+        if isinstance(value, int) or isinstance(value, float):
+            dataset_level_schema[feature_name] = value
+    return dataset_level_schema
+
+
+
 def get_feature_arguments(dict_output, field = "text", feature_level = "sample_level"):
     """Automate following code based on the output of `get_features_sample_level`
      additional_features = datalabs.Features(
