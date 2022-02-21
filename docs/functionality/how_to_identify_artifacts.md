@@ -19,7 +19,7 @@ as one example and walk through how to identify potential artifacts of a dataset
 ### Step 1: Enter into Bias analysis page
 Select the dataset and enter into its functional panel page, click the `Bias` button
 
-![img_1.png](img_1.png)
+![image](https://user-images.githubusercontent.com/59123869/154880168-d6def7f6-2833-4665-a490-3cb09fd199d4.png)
 
 
 ### Step 2: Select Two Feature Fields
@@ -33,14 +33,13 @@ In text summarization task, the `field` could be `source` and `summary`.
 Features are properties defined w.r.t the data of each field. For example,
 the `text length` could be a feature of the field `hypothesis`.
 
-![img.png](img.png)
+![image](https://user-images.githubusercontent.com/59123869/154881277-c1b1de9a-3a07-4446-8a2b-e9fbad161d75.png)
 
 
 
 ### Step 4: Interpret Results
 Once we finished the above three steps, a visualized PMI matrix will be printed automatically:
-![img_3.png](img_3.png)
-
+![image](https://user-images.githubusercontent.com/59123869/154881323-0e614f18-571d-4340-b991-91e5b35f3f80.png)
 
 
 For example, in the above matrix, value in entry (i,j) represents the PMI(i,j).
