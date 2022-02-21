@@ -3,7 +3,8 @@ import os
 import csv
 import datalabs
 from datalabs.tasks import QuestionAnsweringMultipleChoices
-from featurize.general import get_features_sample_level
+#from featurize.general import get_features_sample_level
+from featurize.qa_multiple_choices import get_features_sample_level, get_schema_of_sample_level_features
 from datalabs.utils.more_features import prefix_dict_key, get_feature_arguments
 
 
@@ -92,15 +93,19 @@ class MetaphorQA(datalabs.GeneratorBasedBuilder):
             )
 
         if self.feature_expanding:
-            sample_level_schema = get_features_sample_level("This is a test sample")
-            dict_feature_argument = get_feature_arguments(sample_level_schema, field=FIELD, feature_level="sample_level")
+            sample_level_schema = get_schema_of_sample_level_features()
+            dict_feature_argument = get_feature_arguments(sample_level_schema, field="", feature_level="sample_level")
             additional_features = datalabs.Features(dict_feature_argument)
             features_sample.update(additional_features)
 
+            # print(features_sample)
+
 
             dataset_level_schema = infer_schema_dataset_level(sample_level_schema)
-            dict_feature_argument = get_feature_arguments(dataset_level_schema, field="avg" + "_" + FIELD, feature_level="dataset_level")
+            dict_feature_argument = get_feature_arguments(dataset_level_schema, field="avg", feature_level="dataset_level")
             features_dataset.update(datalabs.Features(dict_feature_argument))
+
+
 
 
 
@@ -189,7 +194,8 @@ class MetaphorQA(datalabs.GeneratorBasedBuilder):
                 if not self.feature_expanding:
                     yield id_, raw_feature_info
                 else:
-                    additional_feature_info = prefix_dict_key(get_features_sample_level(context), FIELD)
+                    additional_feature_info = get_features_sample_level(raw_feature_info)
                     raw_feature_info.update(additional_feature_info)
+                    # print(additional_feature_info)
                     yield id_, raw_feature_info
 

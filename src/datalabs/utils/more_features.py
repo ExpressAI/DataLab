@@ -4,6 +4,8 @@ from ..features.features import *
 
 
 def prefix_dict_key(dict_obj, prefix):
+    if prefix == "":
+        return dict_obj
     dict_obj_new = {}
     for k, v in dict_obj.items():
         dict_obj_new[prefix + "_" + k] = v
@@ -21,7 +23,8 @@ def get_feature_arguments(dict_output, field = "text", feature_level = "sample_l
     """
     dict_feature_argument = {}
     for func_name, func_value in dict_output.items():
-        key = field + "_" + func_name
+
+        key = field + "_" + func_name if field != "" else func_name
         value = "int64"
         is_bucket = True
         if isinstance(func_value, int):

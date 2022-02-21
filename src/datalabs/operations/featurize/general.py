@@ -260,13 +260,13 @@ def get_features_sample_level(text:str):
 
 
     # Gender bias
-    # one_words_results = get_gender_bias_one_word(
-    #     gendered_dic['words']['male'],
-    #     gendered_dic['words']['female'],
-    #     gendered_dic['single_name']['male'],
-    #     gendered_dic['single_name']['female'],
-    #     text,
-    # )
+    one_words_results = get_gender_bias_one_word(
+        gendered_dic['words']['male'],
+        gendered_dic['words']['female'],
+        gendered_dic['single_name']['male'],
+        gendered_dic['single_name']['female'],
+        text,
+    )
 
 
 
@@ -286,9 +286,9 @@ def get_features_sample_level(text:str):
     return {"length":length,
             "lexical_richness":lexical_richness,
             "basic_words":basic_words,
-            # "gender_bias_word_male":one_words_results['words_m'],
-            # "gender_bias_word_female":one_words_results['words_f'],
-            # "gender_bias_single_name_male":one_words_results['single_name_m'],
-            # "gender_bias_single_name_female":one_words_results['single_name_f'],
+            "gender_bias_word_male":one_words_results['words_m'],
+            "gender_bias_word_female":one_words_results['words_f'],
+            "gender_bias_single_name_male":one_words_results['single_name_m'],
+            "gender_bias_single_name_female":one_words_results['single_name_f'],
             # "hate_speech_detection":class_,
             }

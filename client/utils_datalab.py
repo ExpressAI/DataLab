@@ -121,7 +121,8 @@ def get_info(dataset_name:str, calculate_features = False, field = "text"):
         features_dataset = {}
         if calculate_features:
             ## operation_dataset_level_feature: for example, get_features_dataset_level_text_classification
-            operation_dataset_level_feature = eval("get_features_dataset_level" + "_" + task_category.replace("-","_"))
+            #operation_dataset_level_feature = eval("get_features_dataset_level" + "_" + task_category.replace("-","_"))
+            operation_dataset_level_feature = get_features_dataset_level_text_classification
 
             dataset[split_name] = dataset[split_name].apply(operation_dataset_level_feature, mode="memory", prefix="avg")
             features_dataset = asdict(dataset[split_name]._info)["features_dataset"]
