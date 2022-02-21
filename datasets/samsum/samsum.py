@@ -6,9 +6,9 @@ from featurize.summarization import (
     get_features_sample_level,
     get_schema_of_sample_level_features,
     )
+
 from datalabs.utils.more_features import (
-    infer_schema_dataset_level,
-    prefix_dict_key, get_feature_arguments,
+    get_feature_schemas,
 )
 
 
@@ -54,6 +54,14 @@ class SAMSumConfig(datalabs.BuilderConfig):
         self.task_templates = task_templates
 
 
+
+
+
+
+
+
+
+
 class SAMSumDataset(datalabs.GeneratorBasedBuilder):
     """SAMSum Dataset."""
     _FILE_ID = "1Wq9A5ZXOMZN3w3HVjIGwBz25XVbbgNr5"
@@ -87,18 +95,7 @@ class SAMSumDataset(datalabs.GeneratorBasedBuilder):
                 }
             )
             if self.feature_expanding:
-                sample_level_schema = get_schema_of_sample_level_features()
-                dict_feature_argument = get_feature_arguments(sample_level_schema, field="",
-                                                              feature_level="sample_level")
-                additional_features = datalabs.Features(dict_feature_argument)
-                features_sample.update(additional_features)
-
-                # print(features_sample)
-
-                dataset_level_schema = infer_schema_dataset_level(sample_level_schema)
-                dict_feature_argument = get_feature_arguments(dataset_level_schema, field="avg",
-                                                              feature_level="dataset_level")
-                features_dataset.update(datalabs.Features(dict_feature_argument))
+                features_sample, features_dataset = get_feature_schemas(features_sample, get_schema_of_sample_level_features)
 
         else:
             features_sample = datalabs.Features({

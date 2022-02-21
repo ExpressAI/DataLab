@@ -3,6 +3,26 @@ import sys
 from ..features.features import *
 
 
+def get_feature_schemas(features_sample, get_schema_of_sample_level_features):
+    features_dataset = {}
+
+    sample_level_schema = get_schema_of_sample_level_features()
+    dict_feature_argument = get_feature_arguments(sample_level_schema, field="",
+                                                  feature_level="sample_level")
+    additional_features = Features(dict_feature_argument)
+    features_sample.update(additional_features)
+
+    # print(features_sample)
+
+    dataset_level_schema = infer_schema_dataset_level(sample_level_schema)
+    dict_feature_argument = get_feature_arguments(dataset_level_schema, field="avg",
+                                                  feature_level="dataset_level")
+    features_dataset.update(Features(dict_feature_argument))
+
+    return features_sample, features_dataset
+
+
+
 def prefix_dict_key(dict_obj, prefix):
     if prefix == "":
         return dict_obj
