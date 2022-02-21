@@ -1433,6 +1433,7 @@ def load_dataset_builder(
     download_mode: Optional[GenerateMode] = None,
     revision: Optional[Union[str, Version]] = None,
     use_auth_token: Optional[Union[bool, str]] = None,
+    feature_expanding: bool = False,
     script_version="deprecated",
     **config_kwargs,
 ) -> DatasetBuilder:
@@ -1537,6 +1538,7 @@ def load_dataset_builder(
         hash=hash,
         features=features,
         use_auth_token=use_auth_token,
+        feature_expanding = feature_expanding,
         **builder_kwargs,
         **config_kwargs,
     )
@@ -1562,6 +1564,7 @@ def load_dataset(
     task: Optional[Union[str, TaskTemplate]] = None,
     streaming: bool = False,
     script_version="deprecated",
+    feature_expanding:bool = False,
     **config_kwargs,
 ) -> Union[DatasetDict, Dataset, IterableDatasetDict, IterableDataset]:
     """Load a dataset.
@@ -1682,6 +1685,7 @@ def load_dataset(
         download_mode=download_mode,
         revision=revision,
         use_auth_token=use_auth_token,
+        feature_expanding = feature_expanding,
         **config_kwargs,
     )
 

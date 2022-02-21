@@ -100,7 +100,8 @@ def get_info(dataset_name:str, calculate_features = False, field = "text"):
 
 
     # load dataset
-    dataset = load_dataset(dataset_name)
+
+    dataset = load_dataset(dataset_name, feature_expanding = calculate_features)
 
     # Feature
     all_splits = dataset['train']._info.splits.keys()

@@ -20,6 +20,7 @@ class Client:
                  transformation = {'type':'origin'},
                  calculate_features = False,
                  field = "text",
+                 data_typology = None,
                  ):
         self._end_point_add_dataset = "http://datalab.nlpedia.ai:5001/upload_new_dataset"
 
@@ -33,6 +34,7 @@ class Client:
         self.transformation:Dict = transformation
         self.calculate_features:bool = calculate_features
         self.field:str = field
+        self.data_typology = data_typology
 
         if dataset_name_db == None:
             raise ValueError(f"the dataset_name_db should not be none:{dataset_name_db}")
@@ -94,7 +96,8 @@ class Client:
                                                            dataset_name_db=self.dataset_name_db,
                                                            transformation= self.transformation,
                                                            version = self.version,
-                                                           languages=self.languages, )
+                                                           languages=self.languages,
+                                                           data_typology = self.data_typology,)
 
         # reformat the sample information for db
         MAX_NUMBER_OF_SAMPLES = 20000
@@ -127,11 +130,13 @@ class Client:
 # client.add_dataset_metadata()
 
 
+
+
+
 # Example 2
-# client = Client(dataset_name_db="test_pf8", dataset_name_sdk="mr", calculate_features = True, field = "text")
+# client = Client(dataset_name_db="test_pf5", dataset_name_sdk="xsum", calculate_features = False)
 # client.add_dataset_from_sdk()
 
-
 # Example 3
-# client = Client(dataset_name_db="test_pf5", dataset_name_sdk="xsum", calculate_features = False)
+# client = Client(dataset_name_db="test_pf9", dataset_name_sdk="mr", calculate_features = True, field = "text", data_typology = 'textdataset')
 # client.add_dataset_from_sdk()

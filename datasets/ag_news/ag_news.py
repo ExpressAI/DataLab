@@ -22,7 +22,7 @@ from datalabs import Dataset, Prompts
 from pathlib import Path
 
 from featurize.general import get_features_sample_level
-from aggregate.text_classification import get_features_dataset_level
+
 from datalabs.utils.more_features import prefix_dict_key, get_feature_arguments
 
 
@@ -106,7 +106,7 @@ class AGNews(datalabs.GeneratorBasedBuilder):
 
                 })
 
-        if EXPAND:
+        if self.feature_expanding:
             sample_level_schema = get_features_sample_level("This is a test sample")
             dict_feature_argument = get_feature_arguments(sample_level_schema, field=FIELD, feature_level="sample_level")
             additional_features = datalabs.Features(dict_feature_argument)
@@ -162,7 +162,7 @@ class AGNews(datalabs.GeneratorBasedBuilder):
 
                 raw_feature_info = {FIELD: text, "label": label}
 
-                if not EXPAND:
+                if not self.feature_expanding:
                     yield id_, raw_feature_info
                 else:
                     additional_feature_info = prefix_dict_key(get_features_sample_level(text), FIELD)

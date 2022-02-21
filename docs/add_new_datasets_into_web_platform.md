@@ -70,7 +70,10 @@ This involves two steps:
 #### (2) call the client function to add your dataset
 
 ```python
-client = Client(dataset_name_db="test_mr", dataset_name_sdk="mr", calculate_features = True, field = "text")
+client = Client(dataset_name_db="test_mr", dataset_name_sdk="mr", \
+                calculate_features = True, 
+                field = "text",
+                data_typology = 'textdataset')
 client.add_dataset_from_sdk()
 ```
 where
@@ -78,3 +81,4 @@ where
 * `dataset_name_sdk`: denotes the data loader script's name of your dataset.
 * `calculate_features = True`: refers to additional features will be calculated (e.g., `text length`)
 * `field`: a field that features (e.g., `text length`) will be extracted from. It is usually task (or even dataset) dependent. We will give more docs about how to set it.
+* `data_typology`: the typology name of the dataset (We will give more explanation about this.)

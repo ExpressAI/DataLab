@@ -97,6 +97,7 @@ class BuilderConfig:
     data_dir: Optional[str] = None
     data_files: Optional[DataFilesDict] = None
     description: Optional[str] = None
+    feature_expanding: bool = False
 
     def __post_init__(self):
         # The config name is used to name the cache directory.
@@ -216,6 +217,7 @@ class DatasetBuilder:
         data_files: Optional[Union[str, list, dict, DataFilesDict]] = None,
         data_dir: Optional[str] = None,
         dataset_class = Dataset,
+        feature_expanding:bool = False,
         **config_kwargs,
     ):
         """Constructs a DatasetBuilder.
@@ -251,6 +253,7 @@ class DatasetBuilder:
         self.use_auth_token = use_auth_token
         self.namespace = namespace
         self.dataset_class = dataset_class
+        self.feature_expanding = feature_expanding
 
         if data_files is not None and not isinstance(data_files, DataFilesDict):
             data_files = DataFilesDict.from_local_or_remote(
@@ -264,6 +267,8 @@ class DatasetBuilder:
             config_kwargs["data_files"] = data_files
         if data_dir is not None:
             config_kwargs["data_dir"] = data_dir
+        # if feature_expanding is not None:
+        #     config_kwargs["data_dir"] = data_dir
         self.config, self.config_id = self._create_builder_config(
             name,
             custom_features=features,
