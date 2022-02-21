@@ -74,5 +74,6 @@ sketch.py
 client/calculate_feature_ag_news.py
 client/calculate_feature_mr.py
 client/test_*.py
+client/add_my_dataset.py
 
 

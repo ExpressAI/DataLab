@@ -235,7 +235,7 @@ def generate_db_metadata_from_sdk(metadata,
     summary = metadata['description']
     homepage = metadata['homepage']
     license = metadata['license']
-    subset_name = metadata['sub_dataset']
+    subset_name = metadata['config_name']
     repository = metadata['repository']
     leaderboard = metadata['leaderboard']
     person_of_contact = metadata['person_of_contact']
