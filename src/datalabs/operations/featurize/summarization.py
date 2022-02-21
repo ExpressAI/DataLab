@@ -14,6 +14,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from operation import DatasetOperation, dataset_operation
+from .general import get_features_sample_level as get_features_sample_level_general
 
 
 class SummarizationFeaturizing(Featurizing, DatasetOperation):
@@ -189,6 +190,12 @@ def get_schema_of_sample_level_features():
             "summary_gender_bias_word_female": 2,
             "summary_gender_bias_single_name_male": 1,
             "summary_gender_bias_single_name_female": 1,
+            "density": 0.1,
+            "coverage": 0.1,
+            "compression": 0.1,
+            "repetition": 0.1,
+            "novelty": 0.1,
+            "copy_len": 0.1,
             }
 
 
@@ -212,8 +219,12 @@ def get_features_sample_level(sample:dict):
     for k,v in res_info_general.items():
         res_info_general_new["summary" + "_" + k] =v
 
+    # get task-dependent features
+    summary_features = get_all_features.func(sample)
 
 
+    # update the res_info_general_new
+    res_info_general_new.update(summary_features)
 
     # res_info_general_new.update({"answer_length":answer_length,
     #                          "option1_length":option1_length,

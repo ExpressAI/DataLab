@@ -5,9 +5,11 @@ from datalabs.tasks import Summarization, DialogSummarization
 from featurize.summarization import (
     get_features_sample_level,
     get_schema_of_sample_level_features,
-    infer_schema_dataset_level,
     )
-from datalabs.utils.more_features import prefix_dict_key, get_feature_arguments
+from datalabs.utils.more_features import (
+    infer_schema_dataset_level,
+    prefix_dict_key, get_feature_arguments,
+)
 
 
 _DESCRIPTION = """
@@ -138,6 +140,10 @@ class SAMSumDataset(datalabs.GeneratorBasedBuilder):
         with open(f_path, encoding="utf-8") as f:
             data = json.load(f)
         for (id_, article) in enumerate(data):
+
+            if id_ > 100:
+                break
+
             if "document" in self.config.name:
 
                 raw_feature_info = {

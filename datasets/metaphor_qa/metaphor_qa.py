@@ -170,6 +170,7 @@ class MetaphorQA(datalabs.GeneratorBasedBuilder):
             next(reader, None)
             for id_, data in enumerate(reader):
                 id_sample += 1
+
                 context = data[0]
                 option1 = data[1]
                 option2 = data[2]
