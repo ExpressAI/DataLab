@@ -4,6 +4,17 @@ import datalabs
 from datalabs.tasks import Summarization
 import gzip
 
+
+# the following package are needed when more additional features are expected to be calculated
+from featurize.summarization import (
+    get_features_sample_level,
+    get_schema_of_sample_level_features,
+    )
+from datalabs.utils.more_features import (
+    get_feature_schemas,
+)
+
+
 _DESCRIPTION = """
  BIGPATENT consists of 1.3 million records of U.S. patent documents along with human written abstractive summaries.
  From paper: "BIGPATENT: A Large-Scale Dataset for Abstractive and Coherent Summarization" by B. Gliwa et al.
@@ -57,16 +68,25 @@ class BigPatentDataset(datalabs.GeneratorBasedBuilder):
     DEFAULT_CONFIG_NAME = "document"
 
     def _info(self):
-        # Should return a datalab.DatasetInfo object
-        return datalabs.DatasetInfo(
-            description=_DESCRIPTION,
-            features=datalabs.Features(
+
+        features_dataset = {}
+        features_sample = datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
                     _ABSTRACT: datalabs.Value("string"),
                     # "id": datalab.Value("string"),
                 }
-            ),
+            )
+        if self.feature_expanding:
+            features_sample, features_dataset = get_feature_schemas(features_sample,
+                                                                    get_schema_of_sample_level_features)
+
+
+        # Should return a datalab.DatasetInfo object
+        return datalabs.DatasetInfo(
+            description=_DESCRIPTION,
+            features=features_sample,
+            features_dataset=features_dataset,
             supervised_keys=None,
             homepage="https://evasharma.github.io/bigpatent/",
             citation=_CITATION,
@@ -106,8 +126,19 @@ class BigPatentDataset(datalabs.GeneratorBasedBuilder):
                 with gzip.open(os.path.join(cur_dir, file_name), 'r') as f:
                     for row in f:
                         data = json.loads(row)
-                        yield cnt, {
+
+                        raw_feature_info = {
                             _ARTICLE: data["description"],
                             _ABSTRACT: data["abstract"],
                         }
+
+                        if not self.feature_expanding:
+                            yield cnt, raw_feature_info
+                        else:
+                            additional_feature_info = get_features_sample_level(raw_feature_info)
+                            raw_feature_info.update(additional_feature_info)
+                            # print(additional_feature_info)
+                            yield cnt, raw_feature_info
+
+
                         cnt += 1
