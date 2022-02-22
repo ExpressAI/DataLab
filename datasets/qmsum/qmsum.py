@@ -176,12 +176,12 @@ class QMSumDataset(datalabs.GeneratorBasedBuilder):
                         raw_feature_info = cur
 
                         if not self.feature_expanding:
-                            yield id_, raw_feature_info
+                            yield _id, raw_feature_info
                         else:
                             additional_feature_info = get_features_sample_level(raw_feature_info)
                             raw_feature_info.update(additional_feature_info)
                             # print(additional_feature_info)
-                            yield id_, raw_feature_info
+                            yield _id, raw_feature_info
 
 
 
