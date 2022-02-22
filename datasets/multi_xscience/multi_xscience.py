@@ -5,6 +5,18 @@ from datalabs.tasks import Summarization, MultiDocSummarization
 from datalabs.tasks.summarization import _MDS_TEXT_COLUMN
 import gzip
 
+# the following package are needed when more additional features are expected to be calculated
+from featurize.summarization import (
+    get_features_sample_level,
+    get_schema_of_sample_level_features,
+    )
+from datalabs.utils.more_features import (
+    get_feature_schemas,
+)
+
+
+
+
 _DESCRIPTION = """
  Multi-XScience, a large-scale multi-document summarization dataset created from scientific articles. Multi-XScience introduces a challenging multi-document summarization task: writing therelated-work section of a paper based on itsabstract and the articles it references.
  From paper: "Multi-XScience: A Large-scale Dataset for Extreme Multi-document Summarization of Scientific Articles" by Y. Lu et al.
@@ -70,15 +82,25 @@ class MultiXScienceDataset(datalabs.GeneratorBasedBuilder):
 
     def _info(self):
         # Should return a datalab.DatasetInfo object
+        features_dataset = {}
         if "single" in self.config.name:
-            features = datalabs.Features(
+
+
+            features_sample = datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
                     _ABSTRACT: datalabs.Value("string"),
                 }
             )
+            if self.feature_expanding:
+                features_sample, features_dataset = get_feature_schemas(features_sample,
+                                                                        get_schema_of_sample_level_features)
+
+
+
+
         else:
-            features = datalabs.Features(
+            features_sample = datalabs.Features(
                 {
                     _MDS_TEXT_COLUMN: datalabs.Sequence(datalabs.Value("string")),
                     _ABSTRACT: datalabs.Value("string"),
@@ -86,7 +108,8 @@ class MultiXScienceDataset(datalabs.GeneratorBasedBuilder):
             )
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=features,
+            features=features_sample,
+            features_dataset=features_dataset,
             supervised_keys=None,
             homepage="https://github.com/yaolu/Multi-XScience",
             citation=_CITATION,
@@ -121,11 +144,23 @@ class MultiXScienceDataset(datalabs.GeneratorBasedBuilder):
                     # skip empty abstract
                     text.append("{}: {}".format(k, x["ref_abstract"][k]["abstract"]))
             if "single" in self.config.name:
+
                 text = _MDS_SEP.join(text)
-                yield id_, {
+
+                raw_feature_info = {
                     _ARTICLE: text,
                     _ABSTRACT: summary,
                 }
+
+                if not self.feature_expanding:
+                    yield id_, raw_feature_info
+                else:
+                    additional_feature_info = get_features_sample_level(raw_feature_info)
+                    raw_feature_info.update(additional_feature_info)
+                    # print(additional_feature_info)
+                    yield id_, raw_feature_info
+
+
             else:
                 yield id_, {
                     _MDS_TEXT_COLUMN: text,
