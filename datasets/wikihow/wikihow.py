@@ -5,6 +5,18 @@ from datalabs.tasks import Summarization
 import tempfile
 import subprocess
 
+# the following package are needed when more additional features are expected to be calculated
+from featurize.summarization import (
+    get_features_sample_level,
+    get_schema_of_sample_level_features,
+    )
+from datalabs.utils.more_features import (
+    get_feature_schemas,
+)
+
+
+
+
 _DESCRIPTION = """
  WikiHow is a new large-scale dataset using the online WikiHow (http://www.wikihow.com/) knowledge base.
  Each article consists of multiple paragraphs and each paragraph starts with a sentence summarizing it. By merging the paragraphs to form the article and the paragraph outlines to form the summary, the resulting version of the dataset contains more than 200,000 long-sequence pairs.
@@ -70,16 +82,25 @@ class WikiHowDataset(datalabs.GeneratorBasedBuilder):
     DEFAULT_CONFIG_NAME = "document"
 
     def _info(self):
-        # Should return a datalab.DatasetInfo object
-        return datalabs.DatasetInfo(
-            description=_DESCRIPTION,
-            features=datalabs.Features(
+
+        features_dataset = {}
+        features_sample = datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
                     _ABSTRACT: datalabs.Value("string"),
                     # "id": datalab.Value("string"),
                 }
-            ),
+            )
+        if self.feature_expanding:
+            features_sample, features_dataset = get_feature_schemas(features_sample,
+                                                                    get_schema_of_sample_level_features)
+
+
+        # Should return a datalab.DatasetInfo object
+        return datalabs.DatasetInfo(
+            description=_DESCRIPTION,
+            features=features_sample,
+            features_dataset=features_dataset,
             supervised_keys=None,
             homepage=None,
             citation=_CITATION,
@@ -115,7 +136,20 @@ class WikiHowDataset(datalabs.GeneratorBasedBuilder):
         with open(f_path, encoding="utf-8") as f:
             for (id_, line) in enumerate(f):
                 data = json.loads(line)
-                yield id_, {
+
+
+                raw_feature_info = {
                     _ARTICLE: data["article"],
                     _ABSTRACT: data["summary"],
                 }
+
+                if not self.feature_expanding:
+                    yield id_, raw_feature_info
+                else:
+                    additional_feature_info = get_features_sample_level(raw_feature_info)
+                    raw_feature_info.update(additional_feature_info)
+                    # print(additional_feature_info)
+                    yield id_, raw_feature_info
+
+
+
