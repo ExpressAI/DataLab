@@ -143,8 +143,8 @@ class GovReportDataset(datalabs.GeneratorBasedBuilder):
         with open(src_path, encoding="utf-8") as f_src, open(tgt_path, encoding="utf-8") as f_tgt:
             for (id_, (row_src, row_tgt)) in enumerate(zip(f_src, f_tgt)):
 
-                if id_ > 20:
-                    break
+                # if id_ > 20:
+                #     break
 
                 row_src = row_src.strip()
                 row_tgt = row_tgt.strip()
