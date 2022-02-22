@@ -3,6 +3,17 @@ import os
 import datalabs
 from datalabs.tasks import Summarization
 
+# the following package are needed when more additional features are expected to be calculated
+from featurize.summarization import (
+    get_features_sample_level,
+    get_schema_of_sample_level_features,
+    )
+from datalabs.utils.more_features import (
+    get_feature_schemas,
+)
+
+
+
 _DESCRIPTION = """
  The WikiSum dataset provides how-to articles from wikihow.com and their summaries, written as a coherent paragraph.
  From paper: "WikiSum: Coherent Summarization Dataset for Efficient Human-Evaluation" by N. Cohen et al.
@@ -57,16 +68,25 @@ class WikiSumDataset(datalabs.GeneratorBasedBuilder):
     DEFAULT_CONFIG_NAME = "document"
 
     def _info(self):
-        # Should return a datalab.DatasetInfo object
-        return datalabs.DatasetInfo(
-            description=_DESCRIPTION,
-            features=datalabs.Features(
+
+        features_dataset = {}
+        features_sample = datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
                     _ABSTRACT: datalabs.Value("string"),
                     # "id": datalab.Value("string"),
                 }
-            ),
+            )
+        if self.feature_expanding:
+            features_sample, features_dataset = get_feature_schemas(features_sample,
+                                                                    get_schema_of_sample_level_features)
+
+
+        # Should return a datalab.DatasetInfo object
+        return datalabs.DatasetInfo(
+            description=_DESCRIPTION,
+            features=features_sample,
+            features_dataset=features_dataset,
             supervised_keys=None,
             homepage=None,
             citation=_CITATION,
@@ -99,7 +119,21 @@ class WikiSumDataset(datalabs.GeneratorBasedBuilder):
                 data = json.loads(line)
                 if data["fold"] == split:
                     cnt += 1
-                    yield cnt, {
+
+                    raw_feature_info = {
                         _ARTICLE: data["article"],
                         _ABSTRACT: data["summary"],
                     }
+
+                    if not self.feature_expanding:
+                        yield cnt, raw_feature_info
+                    else:
+                        additional_feature_info = get_features_sample_level(raw_feature_info)
+                        raw_feature_info.update(additional_feature_info)
+                        # print(additional_feature_info)
+                        yield cnt, raw_feature_info
+
+                    # yield cnt, {
+                    #     _ARTICLE: data["article"],
+                    #     _ABSTRACT: data["summary"],
+                    # }
