@@ -133,8 +133,8 @@ class SAMSumDataset(datalabs.GeneratorBasedBuilder):
             data = json.load(f)
         for (id_, article) in enumerate(data):
 
-            if id_ > 100:
-                break
+            # if id_ > 100:
+            #     break
 
             if "document" in self.config.name:
 

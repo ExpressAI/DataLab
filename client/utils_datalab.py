@@ -87,7 +87,7 @@ def get_transformation_template(type):
 
 
 
-def get_info(dataset_name:str, calculate_features = False, field = "text"):
+def get_info(dataset_name:str, sub_dataset_name_sdk:str, calculate_features = False, field = "text"):
     """
     Input:
     dataset_name: the dataset name of dataloader script, for example, mr
@@ -101,7 +101,9 @@ def get_info(dataset_name:str, calculate_features = False, field = "text"):
 
     # load dataset
 
-    dataset = load_dataset(dataset_name, feature_expanding = calculate_features)
+
+    dataset = load_dataset(dataset_name, feature_expanding = calculate_features) if sub_dataset_name_sdk == None else load_dataset(dataset_name, sub_dataset_name_sdk, feature_expanding = calculate_features)
+
 
     # Feature
     all_splits = dataset['train']._info.splits.keys()

@@ -12,6 +12,7 @@ class Client:
     def __init__(self,
                  dataset_name_db = None,
                  dataset_name_sdk = None,
+                 sub_dataset_name_sdk=None,
                  version = "origin",
                  languages = ['en'],
                  tasks = ['text-classification'],
@@ -26,6 +27,7 @@ class Client:
 
         self.dataset_name_sdk:str = dataset_name_sdk
         self.dataset_name_db:str = dataset_name_db
+        self.sub_dataset_name_sdk = sub_dataset_name_sdk
         self.version:str = version
         self.languages:List[str] = languages
         self.tasks:List[str] = tasks
@@ -87,6 +89,7 @@ class Client:
 
         # get metadata and dataset information from sdk by passing the dataset name of the sdk
         metadata_sdk, metadata_features_sdk, dataset_sdk = get_info(self.dataset_name_sdk,
+                                                                    self.sub_dataset_name_sdk,
                                                                     calculate_features= self.calculate_features,
                                                                     field = self.field)
 
