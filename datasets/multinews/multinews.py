@@ -5,6 +5,18 @@ import datalabs
 from datalabs.tasks import Summarization, MultiDocSummarization
 from datalabs.tasks.summarization import _MDS_TEXT_COLUMN
 
+
+# the following package are needed when more additional features are expected to be calculated
+from featurize.summarization import (
+    get_features_sample_level,
+    get_schema_of_sample_level_features,
+    )
+from datalabs.utils.more_features import (
+    get_feature_schemas,
+)
+
+
+
 _DESCRIPTION = """
  Multinews dataset for mutlti-document summarization.
  Each data sample contains multuple documents, which are seperated by "|||||"
@@ -108,6 +120,7 @@ class MultiNewsDataset(datalabs.GeneratorBasedBuilder):
 
     def _info(self):
         # Should return a datalab.DatasetInfo object
+        features_dataset = {}
         if "multi" in self.config.name:
             features=datalabs.Features(
                 {
@@ -116,15 +129,21 @@ class MultiNewsDataset(datalabs.GeneratorBasedBuilder):
                 }
             )
         else:
-            features=datalabs.Features(
+            features_sample = datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
                     _ABSTRACT: datalabs.Value("string"),
                 }
             )
+            if self.feature_expanding:
+                features_sample, features_dataset = get_feature_schemas(features_sample,
+                                                                        get_schema_of_sample_level_features)
+
+
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=features,
+            features=features_sample,
+            features_dataset=features_dataset,
             supervised_keys=None,
             homepage="https://github.com/Alex-Fabbri/Multi-News",
             citation=_CITATION,
@@ -181,13 +200,33 @@ class MultiNewsDataset(datalabs.GeneratorBasedBuilder):
                 for (id_, (row_src, row_tgt)) in enumerate(zip(f_src, f_tgt)):
                     row_src = row_src.strip().replace("NEWLINE_CHAR", "")
                     row_tgt = row_tgt.strip().lstrip("– ")
-                    yield id_, {"text": row_src, "summary": row_tgt}
+
+                    raw_feature_info = {"text": row_src, "summary": row_tgt}
+
+                    if not self.feature_expanding:
+                        yield id_, raw_feature_info
+                    else:
+                        additional_feature_info = get_features_sample_level(raw_feature_info)
+                        raw_feature_info.update(additional_feature_info)
+                        # print(additional_feature_info)
+                        yield id_, raw_feature_info
         elif self.config.name in ["preprocessed-single", "truncated-single"]:
             with open(src_path, encoding="utf-8") as f_src, open(tgt_path, encoding="utf-8") as f_tgt:
                 for (id_, (row_src, row_tgt)) in enumerate(zip(f_src, f_tgt)):
                     row_src = row_src.strip().replace("story_separator_special_tag", "|||||")
                     row_tgt = row_tgt.strip().lstrip("– ")
-                    yield id_, {"text": row_src, "summary": row_tgt}
+
+                    raw_feature_info = {"text": row_src, "summary": row_tgt}
+
+                    if not self.feature_expanding:
+                        yield id_, raw_feature_info
+                    else:
+                        additional_feature_info = get_features_sample_level(raw_feature_info)
+                        raw_feature_info.update(additional_feature_info)
+                        # print(additional_feature_info)
+                        yield id_, raw_feature_info
+
+
         elif self.config.name in ["raw-multi", "raw-cleaned-multi"]:
             with open(src_path, encoding="utf-8") as f_src, open(tgt_path, encoding="utf-8") as f_tgt:
                 for (id_, (row_src, row_tgt)) in enumerate(zip(f_src, f_tgt)):
