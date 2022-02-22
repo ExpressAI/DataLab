@@ -32,8 +32,16 @@ from client import Client
 # client = Client(dataset_name_db="dialogsum", dataset_name_sdk="dialogsum", sub_dataset_name_sdk="document", calculate_features = True, data_typology = 'textdataset')
 # client.add_dataset_from_sdk()
 
-client = Client(dataset_name_db="reddit_tifu", dataset_name_sdk="reddit_tifu",  calculate_features = True, data_typology = 'textdataset')
+# client = Client(dataset_name_db="reddit_tifu", dataset_name_sdk="reddit_tifu",  calculate_features = True, data_typology = 'textdataset')
+# client.add_dataset_from_sdk()
+
+client = Client(dataset_name_db="multi_xscience",
+                dataset_name_sdk="multi_xscience",
+                sub_dataset_name_sdk="single-document",
+                calculate_features = True,
+                data_typology = 'textdataset')
 client.add_dataset_from_sdk()
+
 
 
 
