@@ -5,6 +5,18 @@ from datalabs.tasks import Summarization
 import tempfile
 import subprocess
 
+
+# the following package are needed when more additional features are expected to be calculated
+from featurize.summarization import (
+    get_features_sample_level,
+    get_schema_of_sample_level_features,
+    )
+from datalabs.utils.more_features import (
+    get_feature_schemas,
+)
+
+
+
 _DESCRIPTION = """
  Reddit TIFU dataset, consisting of 120K posts from the online discussion forum Reddit
  From paper: "Abstractive Summarization of Reddit Posts with Multi-level Memory Networks" by B. Kim et al.
@@ -76,16 +88,25 @@ class RedditTIFUDataset(datalabs.GeneratorBasedBuilder):
     DEFAULT_CONFIG_NAME = "long"
 
     def _info(self):
-        # Should return a datalab.DatasetInfo object
-        return datalabs.DatasetInfo(
-            description=_DESCRIPTION,
-            features=datalabs.Features(
+
+
+        features_dataset = {}
+        features_sample = datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
                     _ABSTRACT: datalabs.Value("string"),
                     # "id": datalab.Value("string"),
                 }
-            ),
+            )
+        if self.feature_expanding:
+            features_sample, features_dataset = get_feature_schemas(features_sample,
+                                                                    get_schema_of_sample_level_features)
+
+        # Should return a datalab.DatasetInfo object
+        return datalabs.DatasetInfo(
+            description=_DESCRIPTION,
+            features=features_sample,
+            features_dataset=features_dataset,
             supervised_keys=None,
             homepage=None,
             citation=_CITATION,
@@ -113,15 +134,36 @@ class RedditTIFUDataset(datalabs.GeneratorBasedBuilder):
                 data = json.loads(line) 
                 if self.config.name == "short":
                     # short version dataset
-                    yield cnt, {
+
+                    raw_feature_info = {
                         _ARTICLE: data["selftext_without_tldr"],
                         _ABSTRACT: data["trimmed_title"],
                     }
+
+
+                    if not self.feature_expanding:
+                        yield cnt, raw_feature_info
+                    else:
+                        additional_feature_info = get_features_sample_level(raw_feature_info)
+                        raw_feature_info.update(additional_feature_info)
+                        # print(additional_feature_info)
+                        yield cnt, raw_feature_info
+
                     cnt += 1
+
                 elif data["tldr"] is not None:
                     # long version dataset
-                    yield cnt, {
+                    raw_feature_info = {
                         _ARTICLE: data["selftext_without_tldr"],
                         _ABSTRACT: data["tldr"],
                     }
+
+
+                    if not self.feature_expanding:
+                        yield cnt, raw_feature_info
+                    else:
+                        additional_feature_info = get_features_sample_level(raw_feature_info)
+                        raw_feature_info.update(additional_feature_info)
+                        # print(additional_feature_info)
+                        yield cnt, raw_feature_info
                     cnt += 1
