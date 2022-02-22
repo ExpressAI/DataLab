@@ -6,6 +6,17 @@ import datalabs
 from datalabs.tasks import Summarization, QuerySummarization
 from nltk import word_tokenize
 
+# the following package are needed when more additional features are expected to be calculated
+from featurize.summarization import (
+    get_features_sample_level,
+    get_schema_of_sample_level_features,
+    )
+from datalabs.utils.more_features import (
+    get_feature_schemas,
+)
+
+
+
 _DESCRIPTION = """
  QMSum is a new human-annotated benchmark for query-based multi-domain meeting summarization task, which consists of 1,808 query-summary pairs over 232 meetings in multiple domains.
  See: https://aclanthology.org/2021.naacl-main.472.pdf
@@ -94,16 +105,22 @@ class QMSumDataset(datalabs.GeneratorBasedBuilder):
     DEFAULT_CONFIG_NAME = "query-based"
 
     def _info(self):
+        features_dataset = {}
         # Should return a datalab.DatasetInfo object
         if "document" in self.config.name:
-            features = datalabs.Features(
+
+            features_sample = datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
                     _ABSTRACT: datalabs.Value("string"),
                 }
             )
+            if self.feature_expanding:
+                features_sample, features_dataset = get_feature_schemas(features_sample,
+                                                                        get_schema_of_sample_level_features)
+
         else:
-            features = datalabs.Features(
+            features_sample = datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
                     _ABSTRACT: datalabs.Value("string"),
@@ -112,7 +129,8 @@ class QMSumDataset(datalabs.GeneratorBasedBuilder):
             )
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=features,
+            features=features_sample,
+            features_dataset=features_dataset,
             supervised_keys=None,
             homepage="https://github.com/Yale-LILY/QMSum",
             citation=_CITATION,
@@ -154,7 +172,20 @@ class QMSumDataset(datalabs.GeneratorBasedBuilder):
                         cur['text'] = clean_data('<s> ' + query + ' </s> ' + src + ' </s>')
                         target = tokenize(data['general_query_list'][j]['answer'])
                         cur['summary'] = target
-                        yield _id, cur
+
+                        raw_feature_info = cur
+
+                        if not self.feature_expanding:
+                            yield id_, raw_feature_info
+                        else:
+                            additional_feature_info = get_features_sample_level(raw_feature_info)
+                            raw_feature_info.update(additional_feature_info)
+                            # print(additional_feature_info)
+                            yield id_, raw_feature_info
+
+
+
+
                     else:
                         query, src = clean_data(query), clean_data(src)
                         target = tokenize(data['general_query_list'][j]['answer'])
@@ -167,7 +198,19 @@ class QMSumDataset(datalabs.GeneratorBasedBuilder):
                         cur['text'] = clean_data('<s> ' + query + ' </s> ' + src + ' </s>')
                         target = tokenize(data['specific_query_list'][j]['answer'])
                         cur['summary'] = target
-                        yield _id, cur
+
+                        raw_feature_info = cur
+
+                        if not self.feature_expanding:
+                            yield id_, raw_feature_info
+                        else:
+                            additional_feature_info = get_features_sample_level(raw_feature_info)
+                            raw_feature_info.update(additional_feature_info)
+                            # print(additional_feature_info)
+                            yield id_, raw_feature_info
+
+
+
                     else:
                         query, src = clean_data(query), clean_data(src)
                         target = tokenize(data['specific_query_list'][j]['answer'])
