@@ -2,11 +2,13 @@ import json
 import os
 import datalabs
 from datalabs.tasks import Summarization, DialogSummarization
+
+
+# the following package are needed when more additional features are expected to be calculated
 from featurize.summarization import (
     get_features_sample_level,
     get_schema_of_sample_level_features,
     )
-
 from datalabs.utils.more_features import (
     get_feature_schemas,
 )

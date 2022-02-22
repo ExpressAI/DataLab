@@ -5,6 +5,20 @@ from datalabs.tasks import Summarization
 import subprocess
 import tempfile
 
+
+# the following package are needed when more additional features are expected to be calculated
+from featurize.summarization import (
+    get_features_sample_level,
+    get_schema_of_sample_level_features,
+    )
+from datalabs.utils.more_features import (
+    get_feature_schemas,
+)
+
+
+
+
+
 _DESCRIPTION = """
  GovReport dataset for summarization.
  From paper: "Efficient Attentions for Long Document Summarization" by L. Huang et al.
@@ -75,16 +89,24 @@ class GovReportDataset(datalabs.GeneratorBasedBuilder):
     DEFAULT_CONFIG_NAME = "document"
 
     def _info(self):
-        # Should return a datalab.DatasetInfo object
-        return datalabs.DatasetInfo(
-            description=_DESCRIPTION,
-            features=datalabs.Features(
+
+        features_dataset = {}
+        features_sample = datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
                     _ABSTRACT: datalabs.Value("string"),
                     # "id": datalab.Value("string"),
                 }
-            ),
+            )
+        if self.feature_expanding:
+            features_sample, features_dataset = get_feature_schemas(features_sample,
+                                                                    get_schema_of_sample_level_features)
+
+        # Should return a datalab.DatasetInfo object
+        return datalabs.DatasetInfo(
+            description=_DESCRIPTION,
+            features=features_sample,
+            features_dataset=features_dataset,
             supervised_keys=None,
             homepage="https://github.com/luyang-huang96/LongDocSum",
             citation=_CITATION,
@@ -120,6 +142,24 @@ class GovReportDataset(datalabs.GeneratorBasedBuilder):
         """Generate GovReport examples."""
         with open(src_path, encoding="utf-8") as f_src, open(tgt_path, encoding="utf-8") as f_tgt:
             for (id_, (row_src, row_tgt)) in enumerate(zip(f_src, f_tgt)):
+
+                if id_ > 20:
+                    break
+
                 row_src = row_src.strip()
                 row_tgt = row_tgt.strip()
-                yield id_, {"text": row_src, "summary": row_tgt}
+
+
+                raw_feature_info = {"text": row_src, "summary": row_tgt}
+
+                if not self.feature_expanding:
+                    yield id_, raw_feature_info
+                else:
+                    additional_feature_info = get_features_sample_level(raw_feature_info)
+                    raw_feature_info.update(additional_feature_info)
+                    # print(additional_feature_info)
+                    yield id_, raw_feature_info
+
+
+
+
