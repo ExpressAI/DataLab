@@ -122,7 +122,7 @@ class MultiNewsDataset(datalabs.GeneratorBasedBuilder):
         # Should return a datalab.DatasetInfo object
         features_dataset = {}
         if "multi" in self.config.name:
-            features=datalabs.Features(
+            features_sample=datalabs.Features(
                 {
                     _MDS_TEXT_COLUMN: datalabs.Sequence(datalabs.Value("string")),
                     _ABSTRACT: datalabs.Value("string"),

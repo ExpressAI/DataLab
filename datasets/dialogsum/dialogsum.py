@@ -3,6 +3,17 @@ import os
 import datalabs
 from datalabs.tasks import Summarization, DialogSummarization
 
+# the following package are needed when more additional features are expected to be calculated
+from featurize.summarization import (
+    get_features_sample_level,
+    get_schema_of_sample_level_features,
+    )
+from datalabs.utils.more_features import (
+    get_feature_schemas,
+)
+
+
+
 _DESCRIPTION = """
  DialogSum contains face-to-face spoken dialogues that cover a wide range of daily-life topics, including schooling, work, medication, shopping, leisure, travel.
  See: https://aclanthology.org/2020.emnlp-main.648/
@@ -65,16 +76,24 @@ class DialogSumDataset(datalabs.GeneratorBasedBuilder):
     DEFAULT_CONFIG_NAME = "dialogue"
 
     def _info(self):
+        features_dataset = {}
         # Should return a datalab.DatasetInfo object
         if "document" in self.config.name:
-            features = datalabs.Features(
+
+
+            features_sample = datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
                     _ABSTRACT: datalabs.Value("string"),
                 }
             )
+            if self.feature_expanding:
+                features_sample, features_dataset = get_feature_schemas(features_sample,
+                                                                        get_schema_of_sample_level_features)
+
+
         else:
-            features = datalabs.Features({
+            features_sample = datalabs.Features({
                 "dialogue": datalabs.Sequence(datalabs.Features({
                         "speaker": datalabs.Value("string"),
                         "text": datalabs.Value("string")
@@ -83,7 +102,8 @@ class DialogSumDataset(datalabs.GeneratorBasedBuilder):
             })
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=features,
+            features=features_sample,
+            features_dataset=features_dataset,
             supervised_keys=None,
             homepage="https://github.com/cylnlp/dialogsum",
             citation=_CITATION,
@@ -123,10 +143,21 @@ class DialogSumDataset(datalabs.GeneratorBasedBuilder):
                         summary = [x["summary"]]  # make it a list
                 text = x["dialogue"]
                 if "document" in self.config.name:
-                    yield id_, {
+
+                    raw_feature_info = {
                         _ARTICLE: text,
                         _ABSTRACT: summary,
                     }
+
+                    if not self.feature_expanding:
+                        yield id_, raw_feature_info
+                    else:
+                        additional_feature_info = get_features_sample_level(raw_feature_info)
+                        raw_feature_info.update(additional_feature_info)
+                        # print(additional_feature_info)
+                        yield id_, raw_feature_info
+
+
                 else:
                     dialogue = []
                     text = [x.strip() for x in text.split("\n")]
