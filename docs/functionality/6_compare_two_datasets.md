@@ -22,7 +22,7 @@ DataLab automates this process and helps researchers to make pair-wise dataset a
 3. DataLab will generate different analytical figures and tables for these two datasets.
 ![image](https://user-images.githubusercontent.com/59123869/155395073-d1dfe0a2-8045-4b74-b78e-4a70729ea5f7.png)
 
-![image](https://user-images.githubusercontent.com/59123869/155395138-63755efd-7cd1-4fc4-aeb2-2e346a8cc561.png)
+![image](https://user-images.githubusercontent.com/59123869/155395692-6a610191-5588-4e82-881f-06df7adcb785.png)
 
 
 
