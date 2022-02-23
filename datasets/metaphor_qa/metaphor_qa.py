@@ -17,13 +17,15 @@ def infer_schema_dataset_level(sample_level_schema:dict):
     return dataset_level_schema
 
 _CITATION = """
-TO BE ADDED
 """
 
 
 _DESCRIPTION = """\
-Testing the Ability of Language Models to Interpret Figurative Language
+This dataset contains examples of creative metaphors written by humans. It is formatted as a Winograd schema, with two
+paired sentences that have opposite meanings. E.g. "Shopping for groceries is (finding shells on a sunny beach | a scavenger hunt
+with a list created by a lunatic). The dataset can be used to test common-sense understanding in a non-literal way.
 """
+
 url_train_small = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/master/data/filtered/train_s.csv"
 url_train_medium = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/master/data/filtered/train.csv"
 url_train_large = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/master/data/filtered/train_xl.csv"
