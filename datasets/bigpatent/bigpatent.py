@@ -3,6 +3,8 @@ import os
 import datalabs
 from datalabs.tasks import Summarization
 import gzip
+import tempfile
+import subprocess
 
 
 # the following package are needed when more additional features are expected to be calculated
@@ -43,6 +45,19 @@ _ARTICLE = "text"
 
 def _gdrive_url(id):
     return f"https://drive.google.com/uc?id={id}&export=download"
+
+def custom_download(url, path):
+    with tempfile.TemporaryDirectory() as tmpdir:
+        response = subprocess.check_output([
+            "wget", "--save-cookies", os.path.join(tmpdir, "cookies.txt"), 
+            f"{url}", "-O-"])
+        with open(os.path.join(tmpdir, "response.txt"), "w") as f:
+            f.write(response.decode("utf-8"))
+        response = subprocess.check_output(["sed", "-rn", 's/.*confirm=([0-9A-Za-z_]+).*/\\1/p', os.path.join(tmpdir, "response.txt")])
+        response = response.decode("utf-8")
+        subprocess.check_output([
+            "wget", "--load-cookies", os.path.join(tmpdir, "cookies.txt"), "-O", path,
+            url+f"&confirm={response}"])
 
 class BigPatentConfig(datalabs.BuilderConfig):
     """BuilderConfig for BigPatent."""
@@ -97,7 +112,9 @@ class BigPatentDataset(datalabs.GeneratorBasedBuilder):
         )
 
     def _split_generators(self, dl_manager):
-        f_path = dl_manager.download_and_extract(_gdrive_url(self._FILE_ID))
+        # f_path = dl_manager.download_and_extract(_gdrive_url(self._FILE_ID))
+        f_path = dl_manager.download_custom(_gdrive_url(self._FILE_ID), custom_download)
+        f_path = dl_manager.extract(f_path)
         train_path = dl_manager.extract(os.path.join(f_path, "bigPatentData", "train.tar.gz"))
         test_path = dl_manager.extract(os.path.join(f_path, "bigPatentData", "test.tar.gz"))
         val_path = dl_manager.extract(os.path.join(f_path, "bigPatentData", "val.tar.gz"))  

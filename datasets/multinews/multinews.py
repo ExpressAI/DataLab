@@ -4,6 +4,8 @@ import os
 import datalabs
 from datalabs.tasks import Summarization, MultiDocSummarization
 from datalabs.tasks.summarization import _MDS_TEXT_COLUMN
+import tempfile
+import subprocess
 
 
 # the following package are needed when more additional features are expected to be calculated
@@ -48,6 +50,20 @@ _ARTICLE = "text"
 
 def _gdrive_url(id):
     return f"https://drive.google.com/uc?id={id}&export=download"
+
+def custom_download(url, path):
+    with tempfile.TemporaryDirectory() as tmpdir:
+        response = subprocess.check_output([
+            "wget", "--save-cookies", os.path.join(tmpdir, "cookies.txt"), 
+            f"{url}", "-O-"])
+        with open(os.path.join(tmpdir, "response.txt"), "w") as f:
+            f.write(response.decode("utf-8"))
+        response = subprocess.check_output(["sed", "-rn", 's/.*confirm=([0-9A-Za-z_]+).*/\\1/p', os.path.join(tmpdir, "response.txt")])
+        response = response.decode("utf-8")
+        subprocess.check_output([
+            "wget", "--load-cookies", os.path.join(tmpdir, "cookies.txt"), "-O", path,
+            url+f"&confirm={response}"])
+
 
 class MultiNewsConfig(datalabs.BuilderConfig):
     """BuilderConfig for MultiNews."""
@@ -152,33 +168,33 @@ class MultiNewsDataset(datalabs.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         if self.config.name in ["raw-single", "raw-multi"]:
-            train_src_path = dl_manager.download(_gdrive_url("1vWfhWIj-UpV_bY-zcu7lw4m9z8hLkF0r"))
-            train_tgt_path = dl_manager.download(_gdrive_url("1QVgswwhVTkd3VLCzajK6eVkcrSWEK6kq"))
-            val_src_path = dl_manager.download(_gdrive_url("1L2dk4ThZ-Bau9rIQpMG8I75R15FpLE-B"))
-            val_tgt_path = dl_manager.download(_gdrive_url("1Y1lBbBU5Q0aJMqLhYEOdEtTqQ85XnRRM"))
-            test_src_path = dl_manager.download(_gdrive_url("1_jyJOVkAfRafJQkH2HLYhw4NTKU5f4bq"))
-            test_tgt_path = dl_manager.download(_gdrive_url("1CX_YcgQ3WwNC1fXBpMfwMXFPCqsd9Lbp"))
+            train_src_path = dl_manager.download_custom(_gdrive_url("1vWfhWIj-UpV_bY-zcu7lw4m9z8hLkF0r"), custom_download)
+            train_tgt_path = dl_manager.download_custom(_gdrive_url("1QVgswwhVTkd3VLCzajK6eVkcrSWEK6kq"), custom_download)
+            val_src_path = dl_manager.download_custom(_gdrive_url("1L2dk4ThZ-Bau9rIQpMG8I75R15FpLE-B"), custom_download)
+            val_tgt_path = dl_manager.download_custom(_gdrive_url("1Y1lBbBU5Q0aJMqLhYEOdEtTqQ85XnRRM"), custom_download)
+            test_src_path = dl_manager.download_custom(_gdrive_url("1_jyJOVkAfRafJQkH2HLYhw4NTKU5f4bq"), custom_download)
+            test_tgt_path = dl_manager.download_custom(_gdrive_url("1CX_YcgQ3WwNC1fXBpMfwMXFPCqsd9Lbp"), custom_download)
         elif self.config.name in ["raw-cleaned-single", "raw-cleaned-multi"]:
-            train_src_path = dl_manager.download(_gdrive_url("1wHAWDOwOoQWSj7HYpyJ3Aeud8WhhaJ7P"))
-            val_src_path = dl_manager.download(_gdrive_url("1p_u9_jpz3Zbj0EL05QFX6wvJAahmOn6h"))
-            test_src_path = dl_manager.download(_gdrive_url("1-n_6fj-1nM7sWtBSNkQCSfl5Rb3zPVfr"))
-            train_tgt_path = dl_manager.download(_gdrive_url("1QVgswwhVTkd3VLCzajK6eVkcrSWEK6kq"))
-            val_tgt_path = dl_manager.download(_gdrive_url("1Y1lBbBU5Q0aJMqLhYEOdEtTqQ85XnRRM"))
-            test_tgt_path = dl_manager.download(_gdrive_url("1CX_YcgQ3WwNC1fXBpMfwMXFPCqsd9Lbp"))
+            train_src_path = dl_manager.download_custom(_gdrive_url("1wHAWDOwOoQWSj7HYpyJ3Aeud8WhhaJ7P"), custom_download)
+            val_src_path = dl_manager.download_custom(_gdrive_url("1p_u9_jpz3Zbj0EL05QFX6wvJAahmOn6h"), custom_download)
+            test_src_path = dl_manager.download_custom(_gdrive_url("1-n_6fj-1nM7sWtBSNkQCSfl5Rb3zPVfr"), custom_download)
+            train_tgt_path = dl_manager.download_custom(_gdrive_url("1QVgswwhVTkd3VLCzajK6eVkcrSWEK6kq"), custom_download)
+            val_tgt_path = dl_manager.download_custom(_gdrive_url("1Y1lBbBU5Q0aJMqLhYEOdEtTqQ85XnRRM"), custom_download)
+            test_tgt_path = dl_manager.download_custom(_gdrive_url("1CX_YcgQ3WwNC1fXBpMfwMXFPCqsd9Lbp"), custom_download)
         elif self.config.name == ["preprocessed-single", "preprocessed-multi"]:
-            train_src_path = dl_manager.download(_gdrive_url("166MtnlB8eEGpH6UZLKgGNsk9u6EDdQ8E"))
-            train_tgt_path = dl_manager.download(_gdrive_url("1JniyQbgWdiS-tnDEweTlQxkFE9lRsQJU"))
-            val_src_path = dl_manager.download(_gdrive_url("1RzmVVqVMNWhjNTUWKeiBS-HW1UIqnXeS"))
-            val_tgt_path = dl_manager.download(_gdrive_url("1fpLqEb4lQ2F0ooBzyBoVc-d2S1qh-euS"))
-            test_src_path = dl_manager.download(_gdrive_url("1trAjuswWLs57rgJaC7ZQFFNik8-p77Qf"))
-            test_tgt_path = dl_manager.download(_gdrive_url("1JTPHdYYEMm9-VFNWuDD2hGJARO-3fyXI"))
+            train_src_path = dl_manager.download_custom(_gdrive_url("166MtnlB8eEGpH6UZLKgGNsk9u6EDdQ8E"), custom_download)
+            train_tgt_path = dl_manager.download_custom(_gdrive_url("1JniyQbgWdiS-tnDEweTlQxkFE9lRsQJU"), custom_download)
+            val_src_path = dl_manager.download_custom(_gdrive_url("1RzmVVqVMNWhjNTUWKeiBS-HW1UIqnXeS"), custom_download)
+            val_tgt_path = dl_manager.download_custom(_gdrive_url("1fpLqEb4lQ2F0ooBzyBoVc-d2S1qh-euS"), custom_download)
+            test_src_path = dl_manager.download_custom(_gdrive_url("1trAjuswWLs57rgJaC7ZQFFNik8-p77Qf"), custom_download)
+            test_tgt_path = dl_manager.download_custom(_gdrive_url("1JTPHdYYEMm9-VFNWuDD2hGJARO-3fyXI"), custom_download)
         else:
-            train_src_path = dl_manager.download(_gdrive_url("17x4TH2NRHyP4EJGPaX0P3P5sFhrOKMyP"))
-            train_tgt_path = dl_manager.download(_gdrive_url("1WNB0JGAHUS6Fl2-ZZERtq_MhKVR06EL4"))
-            val_src_path = dl_manager.download(_gdrive_url("1YXkF_ugMx1HYCBBYF7VKq0Lujzif1JES"))
-            val_tgt_path = dl_manager.download(_gdrive_url("11C3k3XW1MpQEKymftQPsqSxcGEq_M7Xj"))
-            test_src_path = dl_manager.download(_gdrive_url("1-UnukKI0rRfxpEwCHUXykGlxj7UllEiD"))
-            test_tgt_path = dl_manager.download(_gdrive_url("1YDjw1yPwgN-mqzqwWzbxKBIRkpnaJQDY"))
+            train_src_path = dl_manager.download_custom(_gdrive_url("17x4TH2NRHyP4EJGPaX0P3P5sFhrOKMyP"), custom_download)
+            train_tgt_path = dl_manager.download_custom(_gdrive_url("1WNB0JGAHUS6Fl2-ZZERtq_MhKVR06EL4"), custom_download)
+            val_src_path = dl_manager.download_custom(_gdrive_url("1YXkF_ugMx1HYCBBYF7VKq0Lujzif1JES"), custom_download)
+            val_tgt_path = dl_manager.download_custom(_gdrive_url("11C3k3XW1MpQEKymftQPsqSxcGEq_M7Xj"), custom_download)
+            test_src_path = dl_manager.download_custom(_gdrive_url("1-UnukKI0rRfxpEwCHUXykGlxj7UllEiD"), custom_download)
+            test_tgt_path = dl_manager.download_custom(_gdrive_url("1YDjw1yPwgN-mqzqwWzbxKBIRkpnaJQDY"), custom_download)
         
         
         return [
