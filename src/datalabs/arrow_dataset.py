@@ -718,9 +718,30 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             return map[mode](func, prefix = prefix)
 
 
-    def apply_memory(self, func, prefix = ""):
+    def apply_memory(self, func, prefix = "", num_proc = 1):
         result = self
-        attr_columns = [item for item in self.apply_basic(func)]
+
+        attr_columns = []
+        if num_proc == 1:
+            attr_columns = [item for item in self.apply_basic(func)]
+        elif num_proc > 1:
+            batch_count = ceil(self.num_rows / num_proc)
+            def process_batch(index):
+                range_limit = range(index * batch_count, min((index + 1) * batch_count, self.num_rows))
+                if func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
+                    return [func(self._getitem(index, decoded=False)[func.processed_fields[0]]) for index in range_limit]
+                elif func._type  in ["TopicClassificationPrompting", "SentimentClassificationPrompting", "NLIPrompting"]:
+                    labels = self._info.task_templates[0].labels
+                    labels_to_answers = dict(zip(range(len(labels)), labels))
+                    return [func(self._getitem(index, decoded=False), labels_to_answers) for index in range_limit]
+                else:
+                    return [func(self._getitem(index, decoded=False)) for index in range_limit]
+            with Pool(processes=num_proc) as pool:
+                attr_columns = []
+                temp_columns = pool.map(process_batch, range(num_proc))
+                for items in temp_columns:
+                    attr_columns += items
+
         attr_names = attr_columns[0].keys()
         for attr_name in attr_names:
             if prefix == "":
