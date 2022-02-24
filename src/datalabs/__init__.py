@@ -24,7 +24,6 @@ import pyarrow
 from packaging import version as _version
 from pyarrow import total_allocated_bytes
 
-
 from .operations import operation
 from .operations.data import *
 
@@ -58,7 +57,7 @@ from .features import (
 )
 from .fingerprint import is_caching_enabled, set_caching_enabled
 from .info import DatasetInfo, MetricInfo, MongoDBClient
-from .prompt import Prompt, Prompts
+from .prompt import Prompt, Prompts, PromptResult
 from .inspect import (
     get_dataset_config_names,
     get_dataset_infos,
@@ -88,6 +87,7 @@ from .enums import (
     PLMType,
     SettingType,
     SignalType,
+    PromptShape
 )
 
 SCRIPTS_VERSION = "master" if _version.parse(__version__).is_devrelease else __version__

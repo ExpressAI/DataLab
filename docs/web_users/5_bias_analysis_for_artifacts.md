@@ -30,7 +30,7 @@ Navigate to the dataset by either (1) searching for it in the top bar, or (2) cl
 Click the `Bias` tab, and then under the "choose bias dimension" menu select `artifact identification`.
 
 
-<img src="https://user-images.githubusercontent.com/59123869/154880168-d6def7f6-2833-4665-a490-3cb09fd199d4.png" width="600">
+<img src="https://user-images.githubusercontent.com/59123869/154880168-d6def7f6-2833-4665-a490-3cb09fd199d4.png" width="600"/>
 
 
  
@@ -49,7 +49,7 @@ Features are properties defined over the data of each field. For example,
 the `text length` could be a feature of the field `hypothesis`, or `label` itself could be a feature of the field `label`.
 
 
-<img src="https://user-images.githubusercontent.com/59123869/154881277-c1b1de9a-3a07-4446-8a2b-e9fbad161d75.png" width="600">
+<img src="https://user-images.githubusercontent.com/59123869/154881277-c1b1de9a-3a07-4446-8a2b-e9fbad161d75.png" width="600"/>
 
 
 
@@ -58,7 +58,7 @@ Once we finished the above three steps, a visualized PMI matrix will be printed 
  
 
 
-<img src="https://user-images.githubusercontent.com/59123869/154881323-0e614f18-571d-4340-b991-91e5b35f3f80.png" width="600">
+<img src="https://user-images.githubusercontent.com/59123869/154881323-0e614f18-571d-4340-b991-91e5b35f3f80.png" width="600"/>
 
 
 

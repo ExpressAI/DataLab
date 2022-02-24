@@ -12,7 +12,7 @@ the huge proliferation of datasets in recent years. DataLab provides a semantic 
 Then DataLab will generate a list of recommended datasets relevant to your research ideas.
 
 
-<img src="https://user-images.githubusercontent.com/59123869/155396781-b0407c8e-58c4-43f5-ad7b-1187d6211fe9.png" width="600">
+<img src="https://user-images.githubusercontent.com/59123869/155396781-b0407c8e-58c4-43f5-ad7b-1187d6211fe9.png" width="600"/>
 
 
  

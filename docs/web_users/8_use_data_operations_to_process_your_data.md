@@ -6,7 +6,7 @@ format to satisfy different data processing requirements in one place.
 To this end, we devised a general typology for the concepts of data and operation as shown below and curated schemas for these objects.
 
 
-<img src="https://user-images.githubusercontent.com/59123869/155357470-8b95671c-d5e4-45bb-9edf-076d33c1e6f2.png" width="600">
+<img src="https://user-images.githubusercontent.com/59123869/155357470-8b95671c-d5e4-45bb-9edf-076d33c1e6f2.png" width="600"/>
 
 
 Specifically, using [DataLab SDK](https://github.com/ExpressAI/DataLab), you can conveniently 
@@ -14,7 +14,7 @@ Specifically, using [DataLab SDK](https://github.com/ExpressAI/DataLab), you can
 * and use rich operations supported by SDK by passing different operation names
 
 
-<img src="https://user-images.githubusercontent.com/59123869/155447749-457820f2-d0e5-4426-acb2-17ea3bdff011.png" width="600">
+<img src="https://user-images.githubusercontent.com/59123869/155447749-457820f2-d0e5-4426-acb2-17ea3bdff011.png" width="600"/>
 
  
 
@@ -37,7 +37,7 @@ and the quality of the dataset directly affects the learning of models. Currentl
 and task-specific ones, which are built based on different sources, such as Spacy, NLTK and Huggingface.
 
 
-<img src="https://user-images.githubusercontent.com/59123869/155447787-063de6fa-f6aa-4377-88d2-f985d5ff080c.png" width="600">
+<img src="https://user-images.githubusercontent.com/59123869/155447787-063de6fa-f6aa-4377-88d2-f985d5ff080c.png" width="600"/>
 
 ### Editing (Transformation)
 Editing aims to apply certain transformations to a given text, which spans multiple important applications in NLP, 
@@ -51,7 +51,7 @@ DataLab provides a unified interface for data editing and users can easily apply
  
 
 
-<img src="https://user-images.githubusercontent.com/59123869/155447848-794b6f94-e280-4874-953c-b7cfd02b2d65.png" width="600">
+<img src="https://user-images.githubusercontent.com/59123869/155447848-794b6f94-e280-4874-953c-b7cfd02b2d65.png" width="600"/>
 
 
   
@@ -64,7 +64,7 @@ operation for the summarization task that calculates the oracle summary of the s
  
 
 
-<img src="https://user-images.githubusercontent.com/59123869/155447958-74deb639-8ff1-49cf-88fa-fa82439cc68c.png" width="600">
+<img src="https://user-images.githubusercontent.com/59123869/155447958-74deb639-8ff1-49cf-88fa-fa82439cc68c.png" width="600"/>
 
 
 ### Aggregating
