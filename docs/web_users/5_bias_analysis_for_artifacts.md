@@ -10,7 +10,7 @@ call as `artifact`.
 
 
 
-The basic idea of identifying artifact is to use PMI (Pointwise mutual information) to detect whether there
+The basic idea of artifact identification is to use PMI (Pointwise mutual information) to detect whether there
 is an association between **TWO** features (e.g., sentence length v.s category).
 
 For example, given two feature_i, and feature_j, a higher absolute value of PMI(feature_i, feature_j) 

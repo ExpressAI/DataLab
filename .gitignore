@@ -78,4 +78,7 @@ client/calculate_feature_mr.py
 client/test_*.py
 client/add_my_dataset.py
 
+docs/design
+
+
 
