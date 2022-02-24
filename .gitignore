@@ -79,6 +79,6 @@ client/test_*.py
 client/add_my_dataset.py
 
 docs/design
-
+docs/examples
 
 
