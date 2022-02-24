@@ -61,13 +61,22 @@ pip install .
 ## Getting started
 Here we give several examples to showcase the usage of DataLab. For more information, please refer to the corresponding sections in our [documentation](https://expressai.github.io/DataLab/).
 
+
+
+
+
 ```python
 # pip install datalabs
 from datalabs import load_dataset
 dataset = load_dataset("ag_news")
 
 
-# featurizing operation
+# Preprocessing operation
+from preprocess import *
+res=dataset["test"].apply(lower)
+print(next(res))
+
+# Featurizing operation
 from featurize import *
 res = dataset["test"].apply(get_text_length) # get length
 print(next(res))
@@ -75,14 +84,19 @@ print(next(res))
 res = dataset["test"].apply(get_entities_spacy) # get entity
 print(next(res))
 
-res = dataset["test"].apply(get_postag_spacy) # get postag
-print(next(res))
-
-
-# featurizing operation
+# Editing/Transformation operation
 from edit import *
 res = dataset["test"].apply(change_person_name) #  change person name
 print(next(res))
+
+# Prompting operation
+from prompt import *
+res = dataset["test"].apply(template_tc1)
+print(next(res))
+
+# Aggregating operation
+from aggregate.text_classification import *
+res = dataset["test"].apply(get_statistics)
 ```
  
 
