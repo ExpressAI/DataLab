@@ -75,8 +75,8 @@ class Prompts:
     def from_url(cls, URL):
         res = requests.get(URL)
         prompts = json.loads(res.text)
-        new_prompts = {x["id"]: Prompt(**x) for x in prompts}
+        # new_prompts = {x["id"]: Prompt(**x) for x in prompts}
         # prompts = []
         # for dic in dics:
         #     prompts.append(Prompt(**dic))
-        return new_prompts
+        return prompts
