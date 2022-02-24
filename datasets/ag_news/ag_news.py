@@ -67,12 +67,16 @@ def instantiate_task_prompt(category_names):
     category_to_answers = dict(zip(category_names, [[category] for category in category_names]))
     task_prompts = TopicClassification.get_prompts()
 
-    for task_prompt in task_prompts:
-        task_prompt.answers = category_to_answers
-        task_prompt.template = task_prompt.template.replace("{{textual_choices_with_or}}", textual_choices_with_or) \
+    for prompt_id in task_prompts:
+        task_prompts[prompt_id].answers = category_to_answers
+        task_prompts[prompt_id].template = task_prompts[prompt_id].template.replace("{{textual_choices_with_or}}", textual_choices_with_or) \
             .replace("{{textual_choices_without_or}}", textual_choices_without_or)
-        # task_prompt.features.update({"length": len(task_prompt.template.split(" ")), })
-    task_prompts = {x.id: x for x in task_prompts}
+    # for task_prompt in task_prompts:
+    #     task_prompt.answers = category_to_answers
+    #     task_prompt.template = task_prompt.template.replace("{{textual_choices_with_or}}", textual_choices_with_or) \
+    #         .replace("{{textual_choices_without_or}}", textual_choices_without_or)
+    #     # task_prompt.features.update({"length": len(task_prompt.template.split(" ")), })
+    # task_prompts = {x.id: x for x in task_prompts}
     return task_prompts
 
 
@@ -103,7 +107,7 @@ class AGNews(datalabs.GeneratorBasedBuilder):
                     names=category_names),
 
             })
-        
+
         if self.feature_expanding:
             sample_level_schema = get_features_sample_level("This is a test sample")
             dict_feature_argument = get_feature_arguments(sample_level_schema, field=FIELD,
