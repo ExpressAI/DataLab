@@ -3,8 +3,8 @@
 
 <table>
     <tr>
-        <th style="width:60%">Observation</th>
-        <th style="width:40%">Conclustion</th>
+        <th width="60%">Observation</th>
+        <th width="40%">Conclustion</th>
     </tr>
     <tr>
         <td>len_{hp} &gt;8.4, PMI(label_{{neutral}}, len_{{hp}} )&gt;0.28;</td>
