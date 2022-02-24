@@ -675,7 +675,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
 
 
 
-    def apply_basic(self, func, prefix = ""):
+    def apply_basic(self, func, prefix="", num_proc=1):
         # if isinstance(func, str):
         #     if self._info.task_templates[0].task_category == "text-classification":
         #
@@ -691,7 +691,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         elif func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
             for sample in self.__iter__():
                 yield func(sample[func.processed_fields[0]])
-        elif func._type  in ["TopicClassificationPrompting", "SentimentClassificationPrompting", "NLIPrompting"]:
+        elif func._type in ["TopicClassificationPrompting", "SentimentClassificationPrompting", "NLIPrompting"]:
             for sample in self.__iter__():
                 labels = self._info.task_templates[0].labels
                 labels_to_answers = dict(zip(range(len(labels)), labels))
@@ -700,7 +700,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             for sample in self.__iter__():
                 yield func(sample)
 
-    def apply(self, func, mode="realtime", prefix=""):
+    def apply(self, func, mode="realtime", prefix="", num_proc=1):
         if func._type.find("Aggregating") != -1:
             result = next(self.apply_basic(func))
 
@@ -715,12 +715,28 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             return self
         else:
             map = { "realtime": self.apply_basic, "memory": self.apply_memory, "local": self.apply_local }
-            return map[mode](func, prefix = prefix)
+            return map[mode](func, prefix=prefix, num_proc=num_proc)
 
 
-    def apply_memory(self, func, prefix = ""):
+    def apply_memory(self, func, prefix = "", num_proc=1):
         result = self
-        attr_columns = [item for item in self.apply_basic(func)]
+        attr_columns = []
+        if num_proc == 1:
+            attr_columns = [item for item in self.apply_basic(func)]
+        elif num_proc > 1:
+            def process_each(index):
+                sample = self._getitem(index, decoded=False)
+                if func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
+                    return func(sample[func.processed_fields[0]])
+                elif func._type in ["TopicClassificationPrompting", "SentimentClassificationPrompting", "NLIPrompting"]:
+                    labels = self._info.task_templates[0].labels
+                    labels_to_answers = dict(zip(range(len(labels)), labels))
+                    return func(sample, labels_to_answers)
+                else:
+                    return func(sample)
+            with Pool(processes=num_proc) as pool:
+                attr_columns = pool.map(process_each, range(self.num_rows))
+
         attr_names = attr_columns[0].keys()
         for attr_name in attr_names:
             if prefix == "":
@@ -729,9 +745,30 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                 result = result.add_column(prefix + "_" + attr_name, [item[attr_name] for item in attr_columns])
         return result
 
-    def apply_local(self, func, prefix = ""):
+    def apply_local(self, func, prefix="", num_proc=1):
         result = self
-        attr_columns = [item for item in self.apply_basic(func)]
+
+        attr_columns = []
+        if num_proc == 1:
+            attr_columns = [item for item in self.apply_basic(func)]
+        elif num_proc > 1:
+            batch_count = ceil(self.num_rows / num_proc)
+            def process_batch(index):
+                range_limit = range(index * batch_count, min((index + 1) * batch_count, self.num_rows))
+                if func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
+                    return [func(self._getitem(index, decoded=False)[func.processed_fields[0]]) for index in range_limit]
+                elif func._type in ["TopicClassificationPrompting", "SentimentClassificationPrompting", "NLIPrompting"]:
+                    labels = self._info.task_templates[0].labels
+                    labels_to_answers = dict(zip(range(len(labels)), labels))
+                    return [func(self._getitem(index, decoded=False), labels_to_answers) for index in range_limit]
+                else:
+                    return [func(self._getitem(index, decoded=False)) for index in range_limit]
+            with Pool(processes=num_proc) as pool:
+                attr_columns = []
+                temp_columns = pool.map(process_batch, range(num_proc))
+                for items in temp_columns:
+                    attr_columns += items
+
         attr_names = attr_columns[0].keys()
         pa_table = self.__load_disk()
         column_dict = {}
