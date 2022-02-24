@@ -1,6 +1,6 @@
 <p align="center">
     <br>
-    <img src="./docs/resources/figs/readme_logo.png" width="400"/>
+    <img src="./docs/Resources/figs/readme_logo.png" width="400"/>
     <br>
   <a href="https://github.com/expressai/DataLab/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/expressai/DataLab" /></a>
   <a href="https://github.com/expressai/DataLab/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/expressai/DataLab" /></a>
@@ -16,7 +16,7 @@
     
     
 <p align="center"> 
-<img src="./docs/resources/figs/datalab_overview.png" width="300"/>
+<img src="./docs/Resources/figs/datalab_overview.png" width="300"/>
  </p> 
 
 * **Data Diagnostics**: DataLab allows for analysis and understanding of data to uncover undesirable traits such as hate speech, gender bias, or label imbalance.
