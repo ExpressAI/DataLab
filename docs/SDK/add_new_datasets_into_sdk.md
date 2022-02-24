@@ -10,17 +10,17 @@ For example, you can place your datasets in gdrive [folder](https://drive.google
 
 ## 2. Get the downloadable url for datasets
 
-if your link is from google drive, you need to modify the following template by replacing `ID` with real string
+if your link is from google drive, you need to modify the following template by replacing `FILEID` with real string
 
-`https://drive.google.com/uc?id=ID=download`
+`https://drive.google.com/uc?export=download&id=FILEID`
 
-You can get `ID` from the link of `sharing to any`, for example, we can know
-`ID` is: `1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb` from 
+You can get `FILEID` from the link of `sharing to any`, for example, we can know
+`FILEID` is: `1JX8pdQJaDqwzK7fzNs9mM9UY09be29ci` from 
 
-`https://drive.google.com/file/d/1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb/view?usp=sharing`, 
+`https://drive.google.com/file/d/1JX8pdQJaDqwzK7fzNs9mM9UY09be29ci/view?usp=sharing`, 
 so finally, we have
 
-`https://drive.google.com/uc?id=1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb=download`
+`https://drive.google.com/uc?export=download&id=1JX8pdQJaDqwzK7fzNs9mM9UY09be29ci`
 
 
 ## 3. Create a new folder and write a config python script inside it.
