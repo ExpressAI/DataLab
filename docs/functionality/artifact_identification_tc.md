@@ -3,8 +3,8 @@
 
 <table>
     <tr>
-        <th width="60%">Observation</th>
-        <th width="40%">Conclustion</th>
+        <th style="width:60%">Observation</th>
+        <th style="width:40%">Conclustion</th>
     </tr>
     <tr>
         <td>len_{hp} &gt;8.4, PMI(label_{{neutral}}, len_{{hp}} )&gt;0.28;</td>
@@ -72,6 +72,7 @@
     </tr>
 </table>
 
+* `hp` and `pm` denote `hypothesis` and `premise`, respectively. `len` is a function that computes the length of a sentence. 
 
 
 ## 2. Observations and conclusions of artifact identification with PMI on the GLUE-SST2 
@@ -104,6 +105,8 @@
         <td>male_{sent}&gt;1.2, PMI(label_{negative},male_{sent}) &gt;0.068</td>
     </tr>
 </table>
+
+* `len` is a function that computes the length of a sentence. `sent` denotes `sentence`.
 
 
 ## 3. Observations and conclusions of artifact identification with PMI on the DBpedia2014
@@ -154,6 +157,9 @@
     </tr>
 </table>
 
+
+
+
 ## 4. Observations and conclusions of artifact identification with PMI on the GLUE-qnli
 
 <table>
@@ -202,3 +208,6 @@
         <td>If the lengths of "question" is longer than "sentence", these samples are always labeled as ·entailment·.</td>
     </tr>
 </table>
+
+* `len` is a function that computes the length of a sentence. `sent` denotes `sentence`.
+
