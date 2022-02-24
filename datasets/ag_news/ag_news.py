@@ -72,7 +72,7 @@ def instantiate_task_prompt(category_names):
         task_prompt.template = task_prompt.template.replace("{{textual_choices_with_or}}", textual_choices_with_or) \
             .replace("{{textual_choices_without_or}}", textual_choices_without_or)
         # task_prompt.features.update({"length": len(task_prompt.template.split(" ")), })
-    task_prompts = {x["id"]: x for x in task_prompts}
+    task_prompts = {x.id: x for x in task_prompts}
     return task_prompts
 
 

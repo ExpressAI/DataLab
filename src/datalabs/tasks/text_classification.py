@@ -220,6 +220,7 @@ class TopicClassification(TextClassification):
             reference="http://datalab.nlpedia.ai/"
         ),
     ]
+    prompts = {x.id: x for x in prompts}
 
     # prompts = [Prompt(template="Given the text: {text}, is it about {texture_choices}",
     #                   description="task prompts",

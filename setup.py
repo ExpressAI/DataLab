@@ -216,3 +216,7 @@ setup(
 
 os.system("python -m spacy download en_core_web_sm")
 
+from datalabs import load_dataset
+ds = load_dataset("ag_news")
+ds["test"]._info.prompts
+
