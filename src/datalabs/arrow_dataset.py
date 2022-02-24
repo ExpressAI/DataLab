@@ -573,7 +573,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
 
     def __load_json(self, path):
         if not os.path.exists(path):
-            open(path, "w")
+            open(path, "w").close()
             return {}
         with open(path, "r") as obj_file:
             try:
