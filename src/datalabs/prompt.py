@@ -74,8 +74,8 @@ class Prompts:
     @classmethod
     def from_url(cls, URL):
         res = requests.get(URL)
-        dics = json.loads(res.text)
-        prompts = []
-        for dic in dics:
-            prompts.append(Prompt(**dic))
+        prompts = json.loads(res.text)
+        # prompts = []
+        # for dic in dics:
+        #     prompts.append(Prompt(**dic))
         return prompts
