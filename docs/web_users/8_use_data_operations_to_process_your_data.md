@@ -1,4 +1,4 @@
-# How to use DataLab Process your Data?
+# How to use DataLab to Process your Data?
 
 
 Another key feature of DataLab is the standardization of different data operations into a unified 
