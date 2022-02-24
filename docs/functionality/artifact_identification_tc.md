@@ -1,19 +1,50 @@
 ## 1. Observations and conclusions of artifact identification with PMI on the DBpedia2014
 
-
-| Observation                                                                  | Conclustion                                   |
-|------------------------------------------------------------------------------|-----------------------------------------------|
-| basicWord_{sent}<0.444, PMI(label_{office holder}, basicWord_{sent})>0.129;  | Sentences with more basic words (e.g.         |
-| basicWord_{sent}<0.37, PMI(label_{artist}, basicWord_{sent})>0.138;          | is, "I") tend to be related to educational    |
-| basicWord_{sent}<0.37, PMI(label_{athlete}, basicWord_{sent})>0.421;         | institution (the golden label is              |
-| basicWord_{sent}>0.444, PMI(label_{office holder}, -basicWord_{sent})>0.477; | `educational institution`.) and natural       |
-| basicWord_{sent}>0.444, PMI(label_{company}, -basicWord_{sent})>0.495;       | place, while sentences with fewer basic       |
-| basicWord_{sent}>0.37, PMI(label_{village}, -basicWord_{sent})>0.450;        | words tend to be related to `office holder`,  |
-| basicWord_{sent}>0.44, PMI(label_{artist}, -basicWord_{sent})>0.402;         | `artist`, and `althlete`.                     |
-| basicWord_{sent}>0.44, PMI(label_{athlete}, -basicWord_{sent})>0.952;        |                                               |
-| femaleWord_{sent}>2.2, PMI(label_{artist}, femaleWord_{sent}) >1.287         | Sentences with higher female bias are likely  |
-| femaleName_{sent}>2.2, PMI(label_{artist}, femaleName_{sent}) >0.326         | to be labeled `artist`.                       |
-
+<table>
+    <tr>
+        <td>Observation</td>
+        <td>Conclustion</td>
+    </tr>
+    <tr>
+        <td>basicWord_{sent}&lt;0.444, PMI(label_{office holder}, basicWord_{sent})&gt;0.129;</td>
+        <td rowspan="8">Sentences with more basic words (e.g. "is", "I") tend to be related to educational institution (the golden label is `educational institution`.) and natural place, while sentences with fewer basic words tend to be related to `office holder`, `artist`, and `althlete`.</td>
+    </tr>
+    <tr>
+        <td>basicWord_{sent}&lt;0.37, PMI(label_{artist}, basicWord_{sent})&gt;0.138;</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>basicWord_{sent}&lt;0.37, PMI(label_{athlete}, basicWord_{sent})&gt;0.421;</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>basicWord_{sent}&gt;0.444, PMI(label_{office holder}, -basicWord_{sent})&gt;0.477;</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>basicWord_{sent}&gt;0.444, PMI(label_{company}, -basicWord_{sent})&gt;0.495;</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>basicWord_{sent}&gt;0.37, PMI(label_{village}, -basicWord_{sent})&gt;0.450;</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>basicWord_{sent}&gt;0.44, PMI(label_{artist}, -basicWord_{sent})&gt;0.402;</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>basicWord_{sent}&gt;0.44, PMI(label_{athlete}, -basicWord_{sent})&gt;0.952;</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>femaleWord_{sent}&gt;2.2, PMI(label_{artist}, femaleWord_{sent}) &gt;1.287</td>
+        <td rowspan="2">Sentences with higher female bias are likely to be labeled `artist`.</td>
+    </tr>
+    <tr>
+        <td>femaleName_{sent}&gt;2.2, PMI(label_{artist}, femaleName_{sent}) &gt;0.326</td>
+    </tr>
+</table>
 
 ## 2. Observations and conclusions of artifact identification with PMI on the GLUE-qnli
 
