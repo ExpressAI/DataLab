@@ -211,7 +211,7 @@ class MongoDBClientCore:
         assert (re.match(r'cluster[01]', cluster))
 
         self.cluster = cluster
-        self.url = "mongodb+srv://Pengfei:ZT22yRPyskR44*q@%s.yg1db.mongodb.net/" % self.cluster
+        self.url = ""
         self.client = pymongo.MongoClient(self.url)
 
 
