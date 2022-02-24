@@ -60,6 +60,7 @@ _PROMPT_URL = "https://raw.githubusercontent.com/ExpressAI/DataLab/main/datasets
 #     def apply(self, func):
 #         if func._type == 'Aggregating':
 
+
 def instantiate_task_prompt(category_names):
     # instantiate task prompts into dataset prompts
     textual_choices_with_or = ", ".join(category_names[:-1]) + " or " + category_names[-1]
