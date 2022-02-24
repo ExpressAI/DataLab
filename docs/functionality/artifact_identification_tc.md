@@ -1,4 +1,5 @@
-# Observations and conclusions of artifact identification with PMI on the DBpedia2014
+## Observations and conclusions of artifact identification with PMI on the DBpedia2014
+
 
 | Observation                                                                  | Conclustion                                   |
 |------------------------------------------------------------------------------|-----------------------------------------------|
@@ -10,8 +11,23 @@
 | basicWord_{sent}>0.37, PMI(label_{village}, -basicWord_{sent})>0.450;        | words tend to be related to `office holder`,  |
 | basicWord_{sent}>0.44, PMI(label_{artist}, -basicWord_{sent})>0.402;         | `artist`, and `althlete`.                     |
 | basicWord_{sent}>0.44, PMI(label_{athlete}, -basicWord_{sent})>0.952;        |                                               |
-|------------------------------------------------------------------------------|-----------------------------------------------|
 | femaleWord_{sent}>2.2, PMI(label_{artist}, femaleWord_{sent}) >1.287         | Sentences with higher female bias are likely  |
 | femaleName_{sent}>2.2, PMI(label_{artist}, femaleName_{sent}) >0.326         | to be labeled `artist`.                       |
 
 
+## Observations and conclusions of artifact identification with PMI on the GLUE-qnli
+
+| Observation                                                                    | Conclustion                                                                         |
+|--------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| len_{sent}>35, PMI(label_{entailment}, len_{sent})>0.023;                      | Samples with long sentence are always labeled as `entailment`,                      |
+| len_{sent}>35, PMI(label_{not-entailment}, -len_{sent})>0.034;                 | while samples with short sentences always belong to `not-entailment`.               |
+| basicWord_{sent}>0.5, PMI(label_{not-entailment}, basicWord_{sent})>0.129;     | Sentences with fewer basic words are usually labeled as `entailment` labels, while  |
+| basicWord_{sent}<0.5, PMI(label_{entailment}, basicWord_{sent})>0.014;         | samples containing more basic words are usually labeled as `not-entailment` labels. |
+| readEase_{sent}>37, PMI(label_{not-entailment}, readEase_{sent})>0.021;        | Samples with easy-to-read sentences are usually ·entailment· relation, while        |
+| readEase_{sent}<37, PMI(label_{entailment}, readEase_{sent})>0.045;            | samples with hard-to-read sentences are usually ·not-entailment·.                   |
+| maleWord_{sent}>6.3, PMI(label_{entailment}, maleWord_{sent}) >0.518           | Sentences with higher male bias are likely to be labeled  ·entailment·.             |
+| maleName_{sent}>12.8, PMI(label_{entailment}, maleWord_{sent}) >0.207          |                                                                                     |
+| BLUE(que,sent)>9.374, PMI(label_{entailment}, BLUE(que,sent)) >0.5             | The higher the BLUE value of `question` and `sentence`,                             |
+|                                                                                | samples are always labeled as ·entailment·.                                         |
+| len_{que}/len_{sent}>1.0, PMI(label_{entailment}, len_{que}/len_{sent}) >0.046 | If the lengths of `question` is longer than                                         |
+|                                                                                | `sentence`, these samples are always labeled as ·entailment·.                       |
