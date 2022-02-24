@@ -13,7 +13,10 @@ Specifically, using [DataLab SDK](https://github.com/ExpressAI/DataLab), you can
 * process data with a unified interface
 * and use rich operations supported by SDK by passing different operation names
 
-![image](https://user-images.githubusercontent.com/59123869/155447749-457820f2-d0e5-4426-acb2-17ea3bdff011.png)
+
+<img src="https://user-images.githubusercontent.com/59123869/155447749-457820f2-d0e5-4426-acb2-17ea3bdff011.png" width="600">
+
+ 
 
 You can install the SDK by:
 ```
@@ -33,10 +36,8 @@ Data preprocessing (e.g., tokenization) is an indispensable step in training dee
 and the quality of the dataset directly affects the learning of models. Currently, DATALAB supports both general preprocessing functions
 and task-specific ones, which are built based on different sources, such as Spacy, NLTK and Huggingface.
 
-![image](https://user-images.githubusercontent.com/59123869/155447787-063de6fa-f6aa-4377-88d2-f985d5ff080c.png)
 
-
-
+<img src="https://user-images.githubusercontent.com/59123869/155447787-063de6fa-f6aa-4377-88d2-f985d5ff080c.png" width="600">
 
 ### Editing (Transformation)
 Editing aims to apply certain transformations to a given text, which spans multiple important applications in NLP, 
@@ -47,9 +48,10 @@ Essentially, many of the methods for constructing augmented or diagnostic datase
   (e.g., named entity replacement in diagnostic dataset construction [(Ribeiro et al., 2021)](https://arxiv.org/pdf/2005.04118.pdf), token deletion in data augmentation [jason_2019](https://aclanthology.org/D19-1670.pdf).
 DataLab provides a unified interface for data editing and users can easily apply to edit the data they are interested in.
   
-![image](https://user-images.githubusercontent.com/59123869/155447848-794b6f94-e280-4874-953c-b7cfd02b2d65.png)
+ 
 
 
+<img src="https://user-images.githubusercontent.com/59123869/155447848-794b6f94-e280-4874-953c-b7cfd02b2d65.png" width="600">
 
 
   
@@ -59,9 +61,10 @@ In DataLab, in addition to designing some general feature functions (e.g. `*get_
 calculates the length of the text.), we also customize some feature functions for specific tasks (e.g. `*get_oracle()*`
 operation for the summarization task that calculates the oracle summary of the source text.).
 
-![image](https://user-images.githubusercontent.com/59123869/155447958-74deb639-8ff1-49cf-88fa-fa82439cc68c.png)
+ 
 
 
+<img src="https://user-images.githubusercontent.com/59123869/155447958-74deb639-8ff1-49cf-88fa-fa82439cc68c.png" width="600">
 
 
 ### Aggregating
