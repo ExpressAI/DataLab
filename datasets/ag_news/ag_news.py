@@ -71,12 +71,6 @@ def instantiate_task_prompt(category_names):
         task_prompts[prompt_id].answers = category_to_answers
         task_prompts[prompt_id].template = task_prompts[prompt_id].template.replace("{{textual_choices_with_or}}", textual_choices_with_or) \
             .replace("{{textual_choices_without_or}}", textual_choices_without_or)
-    # for task_prompt in task_prompts:
-    #     task_prompt.answers = category_to_answers
-    #     task_prompt.template = task_prompt.template.replace("{{textual_choices_with_or}}", textual_choices_with_or) \
-    #         .replace("{{textual_choices_without_or}}", textual_choices_without_or)
-    #     # task_prompt.features.update({"length": len(task_prompt.template.split(" ")), })
-    # task_prompts = {x.id: x for x in task_prompts}
     return task_prompts
 
 
@@ -97,8 +91,8 @@ class AGNews(datalabs.GeneratorBasedBuilder):
     def _info(self):
 
         category_names = ["World", "Sports", "Business", "Science and Technology"]
-        task_prompts = instantiate_task_prompt(category_names)  # instantiate task prompt based on the current dataset
-
+        # Task prompts
+        prompts = instantiate_task_prompt(category_names)  # instantiate task prompt based on the current dataset
         features_dataset = {}
         features_sample = datalabs.Features(
             {
@@ -120,6 +114,9 @@ class AGNews(datalabs.GeneratorBasedBuilder):
                                                           feature_level="dataset_level")
             features_dataset = datalabs.Features(dict_feature_argument)
 
+        # Add PromptSource prompts
+        prompts.update(Prompts.from_url(_PROMPT_URL))
+
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features_sample,
@@ -128,7 +125,7 @@ class AGNews(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["en"],
             task_templates=[TopicClassification(text_column="text", label_column="label")],
-            prompts=Prompts.from_url(_PROMPT_URL).update(task_prompts)
+            prompts=prompts
         )
 
     def _split_generators(self, dl_manager):
