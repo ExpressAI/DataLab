@@ -20,31 +20,31 @@
 import json
 
 import datalabs
-from datalabs.tasks import QuestionAnsweringExtractive
+from datalabs.tasks import QuestionAnsweringDCQA
 
 
 logger = datalabs.logging.get_logger(__name__)
 
 
 _CITATION = """\
-@article{2016arXiv160605250R,
-       author = {{Rajpurkar}, Pranav and {Zhang}, Jian and {Lopyrev},
-                 Konstantin and {Liang}, Percy},
-        title = "{SQuAD: 100,000+ Questions for Machine Comprehension of Text}",
-      journal = {arXiv e-prints},
-         year = 2016,
-          eid = {arXiv:1606.05250},
-        pages = {arXiv:1606.05250},
-archivePrefix = {arXiv},
-       eprint = {1606.05250},
+@InProceedings{ko2021dcqa,
+  author    = {Ko, Wei-Jen and Dalton,Cutter  and Simmons,Mark and  Fisher,Eliza and Durrett, Greg and Li, Junyi Jessy},
+  title     = {Discourse Comprehension: A Question Answering Framework to Represent Sentence Connections},
+  booktitle = {arxiv},
+  year      = {2021},
 }
 """
 
 _DESCRIPTION = """\
-Stanford Question Answering Dataset (SQuAD) is a reading comprehension \
-dataset, consisting of questions posed by crowdworkers on a set of Wikipedia \
-articles, where the answer to every question is a segment of text, or span, \
-from the corresponding reading passage, or the question might be unanswerable.
+During reading comprehension, questions that arise as human read through articles 
+may later be answered in the article itself, forming a connection in the discourse. 
+Compared to existing QA datasets, these questions are products of higher-level 
+(semantic and discourse) processing (e.g.,“how” and “why” questions) whose answers are 
+typically in the form of complex linguistic units like whole sentences. Such reader-generated 
+questions are far out of reach from the capabilities of systems trained on current QA datasets, 
+suggesting that human discourse comprehension is still on another level from that of automated systems. 
+DCQA is created to provide training data for this kind of questions, and also help machine understand 
+the discourse structure of articles.
 """
 
 # _URL = "https://rajpurkar.github.io/SQuAD-explorer/dataset/"
@@ -100,10 +100,10 @@ class Dcqa(datalabs.GeneratorBasedBuilder):
             # No default supervised_keys (as we have to pass both question
             # and context as input).
             supervised_keys=None,
-            # homepage="https://rajpurkar.github.io/SQuAD-explorer/",
+            homepage="https://github.com/wjko2/DCQA-Discourse-Comprehension-by-Question-Answering",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringExtractive(
+                QuestionAnsweringDCQA(
                     question_column="question", context_column="context", answers_column="answer"
                 )
             ],
