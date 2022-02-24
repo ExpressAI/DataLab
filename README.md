@@ -63,43 +63,28 @@ Here we give several examples to showcase the usage of DataLab. For more informa
 
 ```python
 # pip install datalabs
-from datalabs import operations, load_dataset
-from featurize import *
-
-
+from datalabs import load_dataset
 dataset = load_dataset("ag_news")
 
-# print(task schema)
-print(dataset['test']._info.task_templates)
 
-# data operators
-res = dataset["test"].apply(get_text_length)
+# featurizing operation
+from featurize import *
+res = dataset["test"].apply(get_text_length) # get length
+print(next(res))
+
+res = dataset["test"].apply(get_entities_spacy) # get entity
+print(next(res))
+
+res = dataset["test"].apply(get_postag_spacy) # get postag
 print(next(res))
 
 
-# get entity
-res = dataset["test"].apply(get_entities_spacy)
-print(next(res))
-
-# get postag
-res = dataset["test"].apply(get_postag_spacy)
-print(next(res))
-
+# featurizing operation
 from edit import *
-# add typos
-res = dataset["test"].apply(add_typo)
-print(next(res))
-
-#  change person name
-res = dataset["test"].apply(change_person_name)
+res = dataset["test"].apply(change_person_name) #  change person name
 print(next(res))
 ```
  
-
-## Supported Datasets
-* [here](https://github.com/ExpressAI/DataLab/tree/main/datasets)
-
-   
 
 ## Acknowledgment
 DataLab originated from a fork of the awesome [Huggingface Datasets](https://github.com/huggingface/datasets) and [TensorFlow Datasets](https://github.com/tensorflow/datasets). We highly thank the Huggingface/TensorFlow Datasets for building this amazing library. More details on the differences between DataLab and them can be found in the section
