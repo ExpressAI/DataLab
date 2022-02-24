@@ -15,9 +15,9 @@
 
     
     
-<!-- <p align="center"> -->
+<p align="center"> 
 <img src="./docs/resources/figs/datalab_overview.png" width="300"/>
-<!-- </p> -->
+ </p> 
 
 * **Data Diagnostics**: DataLab allows for analysis and understanding of data to uncover undesirable traits such as hate speech, gender bias, or label imbalance.
 * **Operation Standardization**: DataLab provides and standardizes a large number of data processing operations, including aggregating, preprocessing, featurizing, editing and prompting operations.
