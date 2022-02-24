@@ -1,4 +1,112 @@
-## 1. Observations and conclusions of artifact identification with PMI on the DBpedia2014
+## 1. Observations and conclusions of artifact identification with PMI on the SNLI
+
+
+<table>
+    <tr>
+        <th width="60%">Observation</th>
+        <th width="40%">Conclustion</th>
+    </tr>
+    <tr>
+        <td>len_{hp} &gt;8.4, PMI(label_{{neutral}}, len_{{hp}} )&gt;0.28;</td>
+        <td>Long hypotheses tend to be neutral.</td>
+    </tr>
+    <tr>
+        <td>len_{hp} \in [1,4.7], PMI(label_{{entailment}}, len_{{hp}} )=0.359;</td>
+        <td>Short hypotheses tend to be entailment.</td>
+    </tr>
+    <tr>
+        <td>flesch\_reading\_ease_{hp} \in [-50,1.352];</td>
+        <td>When the hypothesis is difficult enough to read,</td>
+    </tr>
+    <tr>
+        <td>PMI(label_{{entailment}}, {flesch\_reading\_ease}_{hp}) &gt;0.585;</td>
+        <td>the sample tends to be labeled as entailment. </td>
+    </tr>
+    <tr>
+        <td>male_{hp} &gt;2, PMI(label_{{neutral}}, male_{hp}) &gt;0.317;</td>
+        <td rowspan="2">Hypotheses with gender bias words (male/female) tend to be neutral.</td>
+    </tr>
+    <tr>
+        <td>female_{hp} &gt;2, PMI(label_{{neutral}}, male_{hp}) &gt;0.377;</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>X = len_{pm} - len_{hp}, if X \in [8,30];</td>
+        <td rowspan="3">When the length difference of hypothesis and premise is small enough ([0,7]), the sample tends to be entailment, and when it is large enough ([8,30]) the sample tends to be entailment.</td>
+    </tr>
+    <tr>
+        <td>PMI(label_{{entailment}}, len_{pm} - len_{hp}) &gt;0.084;</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>while X \in [0,7];  PMI(label_{{neutral}}, len_{pm} - len_{hp})=0.045;</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>X = len_{pm} + len_{hp}, if X  \in [4,13];</td>
+        <td rowspan="3">When the sum of the lengths of hypothesis and premise is small enough,  the sample tends to be entailment, and when it is large enough it tends to be neutral.</td>
+    </tr>
+    <tr>
+        <td>PMI(label_{{entailment}}, len_{pm} + len_{hp}) =0.259;</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>if X &gt;22, PMI(label_{{neutral}}, len_{pm} + len_{hp}) &gt;0.105; </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>X = len_{pm} / len_{hp}, if X &lt; 2,</td>
+        <td rowspan="3">When the lengths of hypothesis and premise are close enough, the samples tend to be neutral, and when their lengths are sufficiently different, samples tend to be entailment.</td>
+    </tr>
+    <tr>
+        <td>PMI(label_{{neutral}},len_{pm} / len_{hp}) &gt;0.094;</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>if X &gt; 2, PMI(label_{{entailment}},len_{pm} / len_{hp}) &gt;0.141;</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>PMI(label_{*},len_{pm}) \approx 0;</td>
+        <td>The length and gender features of the premise are irrelevance  with the label.</td>
+    </tr>
+</table>
+
+
+
+## 2. Observations and conclusions of artifact identification with PMI on the GLUE-SST2 
+<table>
+    <tr>
+        <th width="60%">Observation</th>
+        <th width="40%">Conclustion</th>
+    </tr>
+    <tr>
+        <td>len_{sent} &lt;7, PMI(label_{positive}, len_{sent}) = 0.06</td>
+        <td rowspan="2">Sentences that are long enough tend to be negative, while sentences that are short enough tend to be positive.</td>
+    </tr>
+    <tr>
+        <td>len_{sent}  &gt;7,  PMI(label_{negative}, len_{sent}) &gt; 0</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>female_{sent}  \in [4.8,5.4], {PMI}({label}_{positive},{female}_{sent}) =0.58</td>
+        <td rowspan="4">Sentences with low female bias tend to be negative, with high female bias tend to be positive; while sentences with high male bias tend to be negative.</td>
+    </tr>
+    <tr>
+        <td>female_{sent}&lt;0.6, PMI(label_{negative},female_{sent}) =0.021</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>male_{sent}&lt;1.2, {PMI}({label}_{positive},{male}_{sent}) =0.018</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>male_{sent}&gt;1.2, PMI(label_{negative},male_{sent}) &gt;0.068</td>
+    </tr>
+</table>
+
+
+## 3. Observations and conclusions of artifact identification with PMI on the DBpedia2014
 
 <table>
     <tr>
@@ -46,7 +154,7 @@
     </tr>
 </table>
 
-## 2. Observations and conclusions of artifact identification with PMI on the GLUE-qnli
+## 4. Observations and conclusions of artifact identification with PMI on the GLUE-qnli
 
 <table>
     <tr>
