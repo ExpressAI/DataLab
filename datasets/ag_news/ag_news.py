@@ -103,7 +103,7 @@ class AGNews(datalabs.GeneratorBasedBuilder):
                     names=category_names),
 
             })
-
+        
         if self.feature_expanding:
             sample_level_schema = get_features_sample_level("This is a test sample")
             dict_feature_argument = get_feature_arguments(sample_level_schema, field=FIELD,
