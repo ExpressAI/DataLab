@@ -10,7 +10,7 @@ However, analyzing their differences is tedious work, which usually needs to des
 DataLab automates this process and helps researchers to make pair-wise dataset analysis in a very convenient way. The general workflow is shown below:
 
 
-1. Choose two datasets first
+### 1. Choose two datasets first
 
 
 <img src="https://user-images.githubusercontent.com/59123869/155394693-8577f69b-59ea-43c7-9222-e71edc105fd3.png" width="600">
@@ -19,7 +19,7 @@ DataLab automates this process and helps researchers to make pair-wise dataset a
  
 
 
-2. Click the right mouse button and choose the `compare`
+### 2. Click the right mouse button and choose the `compare`
  
 
 <img src="https://user-images.githubusercontent.com/59123869/155394868-907abbd6-49dd-4455-85e6-c33c9a144c59.png" width="200">
@@ -27,7 +27,7 @@ DataLab automates this process and helps researchers to make pair-wise dataset a
 
 
 
-3. DataLab will generate different analytical figures and tables for these two datasets.
+### 3. DataLab will generate different analytical figures and tables for these two datasets.
 
 <img src="https://user-images.githubusercontent.com/59123869/155395073-d1dfe0a2-8045-4b74-b78e-4a70729ea5f7.png" width="600">
 
