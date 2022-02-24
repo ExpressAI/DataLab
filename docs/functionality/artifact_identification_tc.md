@@ -2,8 +2,8 @@
 
 <table>
     <tr>
-        <td>Observation</td>
-        <td>Conclustion</td>
+        <th width="60%">Observation</th>
+        <th width="40%">Conclustion</th>
     </tr>
     <tr>
         <td>basicWord_{sent}&lt;0.444, PMI(label_{office holder}, basicWord_{sent})&gt;0.129;</td>
@@ -50,8 +50,8 @@
 
 <table>
     <tr>
-        <th>Observation</td>
-        <th>Conclustion</th>
+        <th width="60%">Observation</td>
+        <th width="40%">Conclustion</th>
     </tr>
     <tr>
         <td>len_{sent}&gt;35, PMI(label_{entailment}, len_{sent})&gt;0.023; </td>
