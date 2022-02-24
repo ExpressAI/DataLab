@@ -33,7 +33,7 @@ them by yourselves.
 ### Preprocessing
 
 Data preprocessing (e.g., tokenization) is an indispensable step in training deep  learning and machine learning models, 
-and the quality of the dataset directly affects the learning of models. Currently, DATALAB supports both general preprocessing functions
+and the quality of the dataset directly affects the learning of models. Currently, DataLab supports both general preprocessing functions
 and task-specific ones, which are built based on different sources, such as Spacy, NLTK and Huggingface.
 
 
