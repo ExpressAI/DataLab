@@ -34,7 +34,9 @@ You can find more operations supported by DataLab SDK [here](http://datalab.nlpe
 ## Define your own Operations
 You can define the operation by yourself
 ```python
-@datalab.preprocessing
+from datalabs import load_dataset
+
+@datalabs.preprocessing
 def lower(text):
     return text.lower()
     
