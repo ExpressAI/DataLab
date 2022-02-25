@@ -28,7 +28,21 @@ print(res)
 
 
 ## Supported Operations
-
+You can find more operations supported by DataLab SDK [here](http://datalab.nlpedia.ai/operations)
 
 
 ## Define your own Operations
+You can define the operation by yourself
+```python
+@datalab.preprocessing
+def lower(text):
+    return text.lower()
+    
+dataset = load_dataset("ag_news")
+res=dataset["test"].apply(lower, mode = "realtime") # res:Iterator    
+    
+```
+
+
+
+
