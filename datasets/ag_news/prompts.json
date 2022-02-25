@@ -1,60 +1,9 @@
 {
-    "6bdc30fd74f4e8fa8fce6101fad24fe1": {
-        "id": "6bdc30fd74f4e8fa8fce6101fad24fe1",
+    "395c4d0f15e059abaf2d185a80eecf9c": {
+        "id": "395c4d0f15e059abaf2d185a80eecf9c",
         "language": "en",
         "description": "We use ||| to separate source and target in a template.",
-        "template": "{{text}} \nWhat label best describes this news article? ||| \n{{answers[label] }}",
-        "answers": {
-            "World": [
-                "World politics"
-            ],
-            "Sports": [
-                "Sports"
-            ],
-            "Business": [
-                "Business"
-            ],
-            "Science and Technology": [
-                "Science and technology"
-            ]
-        },
-        "supported_plm_types": [
-            "left-to-right",
-            "encoder-decoder"
-        ],
-        "signal_type": [
-            "topic-classification"
-        ],
-        "results": [
-            {
-                "value": 0.0,
-                "plm": "bert-base-uncased",
-                "metric": "accuracy"
-            },
-            {
-                "value": 0.0,
-                "plm": "facebook/bart-large",
-                "metric": "accuracy"
-            },
-            {
-                "value": 0.0,
-                "plm": "t5-11b",
-                "metric": "accuracy"
-            }
-        ],
-        "features": {
-            "length": 11,
-            "shape": "prefix",
-            "skeleton": "classify"
-        },
-        "reference": "https://arxiv.org/abs/2202.01279",
-        "contributor": "PromptSource"
-    },
-    "d9a5f741084319da5731009cb6ee579b": {
-        "id": "d9a5f741084319da5731009cb6ee579b",
-        "language": "en",
-        "description": "We use ||| to separate source and target in a template.",
-        "template": "What label best describes this news article?\n{{text}} ||| \n{{answers[label] }}",
+        "template": "{{text}} \nWhat label best describes this news article? ||| \n{{answers[label]}}",
         "answers": {
             "World": [
                 "World politics"
@@ -96,16 +45,16 @@
         "features": {
             "length": 10,
             "shape": "prefix",
-            "skeleton": "classify_question_first"
+            "skeleton": "classify"
         },
         "reference": "https://arxiv.org/abs/2202.01279",
         "contributor": "PromptSource"
     },
-    "da69f24d334457c1fb2df368e6d3bec7": {
-        "id": "da69f24d334457c1fb2df368e6d3bec7",
+    "6ef83a833ca5f20837e0b2d85fcbe2d0": {
+        "id": "6ef83a833ca5f20837e0b2d85fcbe2d0",
         "language": "en",
         "description": "We use ||| to separate source and target in a template.",
-        "template": "{{text}} \nIs this a piece of news regarding {{\"world politics, sports, business, or science and technology\"}}? ||| \n{{answers[label] }}",
+        "template": "What label best describes this news article?\n{{text}} ||| \n{{answers[label]}}",
         "answers": {
             "World": [
                 "World politics"
@@ -145,18 +94,18 @@
             }
         ],
         "features": {
-            "length": 19,
+            "length": 9,
             "shape": "prefix",
-            "skeleton": "classify_with_choices"
+            "skeleton": "classify_question_first"
         },
         "reference": "https://arxiv.org/abs/2202.01279",
         "contributor": "PromptSource"
     },
-    "ca047c74422d147dfb68bf086ec726f3": {
-        "id": "ca047c74422d147dfb68bf086ec726f3",
+    "8585e998295f59d719c04e947d27df84": {
+        "id": "8585e998295f59d719c04e947d27df84",
         "language": "en",
         "description": "We use ||| to separate source and target in a template.",
-        "template": "Is this a piece of news regarding {{\"world politics, sports, business, or science and technology\"}}?\n{{text}} \n||| \n{{answers[label] }}",
+        "template": "{{text}} \nIs this a piece of news regarding world politics, sports, business, or science and technology? ||| \n{{answers[label]}}",
         "answers": {
             "World": [
                 "World politics"
@@ -198,16 +147,67 @@
         "features": {
             "length": 18,
             "shape": "prefix",
+            "skeleton": "classify_with_choices"
+        },
+        "reference": "https://arxiv.org/abs/2202.01279",
+        "contributor": "PromptSource"
+    },
+    "9b32667bc4ec46944df56588ab102436": {
+        "id": "9b32667bc4ec46944df56588ab102436",
+        "language": "en",
+        "description": "We use ||| to separate source and target in a template.",
+        "template": "Is this a piece of news regarding world politics, sports, business, or science and technology?\n{{text}} \n||| \n{{answers[label]}}",
+        "answers": {
+            "World": [
+                "World politics"
+            ],
+            "Sports": [
+                "Sports"
+            ],
+            "Business": [
+                "Business"
+            ],
+            "Science and Technology": [
+                "Science and technology"
+            ]
+        },
+        "supported_plm_types": [
+            "left-to-right",
+            "encoder-decoder"
+        ],
+        "signal_type": [
+            "topic-classification"
+        ],
+        "results": [
+            {
+                "value": 0.0,
+                "plm": "bert-base-uncased",
+                "metric": "accuracy"
+            },
+            {
+                "value": 0.0,
+                "plm": "facebook/bart-large",
+                "metric": "accuracy"
+            },
+            {
+                "value": 0.0,
+                "plm": "t5-11b",
+                "metric": "accuracy"
+            }
+        ],
+        "features": {
+            "length": 17,
+            "shape": "prefix",
             "skeleton": "classify_with_choices_question_first"
         },
         "reference": "https://arxiv.org/abs/2202.01279",
         "contributor": "PromptSource"
     },
-    "1b1ed080bfbf73cf9b118b4a0f10090a": {
-        "id": "1b1ed080bfbf73cf9b118b4a0f10090a",
+    "811bf6e9022310fbe678f51d338de568": {
+        "id": "811bf6e9022310fbe678f51d338de568",
         "language": "en",
         "description": "We use ||| to separate source and target in a template.",
-        "template": "Would you recommend the following article to a {{\"politician\"}}, an {{\"athlete\"}}, a {{\"business executive\"}}, or a {{\"scientist\"}}?\n\n{{ text }}\n|||\n{{answers[label]}}",
+        "template": "Would you recommend the following article to a politician, an athlete, a business executive, or a scientist?\n\n{{ text }}\n|||\n{{answers[label]}}",
         "answers": {
             "World": [
                 "Politician"
@@ -254,11 +254,11 @@
         "reference": "https://arxiv.org/abs/2202.01279",
         "contributor": "PromptSource"
     },
-    "841fa6ccf50ded58d6321b5d5fb3734d": {
-        "id": "841fa6ccf50ded58d6321b5d5fb3734d",
+    "d6bd3419e08c3a50047d580d5cc31547": {
+        "id": "d6bd3419e08c3a50047d580d5cc31547",
         "language": "en",
         "description": "We use ||| to separate source and target in a template.",
-        "template": "{{text}} \n\nWhich section of a newspaper would this article likely appear in? ||| \n{{answers[label] }}",
+        "template": "{{text}} \n\nWhich section of a newspaper would this article likely appear in? ||| \n{{answers[label]}}",
         "answers": {
             "World": [
                 "World News"
@@ -298,18 +298,18 @@
             }
         ],
         "features": {
-            "length": 15,
+            "length": 14,
             "shape": "prefix",
             "skeleton": "which_section"
         },
         "reference": "https://arxiv.org/abs/2202.01279",
         "contributor": "PromptSource"
     },
-    "facbd14925e382c3dfd53eb3a76b44e2": {
-        "id": "facbd14925e382c3dfd53eb3a76b44e2",
+    "539078e50b026ef7a4caa82eda7d31f1": {
+        "id": "539078e50b026ef7a4caa82eda7d31f1",
         "language": "en",
         "description": "We use ||| to separate source and target in a template.",
-        "template": "{{text}} \n\nWhich of the following sections of a newspaper would this article likely appear in? {{\"World News\"}}, {{\"Sports\"}}, {{\"Business\"}}, or {{\"Science and Technology\"}}? ||| \n{{answers[label] }}",
+        "template": "{{text}} \n\nWhich of the following sections of a newspaper would this article likely appear in? World News, Sports, Business, or Science and Technology? ||| \n{{answers[label]}}",
         "answers": {
             "World": [
                 "World News"
@@ -349,7 +349,7 @@
             }
         ],
         "features": {
-            "length": 26,
+            "length": 25,
             "shape": "prefix",
             "skeleton": "which_section_choices"
         },

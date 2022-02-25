@@ -13,11 +13,11 @@
 
 from dataclasses import dataclass
 from typing import ClassVar, Dict, Optional, Tuple
-from ..prompt import Prompt, PromptResult
-from ..features import ClassLabel, Features, Value
+
 from .base import TaskTemplate
-import uuid
-from ..enums import SettingType, PLMType, SignalType, PromptShape, Metrics
+from ..enums import PLMType, SignalType, PromptShape, Metrics
+from ..features import ClassLabel, Features, Value
+from ..prompt import Prompt, PromptResult
 
 
 @dataclass
@@ -84,7 +84,6 @@ class TopicClassification(TextClassification):
 
     prompts_raw = [
         Prompt(
-            id=str(uuid.uuid4()),
             template="Given the text: {{text}}, is it about {{textual_choices_with_or}}? ||| {{answers[label]}}",
             description="We use ||| to separate source and target in a template.",
             answers={},
@@ -101,7 +100,6 @@ class TopicClassification(TextClassification):
             reference="http://datalab.nlpedia.ai/"
         ),
         Prompt(
-            id=str(uuid.uuid4()),
             template="Given the text: {{text}}, it is about [mask]. ||| {{answers[label]}}",
             description="We use [mask] to represent the mask symbol from a given PLM's vocabulary. "
                         "We use ||| to separate source and target in a template.",
@@ -118,7 +116,6 @@ class TopicClassification(TextClassification):
             reference="http://datalab.nlpedia.ai/"
         ),
         Prompt(
-            id=str(uuid.uuid4()),
             template="Given the text: {{text}} Classify this text. You may choose from {{textual_choices_without_or}}. ||| {{answers[label]}}",
             description="We use ||| to separate source and target in a template.",
             answers={},
@@ -135,7 +132,6 @@ class TopicClassification(TextClassification):
             reference="http://datalab.nlpedia.ai/"
         ),
         Prompt(
-            id=str(uuid.uuid4()),
             template="Given the text: {{text}} Given a list of categories: {{textual_choices_without_or}}, what category does the paragraph belong to? ||| {{answers[label]}}",
             description="We use ||| to separate source and target in a template.",
             answers={},
@@ -152,7 +148,6 @@ class TopicClassification(TextClassification):
             reference="http://datalab.nlpedia.ai/"
         ),
         Prompt(
-            id=str(uuid.uuid4()),
             template="Given the text: {{text}} Pick one category for the previous text. The options are {{textual_choices_without_or}}. ||| {{answers[label]}}",
             description="We use ||| to separate source and target in a template.",
             answers={},
@@ -169,7 +164,6 @@ class TopicClassification(TextClassification):
             reference="http://datalab.nlpedia.ai/"
         ),
         Prompt(
-            id=str(uuid.uuid4()),
             template="Given the text: {{text}} Can you identify the category of this text? {{textual_choices_with_or}}? ||| {{answers[label]}}",
             description="We use ||| to separate source and target in a template.",
             answers={},
@@ -186,7 +180,6 @@ class TopicClassification(TextClassification):
             reference="http://datalab.nlpedia.ai/"
         ),
         Prompt(
-            id=str(uuid.uuid4()),
             template="Given the text: {{text}} What\\'s the main topic of this paragraph? {{textual_choices_with_or}}? ||| {{answers[label]}}",
             description="We use ||| to separate source and target in a template.",
             answers={},
@@ -203,7 +196,6 @@ class TopicClassification(TextClassification):
             reference="http://datalab.nlpedia.ai/"
         ),
         Prompt(
-            id=str(uuid.uuid4()),
             template="Given the text: {{text}} Is this a piece of text regarding {{textual_choices_with_or}}? ||| {{answers[label]}}",
             description="We use ||| to separate source and target in a template.",
             answers={},
@@ -221,77 +213,3 @@ class TopicClassification(TextClassification):
         ),
     ]
     prompts = {x.id: x for x in prompts_raw}
-
-    # prompts = [Prompt(template="Given the text: {text}, is it about {texture_choices}",
-    #                   description="task prompts",
-    #                   answers={},
-    #                   supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
-    #                   signal_type=[SignalType.topic_classification.value],
-    #                   features={"shape": PromptShape.prefix.value,
-    #                             },
-    #                   results=[PromptResult(plm="BERT", metric="accuracy")],
-    #                   ),
-    #            Prompt(template="Given the text: {text}, it is about [mask]",
-    #                   description="We use [mask] to represent the mask symbol from a given PLM's vocabulary. "
-    #                               "For example, in BART, [mask] refer to XX",
-    #                   answers={},
-    #                   supported_plm_types=[PLMType.masked_language_model.value],
-    #                   signal_type=[SignalType.topic_classification.value],
-    #                   features={"shape": PromptShape.cloze.value,
-    #                             },
-    #                   results=[PromptResult(plm="BERT", metric="accuracy")],
-    #                   ),
-    #            Prompt(template="Given the text: {text} Classify this text. You may choose from {texture_choices}.",
-    #                   description="task prompt with multiple choice type",
-    #                   answers={},
-    #                   supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
-    #                   signal_type=[SignalType.topic_classification.value],
-    #                   features={"shape": PromptShape.prefix.value,
-    #                             }
-    #                   ),
-    #            Prompt(
-    #                template="Given the text: {text} Given a list of categories: {texture_choices}, what category does the paragraph belong to?",
-    #                description="task prompt with multiple choice type",
-    #                answers={},
-    #                supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
-    #                signal_type=[SignalType.topic_classification.value],
-    #                features={"shape": PromptShape.prefix.value,
-    #                          }
-    #                ),
-    #            Prompt(
-    #                template="Given the text: {text} Pick one category for the previous text. The options are {texture_choices}.",
-    #                description="task prompt with multiple choice type",
-    #                answers={},
-    #                supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
-    #                signal_type=[SignalType.topic_classification.value],
-    #                features={"shape": PromptShape.prefix.value,
-    #                          }
-    #                ),
-    #            Prompt(
-    #                template="Given the text: {text} Can you identify the category of this text? {texture_choices}",
-    #                description="task prompt with multiple choice type",
-    #                answers={},
-    #                supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
-    #                signal_type=[SignalType.topic_classification.value],
-    #                features={"shape": PromptShape.prefix.value,
-    #                          }
-    #            ),
-    #            Prompt(
-    #                template="Given the text: {text} What\\'s the main topic of this paragraph? {texture_choices}",
-    #                description="task prompt with multiple choice type",
-    #                answers={},
-    #                supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
-    #                signal_type=[SignalType.topic_classification.value],
-    #                features={"shape": PromptShape.prefix.value,
-    #                          }
-    #            ),
-    #            Prompt(
-    #                template="Given the text: {text} Is this a piece of text regarding {texture_choices}",
-    #                description="task prompt with multiple choice type",
-    #                answers={},
-    #                supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
-    #                signal_type=[SignalType.topic_classification.value],
-    #                features={"shape": PromptShape.prefix.value,
-    #                          }
-    #            ),
-    #            ]

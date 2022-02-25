@@ -71,6 +71,7 @@ class Prompt:
         else:
             self.id = hashlib.md5(self.template.encode()).hexdigest()
 
+
 class Prompts:
     @classmethod
     def from_url(cls, URL):
