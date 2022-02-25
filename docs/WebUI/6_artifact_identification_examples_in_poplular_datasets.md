@@ -4,7 +4,7 @@
 
 ## 1. Observations and conclusions of artifact identification with PMI on the SNLI
 
-[SNLI Artifact Identification Interface](http://datalab.nlpedia.ai/normal_dataset/617794bfb7314cb4146d2384/dataset_bias) shows an artifact identification analysis of the SNLI dataset between two features, `length_{hypothesis} `and `label` (`entailment`, `neutral` or `contradiction`). The main observations are summarized as follow:
+[SNLI Artifact Identification Interface](http://datalab.nlpedia.ai/normal_dataset/617794bfb7314cb4146d2384/dataset_bias) shows an artifact identification analysis of the SNLI dataset between features (e.g. `length_{hypothesis}) ` and labels (`entailment`, `neutral` or `contradiction`). The main observations are summarized as follow:
 
 <table>
     <tr>
@@ -82,7 +82,7 @@
 
 ## 2. Observations and conclusions of artifact identification with PMI on the GLUE-SST2 
 
-[GLUE-SST2 Artifact Identification Interface](http://datalab.nlpedia.ai/normal_dataset/61a9bf6d304f8c55afdc12e9/dataset_bias) shows an artifact identification analysis of the GLUE-SST2 dataset between two features, `length_{sentence}` and `label` (`positive` and `negtive`). The main observations are summarized as follow:
+[GLUE-SST2 Artifact Identification Interface](http://datalab.nlpedia.ai/normal_dataset/61a9bf6d304f8c55afdc12e9/dataset_bias) shows an artifact identification analysis of the GLUE-SST2 dataset between features(e.g. `length_{sentence}`) and labels (`positive` and `negtive`). The main observations are summarized as follow:
 
 <table>
     <tr>
@@ -119,7 +119,9 @@
 
 ## 3. Observations and conclusions of artifact identification with PMI on the DBpedia2014
 
-[DBpedia2014 Artifact Identification Interface](http://datalab.nlpedia.ai/normal_dataset/6177751c8795791d8d46916f/dataset_bias) shows an artifact identification analysis of the DBpedia2014 dataset between several features (e.g. `basic word` and `gender bias`) and `label` (`educational institution`, `office holder`, `artist`, `althlete`). The main observations are summarized as follow:
+[DBpedia2014 Artifact Identification Interface](http://datalab.nlpedia.ai/normal_dataset/6177751c8795791d8d46916f/dataset_bias) shows an artifact identification analysis of the DBpedia2014 dataset between several features (e.g. `basic word` and `gender bias`) and labels (`educational institution`, `office holder`, `artist`, `althlete`). The main observations are summarized as follow:
+
+
 
 <table>
     <tr>
@@ -173,7 +175,8 @@
 ## 4. Observations and conclusions of artifact identification with PMI on the GLUE-qnli
 
 
-[GLUE-qnli Artifact Identification Interface](http://datalab.nlpedia.ai/normal_dataset/6177751c8795791d8d46916f/dataset_bias) shows an artifact identification analysis of the GLUE-qnli dataset between several features (e.g. `basic word` and `gender bias`) and `label` (`entailment`, `not-entailment`). The main observations are summarized as follow:
+[GLUE-qnli Artifact Identification Interface](http://datalab.nlpedia.ai/normal_dataset/6177751c8795791d8d46916f/dataset_bias) shows an artifact identification analysis of the GLUE-qnli dataset between several features (e.g. `basic word` and `gender bias`) and labels (`entailment`, `not-entailment`). The main observations are summarized as follow:
+
 
 <table>
     <tr>
