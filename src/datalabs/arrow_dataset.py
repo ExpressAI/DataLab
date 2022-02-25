@@ -684,10 +684,44 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         #                 labels_to_answers = dict(zip(range(len(labels)), labels))
         #                 yield template_p1(sample, labels_to_answers, func)
 
-        if func._type == 'Aggregating':
+
+
+        # Aggregation
+
+        # Prompting
+        if isinstance(func, str):
+            for sample in self.__iter__():
+                # prompt could be : '{{text}} \n\nWhich section of a newspaper would this article likely appear in? ||| \n{{answers[label] }}'
+                template = self._info.prompts[func]["template"]
+                template_text = template.split("|||")[0]
+                template_text_slots = re.findall('\{\{(.*?)\}\}', template_text)
+                for slot_key in template_text_slots:
+                    slot_value = sample[slot_key]
+                    template_text = template_text.replace("{{"+slot_key+"}}", slot_value)
+                prompted_text = template_text
+
+                template_answer = template.split("|||")[1].replace("{{answers[label] }}", "{{answers[label]}}")
+                template_answer_slots = re.findall('\{\{(.*?)\}\}', template_answer)
+                for slot_key in template_answer_slots:
+                    if slot_key == "answers[label]":
+                        labels = self._info.task_templates[0].labels
+                        #labels_to_answers = dict(zip(range(len(labels)), labels))
+                        slot_values = self._info.prompts[func]["answers"][labels[sample["label"]]]
+                        # {'World': ['World News'], 'Sports': ['Sports'], 'Business': ['Business'], 'Science and Technology': ['Science and Technology']}
+                        template_answer = template_answer.replace("{{"+slot_key+"}}", slot_values[0])
+                    elif slot_key in sample.keys():
+                        slot_value = sample[slot_key]
+                        template_answer = template_answer.replace("{{" + slot_key + "}}", slot_value)
+                    else:
+                        raise ValueError("answer can not be found")
+
+                prompted_answer =   template_answer
+                yield {"prompted_text": prompted_text, "prompted_answer":prompted_answer}
+        elif func._type == 'Aggregating':
             yield func(self[func.processed_fields[0]])
         elif func._type.find("Aggregating")!=-1:
             yield func(self)
+
         elif func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
             for sample in self.__iter__():
                 yield func(sample[func.processed_fields[0]])
@@ -701,7 +735,12 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                 yield func(sample)
 
     def apply(self, func, mode="realtime", prefix="", num_proc=1):
-        if func._type.find("Aggregating") != -1:
+
+
+        if isinstance(func, str):
+            map = { "realtime": self.apply_basic, "memory": self.apply_memory, "local": self.apply_local }
+            return map[mode](func, prefix=prefix, num_proc=num_proc)
+        elif func._type.find("Aggregating") != -1:
             result = next(self.apply_basic(func))
 
             result_new = {}
