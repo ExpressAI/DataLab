@@ -50,7 +50,7 @@ and of high quality, as indicated by human and intrinsic evaluation.
 """
 _HOMEPAGE = "https://github.com/csebuetnlp/xl-sum"
 _LICENSE = "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)"
-_URL = "https://huggingface.co/datalab/csebuetnlp/xlsum/resolve/main/data/{}_XLSum_v{}.tar.bz2"
+_URL = "https://huggingface.co/datasets/csebuetnlp/xlsum/resolve/main/data/{}_XLSum_v{}.tar.bz2"
 _LANGUAGES = [
     "oromo",
     "french",
