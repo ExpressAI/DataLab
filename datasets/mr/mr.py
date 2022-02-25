@@ -59,7 +59,7 @@ https://drive.google.com/file/d/1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb/view?usp=shari
 
 """
 _TRAIN_DOWNLOAD_URL = "https://drive.google.com/uc?id=1FCqdCBYNahOmoMOW7L29EZGanJKksgwT&export=download"
-_TEST_DOWNLOAD_URL = "https://drive.google.com/uc?id=1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb&export=download"
+_TEST_DOWNLOAD_URL = "https://drive.google.com/uc?id=15NYovF4uOv8whePrcpKcLRxs2Nfns29T&export=download"
 
 
 
