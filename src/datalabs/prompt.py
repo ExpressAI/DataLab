@@ -68,7 +68,8 @@ class Prompt:
                 self.id = hashlib.md5((self.template + self.answers).encode()).hexdigest()
             else:
                 self.id = hashlib.md5(self.template.encode()).hexdigest()
-
+        else:
+            self.id = hashlib.md5(self.template.encode()).hexdigest()
 
 class Prompts:
     @classmethod

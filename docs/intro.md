@@ -5,7 +5,7 @@ sidebar_position: 1
 # Introduction
 [DataLab](http://datalab.nlpedia.ai/) is a unified platform that allows for NLP researchers to perform a number of data-related tasks in an efficient and easy-to-use manner. In particular, DataLab supports the following functionalities:
 <p align="left"> 
-<img src="https://github.com/ExpressAI/DataLab/raw/main/docs/resources/figs/datalab_overview.png" width="300"/>
+<img src="https://github.com/ExpressAI/DataLab/raw/main/docs/Resources/figs/datalab_overview.png" width="300"/>
 </p> 
 
 * **Data Diagnostics**: DataLab allows for analysis and understanding of data to uncover undesirable traits such as hate speech, gender bias, or label imbalance.
