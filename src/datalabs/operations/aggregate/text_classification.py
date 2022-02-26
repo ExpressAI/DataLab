@@ -152,10 +152,11 @@ def get_statistics(samples: Iterator):
     you can test it with following code:
 
 from datalabs import load_dataset
-from aggregate import *
-dataset = load_dataset('mr')
+from aggregate.text_classification import *
+dataset = load_dataset('./datasets/mr')
 res = dataset['test'].apply(get_statistics)
-print(next(res))
+print(res._stat)
+
 
     """
     # Grammar checker
@@ -250,11 +251,11 @@ print(next(res))
         }
         """
         gender_result = get_gender_bias.func(text)
-        gender_results.append(gender_result)
+        gender_results.append(gender_result["gender_bias_info"])
 
 
         # average length
-        text_length = get_length.func(text)
+        text_length = len(text.split(" "))
         lengths.append(text_length)
 
         # label imbalance

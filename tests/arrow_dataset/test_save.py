@@ -18,7 +18,7 @@ class MyTestCase(unittest.TestCase):
         dataset_test_new4 = dataset['test'].apply(get_length, mode="local")
 
         print(dataset_test_new3.features.keys())
-        self.assertEqual(list(dataset_test_new3.features.keys()), ['text', 'label', 'text_length'])
+        self.assertEqual(list(dataset_test_new3.features.keys()), ['text', 'label', 'length'])
 
         #dataset_train_new2 = dataset['train'].apply_local(get_length, "length") # save new features into local arrow
 
