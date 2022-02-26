@@ -22,7 +22,11 @@
 这里面每个collection对应的是一个数据集所有的样本，怎么知道一个样本对应的数据集是什么呢？可以通过 `dataset_id`去上面的 `dataset_metadata`里面找，是
 一一对应的。那我们要改什么呢？就是每个collection (相当于一个数据集) 里面所有document （相当于一个样本）中的  `features`.
 
-比如，对于上述数据集，我们改了`sst` metadata里面的feature names之后，我们还要把他具体样本里的feature name改下：
+比如，对于上述数据集，我们改了`sst` metadata里面的feature names之后，我们还要把他具体样本里的feature name改下：步骤
+（1）先在samples_of_dataset里面搜索名字为`sst`的collection，然后在这个`sst` collection里面过滤出来`dataset_id` = 上述metadata里面document `_id`的记录
+（2）对上述过滤出来的记录的 `features`进行修改
+
+
 
 ![image](https://user-images.githubusercontent.com/59123869/155820567-be75cb0a-ca35-41c6-b274-1ccc7d364a0e.png)
 

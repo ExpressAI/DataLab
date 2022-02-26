@@ -1,0 +1,9 @@
+[
+  {
+    "dataset_name": "sst",
+    "sub_dataset": "default",
+    "mapping": {
+      "sentence": "text",
+    }
+  }
+]
