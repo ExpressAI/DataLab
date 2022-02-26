@@ -29,7 +29,32 @@ qmsum | `query-based`  | QuerySummarization | ``` load_dataset("qmsum", "query-b
 
 ## Examples
 
-### Comparing a scientific multi-document summarization dataset and a dialogue summarization dataset
+### Comparing a scientific multi-document summarization dataset (Multi-XScience) and a dialogue summarization dataset (DialogSum)
+
+<!-- ![dataset](https://user-images.githubusercontent.com/51046084/155858814-11938e42-b4aa-473e-947e-07521fd25c5e.JPG) -->
+
+<img src="https://user-images.githubusercontent.com/51046084/155858814-11938e42-b4aa-473e-947e-07521fd25c5e.JPG" width="600"/>
+
+#### General Features
+
+<!-- ![general](https://user-images.githubusercontent.com/51046084/155858866-d3a5eafe-a94e-4804-9a85-f99f5a4ad719.JPG) -->
+
+<img src="https://user-images.githubusercontent.com/51046084/155858866-d3a5eafe-a94e-4804-9a85-f99f5a4ad719.JPG" width="600"/>
+
+
+- Multi-XScience is longer than DialogSum in terms of both text length and summary length.
+- DialogSum contain more basic words than Multi-XScience, possibly because dialogues are from daily life while scientific papers contain more rare words.
+
+#### Advanced Features
+<!-- ![advance](https://user-images.githubusercontent.com/51046084/155859135-b85350c9-4e47-4cc3-b6f4-82e8dfc71e6d.JPG) -->
+
+<img src="https://user-images.githubusercontent.com/51046084/155859135-b85350c9-4e47-4cc3-b6f4-82e8dfc71e6d.JPG" width="600"/>
+
+- Multi-Science is more abstractive since it contains more novel words
+- DialogSum is more extractive since it has higher density, coverage and copy length, which means more content in the summaries can be extracted from the source text.
+
+
+
 
 
 
