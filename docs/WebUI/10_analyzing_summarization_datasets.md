@@ -27,6 +27,10 @@ samsum | `dialogue`  | DialogSummarization | ``` load_dataset("samsum", "dialogu
 qmsum | `document`  | Summarization | ``` load_dataset("qmsum", "document") ``` | Current definition: text, summary |
 qmsum | `query-based`  | QuerySummarization | ``` load_dataset("qmsum", "query-based") ``` | Current definition: text, summary, query |
 
+## Examples
+
+### Comparing a scientific multi-document summarization dataset and a dialogue summarization dataset
+
 
 
 
