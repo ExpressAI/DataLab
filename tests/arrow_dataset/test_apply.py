@@ -10,7 +10,7 @@ class MyTestCase(unittest.TestCase):
         new_dataset_one = dataset.apply(get_length, mode="memory", prefix="test")
         new_dataset_two = dataset.apply(get_average_length)
 
-        print(new_dataset_one[0]["test_text_length"])
+        print(new_dataset_one[0]["test_length"])
         print(new_dataset_two._stat)
 
         self.assertEqual(len(new_dataset_one[0].keys()), 3)
