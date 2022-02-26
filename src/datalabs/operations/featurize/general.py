@@ -36,7 +36,7 @@ def get_length(text:str) -> str:
         integer
     """
     # text = sample["text"]
-    return {"text_length":len(text.split(" "))}
+    return {"length":len(text.split(" "))}
     # return
 
 

@@ -75,7 +75,7 @@ def infer_schema_dataset_level(sample_level_schema:dict):
 
 
 
-EXPAND = True
+EXPAND = False
 FIELD = "text"
 
 class MR(datalabs.GeneratorBasedBuilder):
