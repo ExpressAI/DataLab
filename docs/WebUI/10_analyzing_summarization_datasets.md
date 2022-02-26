@@ -53,6 +53,30 @@ qmsum | `query-based`  | QuerySummarization | ``` load_dataset("qmsum", "query-b
 - Multi-Science is more abstractive since it contains more novel words
 - DialogSum is more extractive since it has higher density, coverage and copy length, which means more content in the summaries can be extracted from the source text.
 
+### Comparing a summarization dataset (Reddit TIFU) on informal crowd-generated posts and a query-based meeting summarization dataset (QMSum)
+
+
+<!-- ![name](https://user-images.githubusercontent.com/51046084/155859674-e3c805a7-c753-4838-a32b-d549077a5dac.JPG) -->
+
+
+<img src="https://user-images.githubusercontent.com/51046084/155859674-e3c805a7-c753-4838-a32b-d549077a5dac.JPG" width="600"/>
+
+#### General Features
+
+<!-- ![general](https://user-images.githubusercontent.com/51046084/155859717-e27c3588-308b-49d2-b901-fd570583b16d.JPG) -->
+
+<img src="https://user-images.githubusercontent.com/51046084/155859717-e27c3588-308b-49d2-b901-fd570583b16d.JPG" width="600"/>
+
+A salient difference between these two datasets is that QMSum is much longer than Reddit TIFU. As QMSum is a query-based dataset, its source text may contain infromation about multiple queries and their associated summaries, which results in longer source text.
+
+#### Advanced Features
+<!-- ![advance](https://user-images.githubusercontent.com/51046084/155859135-b85350c9-4e47-4cc3-b6f4-82e8dfc71e6d.JPG) -->
+
+<img src="https://user-images.githubusercontent.com/51046084/155859951-4cce92ed-0b12-4db3-89b6-77031b519491.JPG" width="600"/>
+
+<!-- ![advance](https://user-images.githubusercontent.com/51046084/155859951-4cce92ed-0b12-4db3-89b6-77031b519491.JPG) -->
+
+The advanced features indicate that QMSum is more extractive while Reddit TIFU contains more novel words. As a result, it is likely that QMSum's summaries are more faithful than Reddit, since more content of QMSum's summaries can be direcly recovered in the source test. This observation suggests that the query-based collection protocal of QMSum can improve the faithfulness of reference summaries, which is one of the goals of this dataset. 
 
 
 
