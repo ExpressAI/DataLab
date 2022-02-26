@@ -1,5 +1,39 @@
 # Analyzing Summarization Datasets
 
+## Supported Features
+
+### General Features
+
+- text length
+- ratio of basic words
+- lexcical richness (i.e. lexical diversity)
+- ...
+
+### Advanced Task-Specific Features
+
+- Density (Extractive Fragment Density)
+  - Introduced in [Grusky et al., 2018](https://aclanthology.org/N18-1065.pdf) 
+  - The density measure quantifies how well the word sequence of a summary can be described as a series of extractions.
+  - DENSITY(A, S) is the average length of the extractive fragment to which each word in the summary belongs.
+- Coverage (Extractive Fragment Coverage)
+  - Introduced in [Grusky et al., 2018](https://aclanthology.org/N18-1065.pdf) 
+  - The coverage measure quantifies the extent to which a summary is derivative of a text.
+  - COVERAGE(A, S) measures the percentage of words in the summary that are part of an extractive fragment with the article.
+- Compression (Compression Ratio)
+  - Introduced in [Grusky et al., 2018](https://aclanthology.org/N18-1065.pdf) 
+  - Summarizing with higher compression is challenging as it requires capturing more precisely the critical aspects of the article text.
+  - COMPRESSION is the word ratio between the article and summary.
+- Repetition
+  - The repetition ratio of the reference summaries.
+  - A large reprtition ratio may indicate redundency.
+  - Please refer to [See et al., 2017](https://aclanthology.org/P17-1099.pdf) for more details.
+- Novelty
+  - The ratio of content of reference summaries that are not in the source text.
+  - Novelty is correlated with both abstractivity and faithfulness.
+  - Please refer to [See et al., 2017](https://aclanthology.org/P17-1099.pdf), [Bommasani and Cardie, 2020](https://aclanthology.org/2020.emnlp-main.649.pdf), [Maynez et al., 2020](https://aclanthology.org/2020.acl-main.173.pdf) for more details.
+- Copy Length
+  - The average length of fragments of reference summaries that appear in the source text.
+  - Please refer to [Chen et al., 2020](https://aclanthology.org/2020.findings-emnlp.329.pdf), [Grusky et al., 2018](https://aclanthology.org/N18-1065.pdf) for more details.
 
 ## Supported Datasets
 
