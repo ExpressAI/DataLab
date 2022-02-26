@@ -1,5 +1,14 @@
 # Analyzing Summarization Datasets
 
+Datalab supports fine-grained analysis and comparision of summarization datasets. Please refer to [fine-grained-analysis](2_fine_grained_analysis_of_a_dataset.md) and [compare-two-datasets](7_compare_two_datasets.md) for more usage details.
+
+## Outline
+
+* ### [Supported Features](#supported-features-1)
+* ### [Supported Datasets](#supported-datasets-1)
+* ### [Examples](#examples-1)
+  * #### [Multi-XScience v.s. DialogSum](#comparing-a-scientific-multi-document-summarization-dataset-multi-xscience-and-a-dialogue-summarization-dataset-dialogsum)
+  * #### [Reddit TIFU v.s. QMSum](#comparing-a-summarization-dataset-reddit-tifu-on-informal-crowd-generated-posts-and-a-query-based-meeting-summarization-dataset-qmsum)
 ## Supported Features
 
 ### General Features
