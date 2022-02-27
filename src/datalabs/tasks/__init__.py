@@ -17,6 +17,8 @@ from .question_answering import QuestionAnsweringMultipleChoices
 from .question_answering import QuestionAnsweringMultipleChoicesWithoutContext
 from .question_answering import QuestionAnsweringAbstractiveNQ
 from .question_answering import QuestionAnsweringMultipleChoicesQASC
+from .question_answering import QuestionAnsweringDCQA
+
 
 from .summarization import Summarization
 
@@ -40,6 +42,7 @@ __all__ = [
     "MultipleChoiceQA",
     "QuestionAnsweringExtractive",
     "QuestionAnsweringHotpot",
+    "QuestionAnsweringDCQA",
     "QuestionAnsweringAbstractive",
     "QuestionAnsweringMultipleChoices",
     "QuestionAnsweringMultipleChoicesWithoutContext",
@@ -73,6 +76,7 @@ NAME2TEMPLATE = {
     QuestionAnsweringExtractive.task_category: QuestionAnsweringExtractive,
     QuestionAnsweringAbstractive.task_category: QuestionAnsweringAbstractive,
     QuestionAnsweringHotpot.task_category: QuestionAnsweringHotpot,
+    QuestionAnsweringDCQA.task_category: QuestionAnsweringDCQA,
     QuestionAnsweringMultipleChoicesWithoutContext.task_category: QuestionAnsweringMultipleChoicesWithoutContext,
     QuestionAnsweringAbstractiveNQ.task_category: QuestionAnsweringAbstractiveNQ,
     QuestionAnsweringMultipleChoicesQASC.task_category: QuestionAnsweringMultipleChoicesQASC,

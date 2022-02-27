@@ -170,6 +170,38 @@ class QuestionAnsweringHotpot(TaskTemplate):
 
 
 
+class QuestionAnsweringDCQA(TaskTemplate):
+    # adapt datasets: dcqa
+    # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
+    task_category: str = "question-answering-dcqa"
+    task: str = "question-answering-dcqa"
+    input_schema: ClassVar[Features] = Features({"question": Value("string"),
+                                                 "context":{
+                                                            "SentenceID": Value("int32"),
+                                                            "text": Value("string")
+                                                        }
+                                                 })
+    label_schema: ClassVar[Features] = Features(
+        {
+            "answer": Sequence(
+                {
+                    "text": Value("string"),
+                    "SentenceID": Value("int32"),
+                }
+            )
+        }
+    )
+    question_column: str = "question"
+    context_column: str = "context"
+    answers_column: str = "answer"
+
+    @property
+    def column_mapping(self) -> Dict[str, str]:
+        return {self.question_column: "question", self.context_column: "context", self.answers_column: "answer"}
+
+
+
+
 @dataclass
 class MultipleChoiceQA(TaskTemplate):
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
