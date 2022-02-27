@@ -106,8 +106,8 @@ print(next(res))
 
     """
     # for hate speech
-    from hatesonar import Sonar
-    sonar = Sonar()
+    # from hatesonar import Sonar
+    # sonar = Sonar()
 
     sample_infos = []
 
@@ -117,10 +117,10 @@ print(next(res))
     vocab = {}
     number_of_tokens = 0
     gender_results = []
-    hatespeech = {
-                     "hate_speech":{"ratio":0,"texts":[]},
-                        "offensive_language":{"ratio":0,"texts":[]},
-                        "neither":{"ratio":0,"texts":[]}}
+    # hatespeech = {
+    #                  "hate_speech":{"ratio":0,"texts":[]},
+    #                     "offensive_language":{"ratio":0,"texts":[]},
+    #                     "neither":{"ratio":0,"texts":[]}}
     text1_divided_text2 = []
     similarities = []
 
@@ -166,35 +166,35 @@ print(next(res))
         # Gender info
         gender_result1 = get_gender_bias.func(text1)
         gender_result2 = get_gender_bias.func(text2)
-        gender_results.append(gender_result1)
-        gender_results.append(gender_result2)
+        gender_results.append(gender_result1["gender_bias_info"])
+        gender_results.append(gender_result2["gender_bias_info"])
 
 
         # hataspeech
-        results = sonar.ping(text=text1)
-        class_1 = results['top_class']
-        confidence = 0
-        for value in results['classes']:
-            if value['class_name'] == class_1:
-                confidence = value['confidence']
-                break
+        # results = sonar.ping(text=text1)
+        # class_1 = results['top_class']
+        # confidence = 0
+        # for value in results['classes']:
+        #     if value['class_name'] == class_1:
+        #         confidence = value['confidence']
+        #         break
+        #
+        # hatespeech[class_1]["ratio"] += 1
+        # if class_1 != "neither":
+        #     hatespeech[class_1]["texts"].append(text1)
 
-        hatespeech[class_1]["ratio"] += 1
-        if class_1 != "neither":
-            hatespeech[class_1]["texts"].append(text1)
 
-
-        results = sonar.ping(text=text2)
-        class_2 = results['top_class']
-        confidence = 0
-        for value in results['classes']:
-            if value['class_name'] == class_2:
-                confidence = value['confidence']
-                break
-
-        hatespeech[class_2]["ratio"] += 1
-        if class_2 != "neither":
-            hatespeech[class_2]["texts"].append(text2)
+        # results = sonar.ping(text=text2)
+        # class_2 = results['top_class']
+        # confidence = 0
+        # for value in results['classes']:
+        #     if value['class_name'] == class_2:
+        #         confidence = value['confidence']
+        #         break
+        #
+        # hatespeech[class_2]["ratio"] += 1
+        # if class_2 != "neither":
+        #     hatespeech[class_2]["texts"].append(text2)
 
         sample_info = {
             "text1":text1,
@@ -204,8 +204,8 @@ print(next(res))
             "text2_length": text2_length,
             "text1_gender":gender_result1,
             "text2_gender":gender_result2,
-            "text1_hate_speech_class":class_1,
-            "text2_hate_speech_class":class_2,
+            # "text1_hate_speech_class":class_1,
+            # "text2_hate_speech_class":class_2,
             "text1_divided_text2":len(text1.split(" "))/len(text2.split(" ")),
             "similarity_of_text_pair":similarity_of_text_pair,
         }
@@ -247,8 +247,8 @@ print(next(res))
         gender_ratio['single_name']['female'] = 0
 
     # get ratio of hate_speech:offensive_language:neither
-    for k,v in hatespeech.items():
-        hatespeech[k]["ratio"] /= 2* len(samples)
+    # for k,v in hatespeech.items():
+    #     hatespeech[k]["ratio"] /= 2* len(samples)
 
 
     res = {
@@ -271,7 +271,7 @@ print(next(res))
                 "number_of_tokens": number_of_tokens,
                 "gender_info": gender_ratio,
                 "average_similarity": np.average(similarities),
-                "hatespeech_info": hatespeech,
+                # "hatespeech_info": hatespeech,
             },
         "sample-level": sample_infos
     }

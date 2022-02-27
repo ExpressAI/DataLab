@@ -102,18 +102,18 @@ def get_statistics(samples: Iterator):
         COMMON_MISSPELLINGS_DICT = json.loads(file.read())
 
     # for hate speech
-    from hatesonar import Sonar
-    sonar = Sonar()
+    # from hatesonar import Sonar
+    # sonar = Sonar()
 
     sample_infos = []
     labels_to_number = {}
     gender_results = []
     vocab = {}
     number_of_tokens = 0
-    hatespeech = {
-        "hate_speech": {"ratio": 0, "texts": []},
-        "offensive_language": {"ratio": 0, "texts": []},
-        "neither": {"ratio": 0, "texts": []}}
+    # hatespeech = {
+    #     "hate_speech": {"ratio": 0, "texts": []},
+    #     "offensive_language": {"ratio": 0, "texts": []},
+    #     "neither": {"ratio": 0, "texts": []}}
     spelling_errors = []
 
     lengths = []
@@ -129,17 +129,17 @@ def get_statistics(samples: Iterator):
                 spelling_errors.append((word, COMMON_MISSPELLINGS_DICT[word.lower()]))
 
         # hataspeech
-        results = sonar.ping(text=text)
-        class_ = results['top_class']
-        confidence = 0
-        for value in results['classes']:
-            if value['class_name'] == class_:
-                confidence = value['confidence']
-                break
-
-        hatespeech[class_]["ratio"] += 1
-        if class_ != "neither":
-            hatespeech[class_]["texts"].append(text)
+        # results = sonar.ping(text=text)
+        # class_ = results['top_class']
+        # confidence = 0
+        # for value in results['classes']:
+        #     if value['class_name'] == class_:
+        #         confidence = value['confidence']
+        #         break
+        #
+        # hatespeech[class_]["ratio"] += 1
+        # if class_ != "neither":
+        #     hatespeech[class_]["texts"].append(text)
 
 
         # update the number of tokens
@@ -167,10 +167,10 @@ def get_statistics(samples: Iterator):
         }
         """
         gender_result = get_gender_bias.func(text)
-        gender_results.append(gender_result)
+        gender_results.append(gender_result["gender_bias_info"])
 
         # average length
-        text_length = get_length.func(text)
+        text_length = len(text.split(" "))
         lengths.append(text_length)
 
 
@@ -194,7 +194,7 @@ def get_statistics(samples: Iterator):
             "tags": tag_ts,
             "text_length": text_length,
             "gender": gender_result,
-            "hate_speech_class": class_,
+            # "hate_speech_class": class_,
         }
 
         if len(sample_infos) < 10000:
@@ -225,8 +225,8 @@ def get_statistics(samples: Iterator):
     vocab_sorted = dict(sorted(vocab.items(), key=lambda item: item[1], reverse=True))
 
     # get ratio of hate_speech:offensive_language:neither
-    for k, v in hatespeech.items():
-        hatespeech[k]["ratio"] /= len(samples)
+    # for k, v in hatespeech.items():
+    #     hatespeech[k]["ratio"] /= len(samples)
 
     # other NER features...
 
@@ -257,7 +257,7 @@ def get_statistics(samples: Iterator):
             "vocabulary_info":vocab_sorted,
             "number_of_samples": len(samples),
             "number_of_tokens": number_of_tokens,
-            "hatespeech_info": hatespeech,
+            # "hatespeech_info": hatespeech,
         },
         "sample-level": sample_infos
     }

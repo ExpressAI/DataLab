@@ -741,6 +741,8 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             map = { "realtime": self.apply_basic, "memory": self.apply_memory, "local": self.apply_local }
             return map[mode](func, prefix=prefix, num_proc=num_proc)
         elif func._type.find("Aggregating") != -1:
+
+
             result = next(self.apply_basic(func))
 
             result_new = {}

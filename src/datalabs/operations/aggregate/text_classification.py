@@ -7,7 +7,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from operation import DatasetOperation, dataset_operation
-from featurize import *
+from featurize.general import *
 from data import TextData
 
 class TextClassificationAggregating(Aggregating, DatasetOperation):
@@ -71,7 +71,7 @@ class text_classification_aggregating(aggregating, dataset_operation):
 
 
 @text_classification_aggregating(name="get_features_dataset_level", contributor="datalab",
-             task="Any",
+             task="text-classification",
              description="Get the average length of a list of texts")
 def get_features_dataset_level(samples:Iterator):
     """
