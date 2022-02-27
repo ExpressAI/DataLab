@@ -7,7 +7,7 @@ Datalab supports fine-grained analysis and comparision of summarization datasets
 * ### [Supported Features](#supported-features-1)
 * ### [Supported Datasets](#supported-datasets-1)
 * ### [Examples](#examples-1)
-  * #### [CNNDM v.s. XSum](#comparing-a-scientific-multi-document-summarization-dataset-multi-xscience-and-a-dialogue-summarization-dataset-dialogsum)
+  * #### [CNNDM v.s. XSum](#comparing-cnndm-cnndailymail-and-xsum-datasets)
   * #### [Multi-XScience v.s. DialogSum](#comparing-a-scientific-multi-document-summarization-dataset-multi-xscience-and-a-dialogue-summarization-dataset-dialogsum)
   * #### [Reddit TIFU v.s. QMSum](#comparing-a-summarization-dataset-reddit-tifu-on-informal-crowd-generated-posts-and-a-query-based-meeting-summarization-dataset-qmsum)
 ## Supported Features
