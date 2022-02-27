@@ -28,6 +28,12 @@
 
 
 
-![image](https://user-images.githubusercontent.com/59123869/155820567-be75cb0a-ca35-41c6-b274-1ccc7d364a0e.png)
 
 
+
+
+
+## Other normalization
+我们现在db 里的nli数据集都是这么分的。
+task categories: text-classification
+tasks : natural-language-inference
