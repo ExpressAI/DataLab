@@ -7,6 +7,7 @@ Datalab supports fine-grained analysis and comparision of summarization datasets
 * ### [Supported Features](#supported-features-1)
 * ### [Supported Datasets](#supported-datasets-1)
 * ### [Examples](#examples-1)
+  * #### [CNNDM v.s. XSum](#comparing-a-scientific-multi-document-summarization-dataset-multi-xscience-and-a-dialogue-summarization-dataset-dialogsum)
   * #### [Multi-XScience v.s. DialogSum](#comparing-a-scientific-multi-document-summarization-dataset-multi-xscience-and-a-dialogue-summarization-dataset-dialogsum)
   * #### [Reddit TIFU v.s. QMSum](#comparing-a-summarization-dataset-reddit-tifu-on-informal-crowd-generated-posts-and-a-query-based-meeting-summarization-dataset-qmsum)
 ## Supported Features
@@ -71,6 +72,22 @@ qmsum | `document`  | Summarization | ``` load_dataset("qmsum", "document") ``` 
 qmsum | `query-based`  | QuerySummarization | ``` load_dataset("qmsum", "query-based") ``` | Current definition: text, summary, query |
 
 ## Examples
+
+### Comparing CNNDM (CNN/DailyMail) and XSum datasets 
+
+
+<img src="https://user-images.githubusercontent.com/51046084/155863520-5f08e2da-f791-47c3-95d6-a8802fb7e671.JPG" width="600"/>
+
+
+#### Advanced Features
+
+
+<img src="https://user-images.githubusercontent.com/51046084/155863546-e9b16929-629b-4e43-b61d-3822d4642d96.JPG" width="600"/>
+
+
+<!-- ![advance](https://user-images.githubusercontent.com/51046084/155863546-e9b16929-629b-4e43-b61d-3822d4642d96.JPG) -->
+
+Compared with CNNDailyMail, XSum is more abstractive since it achieves high novelty and compression rate, and much lower density and coverage.
 
 ### Comparing a scientific multi-document summarization dataset (Multi-XScience) and a dialogue summarization dataset (DialogSum)
 
