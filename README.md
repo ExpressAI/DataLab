@@ -43,8 +43,8 @@ cd Datalab
 pip install .
 ```
 
-## Getting started
-Here we give several examples to showcase the usage of DataLab. For more information, please refer to the corresponding sections in our [documentation](https://expressai.github.io/DataLab/).
+## Getting started (Documentation)
+Here we give several examples to showcase the usage of DataLab. For more information, please refer to the corresponding sections in our [**documentation**](https://expressai.github.io/DataLab/).
 
 
 
