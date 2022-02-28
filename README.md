@@ -24,22 +24,7 @@
 * **Data Search**: DataLab provides a semantic dataset search tool to help identify appropriate datasets given a textual description of an idea.
 * **Global Analysis**: DataLab provides tools to perform global analyses over a variety of datasets.
 
-## Table of Content
-* Installation SDK
-* Supported Datasets
-    * Datasets in [SDK](https://github.com/ExpressAI/DataLab/tree/main/datasets)
-    * Datasets in [Web Platform](http://datalab.nlpedia.ai/datasets_explore/text_dataset)
-* [Task Normalization](https://github.com/ExpressAI/DataLab/blob/main/docs/task_normalization/progress.md)
-* Documentation for Web Users
-    * [how to identify artifacts of datasets using DataLab?](https://github.com/ExpressAI/DataLab/blob/main/docs/functionality/how_to_identify_artifacts.md)
-    * [how to analyze summarization datasets](https://github.com/ExpressAI/DataLab/blob/main/docs/introduction_of_summarization_datasets.md)  
-  
-* Documentation for SDK Users
-    * [how to add a new task schema](https://github.com/ExpressAI/DataLab/blob/main/docs/add_new_task_schema.md)
-    * [how to add language information into your dataset](https://github.com/ExpressAI/DataLab/blob/main/docs/add_language_info.md)
-    * [how to add a new dataset into sdk](https://github.com/ExpressAI/DataLab/blob/main/docs/add_new_datasets_into_sdk.md)
-    * [how to add a new dataset into the web platform](https://github.com/ExpressAI/DataLab/blob/main/docs/add_new_datasets_into_web_platform.md)
-    
+
  
 
 
