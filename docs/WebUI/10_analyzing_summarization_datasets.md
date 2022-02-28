@@ -56,8 +56,8 @@ wikihow | -  | Summarization | ``` load_dataset("wikihow") ``` | Current definit
 wikisum | -  | Summarization | ``` load_dataset("wikisum") ``` | Current definition: text, summary |
 reddit_tifu | -  | Summarization | ``` load_dataset("reddit_tifu") ``` | Current definition: text, summary |
 bigpatent | -  | Summarization | ``` load_dataset("bigpatent") ``` | Current definition: text, summary |
-multi_xscience | `single-document`  | Summarization | ``` load_dataset("multi_xsience", "single-document") ``` | Current definition: text, summary |
-multi_xscience | `multi-document`  | MultiDocSummarization | ``` load_dataset("multi_xsience", "multi-document") ``` | Current definition: texts: `List[str]`, summary: `str`|
+multi_xscience | `single-document`  | Summarization | ``` load_dataset("multi_xscience", "single-document") ``` | Current definition: text, summary |
+multi_xscience | `multi-document`  | MultiDocSummarization | ``` load_dataset("multi_xscience", "multi-document") ``` | Current definition: texts: `List[str]`, summary: `str`|
 multinews | `raw-single`  | Summarization | ``` load_dataset("multinews", "raw-single") ``` | raw data, Current definition: text, summary |
 multinews | `raw-cleaned-single`  | Summarization | ``` load_dataset("multinews", "raw-cleaned-single") ``` | cleaned raw data, Current definition: text, summary |
 multinews | `preprocessed-single`  | Summarization | ``` load_dataset("multinews", "preprocessed-single") ``` | preprocessed data, Current definition: text, summary |
