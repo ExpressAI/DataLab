@@ -84,7 +84,8 @@ def get_similarity_by_sacrebleu(text1, text2):
 
 @text_matching_aggregating(name = "get_statistics", contributor= "datalab",
                                  task="text-matching, natural-language-inference",
-                           description="Calculate the overall statistics (e.g., average length) of a given text pair classification datasets. e,g. natural language inference")
+                           description="Calculate the overall statistics (e.g., average length) of a given "
+                                       "text pair classification datasets. e,g. natural language inference")
 def get_statistics(samples: Iterator):
     """
     Input:
