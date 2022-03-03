@@ -61,22 +61,22 @@ _TEST_FILE = "test.txt"
 class Conll2003Config(datalabs.BuilderConfig):
     """BuilderConfig for Conll2003"""
 
-    def __init__(self,
-                 tokens_column=None,
-                 tags_column=None,
-                 label_classes = None,
-                 task_templates = None,
-                 **kwargs):
-        """BuilderConfig forConll2003.
-
-        Args:
-          **kwargs: keyword arguments forwarded to super.
-        """
-        super(Conll2003Config, self).__init__(**kwargs)
-        self.tokens_column = tokens_column
-        self.tags_column = tags_column
-        self.label_classes = label_classes
-        self.task_templates = task_templates
+    # def __init__(self,
+    #              tokens_column=None,
+    #              tags_column=None,
+    #              label_classes = None,
+    #              task_templates = None,
+    #              **kwargs):
+    #     """BuilderConfig forConll2003.
+    #
+    #     Args:
+    #       **kwargs: keyword arguments forwarded to super.
+    #     """
+    #     super(Conll2003Config, self).__init__(**kwargs)
+    #     self.tokens_column = tokens_column
+    #     self.tags_column = tags_column
+    #     self.label_classes = label_classes
+    #     self.task_templates = task_templates
 
 
 class Conll2003(datalabs.GeneratorBasedBuilder):
