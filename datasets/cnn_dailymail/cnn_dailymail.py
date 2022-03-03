@@ -22,6 +22,9 @@ import os
 import datalabs
 from datalabs.tasks import Summarization
 
+import tempfile
+import subprocess
+
 logger = datalabs.logging.get_logger(__name__)
 
 
@@ -64,16 +67,38 @@ _CITATION = """\
 
 _DL_URLS = {
     # pylint: disable=line-too-long
-    "cnn_stories": "https://drive.google.com/uc?export=download&id=0BwmD_VLjROrfTHk4NFg2SndKcjQ",
-    "dm_stories": "https://drive.google.com/uc?export=download&id=0BwmD_VLjROrfM1BxdkxVaTY2bWs",
+    # "cnn_stories": "https://drive.google.com/uc?export=download&id=0BwmD_VLjROrfTHk4NFg2SndKcjQ",
+    # "dm_stories": "https://drive.google.com/uc?export=download&id=0BwmD_VLjROrfM1BxdkxVaTY2bWs",
     "test_urls": "https://raw.githubusercontent.com/abisee/cnn-dailymail/master/url_lists/all_test.txt",
     "train_urls": "https://raw.githubusercontent.com/abisee/cnn-dailymail/master/url_lists/all_train.txt",
     "val_urls": "https://raw.githubusercontent.com/abisee/cnn-dailymail/master/url_lists/all_val.txt",
     # pylint: enable=line-too-long
 }
 
+_DL_URLS_GDRIVE = {
+    # pylint: disable=line-too-long
+    "cnn_stories": "https://drive.google.com/uc?export=download&id=0BwmD_VLjROrfTHk4NFg2SndKcjQ",
+    "dm_stories": "https://drive.google.com/uc?export=download&id=0BwmD_VLjROrfM1BxdkxVaTY2bWs",
+    # "test_urls": "https://raw.githubusercontent.com/abisee/cnn-dailymail/master/url_lists/all_test.txt",
+    # "train_urls": "https://raw.githubusercontent.com/abisee/cnn-dailymail/master/url_lists/all_train.txt",
+    # "val_urls": "https://raw.githubusercontent.com/abisee/cnn-dailymail/master/url_lists/all_val.txt",
+    # pylint: enable=line-too-long
+}
+
 # _HIGHLIGHTS = "summary"
 # _ARTICLE = "text"
+def custom_download(url, path):
+    with tempfile.TemporaryDirectory() as tmpdir:
+        response = subprocess.check_output([
+            "wget", "--save-cookies", os.path.join(tmpdir, "cookies.txt"), 
+            f"{url}", "-O-"])
+        with open(os.path.join(tmpdir, "response.txt"), "w") as f:
+            f.write(response.decode("utf-8"))
+        response = subprocess.check_output(["sed", "-rn", 's/.*confirm=([0-9A-Za-z_]+).*/\\1/p', os.path.join(tmpdir, "response.txt")])
+        response = response.decode("utf-8")
+        subprocess.check_output([
+            "wget", "--load-cookies", os.path.join(tmpdir, "cookies.txt"), "-O", path,
+            url+f"&confirm={response}"])
 
 
 _HIGHLIGHTS = "text"
@@ -267,6 +292,7 @@ class CnnDailymail(datalabs.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         dl_paths = dl_manager.download_and_extract(_DL_URLS)
+        dl_paths.update(dl_manager.extract(dl_manager.download_custom(_DL_URLS_GDRIVE, custom_download)))
         train_files = _subset_filenames(dl_paths, datalabs.Split.TRAIN)
         # Generate shared vocabulary
 
