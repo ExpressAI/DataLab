@@ -25,11 +25,11 @@ so finally, we have
 
 ## 3. Create a new folder and write a config python script inside it.
 
-Suppose the dataset name to be added is `ag_news`, we need to:
-* create a folder `ag_news` in [DataLab/datasets/](https://github.com/ExpressAI/DataLab/tree/main/datasets)
-* create a config script `ag_news.py` in the above folder, i.e., `Datalab/datasets/ag_news/ag_news.py`
+Suppose the dataset name to be added is `cr`, we need to:
+* create a folder `cr` in [DataLab/datasets/](https://github.com/ExpressAI/DataLab/tree/main/datasets)
+* create a config script `cr.py` in the above folder, i.e., `Datalab/datasets/cr/cr.py`
 * finish the config script based on some provided examples:
-    * text-classification: [template](https://github.com/ExpressAI/DataLab/blob/main/datasets/ag_news/ag_news.py)
+    * text-classification: [template](https://github.com/ExpressAI/DataLab/tree/main/datasets/cr)
     * extractive-qa: [template](https://github.com/ExpressAI/DataLab/blob/main/datasets/squad/squad.py)
     
 
@@ -40,7 +40,7 @@ Suppose the dataset name to be added is `ag_news`, we need to:
 
 ```python
    from datalabs import load_dataset
-   dataset = load_dataset("./ag_news")
+   dataset = load_dataset("./cr")
    print(dataset['train']._info)
    print(dataset['train']._info.task_templates)
 ```
