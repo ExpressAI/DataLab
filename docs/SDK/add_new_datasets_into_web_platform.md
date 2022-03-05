@@ -4,7 +4,7 @@ DataLab provides an API which users can use to upload their own datasets into th
 There are following specific situations:
 
 
-## 1. quickly add metadata information of a new dataset
+## 1. Quickly add metadata information of a new dataset
 This is useful when you just want to quickly add a new record of your new dataset into the database without uploading any 
 data samples.
 
