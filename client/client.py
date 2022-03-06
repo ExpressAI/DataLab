@@ -5,7 +5,7 @@ from typing import List, Dict
 import requests
 from utils_datalab import get_info
 from utils_datalab import validate_generate_db_metadata
-from utils_datalab import generate_db_metadata_from_sdk
+from utils_datalab import generate_db_metadatacalculate_features_from_sdk
 
 
 class Client:
