@@ -10,7 +10,10 @@ def my_inference(samples: dict):
     predictions = []
     for sample in samples:
         text, label = sample["text"], sample["label"]
-        predictions.append({"prediction": label})
+
+        prediction = label # this should be modified based on user's model
+
+        predictions.append({"prediction": prediction})
 
     return predictions
 
