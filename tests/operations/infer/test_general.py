@@ -1,7 +1,8 @@
 import unittest
 
-from datalabs import operations, load_dataset
+from datalabs import load_dataset
 from datalabs.operations.infer.inference import inference
+from datalabs.operations.aggregate.auto_eval import explainaboard
 
 
 @inference(name="my_inference")
@@ -21,10 +22,15 @@ class MyTestCase(unittest.TestCase):
 
     def test_general(self):
 
+        # load dataset
         dataset = load_dataset("qc")
+        # inference over test set based on a machine learning model
+        test_data = dataset["test"].apply(my_inference, mode = "memory")
+        # evaluation
+        test_data = test_data.apply(explainaboard)
 
-        res = dataset["test"].apply(my_inference, mode = "local")
-        print(res)
+        # print the result
+        print(test_data._stat)
 
 
 
