@@ -96,6 +96,22 @@ def _arrow_to_datasets_dtype(arrow_type: pa.DataType) -> str:
         raise ValueError(f"Arrow type {arrow_type} does not have a datalab dtype equivalent.")
 
 
+@dataclass
+class BucketInfo:
+    """
+    The class is used to define a dataclass for bucketing strategy
+    Args:
+        _method: the bucket strategy
+        _number: the number of buckets to be bucketed
+        _settting: hyper-paraterms of bucketing
+    """
+
+    _method: str = "bucket_attribute_specified_bucket_value"
+    _number: int = 4
+    _setting: Any = 1  # For different bucket_methods, the settings are diverse
+
+
+
 def string_to_arrow(datasets_dtype: str) -> pa.DataType:
     """
     string_to_arrow takes a datalab string dtype and converts it to a pyarrow.DataType.
@@ -277,8 +293,12 @@ class Value:
     dtype: str
     feature_level: str = "sample_level"
     raw_feature: str = True
+    description: str = None
     id: Optional[str] = None
     is_bucket: bool = False
+    require_training_set: bool = False
+    is_pre_computed: bool = False
+    bucket_info: BucketInfo = None
     # Automatically constructed
     pa_type: ClassVar[Any] = None
     _type: str = field(default="Value", init=False, repr=False)
@@ -626,9 +646,12 @@ class ClassLabel:
     num_classes: int = None
     names: List[str] = None
     names_file: Optional[str] = None
+    description: str = None
     id: Optional[str] = None
     is_bucket: bool = False
+    require_training_set: bool = False
     feature_level:str = "sample_level"
+    bucket_info: BucketInfo = None
     raw_feature: str = True
     # Automatically constructed
     dtype: ClassVar[str] = "int64"
@@ -638,6 +661,10 @@ class ClassLabel:
     _type: str = field(default="ClassLabel", init=False, repr=False)
 
     def __post_init__(self):
+        if self.is_bucket and self.bucket_info is None:
+            self.bucket_info = BucketInfo(
+                _method="bucket_attribute_discrete_value", _number=4, _setting=1
+            )
         if self.names_file is not None and self.names is not None:
             raise ValueError("Please provide either names or names_file but not both.")
         # Set self.names
@@ -737,6 +764,44 @@ class ClassLabel:
 
 
 @dataclass
+class Set:
+    feature: dict
+
+    dtype: ClassVar[str] = "dict"
+    is_bucket: bool = False
+    require_training_set: bool = False
+    is_pre_computed: bool = False
+    bucket_info: BucketInfo = None
+    _type: str = field(default="Set", init=False, repr=False)
+    id: Optional[str] = None
+    pa_type: ClassVar[Any] = None
+
+
+@dataclass
+class Position:
+    positions: list = None
+    dtype: ClassVar[str] = Any
+    is_bucket: bool = False
+    require_training_set: bool = False
+    is_pre_computed: bool = False
+    bucket_info: BucketInfo = None
+    _type: str = field(default="Position", init=False, repr=False)
+    id: Optional[str] = None
+    pa_type: ClassVar[Any] = None
+
+
+@dataclass
+class Span:
+    dtype: ClassVar[str] = Any
+    is_bucket: bool = False
+    require_training_set: bool = False
+    is_pre_computed: bool = False
+    bucket_info: BucketInfo = None
+    _type: str = field(default="Span", init=False, repr=False)
+    id: Optional[str] = None
+    pa_type: ClassVar[Any] = None
+
+@dataclass
 class Sequence:
     """Construct a list of feature from a single type or a dict of types.
     Mostly here for compatiblity with tfds.
@@ -748,6 +813,7 @@ class Sequence:
     length: int = -1
     id: Optional[str] = None
     is_bucket: bool = False
+    require_training_set: bool = False
     # Automatically constructed
     dtype: ClassVar[str] = "list"
     pa_type: ClassVar[Any] = None
@@ -761,6 +827,7 @@ FeatureType = Union[
     Value,
     ClassLabel,
     Translation,
+    Span,
     TranslationVariableLanguages,
     Sequence,
     Array2D,
@@ -992,6 +1059,105 @@ class Features(dict):
           to an audio file ("path" key) and its bytes content ("bytes" key). This feature extracts the audio data.
         - :class:`datalab.Translation` and :class:`datalab.TranslationVariableLanguages`, the two features specific to Machine Translation
     """
+
+    def get_bucket_features(self) -> List:
+        """
+        Get features that would be used for bucketing
+        :return:
+        a list of features
+        """
+
+        bucket_features = []
+        dict_res = {}
+        for feature_name in self.keys():
+            dict_feature = copy.deepcopy(self[feature_name])
+
+            if isinstance(dict_feature, type(Value("float"))):
+                dict_res[feature_name] = dict_feature
+
+            elif isinstance(dict_feature, dict):
+                for k, v in dict_feature.items():
+                    dict_res[k] = v
+            else:
+                while (
+                    not isinstance(dict_feature, dict)
+                    and "feature" in dict_feature.__dict__.keys()
+                ):
+                    dict_feature = dict_feature.feature
+
+                if isinstance(dict_feature, type(Value("float"))):
+                    dict_res[feature_name] = dict_feature
+
+                if isinstance(dict_feature, dict):
+                    for k, v in dict_feature.items():
+                        dict_res[k] = v
+
+            # curr_feature = self[feature_name].copy()
+            # while "feature" in self[feature_name].__dict__.keys():
+        # print("--++----- leaf features ---++------")
+        for feature_name, feature_info in dict_res.items():
+            # print(k,v)
+            if feature_info.is_bucket:
+                bucket_features.append(feature_name)
+
+        # print("--++----- bucket features ---++------")
+        # for feature_name in bucket_features:
+        #     print(feature_name)
+
+        return bucket_features
+
+
+
+    def get_pre_computed_features(self) -> List:
+        """
+        Get features that would be used for bucketing
+        :return:
+        a list of features
+        """
+
+        pre_computed_features = []
+        dict_res = {}
+        for feature_name in self.keys():
+            dict_feature = copy.deepcopy(self[feature_name])
+
+            if isinstance(dict_feature, type(Value("float"))):
+                dict_res[feature_name] = dict_feature
+
+            elif isinstance(dict_feature, dict):
+                for k, v in dict_feature.items():
+                    dict_res[k] = v
+            else:
+                while (
+                    not isinstance(dict_feature, dict)
+                    and "feature" in dict_feature.__dict__.keys()
+                ):
+                    dict_feature = dict_feature.feature
+
+                if isinstance(dict_feature, type(Value("float"))):
+                    dict_res[feature_name] = dict_feature
+
+                if isinstance(dict_feature, dict):
+                    for k, v in dict_feature.items():
+                        dict_res[k] = v
+
+            # curr_feature = self[feature_name].copy()
+            # while "feature" in self[feature_name].__dict__.keys():
+        # print("--++----- leaf features ---++------")
+        for feature_name, feature_info in dict_res.items():
+            # print(k,v)
+            if "require_training_set" not in feature_info.__dict__.keys():
+                continue
+            if feature_info.require_training_set:
+                pre_computed_features.append(feature_name)
+
+        # print("--++----- pre_computed features ---++------")
+        # for feature_name in pre_computed_features:
+        #     print(feature_name)
+
+        return pre_computed_features
+
+
+
 
     @property
     def type(self):

@@ -9,6 +9,21 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from operation import DatasetOperation, dataset_operation
 from data import TextData
 
+
+# Build-in ExplainaBoard
+from datalabs import get_processor
+from datalabs import get_loader
+from datalabs.tasks.task_info import get_task_categories, TaskType
+from datalabs.constants import FileType, Source
+
+# Build-out ExplainaBoard
+# from explainaboard import get_processor
+# from explainaboard import get_loader
+# from explainaboard import get_task_categories, TaskType
+# from explainaboard import FileType, Source
+
+
+
 class AutoEval(Aggregating, DatasetOperation):
 
 
@@ -24,7 +39,7 @@ class AutoEval(Aggregating, DatasetOperation):
                  ):
         super().__init__(name = name, func = func, resources = resources, contributor = contributor,
                          task = task,description=description)
-        self._type = 'EvalAggregating'
+        self._type = 'AutoEval'
         self.processed_fields = ["text"]
         if isinstance(processed_fields,str):
             self.processed_fields[0] = processed_fields
@@ -70,7 +85,7 @@ class auto_eval(aggregating, dataset_operation):
 
 
 @auto_eval(name="explainaboard")
-def explainaboard(samples:Iterator):
+def explainaboard(samples:Iterator, dataset_info = None):
     """
     Package: python
     Input:
@@ -78,15 +93,42 @@ def explainaboard(samples:Iterator):
     Output:
         int
     """
-    print("explainaboard function")
-    res_info = {}
-    n_acc = 0
-    for sample in samples:
-        true_label, predict_label = sample["label"], sample["prediction"]
-        if true_label == predict_label:
-            n_acc += 1
+
+    # Setup metadata
+    metadata = {
+        "dataset_name": dataset_info.builder_name,
+        "sub_dataset_name": dataset_info.config_name,
+        "task_name": dataset_info.task_templates[0].task_category,
+        "reload_stat":True,
+                }
+
+    # if metric_names is not None:
+    #     metadata["metric_names"] = metric_names
+
+    loader = get_loader(
+        dataset_info.task_templates[0].task_category,
+        Source.in_memory,
+        FileType.datalab,
+        samples,
+    )
+
+    data = loader.load()
 
 
-    return {"accuracy":n_acc*1.0/len(samples)}
+    # Run analysis
+    report = get_processor(dataset_info.task_templates[0].task_category, metadata=metadata, data=data).process()
 
 
+
+
+    # res_info = {}
+    # n_acc = 0
+    # for sample in samples:
+    #     true_label, predict_label = sample["label"], sample["prediction"]
+    #     if true_label == predict_label:
+    #         n_acc += 1
+
+
+    # return {"accuracy":n_acc*1.0/len(samples)}
+
+    return {"report":report}

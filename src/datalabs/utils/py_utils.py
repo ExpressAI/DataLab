@@ -52,6 +52,53 @@ def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
+
+# used for explainahboard
+def sort_dict(dict_obj, flag="key"):
+    sorted_dict_obj = []
+    if flag == "key":
+        sorted_dict_obj = sorted(dict_obj.items(), key=lambda item: item[0])
+    elif flag == "value":
+        # dict_bucket2span_
+        sorted_dict_obj = sorted(
+            dict_obj.items(), key=lambda item: len(item[1]), reverse=True
+        )
+    return dict(sorted_dict_obj)
+
+
+# used for explainahboard
+def print_dict(dict_obj, print_infomation="dict"):
+    # print("-----------------------------------------------")
+    eprint("the information of #" + print_infomation + "#")
+    eprint("Bucket_interval\tF1\tEntity-Number")
+    for k, v in dict_obj.items():
+        if len(k) == 1:
+            eprint(
+                "["
+                + str(k[0])
+                + ",]"
+                + "\t"
+                + str(v[0].value)
+                + "\t"
+                + str(v[0].n_samples)
+            )
+        else:
+            eprint(
+                "["
+                + str(k[0])
+                + ", "
+                + str(k[1])
+                + "]"
+                + "\t"
+                + str(v[0].value)
+                + "\t"
+                + str(v[0].n_samples)
+            )
+
+    eprint("")
+
+
+
 logger = logging.get_logger(__name__)
 
 
