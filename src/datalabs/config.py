@@ -15,7 +15,7 @@ import importlib
 import os
 import platform
 from pathlib import Path
-
+from dataclasses import dataclass
 from packaging import version
 
 from .utils.logging import get_logger
@@ -204,3 +204,22 @@ MAX_DATASET_CONFIG_ID_READABLE_LENGTH = 255
 
 STREAMING_READ_MAX_RETRIES = 20
 STREAMING_READ_RETRY_INTERVAL = 5
+
+
+
+"""
+For explainaboard
+"""
+@dataclass
+class BuilderConfig:
+    path_output_file: str = None
+    path_report: str = None
+    data_file: str = None
+    description: str = None
+    path_test_set: str = None  # for question answering task
+
+
+# File Names
+SYS_OUTPUT_INFO_FILENAME = "system_analysis.json"
+
+

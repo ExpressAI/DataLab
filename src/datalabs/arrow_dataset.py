@@ -719,7 +719,12 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                 yield {"prompted_text": prompted_text, "prompted_answer":prompted_answer}
         elif func._type == 'Aggregating':
             yield func(self[func.processed_fields[0]])
+
         elif func._type.find("Aggregating")!=-1:
+            yield func(self)
+
+        elif func._type.find("AutoEval")!=-1:
+            func.resources = {"dataset_info": self._info}
             yield func(self)
 
         elif func._type.find("Inference") != -1:
@@ -743,7 +748,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         if isinstance(func, str):
             map = { "realtime": self.apply_basic, "memory": self.apply_memory, "local": self.apply_local }
             return map[mode](func, prefix=prefix, num_proc=num_proc)
-        elif func._type.find("Aggregating") != -1:
+        elif func._type.find("Aggregating") != -1 or func._type.find("AutoEval") != -1:
 
 
             result = next(self.apply_basic(func))

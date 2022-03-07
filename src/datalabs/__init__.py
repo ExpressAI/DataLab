@@ -43,6 +43,7 @@ from .builder import ArrowBasedBuilder, BeamBasedBuilder, BuilderConfig, Dataset
 from .combine import interleave_datasets
 from .dataset_dict import DatasetDict, IterableDatasetDict
 from .features import (
+    features,
     Array2D,
     Array3D,
     Array4D,
@@ -89,5 +90,13 @@ from .enums import (
     SignalType,
     PromptShape
 )
+
+from .evaluation.processors import get_processor
+from .evaluation.processors.processor_registry import register_processor
+from .evaluation.processors.processor import Processor
+from .evaluation.loaders import get_loader
+from .constants import *
+from .tasks.task_info import Task, TaskCategory, TaskType, get_task_categories
+
 
 SCRIPTS_VERSION = "master" if _version.parse(__version__).is_devrelease else __version__
