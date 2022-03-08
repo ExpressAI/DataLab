@@ -1,4 +1,15 @@
-"""TODO(mlqa): Add a description here."""
+# coding=utf-8
+# Copyright 2022 The HuggingFace Datasets Authors and DataLab Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 
 import json
@@ -25,13 +36,16 @@ _DESCRIPTION = """\
     German, Spanish, Hindi, Vietnamese and Simplified Chinese. MLQA is highly parallel, with QA instances parallel between
     4 different languages on average.
 """
-_URL = "https://dl.fbaipublicfiles.com/MLQA/"
-_DEV_TEST_URL = "MLQA_V1.zip"
-_TRANSLATE_TEST_URL = "mlqa-translate-test.tar.gz"
-_TRANSLATE_TRAIN_URL = "mlqa-translate-train.tar.gz"
-_LANG = ["ar", "de", "vi", "zh", "en", "es", "hi"]
-_TRANSLATE_LANG = ["ar", "de", "vi", "zh", "es", "hi"]
 
+LANG_URLS = {
+    "ar": "https://drive.google.com/uc?export=download&id=1JNCUueSx83puRasdtbxBMHGsHzWXUc98",
+    "de": "https://drive.google.com/uc?export=download&id=1Uf-J2SwUnRxqsnc6wXgc2zplACp00gOE",
+    "en": "https://drive.google.com/uc?export=download&id=1AkbRfBYC-_L7sk-SNwrTe3aB4cFDbMaY",
+    "es": "https://drive.google.com/uc?export=download&id=1V6HlNI66lp_aMtyxRkiBjpuHHE-DG5WA",
+    "hi": "https://drive.google.com/uc?export=download&id=1by3t8RAhoZre8_3uOijPhpZ1dMU68xea",
+    "vi": "https://drive.google.com/uc?export=download&id=1e-LU8ADBGbG1r8h6Q8XJQsddq4tA9Mvt",
+    "zh": "https://drive.google.com/uc?export=download&id=13J-Dn-5ihOizMt-XtARtkvWoTpbSVjMe",
+}
 
 class MlqaConfig(datalabs.BuilderConfig):
     def __init__(self, data_url, **kwargs):
@@ -40,13 +54,12 @@ class MlqaConfig(datalabs.BuilderConfig):
           data_url: `string`, url to the dataset
           **kwargs: keyword arguments forwarded to super.
         """
-        super(MlqaConfig, self).__init__(
-            version=datalabs.Version(
-                "2.0.0",
-            ),
-            **kwargs,
-        )
-        self.data_url = data_url
+        def __init__(self, **kwargs):
+            """
+            Args:
+                **kwargs: keyword arguments forwarded to super.
+            """
+            super(MlqaConfig, self).__init__(version=datalabs.Version("2.0.0", ""), **kwargs)
 
 
 class Mlqa(datalabs.GeneratorBasedBuilder):
@@ -54,36 +67,13 @@ class Mlqa(datalabs.GeneratorBasedBuilder):
 
     # TODO(mlqa): Set up version.
     VERSION = datalabs.Version("2.0.0")
-    BUILDER_CONFIGS = (
-        [
-            MlqaConfig(
-                name="mlqa-translate-train." + lang,
-                data_url=_URL + _TRANSLATE_TRAIN_URL,
-                description="Machine-translated data for Translate-train (SQuAD Train and Dev sets machine-translated into "
-                "Arabic, German, Hindi, Vietnamese, Simplified Chinese and Spanish)",
-            )
-            for lang in _LANG
-            if lang != "en"
-        ]
-        + [
-            MlqaConfig(
-                name="mlqa-translate-test." + lang,
-                data_url=_URL + _TRANSLATE_TEST_URL,
-                description="Machine-translated data for Translate-Test (MLQA-test set machine-translated into English) ",
-            )
-            for lang in _LANG
-            if lang != "en"
-        ]
-        + [
-            MlqaConfig(
-                name="mlqa." + lang1 + "." + lang2,
-                data_url=_URL + _DEV_TEST_URL,
-                description="development and test splits",
-            )
-            for lang1 in _LANG
-            for lang2 in _LANG
-        ]
-    )
+    BUILDER_CONFIGS = [
+        datalabs.BuilderConfig(
+            name="{}".format(lang),
+            version=datalabs.Version("2.0.0")
+        )
+        for lang in list(LANG_URLS.keys())
+    ]
 
     def _info(self):
         # TODO(mlqa): Specifies the datasets.DatasetInfo object
@@ -123,91 +113,47 @@ class Mlqa(datalabs.GeneratorBasedBuilder):
         # TODO(mlqa): Downloads the data and defines the splits
         # dl_manager is a datasets.download.DownloadManager that can be used to
         # download and extract URLs
-        if self.config.name.startswith("mlqa-translate-train"):
-            archive = dl_manager.download(self.config.data_url)
-            lang = self.config.name.split(".")[-1]
-            return [
-                datalabs.SplitGenerator(
-                    name=datalabs.Split.TRAIN,
-                    # These kwargs will be passed to _generate_examples
-                    gen_kwargs={
-                        "filepath": f"mlqa-translate-train/{lang}_squad-translate-train-train-v1.1.json",
-                        "files": dl_manager.iter_archive(archive),
-                    },
-                ),
-                datalabs.SplitGenerator(
-                    name=datalabs.Split.VALIDATION,
-                    # These kwargs will be passed to _generate_examples
-                    gen_kwargs={
-                        "filepath": f"mlqa-translate-train/{lang}_squad-translate-train-dev-v1.1.json",
-                        "files": dl_manager.iter_archive(archive),
-                    },
-                ),
-            ]
-
-        else:
-            if self.config.name.startswith("mlqa."):
-                dl_file = dl_manager.download_and_extract(self.config.data_url)
-                name = self.config.name.split(".")
-                l1, l2 = name[1:]
-                return [
-                    datalabs.SplitGenerator(
-                        name=datalabs.Split.TEST,
-                        # These kwargs will be passed to _generate_examples
-                        gen_kwargs={
-                            "filepath": os.path.join(
-                                os.path.join(dl_file, "MLQA_V1/test"),
-                                f"test-context-{l1}-question-{l2}.json",
-                            )
-                        },
-                    ),
-                    datalabs.SplitGenerator(
-                        name=datalabs.Split.VALIDATION,
-                        # These kwargs will be passed to _generate_examples
-                        gen_kwargs={
-                            "filepath": os.path.join(
-                                os.path.join(dl_file, "MLQA_V1/dev"), f"dev-context-{l1}-question-{l2}.json"
-                            )
-                        },
-                    ),
-                ]
-            else:
-                if self.config.name.startswith("mlqa-translate-test"):
-                    archive = dl_manager.download(self.config.data_url)
-                    lang = self.config.name.split(".")[-1]
-                    return [
-                        datalabs.SplitGenerator(
-                            name=datalabs.Split.TEST,
-                            # These kwargs will be passed to _generate_examples
-                            gen_kwargs={
-                                "filepath": f"mlqa-translate-test/translate-test-context-{lang}-question-{lang}.json",
-                                "files": dl_manager.iter_archive(archive),
-                            },
-                        ),
-                    ]
+        lang = str(self.config.name)
+        url = LANG_URLS[lang]
+        # url = _URL.format(lang, self.VERSION.version_str[:-2])
+        data_dir = dl_manager.download_and_extract(url)
+        return [
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
+                gen_kwargs={
+                    "filepath": os.path.join(data_dir, lang + "/test-" + lang + ".json"),
+                },
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={
+                    "filepath": os.path.join(data_dir, lang + "/dev-" + lang + ".json"),
+                },
+            ),
+        ]
 
     def _generate_examples(self, filepath, files=None):
         """Yields examples."""
-        if self.config.name.startswith("mlqa-translate"):
-            for path, f in files:
-                if path == filepath:
-                    data = json.loads(f.read().decode("utf-8"))
-                    break
-        else:
-            with open(filepath, encoding="utf-8") as f:
-                data = json.load(f)
-        for examples in data["data"]:
-            for example in examples["paragraphs"]:
-                context = example["context"]
-                for qa in example["qas"]:
-                    question = qa["question"]
-                    id_ = qa["id"]
-                    answers = qa["answers"]
-                    answers_start = [answer["answer_start"] for answer in answers]
-                    answers_text = [answer["text"] for answer in answers]
-                    yield id_, {
-                        "context": context,
-                        "question": question,
-                        "answers": {"answer_start": answers_start, "text": answers_text},
-                        "id": id_,
-                    }
+        key = 0
+        with open(filepath, encoding="utf-8") as f:
+            data = json.load(f)
+            for article in data["data"]:
+                for paragraph in article["paragraphs"]:
+                    context = paragraph["context"].strip()
+                    for qa in paragraph["qas"]:
+                        question = qa["question"].strip()
+                        id_ = qa["id"]
+
+                        answer_starts = [answer["answer_start"] for answer in qa["answers"]]
+                        answers = [answer["text"].strip() for answer in qa["answers"]]
+
+                        yield key, {
+                            "context": context,
+                            "question": question,
+                            "id": id_,
+                            "answers": {
+                                "answer_start": answer_starts,
+                                "text": answers,
+                            },
+                        }
+                        key += 1
