@@ -55,7 +55,7 @@ When adding a new datasets, you probably will encounter following questions:
 * #### what if existing task schema can not support my current dataset?
 Suggested docs: [how to add_new_task_schema](https://github.com/ExpressAI/DataLab/blob/main/docs/SDK/add_new_task_schema.md)
 
-* ### how to add the language information of my dataset?
+* #### how to add the language information of my dataset?
 Suggested doc: [how to add language information](https://github.com/ExpressAI/DataLab/blob/main/docs/SDK/add_language_info.md)
 
 
