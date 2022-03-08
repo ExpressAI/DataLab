@@ -58,6 +58,26 @@ Suggested docs: [how to add_new_task_schema](https://github.com/ExpressAI/DataLa
 * #### how to add the language information of my dataset?
 Suggested doc: [how to add language information](https://github.com/ExpressAI/DataLab/blob/main/docs/SDK/add_language_info.md)
 
+* #### could I have more examples to help me write the script?
+You can find scripts for adding different datasets cross different tasks.
+Suggested doc: [more examples](https://github.com/ExpressAI/DataLab/blob/main/docs/SDK/task_normalization.md)
+
+For example,
+   * if you aim to add a simple text classification dataset:
+       * [sst2](https://github.com/ExpressAI/DataLab/blob/main/datasets/sst2/sst2.py)
+   * if you aim to add a simple summarization dataset
+       * [cnn_dailymail](https://github.com/ExpressAI/DataLab/blob/main/datasets/cnn_dailymail/cnn_dailymail.py)
+   * if you aim to add a simple natural languange inference dataset:
+       * [sick](https://github.com/ExpressAI/DataLab/blob/main/datasets/sick/sick.py)
+       * [snli](https://github.com/ExpressAI/DataLab/blob/main/datasets/snli/snli.py)
+   * if you aim to add a datasets with different versions/domains/languages/subdatasets
+       * different versions: [arxiv_sum](https://github.com/ExpressAI/DataLab/blob/main/datasets/arxiv_sum/arxiv_sum.py)
+       * different languages: [xlsum](https://github.com/ExpressAI/DataLab/blob/main/datasets/xlsum/xlsum.py), [mlqa](https://github.com/ExpressAI/DataLab/blob/main/datasets/mlqa/mlqa.py)
+       * different subtasks: [glue](https://github.com/ExpressAI/DataLab/blob/main/datasets/glue/glue.py)
+
+
+
+
 
 NOTE:
 * Usually, using the lower case string for the script name (arxiv_sum.py) while camel case for the class name (`ArxivSum`).
