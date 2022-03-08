@@ -46,7 +46,7 @@ Suppose the dataset name to be added is `cr`, we need to:
 ```
 
 ## 4. Update your updated information of your dataset
-Once you successfully add a new dataset, please update the [table](https://github.com/ExpressAI/DataLab/blob/main/docs/sdk_users/task_normalization.md).
+Once you successfully add a new dataset, please update the [table](https://github.com/ExpressAI/DataLab/blob/main/docs/SDK/task_normalization.md).
 
 
 
