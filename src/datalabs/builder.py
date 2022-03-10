@@ -54,6 +54,7 @@ from .utils.file_utils import DownloadConfig, is_remote_url
 from .utils.filelock import FileLock
 from .utils.info_utils import get_size_checksum_dict, verify_checksums, verify_splits
 from .utils.streaming_download_manager import StreamingDownloadManager
+from multiprocess import Pool
 
 import sys
 
@@ -218,6 +219,7 @@ class DatasetBuilder:
         data_dir: Optional[str] = None,
         dataset_class = Dataset,
         feature_expanding:bool = False,
+        num_proc: int = 1,
         **config_kwargs,
     ):
         """Constructs a DatasetBuilder.
@@ -254,6 +256,7 @@ class DatasetBuilder:
         self.namespace = namespace
         self.dataset_class = dataset_class
         self.feature_expanding = feature_expanding
+        self.num_proc = num_proc
 
         if data_files is not None and not isinstance(data_files, DataFilesDict):
             data_files = DataFilesDict.from_local_or_remote(
@@ -1093,16 +1096,29 @@ class GeneratorBasedBuilder(DatasetBuilder):
             hash_salt=split_info.name,
             check_duplicates=True,
         ) as writer:
+            def proc_unit(argv):
+                key, record = argv
+                example = self.info.features.encode_example(record)
+                writer.write(example, key)
+                return None
+
+            iter = utils.tqdm(
+                generator,
+                unit=" examples",
+                total=split_info.num_examples,
+                leave=False,
+                disable=bool(logging.get_verbosity() == logging.NOTSET),
+            )
+
             try:
-                for key, record in utils.tqdm(
-                    generator,
-                    unit=" examples",
-                    total=split_info.num_examples,
-                    leave=False,
-                    disable=bool(logging.get_verbosity() == logging.NOTSET),
-                ):
-                    example = self.info.features.encode_example(record)
-                    writer.write(example, key)
+                if self.num_proc == 1:
+                    for key, record in iter:
+                        proc_unit((key, record))
+                else:
+                    list(map(proc_unit, generator))
+                    # with Pool(processes=self.num_proc) as pool:
+                    #     list(pool.map(proc_unit, generator))
+
             finally:
                 num_examples, num_bytes = writer.finalize()
 
