@@ -1,7 +1,10 @@
 # %%
+import nltk
 from nltk import word_tokenize, sent_tokenize
 from collections import namedtuple, Counter
 from nltk.util import ngrams
+
+nltk.download("punkt")
 
 
 class SUMAttribute:
