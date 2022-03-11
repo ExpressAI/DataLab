@@ -1,7 +1,8 @@
 import unittest
 from datalabs import load_dataset
 from datalabs.operations.infer.inference import inference
-from datalabs.operations.aggregate.auto_eval import explainaboard
+# from datalabs.operations.aggregate.auto_eval import explainaboard
+from explainaboard.utils.eval_ops import explainaboard
 
 
 @inference(name="my_inference")
