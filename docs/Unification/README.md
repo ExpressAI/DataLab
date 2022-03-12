@@ -9,7 +9,7 @@ This is the schema for text classification task.
 ```json
 {
     "text_column":"string",
-    "label_column""string", 
+    "label_column":"string", 
 }
 ```
 
