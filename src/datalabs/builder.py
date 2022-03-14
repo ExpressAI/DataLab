@@ -1081,6 +1081,10 @@ class GeneratorBasedBuilder(DatasetBuilder):
         """
         raise NotImplementedError()
 
+    @abc.abstractmethod
+    def _sample_feature_expanding(self, sample):
+        raise NotImplementedError()
+
     def _prepare_split(self, split_generator):
         split_info = split_generator.split_info
 
@@ -1096,28 +1100,28 @@ class GeneratorBasedBuilder(DatasetBuilder):
             hash_salt=split_info.name,
             check_duplicates=True,
         ) as writer:
-            def proc_unit(argv):
-                key, record = argv
+            def proc_unit(key, record):
                 example = self.info.features.encode_example(record)
                 writer.write(example, key)
-                return None
-
-            iter = utils.tqdm(
-                generator,
-                unit=" examples",
-                total=split_info.num_examples,
-                leave=False,
-                disable=bool(logging.get_verbosity() == logging.NOTSET),
-            )
 
             try:
-                if self.num_proc == 1:
-                    for key, record in iter:
-                        proc_unit((key, record))
+                if self.feature_expanding:
+                    if self.num_proc == 1:
+                        iter = map(self._sample_feature_expanding, generator)
+                    else:
+                        with Pool(processes=self.num_proc) as pool:
+                            iter = pool.map(self._sample_feature_expanding, generator)
+                    iter = enumerate(iter)
                 else:
-                    list(map(proc_unit, generator))
-                    # with Pool(processes=self.num_proc) as pool:
-                    #     list(pool.map(proc_unit, generator))
+                    iter = utils.tqdm(
+                        generator,
+                        unit=" examples",
+                        total=split_info.num_examples,
+                        leave=False,
+                        disable=bool(logging.get_verbosity() == logging.NOTSET),
+                    )
+                for key, record in iter:
+                    proc_unit(key, record)
 
             finally:
                 num_examples, num_bytes = writer.finalize()
