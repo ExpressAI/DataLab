@@ -1100,17 +1100,13 @@ class GeneratorBasedBuilder(DatasetBuilder):
             hash_salt=split_info.name,
             check_duplicates=True,
         ) as writer:
-            def proc_unit(key, record):
-                example = self.info.features.encode_example(record)
-                writer.write(example, key)
-
             try:
                 if self.feature_expanding:
                     if self.num_proc == 1:
-                        iter = map(self._sample_feature_expanding, generator)
+                        iter = map(lambda i: i[1], generator)
                     else:
                         with Pool(processes=self.num_proc) as pool:
-                            iter = pool.map(self._sample_feature_expanding, generator)
+                            iter = pool.map(lambda i: i[1], generator)
                     iter = enumerate(iter)
                 else:
                     iter = utils.tqdm(
@@ -1121,7 +1117,8 @@ class GeneratorBasedBuilder(DatasetBuilder):
                         disable=bool(logging.get_verbosity() == logging.NOTSET),
                     )
                 for key, record in iter:
-                    proc_unit(key, record)
+                    example = self.info.features.encode_example(record)
+                    writer.write(example, key)
 
             finally:
                 num_examples, num_bytes = writer.finalize()
