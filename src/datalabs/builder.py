@@ -1103,19 +1103,19 @@ class GeneratorBasedBuilder(DatasetBuilder):
             try:
                 if self.feature_expanding:
                     if self.num_proc == 1:
-                        iter = map(lambda i: i[1], generator)
+                        generator = map(lambda i: i[1], generator)
                     else:
                         with Pool(processes=self.num_proc) as pool:
-                            iter = pool.map(lambda i: i[1], generator)
-                    iter = enumerate(iter)
-                else:
-                    iter = utils.tqdm(
-                        generator,
-                        unit=" examples",
-                        total=split_info.num_examples,
-                        leave=False,
-                        disable=bool(logging.get_verbosity() == logging.NOTSET),
-                    )
+                            generator = pool.map(lambda i: i[1], generator)
+                    generator = enumerate(generator)
+
+                iter = utils.tqdm(
+                    generator,
+                    unit=" examples",
+                    total=split_info.num_examples,
+                    leave=False,
+                    disable=bool(logging.get_verbosity() == logging.NOTSET),
+                )
                 for key, record in iter:
                     example = self.info.features.encode_example(record)
                     writer.write(example, key)
