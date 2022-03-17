@@ -75,6 +75,7 @@ class NCLSDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             license=_LICENSE,
             version=self.VERSION,
+            languages=["en", "zh"],
             task_templates=[Summarization(
                 text_column=_ARTICLE,
                 summary_column=_ABSTRACT),
