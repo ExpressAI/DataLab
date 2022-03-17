@@ -5,7 +5,7 @@ from typing import List, Dict
 import requests
 from utils_datalab import get_info
 from utils_datalab import validate_generate_db_metadata
-from utils_datalab import generate_db_metadatacalculate_features_from_sdk
+from utils_datalab import generate_db_metadata_from_sdk
 
 
 class Client:
@@ -23,7 +23,7 @@ class Client:
                  field = "text",
                  data_typology = None,
                  ):
-        self._end_point_add_dataset = "http://datalab.nlpedia.ai:5001/upload_new_dataset"
+        self._end_point_add_dataset = "https://datalab.nlpedia.ai/api/upload_new_dataset"
 
         self.dataset_name_sdk:str = dataset_name_sdk
         self.dataset_name_db:str = dataset_name_db
@@ -103,7 +103,7 @@ class Client:
                                                            data_typology = self.data_typology,)
 
         # reformat the sample information for db
-        MAX_NUMBER_OF_SAMPLES = 20000
+        MAX_NUMBER_OF_SAMPLES = 100000
         samples_db = []
         for split in dataset_sdk.keys():
             for idx, sample in enumerate(dataset_sdk[split]):
@@ -123,7 +123,7 @@ class Client:
 
         response = requests.post(self._end_point_add_dataset, json=data_json)
         if response.status_code != 200:
-            raise ConnectionError(f"[Error on metric: {rjson['metric']}]\n[Error Message]: {rjson['message']}")
+            raise ConnectionError("connection error")
 
         print(response.status_code)
 

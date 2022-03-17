@@ -29,6 +29,8 @@ class MyTestCase(unittest.TestCase):
         # ?? data prompting
         # test_data = dataset["test"].apply(my_prompt_id)
 
+        # ?? training
+
 
         # 2. inference over test set based on a machine learning model
         test_data = dataset["test"].apply(my_inference, mode="memory")
