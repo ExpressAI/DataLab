@@ -222,4 +222,80 @@ This is the schema for text classification task.
 
 
 
+## [Summarization](https://github.com/ExpressAI/DataLab/blob/main/src/datalabs/tasks/summarization.py#L25)
+
+This is the schema for summarization task.
+
+```json
+{
+  "text_column": "string",
+  "summary_column": "string"
+}
+```
+
+
+| Dataset name         | Subset            | Text Column                        | Summary Column        |
+|----------------------|-------------------|------------------------------------|-----------------------|
+| cnn_dailymail        | 3.0.0             | article                            | highlights            |
+| xsum                 | None              | document                           | summary               |
+| samsum               | samsum            | dialogue                           | summary               |
+| scitldr              | Abstract          | source (List[str])                 | target (List[str])    |
+| billsum              | None              | text                               | summary               |
+| multi_x_science_sum  | None              | abstract, ref_abstract (List[str]) | related_work          |
+| orange_sum           | abstract          | text                               | summary               |
+| pn_summary           | 1.0.0             | article                            | summary               |
+| thaisum              | thaisum           | body                               | summary               |
+| wiki_summary         | None              | article                            | highlights            |
+| polsum               | None              | body                               | summaries (List[str]) |
+| wiki_asp             | album             | inputs (List[str])                 | targets (List[str])   |
+| cnn_dailymail        | None              | article                            | hightlights           |
+| xsum                 | None              | document                           | summary               |
+| csebuetnlp/xlsum     | amharic           | document                           | summary               |
+| csebuetnlp/xlsum     | arabic            | document                           | summary               |
+| csebuetnlp/xlsum     | azerbaijani       | document                           | summary               |
+| csebuetnlp/xlsum     | bengali           | document                           | summary               |
+| csebuetnlp/xlsum     | burmese           | document                           | summary               |
+| csebuetnlp/xlsum     | english           | document                           | summary               |
+| csebuetnlp/xlsum     | french            | document                           | summary               |
+| csebuetnlp/xlsum     | gujarati          | document                           | summary               |
+| csebuetnlp/xlsum     | hausa             | document                           | summary               |
+| csebuetnlp/xlsum     | hindi             | document                           | summary               |
+| csebuetnlp/xlsum     | igbo              | document                           | summary               |
+| csebuetnlp/xlsum     | indonesian        | document                           | summary               |
+| csebuetnlp/xlsum     | japanese          | document                           | summary               |
+| csebuetnlp/xlsum     | kirundi           | document                           | summary               |
+| csebuetnlp/xlsum     | korean            | document                           | summary               |
+| csebuetnlp/xlsum     | kyrgyz            | document                           | summary               |
+| csebuetnlp/xlsum     | marathi           | document                           | summary               |
+| csebuetnlp/xlsum     | nepali            | document                           | summary               |
+| csebuetnlp/xlsum     | oromo             | document                           | summary               |
+| csebuetnlp/xlsum     | pashto            | document                           | summary               |
+| csebuetnlp/xlsum     | persian           | document                           | summary               |
+| csebuetnlp/xlsum     | pidgin            | document                           | summary               |
+| csebuetnlp/xlsum     | portuguese        | document                           | summary               |
+| csebuetnlp/xlsum     | punjabi           | document                           | summary               |
+| csebuetnlp/xlsum     | russian           | document                           | summary               |
+| csebuetnlp/xlsum     | sinhala           | document                           | summary               |
+| csebuetnlp/xlsum     | somali            | document                           | summary               |
+| csebuetnlp/xlsum     | spanish           | document                           | summary               |
+| csebuetnlp/xlsum     | swahili           | document                           | summary               |
+| csebuetnlp/xlsum     | tamil             | document                           | summary               |
+| csebuetnlp/xlsum     | telugu            | document                           | summary               |
+| csebuetnlp/xlsum     | thai              | document                           | summary               |
+| csebuetnlp/xlsum     | tigrinya          | document                           | summary               |
+| csebuetnlp/xlsum     | turkish           | document                           | summary               |
+| csebuetnlp/xlsum     | ukrainian         | document                           | summary               |
+| csebuetnlp/xlsum     | urdu              | document                           | summary               |
+| csebuetnlp/xlsum     | uzbek             | document                           | summary               |
+| csebuetnlp/xlsum     | vietnamese        | document                           | summary               |
+| csebuetnlp/xlsum     | welsh             | document                           | summary               |
+| csebuetnlp/xlsum     | yoruba            | document                           | summary               |
+| cnn_dailymail        | 1.0.0             | article                            | highlights            |
+| cnn_dailymail        | 2.0.0             | article                            | highlights            |
+| qmsum                | document          | text                               | summary               |
+| dialogsum            | document          | text                               | summary               |
+| reddit_tifu          | long              | text                               | summary               |
+| multi_xscience       | single-document   | text                               | summary               |
+| asap_review          | default           | text                               | review                |
+
 
