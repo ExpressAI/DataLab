@@ -717,8 +717,8 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
 
                 prompted_answer =   template_answer
                 yield {"prompted_text": prompted_text, "prompted_answer":prompted_answer}
-        elif func._type == 'Aggregating':
-            yield func(self[func.processed_fields[0]])
+        # elif func._type == 'Aggregating':
+        #     yield func(self[func.processed_fields[0]])
 
         elif func._type.find("Aggregating")!=-1:
             yield func(self)
