@@ -179,7 +179,7 @@ EXTRAS_REQUIRE = {
 
 setup(
     name="datalabs",
-    version="0.3.5",
+    version="0.3.6",
     description="Datalabs",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",

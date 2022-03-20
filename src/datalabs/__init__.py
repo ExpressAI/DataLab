@@ -97,6 +97,6 @@ from .evaluation.processors.processor import Processor
 from .evaluation.loaders import get_loader
 from .constants import *
 from .tasks.task_info import Task, TaskCategory, TaskType, get_task_categories
-
+from .operations.aggregate import aggregating
 
 SCRIPTS_VERSION = "master" if _version.parse(__version__).is_devrelease else __version__

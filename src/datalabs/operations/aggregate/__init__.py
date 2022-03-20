@@ -1,4 +1,5 @@
 from .general import *
+from .aggregating import aggregating
 # from .text_classification import *
 # from .sequence_labeling import *
 # from .summarization import *
