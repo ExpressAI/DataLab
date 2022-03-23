@@ -1,5 +1,6 @@
 from typing import Any, ClassVar, Dict, List, Optional
 from typing import Callable, Mapping
+import inspect
 
 
 class OperationFunction:
@@ -39,8 +40,7 @@ class OperationFunction:
                                  description= self.description,
                                  processed_fields = processed_fields)
 
-
-    def __call__(self, x:str) -> Any: # str?
+    def __call__(self, x: str) -> Any:  # str?
         """
         Parameters
         x: Text
@@ -48,7 +48,14 @@ class OperationFunction:
         Returns
         Transformed Text
         """
-        return self.func(x, **self.resources)
+        # return self.func(x, **self.resources)
+        # print(inspect.getfullargspec(self.func))
+        if "self" not in inspect.getfullargspec(self.func).args:
+            return self.func(x, **self.resources)
+        else: ## self.func is a member function of some class
+            cls_obj = self.resources["cls"]
+            del self.resources["cls"]
+            return self.func(cls_obj, x, **self.resources)
 
 
 
