@@ -33,8 +33,8 @@ _CITATION = """\
 }
 """
 
-_TRAIN_DOWNLOAD_URL = "https://drive.google.com/u/0/uc?id=1upaF5mLwIhXureMwZn8vw15BAZPZ-VvF&export=download"
-_TEST_DOWNLOAD_URL = "https://drive.google.com/u/0/uc?id=1wGi-ubEifSaoJKWW2ubCRefIe-2tGjvS&export=download"
+_TRAIN_DOWNLOAD_URL = "https://datalab-hub.s3.amazonaws.com/qc/train-QC.tsv"
+_TEST_DOWNLOAD_URL = "https://datalab-hub.s3.amazonaws.com/qc/test-QC.tsv"
 
 
 class QC(datalabs.GeneratorBasedBuilder):
