@@ -46,7 +46,7 @@ def get_average_length(texts:Iterator) -> int:
     """
     lengths = []
     for text in texts:
-        lengths.append(len(text.split(" ")))
+        lengths.append(len(text["text"].split(" ")))
     return {"average_length":np.average(lengths)}
 
 
@@ -64,7 +64,7 @@ def get_vocabulary(texts:Iterator) -> Dict:
     """
     vocab = {}
     for text in texts:
-        for w in text.split(" "):
+        for w in text["text"].split(" "):
             if w in vocab.keys():
                 vocab[w] += 1
             else:
