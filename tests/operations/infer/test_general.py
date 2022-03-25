@@ -33,7 +33,7 @@ class MyTestCase(unittest.TestCase):
         # evaluation
         test_data = test_data.apply(explainaboard)
         # print the result
-        print(test_data._stat)
+        #print(test_data._stat)
 
 
 if __name__ == '__main__':

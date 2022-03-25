@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2022 The TensorFlow datasets Authors and the HuggingFace datasets, DataLab Authors.
+# Copyright 2020 The TensorFlow Datasets Authors and the HuggingFace Datasets Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ _LANGUAGE_PAIRS = [(lang, "en") for lang in ["cs", "de", "fi", "ro", "ru", "tr"]
 
 
 class Wmt16(Wmt):
-    """WMT 16 translation datasets for all {xx, "en"} language pairs."""
+    """WMT 16 translation datalabs for all {xx, "en"} language pairs."""
 
     BUILDER_CONFIGS = [
         WmtConfig(  # pylint:disable=g-complex-comprehension

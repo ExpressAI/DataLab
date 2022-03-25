@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2022 The TensorFlow datasets Authors and the HuggingFace datasets, DataLab Authors.
+# Copyright 2020 The TensorFlow Datasets Authors and the HuggingFace Datasets Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ import re
 import xml.etree.cElementTree as ElementTree
 from abc import ABC, abstractmethod
 
-
 import datalabs
+
 
 logger = datalabs.logging.get_logger(__name__)
 
@@ -688,25 +688,17 @@ class Wmt(ABC, datalabs.GeneratorBasedBuilder):
                     logger.info("Skipping sub-dataset that does not include language pair: %s", ss_name)
                 else:
                     filtered_subsets[split].append(ss_name)
-        logger.info("Using sub-datasets: %s", filtered_subsets)
+        logger.info("Using sub-datalabs: %s", filtered_subsets)
         return filtered_subsets
 
     def _info(self):
         src, target = self.config.language_pair
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            # features=datalabs.Features(
-            #     {"translation": datalabs.features.Translation(languages=self.config.language_pair)}
-            # ),
             features=datalabs.Features(
-                {
-                    "source_lang": datalabs.Value("string"),
-                    "source_text": datalabs.Value("string"),
-                    "target_lang": datalabs.Value("string"),
-                    "target_text": datalabs.Value("string")
-                }
+                {"translation": datalabs.features.Translation(languages=self.config.language_pair)}
             ),
-            # supervised_keys=(src, target),
+            supervised_keys=(src, target),
             homepage=self.config.url,
             citation=self.config.citation,
         )
@@ -849,18 +841,9 @@ class Wmt(ABC, datalabs.GeneratorBasedBuilder):
                 # TODO(adarob): Add subset feature.
                 # ex["subset"] = subset
                 key = f"{ss_name}/{sub_key}"
-                data = {}
                 if with_translation is True:
-                    # ex = {"translation": ex}
-                    langs = list(ex.keys())
-                    data = {
-                        "source_lang": langs[0],
-                        "source_text": ex[langs[0]],
-                        "target_lang": langs[1],
-                        "target_text": ex[langs[1]],
-                    }
-
-                yield key, data
+                    ex = {"translation": ex}
+                yield key, ex
 
 
 def _parse_parallel_sentences(f1, f2, filename1, filename2):
@@ -913,7 +896,7 @@ def _parse_parallel_sentences(f1, f2, filename1, filename2):
 
     parse_file = _parse_sgm if os.path.basename(f1).endswith(".sgm") else _parse_text
 
-    # Some datasets (e.g., CWMT) contain multiple parallel files specified with
+    # Some datalabs (e.g., CWMT) contain multiple parallel files specified with
     # a wildcard. We sort both sets to align them and parse them one by one.
     f1_files = sorted(glob.glob(f1))
     f2_files = sorted(glob.glob(f2))

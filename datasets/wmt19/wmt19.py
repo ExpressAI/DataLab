@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2022 The TensorFlow datasets Authors and the HuggingFace datasets, DataLab Authors.
+# Copyright 2020 The TensorFlow Datasets Authors and the HuggingFace Datasets Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 # Lint as: python3
 """WMT19: Translate dataset."""
 
-# import datasets
 import datalabs
+
 from .wmt_utils import CWMT_SUBSET_NAMES, Wmt, WmtConfig
 
 
@@ -35,7 +35,7 @@ _LANGUAGE_PAIRS = [(lang, "en") for lang in ["cs", "de", "fi", "gu", "kk", "lt",
 
 
 class Wmt19(Wmt):
-    """WMT 19 translation datasets for {(xx, "en")} + ("fr", "de") pairs."""
+    """WMT 19 translation datalabs for {(xx, "en")} + ("fr", "de") pairs."""
 
     # Version history:
     # 1.0.0: S3 (new shuffling, sharding and slicing mechanism).

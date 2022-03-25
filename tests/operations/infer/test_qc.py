@@ -38,7 +38,7 @@ class MyTestCase(unittest.TestCase):
         test_data = test_data.apply(explainaboard)
 
         # 4. print the result
-        print(test_data._stat)
+        #print(test_data._stat)
 
 
 if __name__ == '__main__':

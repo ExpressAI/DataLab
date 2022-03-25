@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2022 The TensorFlow datasets Authors and the HuggingFace datasets, DataLab Authors.
+# Copyright 2020 The TensorFlow Datasets Authors and the HuggingFace Datasets Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,9 +27,8 @@ import re
 import xml.etree.cElementTree as ElementTree
 from abc import ABC, abstractmethod
 
-# import datasets
 import datalabs
-from datalabs.tasks import MachineTranslation
+
 
 logger = datalabs.logging.get_logger(__name__)
 
@@ -38,17 +37,17 @@ _DESCRIPTION = """\
 Translate dataset based on the data from statmt.org.
 Versions exists for the different years using a combination of multiple data
 sources. The base `wmt_translate` allows you to create your own config to choose
-your own data/language pair by creating a custom `datasets.translate.wmt.WmtConfig`.
+your own data/language pair by creating a custom `datalabs.translate.wmt.WmtConfig`.
 ```
-config = datasets.wmt.WmtConfig(
+config = datalabs.wmt.WmtConfig(
     version="0.0.1",
     language_pair=("fr", "de"),
     subsets={
-        datasets.Split.TRAIN: ["commoncrawl_frde"],
-        datasets.Split.VALIDATION: ["euelections_dev2019"],
+        datalabs.Split.TRAIN: ["commoncrawl_frde"],
+        datalabs.Split.VALIDATION: ["euelections_dev2019"],
     },
 )
-builder = datasets.builder("wmt_translate", config=config)
+builder = datalabs.builder("wmt_translate", config=config)
 ```
 """
 
@@ -634,8 +633,8 @@ class WmtConfig(datalabs.BuilderConfig):
           description: The description of the dataset.
           language_pair: pair of languages that will be used for translation. Should
                      contain 2 letter coded strings. For example: ("en", "de").
-            configuration for the `datasets.features.text.TextEncoder` used for the
-            `datasets.features.text.Translation` features.
+            configuration for the `datalabs.features.text.TextEncoder` used for the
+            `datalabs.features.text.Translation` features.
           subsets: Dict[split, list[str]]. List of the subset to use for each of the
             split. Note that WMT subclasses overwrite this parameter.
           **kwargs: keyword arguments forwarded to super.
@@ -689,31 +688,17 @@ class Wmt(ABC, datalabs.GeneratorBasedBuilder):
                     logger.info("Skipping sub-dataset that does not include language pair: %s", ss_name)
                 else:
                     filtered_subsets[split].append(ss_name)
-        logger.info("Using sub-datasets: %s", filtered_subsets)
+        logger.info("Using sub-datalabs: %s", filtered_subsets)
         return filtered_subsets
 
     def _info(self):
         src, target = self.config.language_pair
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            # features=datalabs.Features(
-            #     {"translation": datalabs.features.Translation(languages=self.config.language_pair)}
-            # ),
-            # supervised_keys=(src, target),
             features=datalabs.Features(
-                {
-                    "source_lang": datalabs.Value("string"),
-                    "source_text": datalabs.Value("string"),
-                    "target_lang": datalabs.Value("string"),
-                    "target_text": datalabs.Value("string")
-                }
+                {"translation": datalabs.features.Translation(languages=self.config.language_pair)}
             ),
-            task_templates=[
-                MachineTranslation(
-                    source_lang_column="source_lang", source_text_column="source_text",
-                    target_lang_column="target_lang", target_text_column="target_text"
-                )
-            ],
+            supervised_keys=(src, target),
             homepage=self.config.url,
             citation=self.config.citation,
         )
@@ -856,17 +841,9 @@ class Wmt(ABC, datalabs.GeneratorBasedBuilder):
                 # TODO(adarob): Add subset feature.
                 # ex["subset"] = subset
                 key = f"{ss_name}/{sub_key}"
-                data = {}
                 if with_translation is True:
-                    # ex = {"translation": ex}
-                    langs = list(ex.keys())
-                    data = {
-                        "source_lang": langs[0],
-                        "source_text": ex[langs[0]],
-                        "target_lang": langs[1],
-                        "target_text": ex[langs[1]],
-                    }
-                yield key, data
+                    ex = {"translation": ex}
+                yield key, ex
 
 
 def _parse_parallel_sentences(f1, f2, filename1, filename2):
@@ -919,7 +896,7 @@ def _parse_parallel_sentences(f1, f2, filename1, filename2):
 
     parse_file = _parse_sgm if os.path.basename(f1).endswith(".sgm") else _parse_text
 
-    # Some datasets (e.g., CWMT) contain multiple parallel files specified with
+    # Some datalabs (e.g., CWMT) contain multiple parallel files specified with
     # a wildcard. We sort both sets to align them and parse them one by one.
     f1_files = sorted(glob.glob(f1))
     f2_files = sorted(glob.glob(f2))
@@ -1037,7 +1014,3 @@ def _parse_hindencorp(path):
                 logger.warning("Skipping invalid HindEnCorp line: %s", line)
                 continue
             yield line_id, {"translation": {"en": split_line[3].strip(), "hi": split_line[4].strip()}}
-
-
-
-
