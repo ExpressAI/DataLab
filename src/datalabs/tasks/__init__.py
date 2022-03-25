@@ -19,6 +19,8 @@ from .question_answering import QuestionAnsweringAbstractiveNQ
 from .question_answering import QuestionAnsweringMultipleChoicesQASC
 from .question_answering import QuestionAnsweringDCQA
 
+from .machine_translation import MachineTranslation
+
 
 from .summarization import Summarization
 
@@ -50,6 +52,7 @@ __all__ = [
     "QuestionAnsweringMultipleChoicesQASC",
     "TextClassification",
     "AspectBasedSentimentClassification",
+    "MachineTranslation",
     "Summarization",
     "MultiDocSummarization",
     "DialogSummarization",
@@ -84,6 +87,7 @@ NAME2TEMPLATE = {
     TopicClassification.task_category: TopicClassification,
     AspectBasedSentimentClassification.task_category: AspectBasedSentimentClassification,
     AutomaticSpeechRecognition.task_category: AutomaticSpeechRecognition,
+    MachineTranslation.task_category: MachineTranslation,
     Summarization.task_category: Summarization,
     MultiDocSummarization.task_category: MultiDocSummarization,
     DialogSummarization.task_category: DialogSummarization,
