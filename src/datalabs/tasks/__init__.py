@@ -5,11 +5,9 @@ from .automatic_speech_recognition import AutomaticSpeechRecognition
 from .base import TaskTemplate
 from .image_classification import ImageClassification
 
-
 from .summarization import Summarization, MultiDocSummarization, DialogSummarization, QuerySummarization
 
-
-from .question_answering import  MultipleChoiceQA
+from .question_answering import MultipleChoiceQA
 from .question_answering import QuestionAnsweringExtractive
 from .question_answering import QuestionAnsweringHotpot
 from .question_answering import QuestionAnsweringAbstractive
@@ -20,9 +18,6 @@ from .question_answering import QuestionAnsweringMultipleChoicesQASC
 from .question_answering import QuestionAnsweringDCQA
 
 from .machine_translation import MachineTranslation
-
-
-from .summarization import Summarization
 
 from .text_classification import TextClassification
 from .text_classification import TopicClassification
@@ -37,7 +32,6 @@ from .span_text_classification import SpanTextClassification
 from .kg_link_prediction import KGLinkPrediction
 
 from .coreference_resolution import CoreferenceResolution
-
 
 __all__ = [
     "TaskTemplate",
@@ -71,7 +65,6 @@ __all__ = [
 
 logger = get_logger(__name__)
 
-
 NAME2TEMPLATE = {
     CoreferenceResolution.task_category: CoreferenceResolution,
     MultipleChoiceQA.task_category: MultipleChoiceQA,
@@ -93,12 +86,12 @@ NAME2TEMPLATE = {
     DialogSummarization.task_category: DialogSummarization,
     QuerySummarization.task_category: QuerySummarization,
     ImageClassification.task_category: ImageClassification,
-    TextMatching.task_category:TextMatching,
+    TextMatching.task_category: TextMatching,
     SequenceLabeling.task_category: SequenceLabeling,
     SemanticParsing.task_category: SemanticParsing,
     RelationExtraction.task_category: RelationExtraction,
     SpanTextClassification.task_category: SpanTextClassification,
-    KGLinkPrediction.task_category:KGLinkPrediction,
+    KGLinkPrediction.task_category: KGLinkPrediction,
 }
 
 
@@ -106,7 +99,8 @@ def task_template_from_dict(task_template_dict: dict) -> Optional[TaskTemplate]:
     """Create one of the supported task templates in :py:mod:`datalab.tasks` from a dictionary."""
     task_category_name = task_template_dict.get("task_category")
     if task_category_name is None:
-        logger.warning(f"Couldn't find template for task '{task_category_name}'. Available templates: {list(NAME2TEMPLATE)}")
+        logger.warning(
+            f"Couldn't find template for task '{task_category_name}'. Available templates: {list(NAME2TEMPLATE)}")
         return None
     template = NAME2TEMPLATE.get(task_category_name)
     return template.from_dict(task_template_dict)

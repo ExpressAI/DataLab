@@ -1,5 +1,6 @@
 # coding=utf-8
-# Copyright 2020 The TensorFlow Datasets Authors and the HuggingFace Datasets Authors.
+# Copyright 2020 The TensorFlow Datasets Authors, the HuggingFace Datasets Authors,
+# and the DataLab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,7 +29,7 @@ import xml.etree.cElementTree as ElementTree
 from abc import ABC, abstractmethod
 
 import datalabs
-
+from datalabs.tasks.machine_translation import MachineTranslation
 
 logger = datalabs.logging.get_logger(__name__)
 
@@ -692,15 +693,22 @@ class Wmt(ABC, datalabs.GeneratorBasedBuilder):
         return filtered_subsets
 
     def _info(self):
-        src, target = self.config.language_pair
+        source, target = self.config.language_pair
+        features_dataset = {}
+        features_sample = datalabs.Features(
+            {"translation": datalabs.Translation(languages=self.config.language_pair)}
+        )
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalabs.Features(
-                {"translation": datalabs.features.Translation(languages=self.config.language_pair)}
-            ),
-            supervised_keys=(src, target),
+            features=features_sample,
+            features_dataset=features_dataset,
+            supervised_keys=(source, target),
             homepage=self.config.url,
             citation=self.config.citation,
+            task_templates=[MachineTranslation(
+                translation_column="translation",
+                lang_sub_columns=self.config.language_pair
+            )]
         )
 
     def _vocab_text_gen(self, split_subsets, extraction_map, language):
