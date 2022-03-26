@@ -15,34 +15,42 @@
 # limitations under the License.
 
 # Lint as: python3
-"""WMT19: Translate dataset."""
+"""WMT18: Translate dataset."""
 
 import datalabs
 
 from .wmt_utils import CWMT_SUBSET_NAMES, Wmt, WmtConfig
 
 
-_URL = "http://www.statmt.org/wmt19/translation-task.html"
-# TODO(adarob): Update with citation of overview paper once it is published.
-_CITATION = """
-@ONLINE {wmt19translate,
-    author = {Wikimedia Foundation},
-    title  = {ACL 2019 Fourth Conference on Machine Translation (WMT19), Shared Task: Machine Translation of News},
-    url    = {http://www.statmt.org/wmt19/translation-task.html}
+_URL = "http://www.statmt.org/wmt18/translation-task.html"
+_CITATION = """\
+@InProceedings{bojar-EtAl:2018:WMT1,
+  author    = {Bojar, Ond\v{r}ej  and  Federmann, Christian  and  Fishel, Mark
+    and Graham, Yvette  and  Haddow, Barry  and  Huck, Matthias  and
+    Koehn, Philipp  and  Monz, Christof},
+  title     = {Findings of the 2018 Conference on Machine Translation (WMT18)},
+  booktitle = {Proceedings of the Third Conference on Machine Translation,
+    Volume 2: Shared Task Papers},
+  month     = {October},
+  year      = {2018},
+  address   = {Belgium, Brussels},
+  publisher = {Association for Computational Linguistics},
+  pages     = {272--307},
+  url       = {http://www.aclweb.org/anthology/W18-6401}
 }
 """
 
-_LANGUAGE_PAIRS = [(lang, "en") for lang in ["cs", "de", "fi", "gu", "kk", "lt", "ru", "zh"]] + [("fr", "de")]
+_LANGUAGE_PAIRS = [(lang, "en") for lang in ["cs", "de", "et", "fi", "kk", "ru", "tr", "zh"]]
 
 
-class Wmt19(Wmt):
-    """WMT 19 translation datalabs for {(xx, "en")} + ("fr", "de") pairs."""
+class Wmt18(Wmt):
+    """WMT 18 translation datasets for all {xx, "en"} language pairs."""
 
     # Version history:
     # 1.0.0: S3 (new shuffling, sharding and slicing mechanism).
     BUILDER_CONFIGS = [
         WmtConfig(  # pylint:disable=g-complex-comprehension
-            description="WMT 2019 %s-%s translation task dataset." % (l1, l2),
+            description="WMT 2018 %s-%s translation task dataset." % (l1, l2),
             url=_URL,
             citation=_CITATION,
             language_pair=(l1, l2),
@@ -60,22 +68,20 @@ class Wmt19(Wmt):
     def _subsets(self):
         return {
             datalabs.Split.TRAIN: [
-                "europarl_v9",
-                "europarl_v7_frde",
-                "paracrawl_v3",
-                "paracrawl_v1_ru",
-                "paracrawl_v3_frde",
+                "europarl_v7",
+                "europarl_v8_18",
+                "paracrawl_v1",
                 "commoncrawl",
-                "commoncrawl_frde",
-                "newscommentary_v14",
-                "newscommentary_v14_frde",
+                "newscommentary_v13",
                 "czeng_17",
                 "yandexcorpus",
-                "wikititles_v1",
+                "wikiheadlines_fi",
+                "wikiheadlines_ru",
+                "setimes_2",
                 "uncorpus_v1",
-                "rapid_2016_ltfi",
-                "rapid_2019",
+                "rapid_2016",
             ]
             + CWMT_SUBSET_NAMES,
-            datalabs.Split.VALIDATION: ["euelections_dev2019", "newsdev2019", "newstest2018"],
+            datalabs.Split.VALIDATION: ["newsdev2018", "newstest2017", "newstestB2017"],
+            datalabs.Split.TEST: ["newstest2018"],
         }
