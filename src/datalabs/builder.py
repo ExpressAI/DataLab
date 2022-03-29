@@ -1132,8 +1132,12 @@ class GeneratorBasedBuilder(DatasetBuilder):
                 )
 
                 def print_line(str):
-                    from os import get_terminal_size
-                    dup = get_terminal_size().columns - len(str)
+                    dup = 0
+                    try:
+                        from os import get_terminal_size
+                        dup = get_terminal_size().columns - len(str)
+                    except:
+                        None
                     print("\r" + str + " " * dup)
                 print_line("Done.")
 
