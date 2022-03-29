@@ -1136,7 +1136,7 @@ class GeneratorBasedBuilder(DatasetBuilder):
                     try:
                         from os import get_terminal_size
                         dup = get_terminal_size().columns - len(str)
-                    except:
+                    finally:
                         None
                     print("\r" + str + " " * dup)
                 print_line("Done.")
