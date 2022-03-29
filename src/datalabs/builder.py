@@ -27,7 +27,7 @@ import urllib
 from dataclasses import dataclass
 from functools import partial
 from typing import Dict, Mapping, Optional, Tuple, Union
-from time import time
+import tqdm
 from datalabs.features import Features
 from datalabs.utils.mock_download_manager import MockDownloadManager
 
@@ -1105,22 +1105,8 @@ class GeneratorBasedBuilder(DatasetBuilder):
                     if self.num_proc == 1:
                         generator = map(lambda i: i[1], generator)
                     else:
-                        def initializer():
-                            global timer
-                            timer = { "counter": 0 }
-
-                        def cast(item):
-                            timer["counter"] += 1;
-                            print("\r Loading%s %d" % (dotted(4), timer["counter"]), end="")
-                            return item[1]
-
-                        def dotted(max_dot):
-                            max_dot = 3
-                            timest = int(time()) % (max_dot + 1)
-                            return "." * timest + " " * (max_dot - timest)
-
-                        with Pool(self.num_proc, initializer, ()) as pool:
-                            generator = pool.map(cast, generator)
+                        with Pool(processes=self.num_proc) as pool:
+                            generator = pool.map(lambda i: i[1], generator)
                     generator = enumerate(generator)
 
                 iter = utils.tqdm(
@@ -1130,18 +1116,6 @@ class GeneratorBasedBuilder(DatasetBuilder):
                     leave=False,
                     disable=bool(logging.get_verbosity() == logging.NOTSET),
                 )
-
-                def print_line(str):
-                    dup = 0
-                    try:
-                        pass
-                        # from os import get_terminal_size
-                        # dup = get_terminal_size().columns - len(str)
-                    except Exception:
-                        pass
-                    print("\r" + str + " " * dup)
-                print_line("Done.")
-
                 for key, record in iter:
                     example = self.info.features.encode_example(record)
                     writer.write(example, key)
