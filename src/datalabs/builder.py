@@ -1134,8 +1134,9 @@ class GeneratorBasedBuilder(DatasetBuilder):
                 def print_line(str):
                     dup = 0
                     try:
-                        from os import get_terminal_size
-                        dup = get_terminal_size().columns - len(str)
+                        pass
+                        # from os import get_terminal_size
+                        # dup = get_terminal_size().columns - len(str)
                     except Exception:
                         pass
                     print("\r" + str + " " * dup)
