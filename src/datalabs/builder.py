@@ -1110,7 +1110,8 @@ class GeneratorBasedBuilder(DatasetBuilder):
                             timer = { "counter": 0 }
 
                         def cast(item):
-                            timer["counter"] += 1;
+                            print("cast --------- function")
+                            timer["counter"] += 1
                             print("\r Loading%s %d" % (dotted(4), timer["counter"]), end="")
                             return item[1]
 
@@ -1120,6 +1121,7 @@ class GeneratorBasedBuilder(DatasetBuilder):
                             return "." * timest + " " * (max_dot - timest)
 
                         with Pool(self.num_proc, initializer, ()) as pool:
+                            print("Pool --------- function")
                             generator = pool.map(cast, generator)
                     generator = enumerate(generator)
 
