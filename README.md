@@ -33,6 +33,7 @@ DataLab can be installed from PyPi
 ```bash
 pip install --upgrade pip
 pip install datalabs
+python -m nltk.downloader omw-1.4 # to support more feature calculation
 ```
 or from the source
 ```bash
@@ -41,6 +42,7 @@ pip install --upgrade pip
 git clone git@github.com:ExpressAI/DataLab.git
 cd Datalab
 pip install .
+python -m nltk.downloader omw-1.4 # to support more feature calculation
 ```
 
 ## Getting started (Documentation)
