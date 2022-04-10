@@ -1,13 +1,16 @@
+import os
 import re
+import sys
 
 import nltk
-import spacy
-
-from nltk.corpus import wordnet
 import numpy as np
+import spacy
+from nltk.corpus import wordnet
 
-import sys, os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../')))
+
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))
+)
 from edit.editing import *
 
 
@@ -25,23 +28,21 @@ def untokenize(words):
     ref: https://github.com/commonsense/metanl/blob/master/metanl/token_utils.py#L28
     """
     text = " ".join(words)
-    step1 = (
-        text.replace("`` ", '"').replace(" ''", '"').replace(". . .", "...")
-    )
+    step1 = text.replace("`` ", '"').replace(" ''", '"').replace(". . .", "...")
     step2 = step1.replace(" ( ", " (").replace(" ) ", ") ")
     step3 = re.sub(r' ([.,:;?!%]+)([ \'"`])', r"\1\2", step2)
     step4 = re.sub(r" ([.,:;?!%]+)$", r"\1", step3)
-    step5 = (
-        step4.replace(" '", "'")
-        .replace(" n't", "n't")
-        .replace("can not", "cannot")
-    )
+    step5 = step4.replace(" '", "'").replace(" n't", "n't").replace("can not", "cannot")
     step6 = step5.replace(" ` ", " '")
     return step6.strip()
 
 
-@editing(name = "replace_synonym", contributor = "xl_augmenter",
-         task = "Any", description="Inserting synonyms of random words excluding punctuations and stopwords.")
+@editing(
+    name="replace_synonym",
+    contributor="xl_augmenter",
+    task="Any",
+    description="Inserting synonyms of random words excluding punctuations and stopwords.",
+)
 def replace_synonym(text, seed=42, prob=0.5, max_outputs=1):
     nlp = spacy.load("en_core_web_sm")
     nltk.download("wordnet")
@@ -77,13 +78,10 @@ def replace_synonym(text, seed=42, prob=0.5, max_outputs=1):
             # make sure there is no dup in results
             results.append(result)
 
-    return {"text_replace_synonym":results[0]}
+    return {"text_replace_synonym": results[0]}
     # return results
 
 
 # sentence = "The hooligans in balaclavas have attempted to steal jewellery."
 # perturbed = replace_synonym(text=sentence)
 # print(perturbed)
-
-
-

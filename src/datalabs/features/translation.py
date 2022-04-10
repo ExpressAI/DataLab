@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and the DataLab Datasets Authors.
 #
@@ -12,7 +14,7 @@
 # limitations under the License.
 
 from dataclasses import dataclass, field
-from typing import Any, ClassVar, List, Optional
+from typing import Any, ClassVar, Optional
 
 import pyarrow as pa
 
@@ -43,7 +45,7 @@ class Translation:
         }
     """
 
-    languages: List[str]
+    languages: list[str]
     id: Optional[str] = None
     # Automatically constructed
     dtype: ClassVar[str] = "dict"
@@ -91,7 +93,7 @@ class TranslationVariableLanguages:
         }
     """
 
-    languages: Optional[List] = None
+    languages: Optional[list] = None
     num_languages: Optional[int] = None
     id: Optional[str] = None
     # Automatically constructed
@@ -100,11 +102,15 @@ class TranslationVariableLanguages:
     _type: str = field(default="TranslationVariableLanguages", init=False, repr=False)
 
     def __post_init__(self):
-        self.languages = list(sorted(list(set(self.languages)))) if self.languages else None
+        self.languages = (
+            list(sorted(list(set(self.languages)))) if self.languages else None
+        )
         self.num_languages = len(self.languages) if self.languages else None
 
     def __call__(self):
-        return pa.struct({"language": pa.list_(pa.string()), "translation": pa.list_(pa.string())})
+        return pa.struct(
+            {"language": pa.list_(pa.string()), "translation": pa.list_(pa.string())}
+        )
 
     def encode_example(self, translation_dict):
         lang_set = set(self.languages)

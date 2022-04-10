@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # coding=utf-8
 # Copyright 2022 The HuggingFace Datasets, DataLab Authors.
 #
@@ -14,10 +16,10 @@
 import abc
 import dataclasses
 from dataclasses import dataclass
-from typing import ClassVar, Dict, Type, TypeVar, List, Any
-from ..prompt import Prompt
+from typing import Any, ClassVar, TypeVar
 
 from ..features import Features
+from ..prompt import Prompt
 
 
 T = TypeVar("T", bound="TaskTemplate")
@@ -29,7 +31,7 @@ class TaskTemplate(abc.ABC):
     task: str
     input_schema: ClassVar[Features]
     label_schema: ClassVar[Features]
-    prompts:List[Prompt] = None
+    prompts: list[Prompt] = None
 
     @classmethod
     def get_prompts(self):
@@ -41,10 +43,10 @@ class TaskTemplate(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def column_mapping(self) -> Dict[str, str]:
+    def column_mapping(self) -> dict[str, str]:
         raise NotImplementedError
 
     @classmethod
-    def from_dict(cls: Type[T], template_dict: dict) -> T:
+    def from_dict(cls: type[T], template_dict: dict) -> T:
         field_names = set(f.name for f in dataclasses.fields(cls))
         return cls(**{k: v for k, v in template_dict.items() if k in field_names})

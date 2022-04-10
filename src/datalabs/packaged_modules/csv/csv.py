@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors.
 #
@@ -14,7 +16,7 @@
 import glob
 import os
 from dataclasses import dataclass
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 import pandas as pd
 import pyarrow as pa
@@ -47,20 +49,20 @@ class CsvConfig(datalabs.BuilderConfig):
 
     sep: str = ","
     delimiter: Optional[str] = None
-    header: Optional[Union[int, List[int], str]] = "infer"
-    names: Optional[List[str]] = None
-    column_names: Optional[List[str]] = None
-    index_col: Optional[Union[int, str, List[int], List[str]]] = None
-    usecols: Optional[Union[List[int], List[str]]] = None
+    header: Optional[Union[int, list[int], str]] = "infer"
+    names: Optional[list[str]] = None
+    column_names: Optional[list[str]] = None
+    index_col: Optional[Union[int, str, list[int], list[str]]] = None
+    usecols: Optional[Union[list[int], list[str]]] = None
     prefix: Optional[str] = None
     mangle_dupe_cols: bool = True
     engine: Optional[str] = None
     true_values: Optional[list] = None
     false_values: Optional[list] = None
     skipinitialspace: bool = False
-    skiprows: Optional[Union[int, List[int]]] = None
+    skiprows: Optional[Union[int, list[int]]] = None
     nrows: Optional[int] = None
-    na_values: Optional[Union[str, List[str]]] = None
+    na_values: Optional[Union[str, list[str]]] = None
     keep_default_na: bool = True
     na_filter: bool = True
     verbose: bool = False
@@ -135,8 +137,13 @@ class CsvConfig(datalabs.BuilderConfig):
         pandas_version = version.Version(pd.__version__)
         # some kwargs must not be passed if they don't have a default value
         # some others are deprecated and we can also not pass them if they are the default value
-        for read_csv_parameter in _PANDAS_READ_CSV_NO_DEFAULT_PARAMETERS + _PANDAS_READ_CSV_DEPRECATED_PARAMETERS:
-            if read_csv_kwargs[read_csv_parameter] == getattr(CsvConfig(), read_csv_parameter):
+        for read_csv_parameter in (
+            _PANDAS_READ_CSV_NO_DEFAULT_PARAMETERS
+            + _PANDAS_READ_CSV_DEPRECATED_PARAMETERS
+        ):
+            if read_csv_kwargs[read_csv_parameter] == getattr(
+                CsvConfig(), read_csv_parameter
+            ):
                 del read_csv_kwargs[read_csv_parameter]
 
         # Remove 1.3 new arguments
@@ -156,7 +163,9 @@ class Csv(datalabs.ArrowBasedBuilder):
     def _split_generators(self, dl_manager):
         """We handle string, list and dicts in datafiles"""
         if not self.config.data_files:
-            raise ValueError(f"At least one data file must be specified, but got data_files={self.config.data_files}")
+            raise ValueError(
+                f"At least one data file must be specified, but got data_files={self.config.data_files}"
+            )
         data_files = dl_manager.download_and_extract(self.config.data_files)
         if isinstance(data_files, (str, list, tuple)):
             files = data_files
@@ -164,22 +173,41 @@ class Csv(datalabs.ArrowBasedBuilder):
                 files = [files]
             if any(os.path.isdir(file) for file in files):
                 files = [file for file in _iter_files(files)]
-            return [datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"files": files})]
+            return [
+                datalabs.SplitGenerator(
+                    name=datalabs.Split.TRAIN, gen_kwargs={"files": files}
+                )
+            ]
         splits = []
         for split_name, files in data_files.items():
             if isinstance(files, str):
                 files = [files]
             if any(os.path.isdir(file) for file in files):
                 files = [file for file in _iter_files(files)]
-            splits.append(datalabs.SplitGenerator(name=split_name, gen_kwargs={"files": files}))
+            splits.append(
+                datalabs.SplitGenerator(name=split_name, gen_kwargs={"files": files})
+            )
         return splits
 
     def _generate_tables(self, files):
-        schema = pa.schema(self.config.features.type) if self.config.features is not None else None
+        schema = (
+            pa.schema(self.config.features.type)
+            if self.config.features is not None
+            else None
+        )
         # dtype allows reading an int column as str
-        dtype = {name: dtype.to_pandas_dtype() for name, dtype in zip(schema.names, schema.types)} if schema else None
+        dtype = (
+            {
+                name: dtype.to_pandas_dtype()
+                for name, dtype in zip(schema.names, schema.types)
+            }
+            if schema
+            else None
+        )
         for file_idx, file in enumerate(files):
-            csv_file_reader = pd.read_csv(file, iterator=True, dtype=dtype, **self.config.read_csv_kwargs)
+            csv_file_reader = pd.read_csv(
+                file, iterator=True, dtype=dtype, **self.config.read_csv_kwargs
+            )
             try:
                 for batch_idx, df in enumerate(csv_file_reader):
                     pa_table = pa.Table.from_pandas(df, schema=schema)
@@ -188,5 +216,7 @@ class Csv(datalabs.ArrowBasedBuilder):
                     # logger.warning('\n'.join(str(pa_table.slice(i, 1).to_pydict()) for i in range(pa_table.num_rows)))
                     yield (file_idx, batch_idx), pa_table
             except ValueError as e:
-                logger.error(f"Failed to read file '{csv_file_reader.f}' with error {type(e)}: {e}")
+                logger.error(
+                    f"Failed to read file '{csv_file_reader.f}' with error {type(e)}: {e}"
+                )
                 raise

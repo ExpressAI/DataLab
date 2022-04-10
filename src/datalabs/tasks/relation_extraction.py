@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # coding=utf-8
 # Copyright 2022 The DataLab Authors.
 #
@@ -12,7 +14,7 @@
 # limitations under the License.
 
 from dataclasses import dataclass
-from typing import ClassVar, Dict, Optional, Tuple
+from typing import ClassVar, Optional
 
 from ..features import ClassLabel, Features, Value
 from .base import TaskTemplate
@@ -21,22 +23,22 @@ from .base import TaskTemplate
 @dataclass
 class RelationExtraction(TaskTemplate):
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
-    task_category:str = "relation-extraction"
+    task_category: str = "relation-extraction"
     task: str = "relation-extraction"
-    input_schema: ClassVar[Features] = Features({
-        'text': Value('string'),
-        'subject': Value('string'),
-        'object': Value('string'),
-    })
+    input_schema: ClassVar[Features] = Features(
+        {
+            "text": Value("string"),
+            "subject": Value("string"),
+            "object": Value("string"),
+        }
+    )
     # TODO(lewtun): Find a more elegant approach without descriptors.
-    label_schema: ClassVar[Features] = Features({
-        'predicates': ClassLabel
-    })
+    label_schema: ClassVar[Features] = Features({"predicates": ClassLabel})
     text_column: str = "text"
     subject_column: str = "subject"
     object_column: str = "object"
     predicates_column: str = "predicates"
-    predicates: Optional[Tuple[str]] = None
+    predicates: Optional[tuple[str]] = None
 
     def __post_init__(self):
         if self.predicates:
@@ -47,12 +49,11 @@ class RelationExtraction(TaskTemplate):
             # self.__dict__["labels"] = tuple(sorted(self.labels))
             self.__dict__["predicates"] = self.predicates
 
-
             self.__dict__["label_schema"] = self.label_schema.copy()
             self.label_schema["predicates"] = ClassLabel(names=self.predicates)
 
     @property
-    def column_mapping(self) -> Dict[str, str]:
+    def column_mapping(self) -> dict[str, str]:
         return {
             self.text_column: "text",
             self.subject_column: "subject",

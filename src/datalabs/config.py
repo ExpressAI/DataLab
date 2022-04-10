@@ -14,8 +14,9 @@
 import importlib
 import os
 import platform
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
+
 from packaging import version
 
 from .utils.logging import get_logger
@@ -100,7 +101,9 @@ if USE_TF in ENV_VARS_TRUE_AND_AUTO_VALUES and USE_TORCH not in ENV_VARS_TRUE_VA
             TF_AVAILABLE = False
     if TF_AVAILABLE:
         if TF_VERSION.major < 2:
-            logger.info(f"TensorFlow found but with version {TF_VERSION}. `datalab` requires version 2 minimum.")
+            logger.info(
+                f"TensorFlow found but with version {TF_VERSION}. `datalab` requires version 2 minimum."
+            )
             TF_AVAILABLE = False
         else:
             logger.info(f"TensorFlow version {TF_VERSION} available.")
@@ -159,16 +162,25 @@ DEFAULT_HF_MODULES_CACHE = os.path.join(HF_CACHE_HOME, "modules")
 HF_MODULES_CACHE = Path(os.getenv("HF_MODULES_CACHE", DEFAULT_HF_MODULES_CACHE))
 
 DOWNLOADED_DATASETS_DIR = "downloads"
-DEFAULT_DOWNLOADED_DATASETS_PATH = os.path.join(HF_DATASETS_CACHE, DOWNLOADED_DATASETS_DIR)
-DOWNLOADED_DATASETS_PATH = Path(os.getenv("HF_DATASETS_DOWNLOADED_DATASETS_PATH", DEFAULT_DOWNLOADED_DATASETS_PATH))
+DEFAULT_DOWNLOADED_DATASETS_PATH = os.path.join(
+    HF_DATASETS_CACHE, DOWNLOADED_DATASETS_DIR
+)
+DOWNLOADED_DATASETS_PATH = Path(
+    os.getenv("HF_DATASETS_DOWNLOADED_DATASETS_PATH", DEFAULT_DOWNLOADED_DATASETS_PATH)
+)
 
 EXTRACTED_DATASETS_DIR = "extracted"
-DEFAULT_EXTRACTED_DATASETS_PATH = os.path.join(DEFAULT_DOWNLOADED_DATASETS_PATH, EXTRACTED_DATASETS_DIR)
-EXTRACTED_DATASETS_PATH = Path(os.getenv("HF_DATASETS_EXTRACTED_DATASETS_PATH", DEFAULT_EXTRACTED_DATASETS_PATH))
+DEFAULT_EXTRACTED_DATASETS_PATH = os.path.join(
+    DEFAULT_DOWNLOADED_DATASETS_PATH, EXTRACTED_DATASETS_DIR
+)
+EXTRACTED_DATASETS_PATH = Path(
+    os.getenv("HF_DATASETS_EXTRACTED_DATASETS_PATH", DEFAULT_EXTRACTED_DATASETS_PATH)
+)
 
 # Download count for the website
 HF_UPDATE_DOWNLOAD_COUNTS = (
-    os.environ.get("HF_UPDATE_DOWNLOAD_COUNTS", "AUTO").upper() in ENV_VARS_TRUE_AND_AUTO_VALUES
+    os.environ.get("HF_UPDATE_DOWNLOAD_COUNTS", "AUTO").upper()
+    in ENV_VARS_TRUE_AND_AUTO_VALUES
 )
 
 # Batch size constants. For more info, see:
@@ -180,11 +192,15 @@ DEFAULT_MAX_BATCH_SIZE = 10_000
 MAX_TABLE_NBYTES_FOR_PICKLING = 4 << 30
 
 # Offline mode
-HF_DATASETS_OFFLINE = os.environ.get("HF_DATASETS_OFFLINE", "AUTO").upper() in ENV_VARS_TRUE_VALUES
+HF_DATASETS_OFFLINE = (
+    os.environ.get("HF_DATASETS_OFFLINE", "AUTO").upper() in ENV_VARS_TRUE_VALUES
+)
 
 # In-memory
 DEFAULT_IN_MEMORY_MAX_SIZE = 0  # Disabled
-IN_MEMORY_MAX_SIZE = float(os.environ.get("HF_DATASETS_IN_MEMORY_MAX_SIZE", DEFAULT_IN_MEMORY_MAX_SIZE))
+IN_MEMORY_MAX_SIZE = float(
+    os.environ.get("HF_DATASETS_IN_MEMORY_MAX_SIZE", DEFAULT_IN_MEMORY_MAX_SIZE)
+)
 
 # File names
 DATASET_ARROW_FILENAME = "dataset.arrow"
@@ -206,10 +222,11 @@ STREAMING_READ_MAX_RETRIES = 20
 STREAMING_READ_RETRY_INTERVAL = 5
 
 
-
 """
 For explainaboard
 """
+
+
 @dataclass
 class BuilderConfig:
     path_output_file: str = None
@@ -221,5 +238,3 @@ class BuilderConfig:
 
 # File Names
 SYS_OUTPUT_INFO_FILENAME = "system_analysis.json"
-
-

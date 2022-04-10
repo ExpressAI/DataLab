@@ -1,26 +1,27 @@
-from collections import Counter
-import string
+from __future__ import annotations
+
 import re
-from typing import List
+import string
+from collections import Counter
 
 
-'''
+"""
 QA
-'''
+"""
 
 
 def normalize_answer(s):
     """Lower text and remove punctuation, articles and extra whitespace."""
 
     def remove_articles(text):
-        return re.sub(r'\b(a|an|the)\b', ' ', text)
+        return re.sub(r"\b(a|an|the)\b", " ", text)
 
     def white_space_fix(text):
-        return ' '.join(text.split())
+        return " ".join(text.split())
 
     def remove_punc(text):
         exclude = set(string.punctuation)
-        return ''.join(ch for ch in text if ch not in exclude)
+        return "".join(ch for ch in text if ch not in exclude)
 
     def lower(text):
         return text.lower()
@@ -62,7 +63,7 @@ def metric_max_over_ground_truths(metric_fn, prediction: str, ground_truths: lis
     return max(scores_for_ground_truths)
 
 
-def exact_match_qa(true_answers: List[list], predicted_answer: List[str]):
+def exact_match_qa(true_answers: list[list], predicted_answer: list[str]):
     exact_match = 0
     total = 0
     # for k1,k2 in zip(true_Anss,pred_Anss):
@@ -80,7 +81,7 @@ def exact_match_qa(true_answers: List[list], predicted_answer: List[str]):
     return exact_match
 
 
-def f1_score_qa(true_answers: List[list], predicted_answer: List[str]):
+def f1_score_qa(true_answers: list[list], predicted_answer: list[str]):
     f1_dataset_level = 0
     total = 0
 

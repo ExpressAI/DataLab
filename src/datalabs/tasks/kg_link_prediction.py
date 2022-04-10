@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # coding=utf-8
 # Copyright 2022 DataLab Authors.
 #
@@ -12,7 +14,7 @@
 # limitations under the License.
 
 from dataclasses import dataclass
-from typing import ClassVar, Dict, Optional, Tuple
+from typing import ClassVar, Optional, Tuple
 
 from ..features import ClassLabel, Features, Value
 from .base import TaskTemplate
@@ -30,11 +32,8 @@ class KGLinkPrediction(TaskTemplate):
     link_column: str = "link"
     tail_column: str = "tail"
 
-
-
-
     @property
-    def column_mapping(self) -> Dict[str, str]:
+    def column_mapping(self) -> dict[str, str]:
         return {
             self.head_column: "head",
             self.link_column: "link",

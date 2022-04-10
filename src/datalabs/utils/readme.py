@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import logging
 from pathlib import Path
-from typing import Any, List, Tuple
+from typing import Any
 
 import yaml
 
@@ -20,12 +22,14 @@ this_url = f"{BASE_REF_URL}/{__file__}"
 logger = logging.getLogger(__name__)
 
 
-def load_yaml_resource(resource: str) -> Tuple[Any, str]:
+def load_yaml_resource(resource: str) -> tuple[Any, str]:
     content = pkg_resources.read_text(resources, resource)
     return yaml.safe_load(content), f"{BASE_REF_URL}/resources/{resource}"
 
 
-readme_structure, known_readme_structure_url = load_yaml_resource("readme_structure.yaml")
+readme_structure, known_readme_structure_url = load_yaml_resource(
+    "readme_structure.yaml"
+)
 
 FILLER_TEXT = [
     "[Needs More Information]",
@@ -38,7 +42,13 @@ ReadmeValidatorOutput = Tuple[dict, List[str], List[str]]
 
 
 class Section:
-    def __init__(self, name: str, level: str, lines: List[str] = None, suppress_parsing_errors: bool = False):
+    def __init__(
+        self,
+        name: str,
+        level: str,
+        lines: list[str] = None,
+        suppress_parsing_errors: bool = False,
+    ):
         self.name = name
         self.level = level
         self.lines = lines
@@ -61,7 +71,9 @@ class Section:
                 code_start = not code_start
             elif line.split()[0] == self.level + "#" and not code_start:
                 if current_sub_level != "":
-                    self.content[current_sub_level] = Section(current_sub_level, self.level + "#", current_lines)
+                    self.content[current_sub_level] = Section(
+                        current_sub_level, self.level + "#", current_lines
+                    )
                     current_lines = []
                 else:
                     if current_lines != []:
@@ -79,7 +91,9 @@ class Section:
                     self.parsing_error_list.append(
                         f"Multiple sections with the same heading `{current_sub_level}` have been found. Please keep only one of these sections."
                     )
-                self.content[current_sub_level] = Section(current_sub_level, self.level + "#", current_lines)
+                self.content[current_sub_level] = Section(
+                    current_sub_level, self.level + "#", current_lines
+                )
             else:
                 if current_lines != []:
                     self.text += "".join(current_lines).strip()
@@ -88,8 +102,14 @@ class Section:
 
         if self.level == "" and not suppress_parsing_errors:
             if self.parsing_error_list != [] or self.parsing_warning_list != []:
-                errors = errors = "\n".join("-\t" + x for x in self.parsing_error_list + self.parsing_warning_list)
-                error_string = f"The following issues were found while parsing the README at `{self.name}`:\n" + errors
+                errors = errors = "\n".join(
+                    "-\t" + x
+                    for x in self.parsing_error_list + self.parsing_warning_list
+                )
+                error_string = (
+                    f"The following issues were found while parsing the README at `{self.name}`:\n"
+                    + errors
+                )
                 raise ValueError(error_string)
 
     def validate(self, structure: dict) -> ReadmeValidatorOutput:
@@ -108,7 +128,9 @@ class Section:
             # If content is expected
             if self.is_empty_text and self.content == {}:
                 # If no content is found, mention it in the error_list
-                error_list.append(f"Expected some content in section `{self.name}` but it is empty.")
+                error_list.append(
+                    f"Expected some content in section `{self.name}` but it is empty."
+                )
 
         if structure["allow_empty_text"] is False:
             # If some text is expected
@@ -129,12 +151,16 @@ class Section:
                 )
             else:
                 # If some subsections are present
-                structure_names = [subsection["name"] for subsection in structure["subsections"]]
+                structure_names = [
+                    subsection["name"] for subsection in structure["subsections"]
+                ]
                 has_missing_subsections = False
                 for idx, name in enumerate(structure_names):
                     if name not in self.content:
                         # If the expected subsection is not present
-                        error_list.append(f"Section `{self.name}` is missing subsection: `{name}`.")
+                        error_list.append(
+                            f"Section `{self.name}` is missing subsection: `{name}`."
+                        )
                         has_missing_subsections = True
                     else:
                         # If the subsection is present, validate subsection, return the result
@@ -144,13 +170,15 @@ class Section:
                         if self.level == "###":
                             continue
                         else:
-                            _, subsec_error_list, subsec_warning_list = self.content[name].validate(
-                                structure["subsections"][idx]
-                            )
+                            _, subsec_error_list, subsec_warning_list = self.content[
+                                name
+                            ].validate(structure["subsections"][idx])
                         error_list += subsec_error_list
                         warning_list += subsec_warning_list
 
-                if has_missing_subsections:  # we only allow to have extra subsections if all the other ones are here
+                if (
+                    has_missing_subsections
+                ):  # we only allow to have extra subsections if all the other ones are here
                     for name in self.content:
                         if name not in structure_names:
                             # If an extra subsection is present
@@ -174,8 +202,16 @@ class Section:
 
 
 class ReadMe(Section):  # Level 0
-    def __init__(self, name: str, lines: List[str], structure: dict = None, suppress_parsing_errors: bool = False):
-        super().__init__(name=name, level="")  # Not using lines here as we need to use a child class parse
+    def __init__(
+        self,
+        name: str,
+        lines: list[str],
+        structure: dict = None,
+        suppress_parsing_errors: bool = False,
+    ):
+        super().__init__(
+            name=name, level=""
+        )  # Not using lines here as we need to use a child class parse
         self.structure = structure
         self.yaml_tags_line_count = -2
         self.tag_count = 0
@@ -189,22 +225,37 @@ class ReadMe(Section):  # Level 0
         else:
             content, error_list, warning_list = self._validate(self.structure)
         if error_list != [] or warning_list != []:
-            errors = "\n".join(list(map(lambda x: "-\t" + x, error_list + warning_list)))
-            error_string = f"The following issues were found for the README at `{self.name}`:\n" + errors
+            errors = "\n".join(
+                list(map(lambda x: "-\t" + x, error_list + warning_list))
+            )
+            error_string = (
+                f"The following issues were found for the README at `{self.name}`:\n"
+                + errors
+            )
             raise ValueError(error_string)
 
     @classmethod
-    def from_readme(cls, path: Path, structure: dict = None, suppress_parsing_errors: bool = False):
+    def from_readme(
+        cls, path: Path, structure: dict = None, suppress_parsing_errors: bool = False
+    ):
         with open(path, encoding="utf-8") as f:
             lines = f.readlines()
-        return cls(path, lines, structure, suppress_parsing_errors=suppress_parsing_errors)
+        return cls(
+            path, lines, structure, suppress_parsing_errors=suppress_parsing_errors
+        )
 
     @classmethod
     def from_string(
-        cls, string: str, structure: dict = None, root_name: str = "root", suppress_parsing_errors: bool = False
+        cls,
+        string: str,
+        structure: dict = None,
+        root_name: str = "root",
+        suppress_parsing_errors: bool = False,
     ):
         lines = string.split("\n")
-        return cls(root_name, lines, structure, suppress_parsing_errors=suppress_parsing_errors)
+        return cls(
+            root_name, lines, structure, suppress_parsing_errors=suppress_parsing_errors
+        )
 
     def parse(self, suppress_parsing_errors: bool = False):
         # Skip Tags
@@ -275,7 +326,9 @@ class ReadMe(Section):  # Level 0
 if __name__ == "__main__":
     from argparse import ArgumentParser
 
-    ap = ArgumentParser(usage="Validate the content (excluding YAML tags) of a README.md file.")
+    ap = ArgumentParser(
+        usage="Validate the content (excluding YAML tags) of a README.md file."
+    )
     ap.add_argument("readme_filepath")
     args = ap.parse_args()
     readme_filepath = Path(args.readme_filepath)

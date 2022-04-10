@@ -1,20 +1,25 @@
-from typing import Dict, List, Optional, Any
-from typing import Callable, Mapping, Iterator
+from __future__ import annotations
+
+from collections.abc import Iterator
+from typing import Any, Callable, List, Mapping, Optional
+
 # nltk package for
 import nltk
 import numpy as np
-#sklearn is used for tfidf
+
+# sklearn is used for tfidf
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from .aggregating import Aggregating, aggregating
 
 
-
-
-@aggregating(name="get_features_dataset_level", contributor="datalab",
-               task="Any",
-             description="Get the average length of a list of texts")
-def get_features_dataset_level(texts:Iterator) -> int:
+@aggregating(
+    name="get_features_dataset_level",
+    contributor="datalab",
+    task="Any",
+    description="Get the average length of a list of texts",
+)
+def get_features_dataset_level(texts: Iterator) -> int:
     """
     Package: python
     Input:
@@ -26,17 +31,16 @@ def get_features_dataset_level(texts:Iterator) -> int:
     for text in texts:
         lengths.append(len(text.split(" ")))
 
-
-    return {"avg_length":np.average(lengths)}
-
+    return {"avg_length": np.average(lengths)}
 
 
-
-
-@aggregating(name="get_average_length", contributor="datalab",
-               task="Any",
-             description="Get the average length of a list of texts")
-def get_average_length(texts:Iterator) -> int:
+@aggregating(
+    name="get_average_length",
+    contributor="datalab",
+    task="Any",
+    description="Get the average length of a list of texts",
+)
+def get_average_length(texts: Iterator) -> int:
     """
     Package: python
     Input:
@@ -47,14 +51,16 @@ def get_average_length(texts:Iterator) -> int:
     lengths = []
     for text in texts:
         lengths.append(len(text["text"].split(" ")))
-    return {"average_length":np.average(lengths)}
+    return {"average_length": np.average(lengths)}
 
 
-
-
-@aggregating(name="get_vocabulary", contributor="datalab",
-               task="Any", description="Get the vocabulary of a list of texts")
-def get_vocabulary(texts:Iterator) -> Dict:
+@aggregating(
+    name="get_vocabulary",
+    contributor="datalab",
+    task="Any",
+    description="Get the vocabulary of a list of texts",
+)
+def get_vocabulary(texts: Iterator) -> dict:
     """
     Package: python
     Input:
@@ -69,18 +75,17 @@ def get_vocabulary(texts:Iterator) -> Dict:
                 vocab[w] += 1
             else:
                 vocab[w] = 1
-    vocab_sorted = dict(sorted(vocab.items(), key=lambda item: item[1], reverse = True))
-    return {"vocabulary":vocab_sorted}
+    vocab_sorted = dict(sorted(vocab.items(), key=lambda item: item[1], reverse=True))
+    return {"vocabulary": vocab_sorted}
 
 
-
-
-
-
-
-@aggregating(name="get_tfidf", contributor="scikit-learn",
-               task="Any", description="Calculate the tif-idf of a list of texts")
-def get_tfidf(texts:Iterator) -> int:
+@aggregating(
+    name="get_tfidf",
+    contributor="scikit-learn",
+    task="Any",
+    description="Calculate the tif-idf of a list of texts",
+)
+def get_tfidf(texts: Iterator) -> int:
     """
     Package: python
     Input:
@@ -98,7 +103,4 @@ def get_tfidf(texts:Iterator) -> int:
             if tfidf[i, j] > 1e-5:
                 out[words[j]] = tfidf[i, j]
         outs.append(out)
-    return {"tfidf":outs}
-
-
-
+    return {"tfidf": outs}

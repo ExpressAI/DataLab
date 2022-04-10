@@ -1,18 +1,22 @@
-from typing import Any, ClassVar, Dict, List, Optional
-from typing import Callable, Mapping
+from __future__ import annotations
+
+from collections.abc import Mapping
+from collections.abc import Callable
 import inspect
+from typing import Any, ClassVar, Dict, List, Optional
 
 
 class OperationFunction:
-    def __init__(self,
-                 name:str = None,
-                 func:Callable[...,Any] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor:str = None,
-                 processed_fields = ["text"],
-                 task = "Any",
-                 description = None,
-                 ):
+    def __init__(
+        self,
+        name: str = None,
+        func: Callable[..., Any] = None,
+        resources: Optional[Mapping[str, Any]] = None,
+        contributor: str = None,
+        processed_fields=["text"],
+        task="Any",
+        description=None,
+    ):
         self.name = name
         self.func = func
         self.resources = resources or {}
@@ -21,7 +25,7 @@ class OperationFunction:
         self.task = task
 
         self.processed_fields = ["text"]
-        if isinstance(processed_fields,str):
+        if isinstance(processed_fields, str):
             self.processed_fields[0] = processed_fields
         else:
             self.processed_fields = processed_fields
@@ -31,14 +35,16 @@ class OperationFunction:
         self._data_type = self.__class__.__name__
         self.description = description
 
-
     def set(self, processed_fields):
         # print(self._type)
-        return OperationFunction(name = self.name, func=self.func,
-                                 resources=self.resources,
-                                 contributor=self.contributor,
-                                 description= self.description,
-                                 processed_fields = processed_fields)
+        return OperationFunction(
+            name=self.name,
+            func=self.func,
+            resources=self.resources,
+            contributor=self.contributor,
+            description=self.description,
+            processed_fields=processed_fields,
+        )
 
     def __call__(self, x: str) -> Any:  # str?
         """
@@ -52,46 +58,51 @@ class OperationFunction:
         # print(inspect.getfullargspec(self.func))
         if "self" not in inspect.getfullargspec(self.func).args:
             return self.func(x, **self.resources)
-        else: ## self.func is a member function of some class
+        else:  ## self.func is a member function of some class
             cls_obj = self.resources["cls"]
             del self.resources["cls"]
             return self.func(cls_obj, x, **self.resources)
 
 
-
 class operation_function:
-    """
+    """ """
 
-    """
-    def __init__(self,
-                 name: Optional[str] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor:str = None,
-                 task = "Any",
-                 description = None,
-                 ):
+    def __init__(
+        self,
+        name: Optional[str] = None,
+        resources: Optional[Mapping[str, Any]] = None,
+        contributor: str = None,
+        task="Any",
+        description=None,
+    ):
         self.name = name
         self.resources = resources or {}
         self.contributor = contributor
         self.task = task
         self.description = description
 
-
     def __call__(self, *param_arg):
         if callable(self.name):
-            tf_class = OperationFunction(name = self.name.__name__, func=self.name)
+            tf_class = OperationFunction(name=self.name.__name__, func=self.name)
             return tf_class(*param_arg)
         else:
             f = param_arg[0]
             name = self.name or f.__name__
-            return OperationFunction(name = name, func=f, resources=self.resources, task = self.task,
-                                     description=self.description)
-
-
+            return OperationFunction(
+                name=name,
+                func=f,
+                resources=self.resources,
+                task=self.task,
+                description=self.description,
+            )
 
 
 class TextOperation(OperationFunction):
-    def __init__(self,*args,**kwargs,):
+    def __init__(
+        self,
+        *args,
+        **kwargs,
+    ):
         super(TextOperation, self).__init__(*args, **kwargs)
         self._data_type = "TextData"
 
@@ -99,25 +110,27 @@ class TextOperation(OperationFunction):
 # x = TextOperation(name = "x")
 # print(x._type)
 
+
 class text_operation(operation_function):
-    """
+    """ """
 
-    """
-    def __init__(self, *args,**kwargs):
+    def __init__(self, *args, **kwargs):
         super(text_operation, self).__init__(*args, **kwargs)
-
 
     def __call__(self, *param_arg):
         if callable(self.name):
-            tf_class = TextOperation(name = self.name.__name__, func=self.name)
+            tf_class = TextOperation(name=self.name.__name__, func=self.name)
             return tf_class(*param_arg)
         else:
             f = param_arg[0]
             name = self.name or f.__name__
-            return TextOperation(name = name, func=f, resources=self.resources,
-                                 task = self.task,
-                                 description = self.description)
-
+            return TextOperation(
+                name=name,
+                func=f,
+                resources=self.resources,
+                task=self.task,
+                description=self.description,
+            )
 
 
 # @text_operation(name="test",task="a",description="this is a test function")
@@ -128,60 +141,65 @@ class text_operation(operation_function):
 # print(get_sum.__dict__)
 
 
-
 class StructuredTextOperation(TextOperation):
-    def __init__(self,*args,**kwargs,):
+    def __init__(
+        self,
+        *args,
+        **kwargs,
+    ):
         super(StructuredTextOperation, self).__init__(*args, **kwargs)
         self._data_type = "StructuredText"
 
 
-
-
-
 class structured_text_operation(text_operation):
-    """
+    """ """
 
-    """
-    def __init__(self, *args,**kwargs):
+    def __init__(self, *args, **kwargs):
         super(structured_text_operation, self).__init__(*args, **kwargs)
-
 
     def __call__(self, *param_arg):
         if callable(self.name):
-            tf_class = StructuredTextOperation(name = self.name.__name__, func=self.name)
+            tf_class = StructuredTextOperation(name=self.name.__name__, func=self.name)
             return tf_class(*param_arg)
         else:
             f = param_arg[0]
             name = self.name or f.__name__
-            return StructuredTextOperation(name = name, func=f, resources=self.resources,
-                                 task = self.task,
-                                 description = self.description)
-
-
+            return StructuredTextOperation(
+                name=name,
+                func=f,
+                resources=self.resources,
+                task=self.task,
+                description=self.description,
+            )
 
 
 class DatasetOperation(TextOperation):
-
-    def __init__(self,*args,**kwargs,):
+    def __init__(
+        self,
+        *args,
+        **kwargs,
+    ):
         super(DatasetOperation, self).__init__(*args, **kwargs)
         self._data_type = "Dataset"
 
 
 class dataset_operation(text_operation):
-    def __init__(self, *args,**kwargs):
+    def __init__(self, *args, **kwargs):
         super(dataset_operation, self).__init__(*args, **kwargs)
 
     def __call__(self, *param_arg):
         if callable(self.name):
-            tf_class = DatasetOperation(name = self.name.__name__, func=self.name)
+            tf_class = DatasetOperation(name=self.name.__name__, func=self.name)
             return tf_class(*param_arg)
         else:
             f = param_arg[0]
             name = self.name or f.__name__
-            tf_cls = DatasetOperation(name=name, func = f,
-                                   resources = self.resources,
-                                   contributor = self.contributor,
-                                   description=self.description)
+            tf_cls = DatasetOperation(
+                name=name,
+                func=f,
+                resources=self.resources,
+                contributor=self.contributor,
+                description=self.description,
+            )
 
             return tf_cls
-

@@ -35,10 +35,19 @@ class JsonDatasetReader(AbstractDatasetReader):
         **kwargs,
     ):
         super().__init__(
-            path_or_paths, split=split, features=features, cache_dir=cache_dir, keep_in_memory=keep_in_memory, **kwargs
+            path_or_paths,
+            split=split,
+            features=features,
+            cache_dir=cache_dir,
+            keep_in_memory=keep_in_memory,
+            **kwargs,
         )
         self.field = field
-        path_or_paths = path_or_paths if isinstance(path_or_paths, dict) else {self.split: path_or_paths}
+        path_or_paths = (
+            path_or_paths
+            if isinstance(path_or_paths, dict)
+            else {self.split: path_or_paths}
+        )
         self.builder = Json(
             cache_dir=cache_dir,
             data_files=path_or_paths,
@@ -66,7 +75,9 @@ class JsonDatasetReader(AbstractDatasetReader):
 
         # Build dataset for splits
         dataset = self.builder.as_dataset(
-            split=self.split, ignore_verifications=ignore_verifications, in_memory=self.keep_in_memory
+            split=self.split,
+            ignore_verifications=ignore_verifications,
+            in_memory=self.keep_in_memory,
         )
         return dataset
 
@@ -97,9 +108,16 @@ class JsonDatasetWriter:
 
         if isinstance(self.path_or_buf, (str, bytes, os.PathLike)):
             with open(self.path_or_buf, "wb+") as buffer:
-                written = self._write(file_obj=buffer, orient=orient, lines=lines, **self.to_json_kwargs)
+                written = self._write(
+                    file_obj=buffer, orient=orient, lines=lines, **self.to_json_kwargs
+                )
         else:
-            written = self._write(file_obj=self.path_or_buf, orient=orient, lines=lines, **self.to_json_kwargs)
+            written = self._write(
+                file_obj=self.path_or_buf,
+                orient=orient,
+                lines=lines,
+                **self.to_json_kwargs,
+            )
         return written
 
     def _batch_json(self, args):
@@ -110,7 +128,9 @@ class JsonDatasetWriter:
             key=slice(offset, offset + self.batch_size),
             indices=self.dataset._indices,
         )
-        json_str = batch.to_pandas().to_json(path_or_buf=None, orient=orient, lines=lines, **to_json_kwargs)
+        json_str = batch.to_pandas().to_json(
+            path_or_buf=None, orient=orient, lines=lines, **to_json_kwargs
+        )
         if not json_str.endswith("\n"):
             json_str += "\n"
         return json_str.encode(self.encoding)

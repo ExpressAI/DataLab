@@ -37,7 +37,9 @@ from .utils.streaming_download_manager import (
 logger = get_logger(__name__)
 
 
-def extend_module_for_streaming(module_path, use_auth_token: Optional[Union[str, bool]] = None):
+def extend_module_for_streaming(
+    module_path, use_auth_token: Optional[Union[str, bool]] = None
+):
     """Extend the module to support streaming.
 
     We patch some functions in the module to use `fsspec` to support data streaming:
@@ -85,5 +87,7 @@ def extend_module_for_streaming(module_path, use_auth_token: Optional[Union[str,
         patch.object(module.Path, "rglob", wrap_auth(xpathrglob)).start()
         patch.object(module.Path, "stem", property(fget=xpathstem)).start()
         patch.object(module.Path, "suffix", property(fget=xpathsuffix)).start()
-    patch_submodule(module, "pd.read_csv", wrap_auth(xpandas_read_csv), attrs=["__version__"]).start()
+    patch_submodule(
+        module, "pd.read_csv", wrap_auth(xpandas_read_csv), attrs=["__version__"]
+    ).start()
     module._patched_for_streaming = True

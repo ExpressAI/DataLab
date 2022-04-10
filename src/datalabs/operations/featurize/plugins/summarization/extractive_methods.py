@@ -1,14 +1,18 @@
 """
 using compare_mt https://github.com/neulab/compare-mt for ROUGE
 """
+from __future__ import annotations
 
+
+
+import numpy as np
 from compare_mt.rouge.rouge_scorer import RougeScorer
 from nltk import sent_tokenize
-from typing import List
-import numpy as np
 
-scorer = RougeScorer(['rouge1', 'rouge2'], use_stemmer=True)
-_scorer = RougeScorer(['rouge1'], use_stemmer=True)
+
+scorer = RougeScorer(["rouge1", "rouge2"], use_stemmer=True)
+_scorer = RougeScorer(["rouge1"], use_stemmer=True)
+
 
 def compute_rouge(cand, ref):
     ref = sent_tokenize(ref)
@@ -18,6 +22,7 @@ def compute_rouge(cand, ref):
     rouge2 = score["rouge2"].fmeasure
     return 2 * rouge1 * rouge2 / (rouge1 + rouge2 + 1e-20)
 
+
 def _compute_rouge(cand, ref):
     ref = sent_tokenize(ref)
     cand = sent_tokenize(cand)
@@ -25,8 +30,14 @@ def _compute_rouge(cand, ref):
     return score["rouge1"].fmeasure
 
 
-
-def _ext_oracle(src: List[str], ref: str, sim_fn, max_sent: int = 3, max_len: int = -1, threshold: int = -1):
+def _ext_oracle(
+    src: list[str],
+    ref: str,
+    sim_fn,
+    max_sent: int = 3,
+    max_len: int = -1,
+    threshold: int = -1,
+):
     """
     A functionality of generating the extractive oracle for a sample in the summarization dataset
     src: source documents
@@ -66,14 +77,16 @@ def _ext_oracle(src: List[str], ref: str, sim_fn, max_sent: int = 3, max_len: in
         oracle.append(cands[max_id][0])
         labels[cands[max_id][1]] = 1
         del cands[max_id]
-    return {"source":src,
-            "reference":ref,
-            "oracle_summary":oracle,
-            "oracle_labels":labels,
-            "oracle_score":max_score}
+    return {
+        "source": src,
+        "reference": ref,
+        "oracle_summary": oracle,
+        "oracle_labels": labels,
+        "oracle_score": max_score,
+    }
 
 
-def _lead_k(src: List[str], ref: str, sim_fn, k: int = 3):
+def _lead_k(src: list[str], ref: str, sim_fn, k: int = 3):
     """
     A functionality of generating summaries using lead-k sentences
     src: source documents
@@ -91,13 +104,14 @@ def _lead_k(src: List[str], ref: str, sim_fn, k: int = 3):
     src = src[:k]
     score = sim_fn(" ".join(src), ref)
 
-    return {"source":doc,
-            "reference":ref,
-            "lead_k_summary":src,
-            "lead_k_score":score}
+    return {
+        "source": doc,
+        "reference": ref,
+        "lead_k_summary": src,
+        "lead_k_score": score,
+    }
 
-# def demo():
-
+    # def demo():
 
     """
     from datalab import load_dataset
@@ -121,5 +135,3 @@ def _lead_k(src: List[str], ref: str, sim_fn, k: int = 3):
     #
     # res = _lead_k(document, summary, _compute_rouge, k = 3)
     # print(res)
-
-

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # coding=utf-8
 # Copyright 2022 The HuggingFace Datasets, DataLab Authors.
 #
@@ -12,33 +14,35 @@
 # limitations under the License.
 
 from dataclasses import dataclass
-from typing import ClassVar, Dict, Optional, Tuple
+from typing import ClassVar, Optional
+
 from ..features import ClassLabel, Features, Value
 from .base import TaskTemplate
+
 
 @dataclass
 class CoreferenceResolution(TaskTemplate):
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
     task_category: str = "coreference-resolution"
     task: str = "coreference-resolution"
-    input_schema: ClassVar[Features] = Features({
-        'text': Value('string'),
-        'pronoun': Value('string'),
-        'pronoun_idx': Value('int32'),
-        'quote': Value('string'),
-        'quote_idx': Value('int32'),
-    })
+    input_schema: ClassVar[Features] = Features(
+        {
+            "text": Value("string"),
+            "pronoun": Value("string"),
+            "pronoun_idx": Value("int32"),
+            "quote": Value("string"),
+            "quote_idx": Value("int32"),
+        }
+    )
     # TODO(lewtun): Find a more elegant approach without descriptors.
-    label_schema: ClassVar[Features] = Features({
-        "label": ClassLabel
-    })
+    label_schema: ClassVar[Features] = Features({"label": ClassLabel})
     text_column: str = "text"
     pronoun_column: str = "pronoun"
     pronoun_idx_column: str = "pronoun_idx"
     quote_column: str = "quote"
     quote_idx_column: str = "quote_idx"
     label_column: str = "label"
-    labels: Optional[Tuple[str]] = None
+    labels: Optional[tuple[str]] = None
 
     def __post_init__(self):
         if self.labels:
@@ -52,7 +56,7 @@ class CoreferenceResolution(TaskTemplate):
             self.label_schema["labels"] = ClassLabel(names=self.labels)
 
     @property
-    def column_mapping(self) -> Dict[str, str]:
+    def column_mapping(self) -> dict[str, str]:
         return {
             self.text_column: "text",
             self.pronoun_column: "pronoun",
@@ -61,4 +65,3 @@ class CoreferenceResolution(TaskTemplate):
             self.quote_idx_column: "quote",
             self.label_column: "label",
         }
-

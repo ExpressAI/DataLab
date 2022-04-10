@@ -1,30 +1,39 @@
-from typing import Dict, List, Any, Optional
-from typing import Callable, Mapping
+from __future__ import annotations
 
+from collections.abc import Callable
+from collections.abc import Mapping
 import os
 import sys
+from typing import Any, Optional
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from operation import DatasetOperation, dataset_operation
 from prompt.prompting import *
 
 
 class SentimentClassificationPrompting(Prompting, DatasetOperation):
-
-    def __init__(self,
-                 name: str = None,
-                 func: Callable[..., Any] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor: str = None,
-                 processed_fields: List = ["text", "label"],
-                 generated_field: str = None,
-                 task="sentiment-classification",
-                 description=None,
-                 template=None,
-                 ):
-        super().__init__(name=name, func=func, resources=resources, contributor=contributor,
-                         task=task, description=description)
-        self._type = 'SentimentClassificationPrompting'
+    def __init__(
+        self,
+        name: str = None,
+        func: Callable[..., Any] = None,
+        resources: Optional[Mapping[str, Any]] = None,
+        contributor: str = None,
+        processed_fields: list = ["text", "label"],
+        generated_field: str = None,
+        task="sentiment-classification",
+        description=None,
+        template=None,
+    ):
+        super().__init__(
+            name=name,
+            func=func,
+            resources=resources,
+            contributor=contributor,
+            task=task,
+            description=description,
+        )
+        self._type = "SentimentClassificationPrompting"
         self.processed_fields = ["text", "label"]
         if isinstance(processed_fields, str):
             self.processed_fields[0] = processed_fields
@@ -46,17 +55,23 @@ class SentimentClassificationPrompting(Prompting, DatasetOperation):
 
 
 class sentiment_classification_prompting(prompting, dataset_operation):
-    def __init__(self,
-                 name: Optional[str] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor: str = None,
-                 processed_fields: List = ["text", "label"],
-                 generated_field: str = None,
-                 task="sentiment-classification",
-                 description=None,
-                 template=None,
-                 ):
-        super().__init__(name=name, resources=resources, contributor=contributor, description=description)
+    def __init__(
+        self,
+        name: Optional[str] = None,
+        resources: Optional[Mapping[str, Any]] = None,
+        contributor: str = None,
+        processed_fields: list = ["text", "label"],
+        generated_field: str = None,
+        task="sentiment-classification",
+        description=None,
+        template=None,
+    ):
+        super().__init__(
+            name=name,
+            resources=resources,
+            contributor=contributor,
+            description=description,
+        )
         self.processed_fields = processed_fields
         self.generated_field = generated_field
         self.task = task
@@ -64,19 +79,24 @@ class sentiment_classification_prompting(prompting, dataset_operation):
 
     def __call__(self, *param_arg):
         if callable(self.name):
-            tf_class = SentimentClassificationPrompting(name=self.name.__name__, func=self.name)
+            tf_class = SentimentClassificationPrompting(
+                name=self.name.__name__, func=self.name
+            )
             return tf_class(*param_arg)
         else:
             f = param_arg[0]
             name = self.name or f.__name__
-            tf_cls = SentimentClassificationPrompting(name=name, func=f,
-                                                      resources=self.resources,
-                                                      contributor=self.contributor,
-                                                      processed_fields=self.processed_fields,
-                                                      generated_field=self.generated_field,
-                                                      task=self.task,
-                                                      description=self.description,
-                                                      template=self.template, )
+            tf_cls = SentimentClassificationPrompting(
+                name=name,
+                func=f,
+                resources=self.resources,
+                contributor=self.contributor,
+                processed_fields=self.processed_fields,
+                generated_field=self.generated_field,
+                task=self.task,
+                description=self.description,
+                template=self.template,
+            )
             return tf_cls
 
 
@@ -101,12 +121,15 @@ print(next(res))
 """
 
 
-@sentiment_classification_prompting(name="template_sc1", contributor="datalab",
-                                    template="Given the text: {text}, is it {texture_choices}",
-                                    description="Prompt template: Given the text: {text}, is it {texture_choices}",
-                                    task="sentiment-classification",
-                                    processed_fields=['text', 'label'],)
-def template_sc1(sample: dict, labels_to_answers: Dict):
+@sentiment_classification_prompting(
+    name="template_sc1",
+    contributor="datalab",
+    template="Given the text: {text}, is it {texture_choices}",
+    description="Prompt template: Given the text: {text}, is it {texture_choices}",
+    task="sentiment-classification",
+    processed_fields=["text", "label"],
+)
+def template_sc1(sample: dict, labels_to_answers: dict):
     tp1 = "Given the text: {text}, is it {texture_choices}"
 
     # prompting process
@@ -119,16 +142,18 @@ def template_sc1(sample: dict, labels_to_answers: Dict):
 
     label_prompt = labels_to_answers[sample["label"]]
 
-    return {"text_prompt": text_prompt,
-            "label_prompt": label_prompt}
+    return {"text_prompt": text_prompt, "label_prompt": label_prompt}
 
 
-@sentiment_classification_prompting(name="template_sc2", contributor="datalab",
-                                    template="Given the text: {text}, it is [mask]",
-                                    description="Prompt template: Given the text: {text}, it is [mask]",
-                                    task="sentiment-classification",
-                                    processed_fields=['text', 'label'],)
-def template_sc2(sample: dict, labels_to_answers: Dict):
+@sentiment_classification_prompting(
+    name="template_sc2",
+    contributor="datalab",
+    template="Given the text: {text}, it is [mask]",
+    description="Prompt template: Given the text: {text}, it is [mask]",
+    task="sentiment-classification",
+    processed_fields=["text", "label"],
+)
+def template_sc2(sample: dict, labels_to_answers: dict):
     tp = "Given the text: {text}, it is [mask]"
 
     # prompting process
@@ -139,16 +164,18 @@ def template_sc2(sample: dict, labels_to_answers: Dict):
 
     label_prompt = labels_to_answers[sample["label"]]
 
-    return {"text_prompt": text_prompt,
-            "label_prompt": label_prompt}
+    return {"text_prompt": text_prompt, "label_prompt": label_prompt}
 
 
-@sentiment_classification_prompting(name="template_sc3", contributor="datalab",
-                                    template="Given the text: {text} Judge the sentiment of this text. You may choose from {texture_choices}.",
-                                    description="Prompt template: Given the text: {text} Judge the sentiment of this text. You may choose from {texture_choices}.",
-                                    task="sentiment-classification",
-                                    processed_fields=['text', 'label'],)
-def template_sc3(sample: dict, labels_to_answers: Dict):
+@sentiment_classification_prompting(
+    name="template_sc3",
+    contributor="datalab",
+    template="Given the text: {text} Judge the sentiment of this text. You may choose from {texture_choices}.",
+    description="Prompt template: Given the text: {text} Judge the sentiment of this text. You may choose from {texture_choices}.",
+    task="sentiment-classification",
+    processed_fields=["text", "label"],
+)
+def template_sc3(sample: dict, labels_to_answers: dict):
     tp = "Given the text: {text} Judge the sentiment of this text. You may choose from {texture_choices}."
 
     # prompting process
@@ -161,16 +188,18 @@ def template_sc3(sample: dict, labels_to_answers: Dict):
 
     label_prompt = labels_to_answers[sample["label"]]
 
-    return {"text_prompt": text_prompt,
-            "label_prompt": label_prompt}
+    return {"text_prompt": text_prompt, "label_prompt": label_prompt}
 
 
-@sentiment_classification_prompting(name="template_sc4", contributor="datalab",
-                                    template="Given the text: {text} What's the sentiment of this text? {texture_choices}",
-                                    description="Prompt template: Given the text: {text} What's the sentiment of this text? {texture_choices}",
-                                    task="sentiment-classification",
-                                    processed_fields=['text', 'label'],)
-def template_sc4(sample: dict, labels_to_answers: Dict):
+@sentiment_classification_prompting(
+    name="template_sc4",
+    contributor="datalab",
+    template="Given the text: {text} What's the sentiment of this text? {texture_choices}",
+    description="Prompt template: Given the text: {text} What's the sentiment of this text? {texture_choices}",
+    task="sentiment-classification",
+    processed_fields=["text", "label"],
+)
+def template_sc4(sample: dict, labels_to_answers: dict):
     tp = "Given the text: {text} What\\'s the sentiment of this text? {texture_choices}"
 
     # prompting process
@@ -183,17 +212,18 @@ def template_sc4(sample: dict, labels_to_answers: Dict):
 
     label_prompt = labels_to_answers[sample["label"]]
 
-    return {"text_prompt": text_prompt,
-            "label_prompt": label_prompt}
+    return {"text_prompt": text_prompt, "label_prompt": label_prompt}
 
 
-
-@sentiment_classification_prompting(name="template_sc5", contributor="datalab",
-                                    template="Given the text: {text} Can you tell the sentiment of the text? {texture_choices}",
-                                    description="Prompt template: Given the text: {text} Can you tell the sentiment of the text? {texture_choices}",
-                                    task="sentiment-classification",
-                                    processed_fields=['text', 'label'],)
-def template_sc5(sample: dict, labels_to_answers: Dict):
+@sentiment_classification_prompting(
+    name="template_sc5",
+    contributor="datalab",
+    template="Given the text: {text} Can you tell the sentiment of the text? {texture_choices}",
+    description="Prompt template: Given the text: {text} Can you tell the sentiment of the text? {texture_choices}",
+    task="sentiment-classification",
+    processed_fields=["text", "label"],
+)
+def template_sc5(sample: dict, labels_to_answers: dict):
     tp = "Given the text: {text} Can you tell the sentiment of the text? {texture_choices}"
 
     # prompting process
@@ -206,17 +236,18 @@ def template_sc5(sample: dict, labels_to_answers: Dict):
 
     label_prompt = labels_to_answers[sample["label"]]
 
-    return {"text_prompt": text_prompt,
-            "label_prompt": label_prompt}
+    return {"text_prompt": text_prompt, "label_prompt": label_prompt}
 
 
-
-@sentiment_classification_prompting(name="template_sc6", contributor="datalab",
-                                    template="Given the text: {text} The sentiment of the text is [mask]",
-                                    description="Prompt template: Prompt template: Given the text: {text} The sentiment of the text is [mask]",
-                                    task="sentiment-classification",
-                                    processed_fields=['text', 'label'],)
-def template_sc6(sample: dict, labels_to_answers: Dict):
+@sentiment_classification_prompting(
+    name="template_sc6",
+    contributor="datalab",
+    template="Given the text: {text} The sentiment of the text is [mask]",
+    description="Prompt template: Prompt template: Given the text: {text} The sentiment of the text is [mask]",
+    task="sentiment-classification",
+    processed_fields=["text", "label"],
+)
+def template_sc6(sample: dict, labels_to_answers: dict):
     tp = "Given the text: {text} The sentiment of the text is [mask]"
 
     # prompting process
@@ -227,5 +258,4 @@ def template_sc6(sample: dict, labels_to_answers: Dict):
 
     label_prompt = labels_to_answers[sample["label"]]
 
-    return {"text_prompt": text_prompt,
-            "label_prompt": label_prompt}
+    return {"text_prompt": text_prompt, "label_prompt": label_prompt}

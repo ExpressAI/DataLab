@@ -1,37 +1,32 @@
 from typing import Optional
 
 from ..utils.logging import get_logger
+from .aspect_based_sentiment_classification import AspectBasedSentimentClassification
 from .automatic_speech_recognition import AutomaticSpeechRecognition
 from .base import TaskTemplate
-from .image_classification import ImageClassification
-
-from .summarization import Summarization, MultiDocSummarization, DialogSummarization, QuerySummarization
-
-from .question_answering import MultipleChoiceQA
-from .question_answering import QuestionAnsweringExtractive
-from .question_answering import QuestionAnsweringHotpot
-from .question_answering import QuestionAnsweringAbstractive
-from .question_answering import QuestionAnsweringMultipleChoices
-from .question_answering import QuestionAnsweringMultipleChoicesWithoutContext
-from .question_answering import QuestionAnsweringAbstractiveNQ
-from .question_answering import QuestionAnsweringMultipleChoicesQASC
-from .question_answering import QuestionAnsweringDCQA
-
-from .machine_translation import MachineTranslation
-
-from .text_classification import TextClassification
-from .text_classification import TopicClassification
-from .aspect_based_sentiment_classification import AspectBasedSentimentClassification
-from .text_matching import TextMatching
-from .sequence_labeling import SequenceLabeling
-from .semantic_parsing import SemanticParsing
-
-from .relation_extraction import RelationExtraction
-from .span_text_classification import SpanTextClassification
-
-from .kg_link_prediction import KGLinkPrediction
-
 from .coreference_resolution import CoreferenceResolution
+from .image_classification import ImageClassification
+from .kg_link_prediction import KGLinkPrediction
+from .machine_translation import MachineTranslation
+from .question_answering import (
+    MultipleChoiceQA,
+    QuestionAnsweringAbstractive,
+    QuestionAnsweringAbstractiveNQ,
+    QuestionAnsweringDCQA,
+    QuestionAnsweringExtractive,
+    QuestionAnsweringHotpot,
+    QuestionAnsweringMultipleChoices,
+    QuestionAnsweringMultipleChoicesQASC,
+    QuestionAnsweringMultipleChoicesWithoutContext,
+)
+from .relation_extraction import RelationExtraction
+from .semantic_parsing import SemanticParsing
+from .sequence_labeling import SequenceLabeling
+from .span_text_classification import SpanTextClassification
+from .summarization import DialogSummarization, MultiDocSummarization, QuerySummarization, Summarization
+from .text_classification import TextClassification, TopicClassification
+from .text_matching import TextMatching
+
 
 __all__ = [
     "TaskTemplate",
@@ -100,7 +95,8 @@ def task_template_from_dict(task_template_dict: dict) -> Optional[TaskTemplate]:
     task_category_name = task_template_dict.get("task_category")
     if task_category_name is None:
         logger.warning(
-            f"Couldn't find template for task '{task_category_name}'. Available templates: {list(NAME2TEMPLATE)}")
+            f"Couldn't find template for task '{task_category_name}'. Available templates: {list(NAME2TEMPLATE)}"
+        )
         return None
     template = NAME2TEMPLATE.get(task_category_name)
     return template.from_dict(task_template_dict)

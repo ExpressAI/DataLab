@@ -22,7 +22,7 @@ def get_basic_words(sentence: str):
     if BASIC_WORDS is None:
         raise ValueError("basic word dictionary is none")
 
-    value_list = sentence.split(' ')
+    value_list = sentence.split(" ")
     n_words = len(value_list)
     n_basic_words = 0
 

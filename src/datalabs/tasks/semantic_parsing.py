@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import ClassVar, Dict
+from typing import ClassVar
 
 from ..features import Features, Sequence, Value
 from .base import TaskTemplate
@@ -14,14 +16,14 @@ class SemanticParsing(TaskTemplate):
     # task: str = "sql-generation-spider"
     # input_schema: ClassVar[Features] = Features({"question": Value("string"), "context": Value("string")})
 
-    '''
+    """
     "db_id": datalabs.Value("string"),
     "query": datalabs.Value("string"),
     "question": datalabs.Value("string"),
     "query_toks": datalabs.features.Sequence(datalabs.Value("string")),
     "query_toks_no_value": datalabs.features.Sequence(datalabs.Value("string")),
     "question_toks": datalabs.features.Sequence(datalabs.Value("string")),
-    '''
+    """
     input_schema: ClassVar[Features] = Features({"question": Value("string")})
 
     label_schema: ClassVar[Features] = Features({"query": Value("string")})
@@ -29,6 +31,5 @@ class SemanticParsing(TaskTemplate):
     query_column: str = "query"
 
     @property
-    def column_mapping(self) -> Dict[str, str]:
+    def column_mapping(self) -> dict[str, str]:
         return {self.question_column: "question", self.query_column: "query"}
-

@@ -1,21 +1,30 @@
-from typing import Optional, Iterable
-from datalabs.info import SysOutputInfo, BucketPerformance, Performance, Table
+from __future__ import annotations
+
+from collections.abc import Iterable
+from collections.abc import Iterator
+from typing import Dict, List, Optional
+
+from tqdm import tqdm
+
+from datalabs import load_dataset
+from datalabs.info import BucketPerformance, Performance, SysOutputInfo, Table
+from datalabs.metric import Accuracy  # noqa
+from datalabs.metric import F1score  # noqa
+from datalabs.operations.aggregate.text_classification import text_classification_aggregating
 from datalabs.utils import analysis
 from datalabs.utils.analysis import *  # noqa
 from datalabs.utils.eval_bucket import *  # noqa
-from datalabs.metric import Accuracy  # noqa
-from datalabs.metric import F1score  # noqa
-from tqdm import tqdm
 from datalabs.utils.feature_funcs import *  # noqa
 from datalabs.utils.spacy_loader import spacy_loader
-from typing import Iterator, Dict, List
-from datalabs import load_dataset
-from datalabs.operations.aggregate.text_classification import text_classification_aggregating
 
-@text_classification_aggregating(name="get_statistics", contributor="datalab",
-                                 task="text-classification",
-                                 description="Calculate the overall statistics (e.g., average length) of "
-                                             "a given text classification dataset")
+
+@text_classification_aggregating(
+    name="get_statistics",
+    contributor="datalab",
+    task="text-classification",
+    description="Calculate the overall statistics (e.g., average length) of "
+    "a given text classification dataset",
+)
 def get_statistics(samples: Iterator):
     """
     Input:
@@ -44,16 +53,16 @@ def get_statistics(samples: Iterator):
                 vocab[w] = 1
 
     # the rank of each word based on its frequency
-    sorted_dict = {key: rank for rank, key in enumerate(sorted(set(vocab.values()), reverse=True), 1)}
+    sorted_dict = {
+        key: rank
+        for rank, key in enumerate(sorted(set(vocab.values()), reverse=True), 1)
+    }
     vocab_rank = {k: sorted_dict[v] for k, v in vocab.items()}
 
-
     for k, v in length_fre.items():
-        length_fre[k] = length_fre[k]*1.0/len(samples)
+        length_fre[k] = length_fre[k] * 1.0 / len(samples)
 
-    return {"vocab":vocab,
-            "vocab_rank":vocab_rank,
-            "length_fre":length_fre}
+    return {"vocab": vocab, "vocab_rank": vocab_rank, "length_fre": length_fre}
 
 
 class TCExplainaboardBuilder:
@@ -83,17 +92,21 @@ class TCExplainaboardBuilder:
         self.statistics = None
         if None != self._info.dataset_name:
             try:
-                dataset = load_dataset(self._info.dataset_name, self._info.sub_dataset_name)
-                if len(dataset['train']._stat) == 0 or self._info.reload_stat == False: # calculate the statistics (_stat) when _stat is {} or `reload_stat` is False
-                    new_train = dataset['train'].apply(get_statistics, mode = "local")
+                dataset = load_dataset(
+                    self._info.dataset_name, self._info.sub_dataset_name
+                )
+                if (
+                    len(dataset["train"]._stat) == 0 or self._info.reload_stat == False
+                ):  # calculate the statistics (_stat) when _stat is {} or `reload_stat` is False
+                    new_train = dataset["train"].apply(get_statistics, mode="local")
                     self.statistics = new_train._stat
                 else:
                     self.statistics = dataset["train"]._stat
             except FileNotFoundError as err:
                 eprint(
                     "The dataset hasn't been supported by DataLab so no training set dependent features will be supported by ExplainaBoard."
-                    "You can add the dataset by: https://github.com/ExpressAI/DataLab/blob/main/docs/SDK/add_new_datasets_into_sdk.md")
-
+                    "You can add the dataset by: https://github.com/ExpressAI/DataLab/blob/main/docs/SDK/add_new_datasets_into_sdk.md"
+                )
 
     @staticmethod
     def get_bucket_feature_value(feature_name: str):
@@ -120,27 +133,25 @@ class TCExplainaboardBuilder:
     def _get_lexical_richness(self, existing_feature: dict):
         return get_lexical_richness(existing_feature["text"])  # noqa
 
-
     # training set dependent features
     def _get_num_oov(self, existing_features: dict):
         num_oov = 0
 
         for w in existing_features["text"].split(" "):
-            if w not in self.statistics['vocab'].keys():
+            if w not in self.statistics["vocab"].keys():
                 num_oov += 1
         # print(num_oov)
         return num_oov
-
 
     # training set dependent features (this could be merged into the above one for further optimization)
     def _get_fre_rank(self, existing_features: dict):
         fre_rank = 0
 
         for w in existing_features["text"].split(" "):
-            if w not in self.statistics['vocab_rank'].keys():
-                fre_rank += len(self.statistics['vocab_rank'])
+            if w not in self.statistics["vocab_rank"].keys():
+                fre_rank += len(self.statistics["vocab_rank"])
             else:
-                fre_rank += self.statistics['vocab_rank'][w]
+                fre_rank += self.statistics["vocab_rank"][w]
 
         fre_rank = fre_rank * 1.0 / len(existing_features["text"].split(" "))
         return fre_rank
@@ -150,12 +161,10 @@ class TCExplainaboardBuilder:
         length_fre = 0
         length = len(existing_features["text"].split(" "))
 
-        if length in self.statistics['length_fre'].keys():
-            length_fre = self.statistics['length_fre'][length]
-
+        if length in self.statistics["length_fre"].keys():
+            length_fre = self.statistics["length_fre"][length]
 
         return length_fre
-
 
     def _complete_feature(self):
         """
@@ -177,7 +186,10 @@ class TCExplainaboardBuilder:
                     continue
                 # If there is a training set dependent feature while no pre-computed statistics for it,
                 # then skip bucketing along this feature
-                if self._info.features[bucket_feature].require_training_set and self.statistics == None:
+                if (
+                    self._info.features[bucket_feature].require_training_set
+                    and self.statistics == None
+                ):
                     del self._info.features[bucket_feature]
                     continue
 
@@ -211,9 +223,9 @@ class TCExplainaboardBuilder:
             confidence_score_up = overall_value_json["confidence_score_up"]
             overall_performance = Performance(
                 metric_name=metric_name,
-                value=float(format(overall_value, '.4g')),
-                confidence_score_low=float(format(confidence_score_low, '.4g')),
-                confidence_score_up=float(format(confidence_score_up, '.4g')),
+                value=float(format(overall_value, ".4g")),
+                confidence_score_low=float(format(confidence_score_low, ".4g")),
+                confidence_score_up=float(format(confidence_score_up, ".4g")),
             )
 
             if self._info.results.overall is None:
@@ -234,7 +246,6 @@ class TCExplainaboardBuilder:
             for feature_name in self._info.features.get_bucket_features():
                 # If there is a training set dependent feature while no pre-computed statistics for it,
                 # then skip bucketing along this feature
-
 
                 if feature_name not in feature_to_sample_address_to_value.keys():
                     feature_to_sample_address_to_value[feature_name] = {}
@@ -318,14 +329,12 @@ class TCExplainaboardBuilder:
                 confidence_score_low = bucket_value_json["confidence_score_low"]
                 confidence_score_up = bucket_value_json["confidence_score_up"]
 
-
-
                 bucket_performance = BucketPerformance(
                     bucket_name=bucket_interval,
                     metric_name=metric_name,
-                    value=format(bucket_value, '.4g'),
-                    confidence_score_low=format(confidence_score_low, '.4g'),
-                    confidence_score_up=format(confidence_score_up, '.4g'),
+                    value=format(bucket_value, ".4g"),
+                    confidence_score_low=format(confidence_score_low, ".4g"),
+                    confidence_score_up=format(confidence_score_up, ".4g"),
                     n_samples=len(bucket_true_labels),
                     bucket_samples=bucket_cases,
                 )

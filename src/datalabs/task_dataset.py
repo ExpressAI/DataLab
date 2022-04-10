@@ -1,13 +1,12 @@
-
-
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+
 from datalabs import Dataset
 
 
 class SequenceLabelingDataset(Dataset):
-
     def func1(self):
         return 0
+
     # def apply(self, func):
     #     if func._type == 'Aggregating':
     #         texts = [" ".join(tokens) for tokens in self["tokens"]] # [tokens] -> texts
@@ -22,15 +21,10 @@ class SequenceLabelingDataset(Dataset):
     #             yield func(sample)
 
 
-
-
-
-
-
-
 class TextMatchingDataset(Dataset):
     def func1(self):
         return 0
+
     # def apply(self, func):
     #     if func._type == 'Aggregating':
     #         texts = [text + " " + text2 for text1, text2 in zip(self["text1"], self['text2'])] # [tokens] -> texts

@@ -51,7 +51,9 @@ class Audio:
 
     def __call__(self):
         return (
-            pa.struct({"path": pa.string(), "bytes": pa.binary()}) if self._storage_dtype == "struct" else pa.string()
+            pa.struct({"path": pa.string(), "bytes": pa.binary()})
+            if self._storage_dtype == "struct"
+            else pa.string()
         )
 
     def encode_example(self, value):
@@ -80,7 +82,11 @@ class Audio:
         Returns:
             dict
         """
-        path, file = (value["path"], BytesIO(value["bytes"])) if isinstance(value, dict) else (value, None)
+        path, file = (
+            (value["path"], BytesIO(value["bytes"]))
+            if isinstance(value, dict)
+            else (value, None)
+        )
         if path.endswith("mp3"):
             array, sampling_rate = self._decode_mp3(file if file else path)
         else:
@@ -94,10 +100,14 @@ class Audio:
         try:
             import librosa
         except ImportError as err:
-            raise ImportError("To support decoding audio files, please install 'librosa'.") from err
+            raise ImportError(
+                "To support decoding audio files, please install 'librosa'."
+            ) from err
 
         with xopen(path, "rb") as f:
-            array, sampling_rate = librosa.load(f, sr=self.sampling_rate, mono=self.mono)
+            array, sampling_rate = librosa.load(
+                f, sr=self.sampling_rate, mono=self.mono
+            )
         return array, sampling_rate
 
     def _decode_non_mp3_file_like(self, file):
@@ -105,14 +115,18 @@ class Audio:
             import librosa
             import soundfile as sf
         except ImportError as err:
-            raise ImportError("To support decoding audio files, please install 'librosa'.") from err
+            raise ImportError(
+                "To support decoding audio files, please install 'librosa'."
+            ) from err
 
         array, sampling_rate = sf.read(file)
         array = array.T
         if self.mono:
             array = librosa.to_mono(array)
         if self.sampling_rate and self.sampling_rate != sampling_rate:
-            array = librosa.resample(array, sampling_rate, self.sampling_rate, res_type="kaiser_best")
+            array = librosa.resample(
+                array, sampling_rate, self.sampling_rate, res_type="kaiser_best"
+            )
             sampling_rate = self.sampling_rate
         return array, sampling_rate
 
@@ -121,11 +135,15 @@ class Audio:
             import torchaudio
             import torchaudio.transforms as T
         except ImportError as err:
-            raise ImportError("To support decoding 'mp3' audio files, please install 'torchaudio'.") from err
+            raise ImportError(
+                "To support decoding 'mp3' audio files, please install 'torchaudio'."
+            ) from err
         try:
             torchaudio.set_audio_backend("sox_io")
         except RuntimeError as err:
-            raise ImportError("To support decoding 'mp3' audio files, please install 'sox'.") from err
+            raise ImportError(
+                "To support decoding 'mp3' audio files, please install 'sox'."
+            ) from err
 
         array, sampling_rate = torchaudio.load(path_or_file, format="mp3")
         if self.sampling_rate and self.sampling_rate != sampling_rate:

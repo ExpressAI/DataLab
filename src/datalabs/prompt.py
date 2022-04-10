@@ -1,7 +1,10 @@
-from dataclasses import dataclass, field
-from typing import ClassVar, Dict, Optional, Tuple, List
-import json
+from __future__ import annotations
+
 import hashlib  # for mdb ids of prompts
+import json
+from dataclasses import dataclass, field
+from typing import ClassVar, Dict, Optional, Tuple
+
 import requests
 
 
@@ -50,12 +53,14 @@ class Prompt:
     # in Prompt class, we define `answer` field as the mapping from the category name to a list of answer words.
     # for example answers={'World': ['World News','World Report']}, {'Sports': ['Sports']}, {'Business': ['Business']}, {'Science and Technology': ['Science and Technology']}
     answers: dict = None
-    supported_plm_types: List[str] = None
-    signal_type: List[str] = None
+    supported_plm_types: list[str] = None
+    signal_type: list[str] = None
     # results: List[PromptResult] = None
-    results: List[PromptResult] = None
+    results: list[PromptResult] = None
     # features:Optional[Features] = None # {"length":Value("int64"), "shape":Value("string"), "skeleton": Value("string")}
-    features: Optional[dict] = None  # {"length":5, "shape":"prefix", "skeleton": "what_about"}
+    features: Optional[
+        dict
+    ] = None  # {"length":5, "shape":"prefix", "skeleton": "what_about"}
     reference: str = None
     contributor: str = "Datalab"
 
@@ -63,9 +68,13 @@ class Prompt:
         # Convert back to the correct classes when we reload from dict
         if self.template is not None and self.answers is not None:
             if isinstance(self.answers, dict):
-                self.id = hashlib.md5((self.template + json.dumps(self.answers)).encode()).hexdigest()
+                self.id = hashlib.md5(
+                    (self.template + json.dumps(self.answers)).encode()
+                ).hexdigest()
             if isinstance(self.answers, str):
-                self.id = hashlib.md5((self.template + self.answers).encode()).hexdigest()
+                self.id = hashlib.md5(
+                    (self.template + self.answers).encode()
+                ).hexdigest()
             else:
                 self.id = hashlib.md5(self.template.encode()).hexdigest()
         else:

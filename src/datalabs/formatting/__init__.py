@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and the TensorFlow Datasets Authors, DataLab Authors.
 #
@@ -16,7 +18,7 @@
 # flake8: noqa
 # Lint as: python3
 
-from typing import Dict, List, Optional
+from typing import Optional
 
 from .. import config
 from ..utils.logging import get_logger
@@ -34,12 +36,14 @@ from .formatting import (
 
 logger = get_logger(__name__)
 
-_FORMAT_TYPES: Dict[Optional[str], type] = {}
-_FORMAT_TYPES_ALIASES: Dict[Optional[str], str] = {}
-_FORMAT_TYPES_ALIASES_UNAVAILABLE: Dict[Optional[str], Exception] = {}
+_FORMAT_TYPES: dict[Optional[str], type] = {}
+_FORMAT_TYPES_ALIASES: dict[Optional[str], str] = {}
+_FORMAT_TYPES_ALIASES_UNAVAILABLE: dict[Optional[str], Exception] = {}
 
 
-def _register_formatter(formatter_cls: type, format_type: Optional[str], aliases: Optional[List[str]] = None):
+def _register_formatter(
+    formatter_cls: type, format_type: Optional[str], aliases: Optional[list[str]] = None
+):
     """
     Register a Formatter object using a name and optional aliases.
     This function must be used on a Formatter class.
@@ -59,7 +63,9 @@ def _register_formatter(formatter_cls: type, format_type: Optional[str], aliases
 
 
 def _register_unavailable_formatter(
-    unavailable_error: Exception, format_type: Optional[str], aliases: Optional[List[str]] = None
+    unavailable_error: Exception,
+    format_type: Optional[str],
+    aliases: Optional[list[str]] = None,
 ):
     """
     Register an unavailable Formatter object using a name and optional aliases.
@@ -82,7 +88,9 @@ if config.TORCH_AVAILABLE:
 
     _register_formatter(TorchFormatter, "torch", aliases=["pt", "pytorch"])
 else:
-    _torch_error = ValueError("PyTorch needs to be installed to be able to return PyTorch tensors.")
+    _torch_error = ValueError(
+        "PyTorch needs to be installed to be able to return PyTorch tensors."
+    )
     _register_unavailable_formatter(_torch_error, "torch", aliases=["pt", "pytorch"])
 
 if config.TF_AVAILABLE:
@@ -90,7 +98,9 @@ if config.TF_AVAILABLE:
 
     _register_formatter(TFFormatter, "tensorflow", aliases=["tf"])
 else:
-    _tf_error = ValueError("Tensorflow needs to be installed to be able to return Tensorflow tensors.")
+    _tf_error = ValueError(
+        "Tensorflow needs to be installed to be able to return Tensorflow tensors."
+    )
     _register_unavailable_formatter(_tf_error, "tensorflow", aliases=["tf"])
 
 if config.JAX_AVAILABLE:
@@ -98,7 +108,9 @@ if config.JAX_AVAILABLE:
 
     _register_formatter(JaxFormatter, "jax", aliases=[])
 else:
-    _jax_error = ValueError("JAX needs to be installed to be able to return JAX arrays.")
+    _jax_error = ValueError(
+        "JAX needs to be installed to be able to return JAX arrays."
+    )
     _register_unavailable_formatter(_jax_error, "jax", aliases=[])
 
 

@@ -1,20 +1,22 @@
+from __future__ import annotations
+
+from random import choices
+
 import numpy as np
 import scipy
-from random import choices
-from seqeval.metrics import precision_score, recall_score, f1_score
-from typing import List
+from seqeval.metrics import f1_score, precision_score, recall_score
 
 
-'''
+"""
 Sequence Labeling
-'''
+"""
 
 
 def f1_score_seqeval(labels, predictions, language=None):
     f1 = f1_score(labels, predictions)
     precision = precision_score(labels, predictions)
     recall = recall_score(labels, predictions)
-    return {'f1': f1 * 100, 'precision': precision * 100, 'recall': recall * 100}
+    return {"f1": f1 * 100, "precision": precision * 100, "recall": recall * 100}
 
 
 def get_chunks(seq):
@@ -30,7 +32,7 @@ def get_chunks(seq):
         tags = {"B-PER": 4, "I-PER": 5, "B-LOC": 3}
         result = [("PER", 0, 2), ("LOC", 3, 4)]
     """
-    default = 'O'
+    default = "O"
     # idx_to_tag = {idx: tag for tag, idx in tags.items()}
     chunks = []
     chunk_type, chunk_start = None, None
@@ -69,11 +71,11 @@ def get_chunk_type(tok):
     Returns:
         tuple: "B", "PER"
     """
-    tok_split = tok.split('-')
+    tok_split = tok.split("-")
     return tok_split[0], tok_split[-1]
 
 
-def accuracy(labels: List[str], predictions: List[str], language=None):
+def accuracy(labels: list[str], predictions: list[str], language=None):
     correct = sum([int(p == l) for p, l in zip(predictions, labels)])
     accuracy_value = float(correct) / len(predictions)
     return accuracy_value * 100

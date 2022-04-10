@@ -2,15 +2,25 @@
 dependency: nltk
 main functions: ext_oracle(), lead_k()
 """
+from __future__ import annotations
 
-from nltk import sent_tokenize, word_tokenize
-import numpy as np
-from typing import List
+
+import json
 from functools import partial
 from multiprocessing import Pool
-import json
 
-def _ext_oracle(src: List[str], ref: str, sim_fn, max_sent: int = -1, max_len: int = -1, threshold: int = -1):
+import numpy as np
+from nltk import sent_tokenize, word_tokenize
+
+
+def _ext_oracle(
+    src: list[str],
+    ref: str,
+    sim_fn,
+    max_sent: int = -1,
+    max_len: int = -1,
+    threshold: int = -1,
+):
     """
     A functionality of generating the extractive oracle for a sample in the summarization dataset
     src: source documents
@@ -57,7 +67,16 @@ def thread_wrapper(x, fn):
     return fn(*x)
 
 
-def ext_oracle(src: List[List[str]], ref: List[str], sim_fn, max_sent: int = -1, max_len: int = -1, threshold: int = -1, num_workers: int = 4, out_dir: str = None):
+def ext_oracle(
+    src: list[list[str]],
+    ref: list[str],
+    sim_fn,
+    max_sent: int = -1,
+    max_len: int = -1,
+    threshold: int = -1,
+    num_workers: int = 4,
+    out_dir: str = None,
+):
     """
     A functionality of generating the extractive oracle for a summarization dataset
     src: source documents, each sample should be a list of sentences (strings)
@@ -84,7 +103,13 @@ def ext_oracle(src: List[List[str]], ref: List[str], sim_fn, max_sent: int = -1,
     if out_dir is not None:
         f = open(out_dir, "w")
     if num_workers > 1:
-        fn = partial(_ext_oracle, sim_fn=sim_fn, max_sent=max_sent, max_len=max_len, threshold=threshold)
+        fn = partial(
+            _ext_oracle,
+            sim_fn=sim_fn,
+            max_sent=max_sent,
+            max_len=max_len,
+            threshold=threshold,
+        )
         fn = partial(thread_wrapper, fn=fn)
         with Pool(processes=num_workers) as pool:
             result = pool.imap(fn, zip(src, ref), chunksize=64)
@@ -96,7 +121,7 @@ def ext_oracle(src: List[List[str]], ref: List[str], sim_fn, max_sent: int = -1,
                     labels.append(l)
                     scores.append(s)
                 score += s
-                cnt += 1          
+                cnt += 1
     else:
         for (x, y) in zip(src, ref):
             o, l, s = _ext_oracle(x, y, sim_fn, max_sent, max_len, threshold)
@@ -115,7 +140,14 @@ def ext_oracle(src: List[List[str]], ref: List[str], sim_fn, max_sent: int = -1,
     return oracles, labels, scores, score
 
 
-def lead_k(src: List[List[str]], ref: List[str], k: int, sim_fn, num_workers: int = 4, out_dir: str = None):
+def lead_k(
+    src: list[list[str]],
+    ref: list[str],
+    k: int,
+    sim_fn,
+    num_workers: int = 4,
+    out_dir: str = None,
+):
     """
     A functionality of generating summaries using lead-k sentences
     src: source documents, each sample should be a list of sentences (strings)
@@ -147,7 +179,7 @@ def lead_k(src: List[List[str]], ref: List[str], k: int, sim_fn, num_workers: in
                     summaries.append(x)
                     scores.append(s)
                 score += s
-                cnt += 1          
+                cnt += 1
     else:
         for (x, y) in zip(src, ref):
             x, s = _lead_k(x, y, k, sim_fn)
@@ -165,7 +197,7 @@ def lead_k(src: List[List[str]], ref: List[str], k: int, sim_fn, num_workers: in
     return summaries, scores
 
 
-def _lead_k(src: List[str], ref: str, k: int, sim_fn):
+def _lead_k(src: list[str], ref: str, k: int, sim_fn):
     """
     A functionality of generating summaries using lead-k sentences
     src: source documents

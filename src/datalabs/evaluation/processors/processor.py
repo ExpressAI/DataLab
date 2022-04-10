@@ -1,7 +1,11 @@
-from typing import Any, Iterable, Optional
+from __future__ import annotations
+
+from collections.abc import Iterable
+from typing import Any, Optional
+
 from datalabs.features import features
-from datalabs.tasks.task_info import TaskType
 from datalabs.info import SysOutputInfo
+from datalabs.tasks.task_info import TaskType
 
 
 class Processor:

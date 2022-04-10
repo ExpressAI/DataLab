@@ -1,11 +1,13 @@
-from typing import Iterable
+from __future__ import annotations
+
+from collections.abc import Iterable
+
 from datalabs import features
 from datalabs.tasks.task_info import TaskType
-from .processor import Processor
-from .processor_registry  import register_processor
+
 from ..builders.text_classification import TCExplainaboardBuilder
-
-
+from .processor import Processor
+from .processor_registry import register_processor
 
 
 @register_processor(TaskType.text_classification)
@@ -107,7 +109,6 @@ class TextClassificationProcessor(Processor):
                 ),
                 require_training_set=True,
             ),
-
         }
     )
 

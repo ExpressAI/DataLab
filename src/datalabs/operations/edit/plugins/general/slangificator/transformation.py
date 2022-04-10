@@ -1,10 +1,14 @@
 import itertools
-import random
-import spacy
 import os
-
+import random
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../')))
+
+import spacy
+
+
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))
+)
 from edit.editing import *
 
 
@@ -59,8 +63,13 @@ def slangifyPoS(
     else:  # if not in the dictionary
         modified_toks.append(token.text + token.whitespace_)
 
-@editing(name = "slangificator", contributor = "xl_augmenter",
-         task = "Any", description="This transformation replaces some of the words (in particular, nouns, adjectives, and adverbs) of the original text with their corresponding slang. ")
+
+@editing(
+    name="slangificator",
+    contributor="xl_augmenter",
+    task="Any",
+    description="This transformation replaces some of the words (in particular, nouns, adjectives, and adverbs) of the original text with their corresponding slang. ",
+)
 def slangificator(
     text,
     probReplaceNoun=1.0,
@@ -75,30 +84,18 @@ def slangificator(
 
     # Load dictionaries
     fin = open(os.path.join(pathDic, "../../../resources/Slang_Nouns.txt"), "r")
-    Slang_Nouns = [
-        line.strip("\n\r").split(",")
-        for line in fin
-    ]
+    Slang_Nouns = [line.strip("\n\r").split(",") for line in fin]
     fin.close()
 
     fin = open(os.path.join(pathDic, "../../../resources/Slang_Adverbs.txt"), "r")
-    Slang_Adverbs = [
-        line.strip("\n\r").split(",")
-        for line in fin
-    ]
+    Slang_Adverbs = [line.strip("\n\r").split(",") for line in fin]
     fin.close()
 
     fin = open(os.path.join(pathDic, "../../../resources/Slang_Adjectives.txt"), "r")
-    Slang_Adjectives = [
-        line.strip("\n\r").split(",")
-        for line in fin
-    ]
+    Slang_Adjectives = [line.strip("\n\r").split(",") for line in fin]
     fin.close()
 
-
-
     random.seed(seed)
-
 
     perturbed_texts = []  # output for all perturbed texts
 
@@ -173,13 +170,8 @@ def slangificator(
 
         perturbed_texts.append(modified_toks)
 
-    return {"text_slangificator":perturbed_texts[0]}
+    return {"text_slangificator": perturbed_texts[0]}
     # return perturbed_texts
-
-
-
-
-
 
 
 # sentence = "The hooligans in balaclavas have attempted to steal jewellery."

@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import inspect
 import re
 from hashlib import sha256
-from typing import List
 
 from .csv import csv
 from .json import json
@@ -10,7 +11,7 @@ from .parquet import parquet
 from .text import text
 
 
-def hash_python_lines(lines: List[str]) -> str:
+def hash_python_lines(lines: list[str]) -> str:
     filtered_lines = []
     for line in lines:
         line = re.sub(r"#.*", "", line)  # remove comments
@@ -27,8 +28,14 @@ def hash_python_lines(lines: List[str]) -> str:
 _PACKAGED_DATASETS_MODULES = {
     "csv": (csv.__name__, hash_python_lines(inspect.getsource(csv).splitlines())),
     "json": (json.__name__, hash_python_lines(inspect.getsource(json).splitlines())),
-    "pandas": (pandas.__name__, hash_python_lines(inspect.getsource(pandas).splitlines())),
-    "parquet": (parquet.__name__, hash_python_lines(inspect.getsource(parquet).splitlines())),
+    "pandas": (
+        pandas.__name__,
+        hash_python_lines(inspect.getsource(pandas).splitlines()),
+    ),
+    "parquet": (
+        parquet.__name__,
+        hash_python_lines(inspect.getsource(parquet).splitlines()),
+    ),
     "text": (text.__name__, hash_python_lines(inspect.getsource(text).splitlines())),
 }
 

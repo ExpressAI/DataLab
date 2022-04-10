@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # coding=utf-8
 # Copyright 2022 The HuggingFace Datasets, DataLab Authors.
 #
@@ -11,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from dataclasses import dataclass
-from typing import ClassVar, Dict
+from typing import ClassVar
 
 from ..features import Features, Value
 from .base import TaskTemplate
@@ -19,7 +21,7 @@ from .base import TaskTemplate
 
 @dataclass
 class AutomaticSpeechRecognition(TaskTemplate):
-    task_category:str = "automatic-speech-recognition"
+    task_category: str = "automatic-speech-recognition"
     task: str = "automatic-speech-recognition"
     # TODO(lewtun): Replace input path feature with dedicated `Audio` features
     # when https://github.com/huggingface/datasets/pull/2324 is implemented
@@ -29,5 +31,8 @@ class AutomaticSpeechRecognition(TaskTemplate):
     transcription_column: str = "transcription"
 
     @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {self.audio_file_path_column: "audio_file_path", self.transcription_column: "transcription"}
+    def column_mapping(self) -> dict[str, str]:
+        return {
+            self.audio_file_path_column: "audio_file_path",
+            self.transcription_column: "transcription",
+        }

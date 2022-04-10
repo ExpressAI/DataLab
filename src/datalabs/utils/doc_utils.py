@@ -1,4 +1,6 @@
-from typing import Callable
+from __future__ import annotations
+
+from collections.abc import Callable
 
 
 def is_documented_by(function_with_docstring: Callable):

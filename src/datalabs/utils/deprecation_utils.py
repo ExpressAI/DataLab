@@ -1,6 +1,9 @@
+from __future__ import annotations
+
+from collections.abc import Callable
 import warnings
 from functools import wraps
-from typing import Callable, Optional
+from typing import Optional
 
 from .logging import get_logger
 

@@ -1,9 +1,12 @@
-from typing import Dict, Iterable, List
-from datalabs.constants import Source, FileType
+from __future__ import annotations
+
+from collections.abc import Iterable
 from enum import Enum
+
+from datalabs.constants import FileType, Source
 from datalabs.tasks.task_info import TaskType
-from .loader import register_loader
-from .loader import Loader
+
+from .loader import Loader, register_loader
 
 
 @register_loader(TaskType.text_classification)
@@ -27,14 +30,14 @@ class TextClassificationLoader(Loader):
         self._file_type = file_type
         self._data = data
 
-    def load(self) -> Iterable[Dict]:
+    def load(self) -> Iterable[dict]:
         """
         :param path_system_output: the path of system output file with following format:
         text \t label \t predicted_label
         :return: class object
         """
         raw_data = self._load_raw_data_points()
-        data: List[Dict] = []
+        data: list[dict] = []
         if self._file_type == FileType.tsv:
             for id, dp in enumerate(raw_data):
                 text, true_label, predicted_label = dp[:3]

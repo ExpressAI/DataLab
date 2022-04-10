@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # coding=utf-8
 # Copyright 2022 The HuggingFace Datasets, DataLab Authors.
 #
@@ -12,12 +14,12 @@
 # limitations under the License.
 
 from dataclasses import dataclass
-from typing import ClassVar, Dict, Optional, Tuple
+from typing import ClassVar, Optional
 
-from .base import TaskTemplate
-from ..enums import PLMType, SignalType, PromptShape, Metrics
+from ..enums import Metrics, PLMType, PromptShape, SignalType
 from ..features import ClassLabel, Features, Value
 from ..prompt import Prompt, PromptResult
+from .base import TaskTemplate
 
 
 @dataclass
@@ -30,7 +32,7 @@ class TextClassification(TaskTemplate):
     label_schema: ClassVar[Features] = Features({"labels": ClassLabel})
     text_column: str = "text"
     label_column: str = "labels"
-    labels: Optional[Tuple[str]] = None
+    labels: Optional[tuple[str]] = None
 
     def __post_init__(self):
         if self.labels:
@@ -44,7 +46,7 @@ class TextClassification(TaskTemplate):
             self.label_schema["labels"] = ClassLabel(names=self.labels)
 
     @property
-    def column_mapping(self) -> Dict[str, str]:
+    def column_mapping(self) -> dict[str, str]:
         return {
             self.text_column: "text",
             self.label_column: "labels",
@@ -60,26 +62,16 @@ class TopicClassification(TextClassification):
     label_schema: ClassVar[Features] = Features({"labels": ClassLabel})
     text_column: str = "text"
     label_column: str = "labels"
-    labels: Optional[Tuple[str]] = None
+    labels: Optional[tuple[str]] = None
 
     # dataset = load_dataset("ag_news")
     # dataset["test"]._info.promp
     results = [
+        PromptResult(value=0.0, plm="bert-base-uncased", metric=Metrics.accuracy.value),
         PromptResult(
-            value=0.0,
-            plm="bert-base-uncased",
-            metric=Metrics.accuracy.value
+            value=0.0, plm="facebook/bart-large", metric=Metrics.accuracy.value
         ),
-        PromptResult(
-            value=0.0,
-            plm="facebook/bart-large",
-            metric=Metrics.accuracy.value
-        ),
-        PromptResult(
-            value=0.0,
-            plm="t5-11b",
-            metric=Metrics.accuracy.value
-        )
+        PromptResult(value=0.0, plm="t5-11b", metric=Metrics.accuracy.value),
     ]
 
     prompts_raw = [
@@ -87,129 +79,175 @@ class TopicClassification(TextClassification):
             template="Given the text: {{text}}, is it about {{textual_choices_with_or}}? ||| {{answers[label]}}",
             description="We use ||| to separate source and target in a template.",
             answers={},
-            supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
+            supported_plm_types=[
+                PLMType.encoder_decoder.value,
+                PLMType.left_to_right.value,
+            ],
             signal_type=[SignalType.topic_classification.value],
-            features={"shape": PromptShape.prefix.value,
-                      "length": len((
-                              "Given the text: {{text}}, is it about {{textual_choices_with_or}}? ||| {{answers[label]}}").split(
-                          " ")),
-                      "skeleton": "task-level prompts"
-                      },
+            features={
+                "shape": PromptShape.prefix.value,
+                "length": len(
+                    (
+                        "Given the text: {{text}}, is it about {{textual_choices_with_or}}? ||| {{answers[label]}}"
+                    ).split(" ")
+                ),
+                "skeleton": "task-level prompts",
+            },
             results=results,
             contributor="Datalab",
-            reference="http://datalab.nlpedia.ai/"
+            reference="http://datalab.nlpedia.ai/",
         ),
         Prompt(
             template="Given the text: {{text}}, it is about [mask]. ||| {{answers[label]}}",
             description="We use [mask] to represent the mask symbol from a given PLM's vocabulary. "
-                        "We use ||| to separate source and target in a template.",
+            "We use ||| to separate source and target in a template.",
             answers={},
             supported_plm_types=[PLMType.masked_language_model.value],
             signal_type=[SignalType.topic_classification.value],
-            features={"shape": PromptShape.cloze.value,
-                      "length": len(
-                          "Given the text: {{text}}, it is about [mask]. ||| {{answers[label]}}".split(" ")),
-                      "skeleton": "task-level prompts"
-                      },
+            features={
+                "shape": PromptShape.cloze.value,
+                "length": len(
+                    "Given the text: {{text}}, it is about [mask]. ||| {{answers[label]}}".split(
+                        " "
+                    )
+                ),
+                "skeleton": "task-level prompts",
+            },
             results=results,
             contributor="Datalab",
-            reference="http://datalab.nlpedia.ai/"
+            reference="http://datalab.nlpedia.ai/",
         ),
         Prompt(
             template="Given the text: {{text}} Classify this text. You may choose from {{textual_choices_without_or}}. ||| {{answers[label]}}",
             description="We use ||| to separate source and target in a template.",
             answers={},
-            supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
+            supported_plm_types=[
+                PLMType.encoder_decoder.value,
+                PLMType.left_to_right.value,
+            ],
             signal_type=[SignalType.topic_classification.value],
-            features={"shape": PromptShape.prefix.value,
-                      "length": len((
-                              "Given the text: {{text}} Classify this text. You may choose from {{textual_choices_without_or}}. ||| {{answers[label]}}").split(
-                          " ")),
-                      "skeleton": "task-level prompts"
-                      },
+            features={
+                "shape": PromptShape.prefix.value,
+                "length": len(
+                    (
+                        "Given the text: {{text}} Classify this text. You may choose from {{textual_choices_without_or}}. ||| {{answers[label]}}"
+                    ).split(" ")
+                ),
+                "skeleton": "task-level prompts",
+            },
             results=results,
             contributor="Datalab",
-            reference="http://datalab.nlpedia.ai/"
+            reference="http://datalab.nlpedia.ai/",
         ),
         Prompt(
             template="Given the text: {{text}} Given a list of categories: {{textual_choices_without_or}}, what category does the paragraph belong to? ||| {{answers[label]}}",
             description="We use ||| to separate source and target in a template.",
             answers={},
-            supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
+            supported_plm_types=[
+                PLMType.encoder_decoder.value,
+                PLMType.left_to_right.value,
+            ],
             signal_type=[SignalType.topic_classification.value],
-            features={"shape": PromptShape.prefix.value,
-                      "length": len((
-                              "Given the text: {{text}} Given a list of categories: {{textual_choices_without_or}}, what category does the paragraph belong to? ||| {{answers[label]}}").split(
-                          " ")),
-                      "skeleton": "task-level prompts"
-                      },
+            features={
+                "shape": PromptShape.prefix.value,
+                "length": len(
+                    (
+                        "Given the text: {{text}} Given a list of categories: {{textual_choices_without_or}}, what category does the paragraph belong to? ||| {{answers[label]}}"
+                    ).split(" ")
+                ),
+                "skeleton": "task-level prompts",
+            },
             results=results,
             contributor="Datalab",
-            reference="http://datalab.nlpedia.ai/"
+            reference="http://datalab.nlpedia.ai/",
         ),
         Prompt(
             template="Given the text: {{text}} Pick one category for the previous text. The options are {{textual_choices_without_or}}. ||| {{answers[label]}}",
             description="We use ||| to separate source and target in a template.",
             answers={},
-            supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
+            supported_plm_types=[
+                PLMType.encoder_decoder.value,
+                PLMType.left_to_right.value,
+            ],
             signal_type=[SignalType.topic_classification.value],
-            features={"shape": PromptShape.prefix.value,
-                      "length": len((
-                              "Given the text: {{text}} Pick one category for the previous text. The options are {{textual_choices_without_or}}. ||| {{answers[label]}}").split(
-                          " ")),
-                      "skeleton": "task-level prompts"
-                      },
+            features={
+                "shape": PromptShape.prefix.value,
+                "length": len(
+                    (
+                        "Given the text: {{text}} Pick one category for the previous text. The options are {{textual_choices_without_or}}. ||| {{answers[label]}}"
+                    ).split(" ")
+                ),
+                "skeleton": "task-level prompts",
+            },
             results=results,
             contributor="Datalab",
-            reference="http://datalab.nlpedia.ai/"
+            reference="http://datalab.nlpedia.ai/",
         ),
         Prompt(
             template="Given the text: {{text}} Can you identify the category of this text? {{textual_choices_with_or}}? ||| {{answers[label]}}",
             description="We use ||| to separate source and target in a template.",
             answers={},
-            supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
+            supported_plm_types=[
+                PLMType.encoder_decoder.value,
+                PLMType.left_to_right.value,
+            ],
             signal_type=[SignalType.topic_classification.value],
-            features={"shape": PromptShape.prefix.value,
-                      "length": len((
-                              "Given the text: {{text}} Can you identify the category of this text? {{textual_choices_with_or}}? ||| {{answers[label]}}").split(
-                          " ")),
-                      "skeleton": "task-level prompts"
-                      },
+            features={
+                "shape": PromptShape.prefix.value,
+                "length": len(
+                    (
+                        "Given the text: {{text}} Can you identify the category of this text? {{textual_choices_with_or}}? ||| {{answers[label]}}"
+                    ).split(" ")
+                ),
+                "skeleton": "task-level prompts",
+            },
             results=results,
             contributor="Datalab",
-            reference="http://datalab.nlpedia.ai/"
+            reference="http://datalab.nlpedia.ai/",
         ),
         Prompt(
             template="Given the text: {{text}} What\\'s the main topic of this paragraph? {{textual_choices_with_or}}? ||| {{answers[label]}}",
             description="We use ||| to separate source and target in a template.",
             answers={},
-            supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
+            supported_plm_types=[
+                PLMType.encoder_decoder.value,
+                PLMType.left_to_right.value,
+            ],
             signal_type=[SignalType.topic_classification.value],
-            features={"shape": PromptShape.prefix.value,
-                      "length": len((
-                              "Given the text: {{text}} What\\'s the main topic of this paragraph? {{textual_choices_with_or}}? ||| {{answers[label]}}").split(
-                          " ")),
-                      "skeleton": "task-level prompts"
-                      },
+            features={
+                "shape": PromptShape.prefix.value,
+                "length": len(
+                    (
+                        "Given the text: {{text}} What\\'s the main topic of this paragraph? {{textual_choices_with_or}}? ||| {{answers[label]}}"
+                    ).split(" ")
+                ),
+                "skeleton": "task-level prompts",
+            },
             results=results,
             contributor="Datalab",
-            reference="http://datalab.nlpedia.ai/"
+            reference="http://datalab.nlpedia.ai/",
         ),
         Prompt(
             template="Given the text: {{text}} Is this a piece of text regarding {{textual_choices_with_or}}? ||| {{answers[label]}}",
             description="We use ||| to separate source and target in a template.",
             answers={},
-            supported_plm_types=[PLMType.encoder_decoder.value, PLMType.left_to_right.value],
+            supported_plm_types=[
+                PLMType.encoder_decoder.value,
+                PLMType.left_to_right.value,
+            ],
             signal_type=[SignalType.topic_classification.value],
-            features={"shape": PromptShape.prefix.value,
-                      "length": len((
-                              "Given the text: {{text}} Is this a piece of text regarding {{textual_choices_with_or}}? ||| {{answers[label]}}").split(
-                          " ")),
-                      "skeleton": "task-level prompts"
-                      },
+            features={
+                "shape": PromptShape.prefix.value,
+                "length": len(
+                    (
+                        "Given the text: {{text}} Is this a piece of text regarding {{textual_choices_with_or}}? ||| {{answers[label]}}"
+                    ).split(" ")
+                ),
+                "skeleton": "task-level prompts",
+            },
             results=results,
             contributor="Datalab",
-            reference="http://datalab.nlpedia.ai/"
+            reference="http://datalab.nlpedia.ai/",
         ),
     ]
     prompts = {x.id: x for x in prompts_raw}

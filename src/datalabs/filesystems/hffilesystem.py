@@ -54,7 +54,11 @@ class HfFileSystem(AbstractFileSystem):
     def _get_dirs(self):
         if self.dir_cache is None:
             self.dir_cache = {
-                hf_file.rfilename: {"name": hf_file.rfilename, "size": 0 or None, "type": "file"}  # TODO(QL): add size
+                hf_file.rfilename: {
+                    "name": hf_file.rfilename,
+                    "size": 0 or None,
+                    "type": "file",
+                }  # TODO(QL): add size
                 for hf_file in self.repo_info.siblings
             }
 
@@ -65,7 +69,9 @@ class HfFileSystem(AbstractFileSystem):
         **kwargs,
     ):
         if not isinstance(self.repo_info, DatasetInfo):
-            raise NotImplementedError(f"Open is only implemented for dataset repositories, but got {self.repo_info}")
+            raise NotImplementedError(
+                f"Open is only implemented for dataset repositories, but got {self.repo_info}"
+            )
         url = hf_hub_url(self.repo_info.id, path, revision=self.repo_info.sha)
         return fsspec.open(
             url,

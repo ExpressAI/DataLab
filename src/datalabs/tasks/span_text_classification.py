@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # coding=utf-8
 # Copyright 2022 The DataLab Authors.
 #
@@ -12,7 +14,7 @@
 # limitations under the License.
 
 from dataclasses import dataclass
-from typing import ClassVar, Dict, Optional, Tuple
+from typing import ClassVar, Optional
 
 from ..features import ClassLabel, Features, Value
 from .base import TaskTemplate
@@ -21,17 +23,20 @@ from .base import TaskTemplate
 @dataclass
 class SpanTextClassification(TaskTemplate):
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
-    task_category:str = "span-text-classification"
+    task_category: str = "span-text-classification"
     task: str = "aspect-based-sentiment-classification"
-    input_schema: ClassVar[Features] = Features({"span": Value("string"),
-                                                 "text":Value("string"),
-                                                 })
+    input_schema: ClassVar[Features] = Features(
+        {
+            "span": Value("string"),
+            "text": Value("string"),
+        }
+    )
     # TODO(lewtun): Find a more elegant approach without descriptors.
     label_schema: ClassVar[Features] = Features({"labels": ClassLabel})
     span_column: str = "span"
     text_column: str = "text"
     label_column: str = "label"
-    labels: Optional[Tuple[str]] = None
+    labels: Optional[tuple[str]] = None
 
     def __post_init__(self):
         if self.labels:
@@ -42,12 +47,11 @@ class SpanTextClassification(TaskTemplate):
             # self.__dict__["labels"] = tuple(sorted(self.labels))
             self.__dict__["labels"] = self.labels
 
-
             self.__dict__["label_schema"] = self.label_schema.copy()
             self.label_schema["labels"] = ClassLabel(names=self.labels)
 
     @property
-    def column_mapping(self) -> Dict[str, str]:
+    def column_mapping(self) -> dict[str, str]:
         return {
             self.span_column: "span",
             self.text_column: "text",

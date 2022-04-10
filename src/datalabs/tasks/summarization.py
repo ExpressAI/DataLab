@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # coding=utf-8
 # Copyright 2022 The HuggingFace Datasets, DataLab Authors.
 #
@@ -12,14 +14,16 @@
 # limitations under the License.
 
 from dataclasses import dataclass
-from typing import ClassVar, Dict
+from typing import ClassVar
 
 from datalabs.features.features import Sequence
 
 from ..features import Features, Value
 from .base import TaskTemplate
 
+
 _MDS_TEXT_COLUMN = "texts"
+
 
 @dataclass
 class Summarization(TaskTemplate):
@@ -32,7 +36,7 @@ class Summarization(TaskTemplate):
     summary_column: str = "summary"
 
     @property
-    def column_mapping(self) -> Dict[str, str]:
+    def column_mapping(self) -> dict[str, str]:
         return {self.text_column: "text", self.summary_column: "summary"}
 
 
@@ -44,6 +48,7 @@ class MultiDocSummarization(TaskTemplate):
         "summary": str,
         }
     """
+
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
     task_category: str = "multi_doc_summarization"
     task: str = "multi_doc_summarization"
@@ -53,13 +58,13 @@ class MultiDocSummarization(TaskTemplate):
     summary_column: str = "summary"
 
     @property
-    def column_mapping(self) -> Dict[str, str]:
+    def column_mapping(self) -> dict[str, str]:
         return {self.text_column: "texts", self.summary_column: "summary"}
 
 
 @dataclass
 class DialogSummarization(TaskTemplate):
-    """ Dialogue summarization task.
+    """Dialogue summarization task.
     data format: {
         "dialogue": {
             "speaker": List[str], (list of speaker names)
@@ -68,39 +73,51 @@ class DialogSummarization(TaskTemplate):
         "summary": List[str], (multiple references)
         }
     """
+
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
     task_category: str = "dialog_summarization"
     task: str = "dialog_summarization"
-    input_schema: ClassVar[Features] = Features({"dialogue": Sequence(Features({"speaker": Value("string"), "text": Value("string")}))})
+    input_schema: ClassVar[Features] = Features(
+        {
+            "dialogue": Sequence(
+                Features({"speaker": Value("string"), "text": Value("string")})
+            )
+        }
+    )
     label_schema: ClassVar[Features] = Features({"summary": Sequence(Value("string"))})
     text_column: str = "dialogue"
     summary_column: str = "summary"
 
     @property
-    def column_mapping(self) -> Dict[str, str]:
+    def column_mapping(self) -> dict[str, str]:
         return {self.text_column: "dialogue", self.summary_column: "summary"}
 
 
 @dataclass
 class QuerySummarization(TaskTemplate):
-    """ Query-based summarization task.
+    """Query-based summarization task.
     data format: {
-        "text": str, 
-        "query": str, 
+        "text": str,
+        "query": str,
         "summary": str,
         }
     """
+
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
     task_category: str = "query_summarization"
     task: str = "query_summarization"
-    input_schema: ClassVar[Features] = Features({"text": Value("string"), "query": Value("string")})
+    input_schema: ClassVar[Features] = Features(
+        {"text": Value("string"), "query": Value("string")}
+    )
     label_schema: ClassVar[Features] = Features({"summary": Value("string")})
     text_column: str = "text"
     summary_column: str = "summary"
     query_column: str = "query"
 
     @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {self.text_column: "text", self.summary_column: "summary", self.query_column: "query"}
-
-        
+    def column_mapping(self) -> dict[str, str]:
+        return {
+            self.text_column: "text",
+            self.summary_column: "summary",
+            self.query_column: "query",
+        }

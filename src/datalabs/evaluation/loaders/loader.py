@@ -1,13 +1,17 @@
-from typing import Dict, Iterable, List
-import typing as t
+from __future__ import annotations
+
+from collections.abc import Iterable
+import csv
 import json
+import typing as t
 from enum import Enum
 from io import StringIO
-import csv
+
 from datalabs.constants import FileType, Source
 from datalabs.tasks.task_info import TaskType
 
-JSON = t.Union[str, int, float, bool, None, t.Mapping[str, 'JSON'], t.List['JSON']]  # type: ignore
+
+JSON = t.Union[str, int, float, bool, None, t.Mapping[str, "JSON"], t.List["JSON"]]  # type: ignore
 
 
 class Loader:
@@ -26,7 +30,7 @@ class Loader:
         if self._source == Source.in_memory:
             if self._file_type == FileType.tsv:
                 file = StringIO(self._data)
-                return csv.reader(file, delimiter='\t')
+                return csv.reader(file, delimiter="\t")
             elif self._file_type == FileType.conll:
                 return self._data.splitlines()
             elif self._file_type == FileType.json:
@@ -38,9 +42,9 @@ class Loader:
 
         elif self._source == Source.local_filesystem:
             if self._file_type == FileType.tsv:
-                content: List[str] = []
+                content: list[str] = []
                 with open(self._data, "r", encoding="utf8") as fin:
-                    for record in csv.reader(fin, delimiter='\t'):
+                    for record in csv.reader(fin, delimiter="\t"):
                         content.append(record)
                 return content
             elif self._file_type == FileType.conll:
@@ -50,19 +54,19 @@ class Loader:
                         content.append(record)
                 return content
             elif self._file_type == FileType.json:
-                with open(self._data, 'r', encoding="utf8") as json_file:
+                with open(self._data, "r", encoding="utf8") as json_file:
                     data = json_file.read()
                 obj = json.loads(data)
                 return obj
             else:
                 raise NotImplementedError
 
-    def load(self) -> Iterable[Dict]:
+    def load(self) -> Iterable[dict]:
         raise NotImplementedError
 
 
 # loader_registry is a global variable, storing all basic loading functions
-_loader_registry: Dict = {}
+_loader_registry: dict = {}
 
 
 def get_loader(

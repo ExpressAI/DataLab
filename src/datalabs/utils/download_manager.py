@@ -15,13 +15,15 @@
 
 # Lint as: python3
 """Download manager interface."""
+from __future__ import annotations
+
 
 import enum
 import os
 import tarfile
 from datetime import datetime
 from functools import partial
-from typing import Dict, Optional, Union
+from typing import Optional, Union
 
 from .. import config
 from .file_utils import (
@@ -87,7 +89,7 @@ class DownloadManager:
         self._data_dir = data_dir
         self._base_path = base_path or os.path.abspath(".")
         # To record what is being used: {url: {num_bytes: int, checksum: str}}
-        self._recorded_sizes_checksums: Dict[str, Dict[str, Union[int, str]]] = {}
+        self._recorded_sizes_checksums: dict[str, dict[str, Union[int, str]]] = {}
         self.download_config = download_config or DownloadConfig()
         self.downloaded_paths = {}
         self.extracted_paths = {}
@@ -99,7 +101,10 @@ class DownloadManager:
     @property
     def downloaded_size(self):
         """Returns the total size of downloaded files."""
-        return sum(checksums_dict["num_bytes"] for checksums_dict in self._recorded_sizes_checksums.values())
+        return sum(
+            checksums_dict["num_bytes"]
+            for checksums_dict in self._recorded_sizes_checksums.values()
+        )
 
     def ship_files_with_pipeline(self, downloaded_path_or_paths, pipeline):
         """
@@ -109,11 +114,15 @@ class DownloadManager:
 
         remote_dir = pipeline._options.get_all_options().get("temp_location")
         if remote_dir is None:
-            raise ValueError("You need to specify 'temp_location' in PipelineOptions to upload files")
+            raise ValueError(
+                "You need to specify 'temp_location' in PipelineOptions to upload files"
+            )
 
         def upload(local_file_path):
             remote_file_path = os.path.join(
-                remote_dir, config.DOWNLOADED_DATASETS_DIR, os.path.basename(local_file_path)
+                remote_dir,
+                config.DOWNLOADED_DATASETS_DIR,
+                os.path.basename(local_file_path),
             )
             logger.info(
                 f"Uploading {local_file_path} ({size_str(os.path.getsize(local_file_path))}) to {remote_file_path}."
@@ -122,11 +131,17 @@ class DownloadManager:
             return remote_file_path
 
         uploaded_path_or_paths = map_nested(
-            lambda local_file_path: upload(local_file_path), downloaded_path_or_paths, disable_tqdm=False
+            lambda local_file_path: upload(local_file_path),
+            downloaded_path_or_paths,
+            disable_tqdm=False,
         )
         return uploaded_path_or_paths
 
-    def _record_sizes_checksums(self, url_or_urls: NestedDataStructure, downloaded_path_or_paths: NestedDataStructure):
+    def _record_sizes_checksums(
+        self,
+        url_or_urls: NestedDataStructure,
+        downloaded_path_or_paths: NestedDataStructure,
+    ):
         """Record size/checksum of downloaded files."""
         for url, path in zip(url_or_urls.flatten(), downloaded_path_or_paths.flatten()):
             # call str to support PathLike objects
@@ -152,13 +167,19 @@ class DownloadManager:
         def url_to_downloaded_path(url):
             return os.path.join(cache_dir, hash_url_to_filename(url))
 
-        downloaded_path_or_paths = map_nested(url_to_downloaded_path, url_or_urls, disable_tqdm=False)
+        downloaded_path_or_paths = map_nested(
+            url_to_downloaded_path, url_or_urls, disable_tqdm=False
+        )
         url_or_urls = NestedDataStructure(url_or_urls)
         downloaded_path_or_paths = NestedDataStructure(downloaded_path_or_paths)
         for url, path in zip(url_or_urls.flatten(), downloaded_path_or_paths.flatten()):
             try:
                 get_from_cache(
-                    url, cache_dir=cache_dir, local_files_only=True, use_etag=False, max_retries=max_retries
+                    url,
+                    cache_dir=cache_dir,
+                    local_files_only=True,
+                    use_etag=False,
+                    max_retries=max_retries,
                 )
                 cached = True
             except FileNotFoundError:
@@ -166,7 +187,11 @@ class DownloadManager:
             if not cached or self.download_config.force_download:
                 custom_download(url, path)
                 get_from_cache(
-                    url, cache_dir=cache_dir, local_files_only=True, use_etag=False, max_retries=max_retries
+                    url,
+                    cache_dir=cache_dir,
+                    local_files_only=True,
+                    use_etag=False,
+                    max_retries=max_retries,
                 )
         self._record_sizes_checksums(url_or_urls, downloaded_path_or_paths)
         return downloaded_path_or_paths.data
@@ -193,13 +218,19 @@ class DownloadManager:
 
         start_time = datetime.now()
         downloaded_path_or_paths = map_nested(
-            download_func, url_or_urls, map_tuple=True, num_proc=download_config.num_proc, disable_tqdm=False
+            download_func,
+            url_or_urls,
+            map_tuple=True,
+            num_proc=download_config.num_proc,
+            disable_tqdm=False,
         )
         duration = datetime.now() - start_time
         logger.info(f"Downloading took {duration.total_seconds() // 60} min")
         url_or_urls = NestedDataStructure(url_or_urls)
         downloaded_path_or_paths = NestedDataStructure(downloaded_path_or_paths)
-        self.downloaded_paths.update(dict(zip(url_or_urls.flatten(), downloaded_path_or_paths.flatten())))
+        self.downloaded_paths.update(
+            dict(zip(url_or_urls.flatten(), downloaded_path_or_paths.flatten()))
+        )
 
         start_time = datetime.now()
         self._record_sizes_checksums(url_or_urls, downloaded_path_or_paths)
@@ -233,7 +264,9 @@ class DownloadManager:
                     continue
                 if file_path is None:
                     continue
-                if os.path.basename(file_path).startswith(".") or os.path.basename(file_path).startswith("__"):
+                if os.path.basename(file_path).startswith(".") or os.path.basename(
+                    file_path
+                ).startswith("__"):
                     # skipping hidden files
                     continue
                 file_obj = stream.extractfile(tarinfo)
@@ -257,11 +290,16 @@ class DownloadManager:
         download_config = self.download_config.copy()
         download_config.extract_compressed_file = True
         extracted_paths = map_nested(
-            partial(cached_path, download_config=download_config), path_or_paths, num_proc=num_proc, disable_tqdm=False
+            partial(cached_path, download_config=download_config),
+            path_or_paths,
+            num_proc=num_proc,
+            disable_tqdm=False,
         )
         path_or_paths = NestedDataStructure(path_or_paths)
         extracted_paths = NestedDataStructure(extracted_paths)
-        self.extracted_paths.update(dict(zip(path_or_paths.flatten(), extracted_paths.flatten())))
+        self.extracted_paths.update(
+            dict(zip(path_or_paths.flatten(), extracted_paths.flatten()))
+        )
         return extracted_paths.data
 
     def download_and_extract(self, url_or_urls):
@@ -286,7 +324,9 @@ class DownloadManager:
         return self._recorded_sizes_checksums.copy()
 
     def delete_extracted_files(self):
-        paths_to_delete = set(self.extracted_paths.values()) - set(self.downloaded_paths.values())
+        paths_to_delete = set(self.extracted_paths.values()) - set(
+            self.downloaded_paths.values()
+        )
         for key, path in list(self.extracted_paths.items()):
             if path in paths_to_delete and os.path.isfile(path):
                 os.remove(path)

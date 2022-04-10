@@ -46,31 +46,43 @@ class Json(datalabs.ArrowBasedBuilder):
 
     def _info(self):
         if self.config.block_size is not None:
-            logger.warning("The JSON loader parameter `block_size` is deprecated. Please use `chunksize` instead")
+            logger.warning(
+                "The JSON loader parameter `block_size` is deprecated. Please use `chunksize` instead"
+            )
             self.config.chunksize = self.config.block_size
         if self.config.use_threads is not True:
             logger.warning(
                 "The JSON loader parameter `use_threads` is deprecated and doesn't have any effect anymore."
             )
         if self.config.newlines_in_values is not None:
-            raise ValueError("The JSON loader parameter `newlines_in_values` is no longer supported")
+            raise ValueError(
+                "The JSON loader parameter `newlines_in_values` is no longer supported"
+            )
         return datalabs.DatasetInfo(features=self.config.features)
 
     def _split_generators(self, dl_manager):
         """We handle string, list and dicts in datafiles"""
         if not self.config.data_files:
-            raise ValueError(f"At least one data file must be specified, but got data_files={self.config.data_files}")
+            raise ValueError(
+                f"At least one data file must be specified, but got data_files={self.config.data_files}"
+            )
         data_files = dl_manager.download_and_extract(self.config.data_files)
         if isinstance(data_files, (str, list, tuple)):
             files = data_files
             if isinstance(files, str):
                 files = [files]
-            return [datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"files": files})]
+            return [
+                datalabs.SplitGenerator(
+                    name=datalabs.Split.TRAIN, gen_kwargs={"files": files}
+                )
+            ]
         splits = []
         for split_name, files in data_files.items():
             if isinstance(files, str):
                 files = [files]
-            splits.append(datalabs.SplitGenerator(name=split_name, gen_kwargs={"files": files}))
+            splits.append(
+                datalabs.SplitGenerator(name=split_name, gen_kwargs={"files": files})
+            )
         return splits
 
     def _cast_classlabels(self, pa_table: pa.Table) -> pa.Table:
@@ -80,7 +92,9 @@ class Json(datalabs.ArrowBasedBuilder):
                 if isinstance(self.config.features[col], datalabs.ClassLabel):
                     if pa_table[col].type == pa.string():
                         pa_table = pa_table.set_column(
-                            i, self.config.schema.field(col), [self.config.features[col].str2int(pa_table[col])]
+                            i,
+                            self.config.schema.field(col),
+                            [self.config.features[col].str2int(pa_table[col])],
                         )
                     elif pa_table[col].type != self.config.schema.field(col).type:
                         raise ValueError(
@@ -89,7 +103,8 @@ class Json(datalabs.ArrowBasedBuilder):
             # Cast allows str <-> int/float
             # Before casting, rearrange JSON field names to match passed features schema field names order
             pa_table = pa.Table.from_arrays(
-                [pa_table[name] for name in self.config.features], schema=self.config.schema
+                [pa_table[name] for name in self.config.features],
+                schema=self.config.schema,
             )
         return pa_table
 
@@ -106,7 +121,10 @@ class Json(datalabs.ArrowBasedBuilder):
 
                 # We accept two format: a list of dicts or a dict of lists
                 if isinstance(dataset, (list, tuple)):
-                    mapping = {col: [dataset[i][col] for i in range(len(dataset))] for col in dataset[0].keys()}
+                    mapping = {
+                        col: [dataset[i][col] for i in range(len(dataset))]
+                        for col in dataset[0].keys()
+                    }
                 else:
                     mapping = dataset
                 pa_table = pa.Table.from_pydict(mapping=mapping)
@@ -132,10 +150,16 @@ class Json(datalabs.ArrowBasedBuilder):
                             while True:
                                 try:
                                     pa_table = paj.read_json(
-                                        io.BytesIO(batch), read_options=paj.ReadOptions(block_size=block_size)
+                                        io.BytesIO(batch),
+                                        read_options=paj.ReadOptions(
+                                            block_size=block_size
+                                        ),
                                     )
                                     break
-                                except (pa.ArrowInvalid, pa.ArrowNotImplementedError) as e:
+                                except (
+                                    pa.ArrowInvalid,
+                                    pa.ArrowNotImplementedError,
+                                ) as e:
                                     if (
                                         isinstance(e, pa.ArrowInvalid)
                                         and "straddling" not in str(e)
@@ -150,7 +174,9 @@ class Json(datalabs.ArrowBasedBuilder):
                                         )
                                         block_size *= 2
                         except pa.ArrowInvalid as e:
-                            logger.error(f"Failed to read file '{file}' with error {type(e)}: {e}")
+                            logger.error(
+                                f"Failed to read file '{file}' with error {type(e)}: {e}"
+                            )
                             try:
                                 with open(file, encoding="utf-8") as f:
                                     dataset = json.load(f)

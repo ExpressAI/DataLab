@@ -1,5 +1,9 @@
-from typing import Iterable
+from __future__ import annotations
+
+from collections.abc import Iterable
+
 from datalabs.tasks.task_info import TaskType
+
 from .processor import Processor
 
 

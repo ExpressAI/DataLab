@@ -1,4 +1,6 @@
-from typing import Dict
+from __future__ import annotations
+
+
 import spacy
 from spacy.language import Language
 
@@ -9,7 +11,7 @@ class SpacyLoader:
     encapsulates `spacy.load()` so we don't load big spacy models unless it's
     necessary."""
 
-    _models: Dict[str, Language] = {}
+    _models: dict[str, Language] = {}
 
     def get_model(self, name: str) -> Language:
         """

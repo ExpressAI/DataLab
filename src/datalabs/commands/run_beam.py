@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and the DataLab Datasets Authors.
 #
@@ -15,7 +17,6 @@ import os
 from argparse import ArgumentParser
 from pathlib import Path
 from shutil import copyfile
-from typing import List
 
 from datalabs import config
 from datalabs.builder import DatasetBuilder
@@ -41,8 +42,12 @@ def run_beam_command_factory(args):
 class RunBeamCommand(BaseDatasetsCLICommand):
     @staticmethod
     def register_subcommand(parser: ArgumentParser):
-        run_beam_parser = parser.add_parser("run_beam", help="Run a Beam dataset processing pipeline.")
-        run_beam_parser.add_argument("--name", type=str, default=None, help="Dataset processing name")
+        run_beam_parser = parser.add_parser(
+            "run_beam", help="Run a Beam dataset processing pipeline."
+        )
+        run_beam_parser.add_argument(
+            "--name", type=str, default=None, help="Dataset processing name"
+        )
         run_beam_parser.add_argument(
             "--cache_dir",
             type=str,
@@ -61,13 +66,23 @@ class RunBeamCommand(BaseDatasetsCLICommand):
             default=None,
             help="Can be used to specify a manual directory to get the files from.",
         )
-        run_beam_parser.add_argument("--all_configs", action="store_true", help="Test all dataset configurations")
-        run_beam_parser.add_argument("--save_infos", action="store_true", help="Save the dataset infos file")
         run_beam_parser.add_argument(
-            "--ignore_verifications", action="store_true", help="Run the test without checksums and splits checks"
+            "--all_configs", action="store_true", help="Test all dataset configurations"
         )
-        run_beam_parser.add_argument("--force_redownload", action="store_true", help="Force dataset redownload")
-        run_beam_parser.add_argument("dataset", type=str, help="Name of the dataset to download")
+        run_beam_parser.add_argument(
+            "--save_infos", action="store_true", help="Save the dataset infos file"
+        )
+        run_beam_parser.add_argument(
+            "--ignore_verifications",
+            action="store_true",
+            help="Run the test without checksums and splits checks",
+        )
+        run_beam_parser.add_argument(
+            "--force_redownload", action="store_true", help="Force dataset redownload"
+        )
+        run_beam_parser.add_argument(
+            "dataset", type=str, help="Name of the dataset to download"
+        )
         run_beam_parser.set_defaults(func=run_beam_command_factory)
 
     def __init__(
@@ -101,10 +116,14 @@ class RunBeamCommand(BaseDatasetsCLICommand):
         path, name = self._dataset, self._name
         dataset_module = dataset_module_factory(path)
         builder_cls = import_main_class(dataset_module.module_path)
-        builders: List[DatasetBuilder] = []
+        builders: list[DatasetBuilder] = []
         if self._beam_pipeline_options:
             beam_options = beam.options.pipeline_options.PipelineOptions(
-                flags=[f"--{opt.strip()}" for opt in self._beam_pipeline_options.split(",") if opt]
+                flags=[
+                    f"--{opt.strip()}"
+                    for opt in self._beam_pipeline_options.split(",")
+                    if opt
+                ]
             )
         else:
             beam_options = None
@@ -138,7 +157,9 @@ class RunBeamCommand(BaseDatasetsCLICommand):
                 download_mode=GenerateMode.REUSE_CACHE_IF_EXISTS
                 if not self._force_redownload
                 else GenerateMode.FORCE_REDOWNLOAD,
-                download_config=DownloadConfig(cache_dir=config.DOWNLOADED_DATASETS_PATH),
+                download_config=DownloadConfig(
+                    cache_dir=config.DOWNLOADED_DATASETS_PATH
+                ),
                 save_infos=self._save_infos,
                 ignore_verifications=self._ignore_verifications,
                 try_from_hf_gcs=False,
@@ -150,7 +171,9 @@ class RunBeamCommand(BaseDatasetsCLICommand):
         # Let's move it to the original directory of the dataset script, to allow the user to
         # upload them on S3 at the same time afterwards.
         if self._save_infos:
-            dataset_infos_path = os.path.join(builder_cls.get_imported_module_dir(), config.DATASETDICT_INFOS_FILENAME)
+            dataset_infos_path = os.path.join(
+                builder_cls.get_imported_module_dir(), config.DATASETDICT_INFOS_FILENAME
+            )
 
             name = Path(path).name + ".py"
 
@@ -164,6 +187,8 @@ class RunBeamCommand(BaseDatasetsCLICommand):
                 exit(1)
 
             # Move datasetinfo back to the user
-            user_dataset_infos_path = os.path.join(dataset_dir, config.DATASETDICT_INFOS_FILENAME)
+            user_dataset_infos_path = os.path.join(
+                dataset_dir, config.DATASETDICT_INFOS_FILENAME
+            )
             copyfile(dataset_infos_path, user_dataset_infos_path)
             print(f"Dataset Infos file saved at {user_dataset_infos_path}")

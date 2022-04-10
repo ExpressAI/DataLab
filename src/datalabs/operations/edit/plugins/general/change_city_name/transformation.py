@@ -1,13 +1,17 @@
-import os
-import itertools
-import random
-import spacy
-import sys
 import hashlib
+import itertools
+import os
+import random
+import sys
+
+import spacy
 
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../')))
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))
+)
 from edit.editing import *
+
 
 def hash(input: str):
     """
@@ -26,6 +30,7 @@ def hash(input: str):
     n = int(h.hexdigest(), base=16)
     return n
 
+
 def iob_ent_dict(doc):
     """
     Given a spaCy Doc object, this creates a list of dictionaries mapping each token to its text, IOB embedding, and entity
@@ -42,6 +47,7 @@ def iob_ent_dict(doc):
     for i in doc:
         d.append({"Word": i.text, "IOB": i.ent_iob_, "Ent": i.ent_type_})
     return d
+
 
 def create_ents_dict(doc):
     spans = []
@@ -63,9 +69,14 @@ def create_ents_dict(doc):
         spans.append({"Word": span, "Entity": ent})
     return spans
 
-@editing(name = "change_city_name", contributor = "xl_augmenter",
-         task = "Any", description="replaces instances of populous and well-known cities in a sentence with instances of less populous and less well-known cities.")
-def change_city_name(text:str, seed=None):
+
+@editing(
+    name="change_city_name",
+    contributor="xl_augmenter",
+    task="Any",
+    description="replaces instances of populous and well-known cities in a sentence with instances of less populous and less well-known cities.",
+)
+def change_city_name(text: str, seed=None):
 
     spacy_nlp = spacy.load("en_core_web_sm")
     doc = spacy_nlp(text)
@@ -73,7 +84,6 @@ def change_city_name(text:str, seed=None):
     scriptpath = os.path.dirname(__file__)
     f_pop = open(os.path.join(scriptpath, "../../../resources/Eng_Pop.txt"))
     f_scarce = open(os.path.join(scriptpath, "../../../resources/Eng_Scarce.txt"))
-
 
     populous_cities = f_pop.read().split("\n")
     scarce_cities = f_scarce.read().split("\n")
@@ -87,25 +97,20 @@ def change_city_name(text:str, seed=None):
     sent_words = []
     for i in ents_dict:
         if i["Word"] in list(populous_cities) and (
-                i["Entity"] == "GPE" or i["Entity"] == "LOC"
+            i["Entity"] == "GPE" or i["Entity"] == "LOC"
         ):
             sent_words.append("<CITY>")
         else:
             sent_words.append(i["Word"])
     new_sentence = " ".join(sent_words)
     while "<CITY>" in new_sentence:
-        rand_city = scarce_cities[
-            random.randint(0, len(scarce_cities))
-        ]
+        rand_city = scarce_cities[random.randint(0, len(scarce_cities))]
         new_sentence = new_sentence.replace("<CITY>", rand_city, 1)
 
     # return new_sentence
-    return {"text_change_city_name":new_sentence}
+    return {"text_change_city_name": new_sentence}
 
 
 # sentence = "The team was established in Dallas in 1898 and was a charter member of the NFL in 1920."
 # perturbed = change_city_name(text=sentence)
 # print(perturbed)
-
-
-

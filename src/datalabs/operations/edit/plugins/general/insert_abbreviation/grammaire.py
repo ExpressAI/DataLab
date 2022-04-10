@@ -10,6 +10,8 @@ Created on Wed Jul 21 10:40:14 2021
 """
 
 import re
+
+
 # import tokenize
 # from io import BytesIO
 
@@ -94,7 +96,9 @@ def erreur(w, err):
     err = GrammarError(w, err + ": '" + w + "'")
     raise err
 
+
 pipeInsideCharacter = "÷…"
+
 
 def checkpipe(w):
     # we need to check if a | is in a string
@@ -106,15 +110,16 @@ def checkpipe(w):
         c = w[i]
         if c == '"':
             opn = 1 - opn
-        elif c == '|':
+        elif c == "|":
             if not opn:
                 ps.append(i)
         i += 1
     if ps:
         ps.reverse()
         for i in ps:
-            w = w[:i] + pipeInsideCharacter + w[i+1:]
+            w = w[:i] + pipeInsideCharacter + w[i + 1 :]
     return w
+
 
 def assess_any(w, functions, sz):
     if "|" in w:
@@ -124,9 +129,9 @@ def assess_any(w, functions, sz):
         function = anytoken
     elif sz > 2:
         erreur(w, "Unknown command")
-    elif w[1] == '+':
+    elif w[1] == "+":
         function = anyplus
-    elif w[1] == '*':
+    elif w[1] == "*":
         function = anystar
     return [function, w, True]
 
@@ -138,10 +143,10 @@ def assess_quote(w, functions, sz):
         w = w[1:-1]
         function = regularone
     elif w[-2] == '"':
-        if w[-1] == '+':
+        if w[-1] == "+":
             w = w[1:-2]
             function = tokenplusone
-        elif w[-1] == '*':
+        elif w[-1] == "*":
             w = w[1:-2]
             function = tokenstarone
         else:
@@ -154,36 +159,38 @@ def assess_quote(w, functions, sz):
 def assess_bracket(w, functions, sz):
     if sz < 3:
         erreur(w, "Unknown bracket expression")
-    if w[-1] == ']':
+    if w[-1] == "]":
         w = w[1:-1]
         return analyzeRuleElement(w, functions, 0)
-    if w[-2] == ']':
-        if w[-1] == '*':
+    if w[-2] == "]":
+        if w[-1] == "*":
             w = w[1:-2]
             return analyzeRuleElement(w, functions, 1)
-        elif w[-1] == '+':
+        elif w[-1] == "+":
             w = w[1:-2]
             return analyzeRuleElement(w, functions, 2)
         else:
             erreur(w, "Unknown bracket expression")
 
+
 def assess_skip(w, functions, sz):
     if sz < 3:
         erreur(w, "Unknown skip expression")
-    if w[-1] == '>':
+    if w[-1] == ">":
         w = w[1:-1]
         res = analyzeRuleElement(w, functions, 0)
-    if w[-2] == '>':
-        if w[-1] == '*':
+    if w[-2] == ">":
+        if w[-1] == "*":
             w = w[1:-2]
             res = analyzeRuleElement(w, functions, 1)
-        elif w[-1] == '+':
+        elif w[-1] == "+":
             w = w[1:-2]
             res = analyzeRuleElement(w, functions, 2)
         else:
             erreur(w, "Unknown skip expression")
     res[-1] = False
     return res
+
 
 def assess_rgx(w, functions, sz):
     if "|" in w:
@@ -222,8 +229,8 @@ def assess_pipe(w, functions, sz):
 def assess_optional(w, functions, sz):
     if sz < 3:
         erreur(w, "Unknown parenthetic expression")
-    po = w.find('(')
-    pf = w.find(')')
+    po = w.find("(")
+    pf = w.find(")")
     if pf == -1:
         erreur(w, "missing closing parenthesis")
     sub = w[:po]
@@ -232,11 +239,11 @@ def assess_optional(w, functions, sz):
             w = w[1:-1]
             return analyzeRuleElement(w, functions, 3)
         else:
-            end = sub + w[po + 1:-1]
+            end = sub + w[po + 1 : -1]
             w = [sub, end]
     else:
-        end = w[pf + 1:]
-        inter = w[po + 1:pf]
+        end = w[pf + 1 :]
+        inter = w[po + 1 : pf]
         w = [sub + end, sub + inter + end]
     return [regular, w, True]
 
@@ -247,18 +254,20 @@ def assess_all(w, functions, sz):
     if "|" in w:
         return assess_pipe(w, functions, sz)
 
-    if w[-1] == '+':
+    if w[-1] == "+":
         w = w[:-1]
         function = tokenplusone
-    elif w[-1] == '*':
+    elif w[-1] == "*":
         w = w[:-1]
         function = tokenstarone
     else:
         function = regularone
     return [function, w, True]
 
+
 def return_normal(function, w, skips):
     return [function, w, skips]
+
 
 def return_star(function, w, skips):
     if function == multiple:
@@ -303,9 +312,15 @@ def return_optional(function, w, skips):
     return [function, w, skips]
 
 
-
 # If the first character is a key in selections, we call the matching function
-assesses = {"?": assess_any, '"': assess_quote, '[': assess_bracket, '<': assess_skip, "%": assess_rgx, "!": assess_capsule}
+assesses = {
+    "?": assess_any,
+    '"': assess_quote,
+    "[": assess_bracket,
+    "<": assess_skip,
+    "%": assess_rgx,
+    "!": assess_capsule,
+}
 on_brackets = {0: return_normal, 1: return_star, 2: return_plus, 3: return_optional}
 
 
@@ -345,18 +360,20 @@ def indexonhead(automate, w, head, nb):
     else:
         idx[w] = [head]
 
+
 def indexonheadrgx(automate, w, head):
     if w in automate:
         automate[w].append(head)
     else:
         automate[w] = [head]
 
+
 # ------------------------------------------------------------------------------
 # The compiler itself
 # ------------------------------------------------------------------------------
 def compiling(v, functions):
     v = [s.replace("\t", " ") for s in v if len(s) != 0]
-    v = [s.strip().split(' ') for s in v if len(s) != 0]
+    v = [s.strip().split(" ") for s in v if len(s) != 0]
     automate = {"_++_": {}}
     automate["_**_"] = {}
     for r in v:
@@ -371,7 +388,7 @@ def compiling(v, functions):
         for w in r:
             if not foundequal:
                 nb -= 1
-                if w == '=':
+                if w == "=":
                     foundequal = True
                 else:
                     if head != "":
@@ -405,7 +422,7 @@ def compiling(v, functions):
                         e[0] = tokenrgxstar
                         rule.append(e)
                     else:
-                        erreur(','.join(w), "A rule cannot start with such an element")
+                        erreur(",".join(w), "A rule cannot start with such an element")
                 else:
                     rule.append(e)
         automate[head] = rule[:]
@@ -417,6 +434,7 @@ def compiling(v, functions):
 # Either you don't have capsules in your rules and you can call compile(lex)
 # Or you have capsules, then you need to call: compilecapsules(lex, locals())
 # ------------------------------------------------------------------------------
+
 
 def compile(lex):
     if type(lex) == list:
@@ -432,6 +450,7 @@ def compile(lex):
 # locals() is used to access your own capsule functions that should be defined in
 # space where compilecapsules is called from
 # ------------------------------------------------------------------------------
+
 
 def compilecapsules(lex, functions):
     if type(lex) == list:
@@ -592,6 +611,7 @@ def tokenrgxstar(tokens, sz, rl, rnxt, pos):
         pos += 1
     return pos
 
+
 def tokenrgxplus(tokens, sz, rl, rnxt, pos):
     if re.match(rl[1], tokens[pos]):
         pos += 1
@@ -649,6 +669,7 @@ def capsulestar(tokens, sz, rl, rnxt, pos):
         pos += 1
     return pos
 
+
 def capsuleplus(tokens, sz, rl, rnxt, pos):
     func = rl[1]
     if func(tokens[pos]):
@@ -668,23 +689,127 @@ def capsuleplus(tokens, sz, rl, rnxt, pos):
 # in the string: s
 # ------------------------------------------------------------------------------
 punctuations = {
-    0x21, 0x22, 0x23, 0x26, 0x27, 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D,
-    0x2E, 0x2F, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E, 0x3F, 0x40, 0x5B, 0x5C,
-    0x5D, 0x5E, 0x60, 0x7B, 0x7C, 0x7D, 0x7E, 0x9C, 0xA0, 0xA1, 0xA2,
-    0xA4, 0xA5, 0xA6, 0xAA, 0xAB, 0xAC, 0xAD, 0xAF, 0xB0, 0xB1, 0xB5,
-    0xB6, 0xB7, 0xB8, 0xBA, 0xBB, 0xBC, 0xBD, 0xBE, 0xBF, 0xD7, 0xF7,
-    0x2BC, 0x2013, 0x2014, 0x2015, 0x2018, 0x2019, 0x201C, 0x201D, 0x2020,
-    0x2021, 0x2022, 0x2026, 0x2032, 0x2033, 0x203B, 0x212E, 0x2190, 0x2191,
-    0x2192, 0x2193, 0x2264, 1470, 1472, 1475, 1478, 1523, 1524, 0x2265,
-    0x263A, 0x3008, 0x3009, 1548, 1549, 1550, 1551, 1567, 1645, 1757, 1758, 1769, 0xFD3E,
-    0xFD3F, 0x3001, 0xFF0C, 0x2025, 0x2026, 0x3002, 0x303D, 0x300C, 0x300D, 0x300E, 0x300F,
-    0x301D, 0x301F, 0x301C, 0xff1a, 0xff01, 0xff1f, 0x266a}
+    0x21,
+    0x22,
+    0x23,
+    0x26,
+    0x27,
+    0x28,
+    0x29,
+    0x2A,
+    0x2B,
+    0x2C,
+    0x2D,
+    0x2E,
+    0x2F,
+    0x3A,
+    0x3B,
+    0x3C,
+    0x3D,
+    0x3E,
+    0x3F,
+    0x40,
+    0x5B,
+    0x5C,
+    0x5D,
+    0x5E,
+    0x60,
+    0x7B,
+    0x7C,
+    0x7D,
+    0x7E,
+    0x9C,
+    0xA0,
+    0xA1,
+    0xA2,
+    0xA4,
+    0xA5,
+    0xA6,
+    0xAA,
+    0xAB,
+    0xAC,
+    0xAD,
+    0xAF,
+    0xB0,
+    0xB1,
+    0xB5,
+    0xB6,
+    0xB7,
+    0xB8,
+    0xBA,
+    0xBB,
+    0xBC,
+    0xBD,
+    0xBE,
+    0xBF,
+    0xD7,
+    0xF7,
+    0x2BC,
+    0x2013,
+    0x2014,
+    0x2015,
+    0x2018,
+    0x2019,
+    0x201C,
+    0x201D,
+    0x2020,
+    0x2021,
+    0x2022,
+    0x2026,
+    0x2032,
+    0x2033,
+    0x203B,
+    0x212E,
+    0x2190,
+    0x2191,
+    0x2192,
+    0x2193,
+    0x2264,
+    1470,
+    1472,
+    1475,
+    1478,
+    1523,
+    1524,
+    0x2265,
+    0x263A,
+    0x3008,
+    0x3009,
+    1548,
+    1549,
+    1550,
+    1551,
+    1567,
+    1645,
+    1757,
+    1758,
+    1769,
+    0xFD3E,
+    0xFD3F,
+    0x3001,
+    0xFF0C,
+    0x2025,
+    0x2026,
+    0x3002,
+    0x303D,
+    0x300C,
+    0x300D,
+    0x300E,
+    0x300F,
+    0x301D,
+    0x301F,
+    0x301C,
+    0xFF1A,
+    0xFF01,
+    0xFF1F,
+    0x266A,
+}
 
 spaces = {9, 10, 13, 32, 160, 0x202F, 0x3000}
 
 
 def checknext(s, i, sz):
-    return (i < sz and ord(s[i]) not in punctuations and ord(s[i]) not in spaces)
+    return i < sz and ord(s[i]) not in punctuations and ord(s[i]) not in spaces
 
 
 def tokenizing_sentence(s, offset=True):
@@ -739,7 +864,6 @@ def tokenizing_sentence(s, offset=True):
     return tokens
 
 
-
 # # We keep this version, but it poses some issues as it
 # # tries to tokenize some Python code and not some text.
 # def tokenize_sentence(s):
@@ -765,6 +889,7 @@ def tokenizing_sentence(s, offset=True):
 # Rule Application
 # We apply a rule from position i
 # ------------------------------------------------------------------------------
+
 
 def checkrule(a, sz, ruleheads, tokens, i):
     for rhead in ruleheads:
@@ -828,7 +953,7 @@ def parse(txt, a):
                     for s in keeps:
                         beg = offsets[s[0]][0]
                         end = offsets[s[-1]][1]
-                        thehead = thehead.replace("%"+str(nb), txt[beg:end])
+                        thehead = thehead.replace("%" + str(nb), txt[beg:end])
                         nb += 1
                 if rawtokens[i][0].isupper():
                     thehead = thehead[0].upper() + thehead[1:]

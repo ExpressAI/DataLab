@@ -27,6 +27,7 @@ from pyarrow import total_allocated_bytes
 from .operations import operation
 from .operations.data import *
 
+
 # from .operations import operation
 # from .operations import data
 
@@ -41,9 +42,14 @@ from .arrow_reader import ArrowReader, ReadInstruction
 from .arrow_writer import ArrowWriter
 from .builder import ArrowBasedBuilder, BeamBasedBuilder, BuilderConfig, DatasetBuilder, GeneratorBasedBuilder
 from .combine import interleave_datasets
+from .constants import *
 from .dataset_dict import DatasetDict, IterableDatasetDict
+from .enums import PLMType, PromptShape, SettingType, SignalType
+from .evaluation.loaders import get_loader
+from .evaluation.processors import get_processor
+from .evaluation.processors.processor import Processor
+from .evaluation.processors.processor_registry import register_processor
 from .features import (
-    features,
     Array2D,
     Array3D,
     Array4D,
@@ -55,10 +61,10 @@ from .features import (
     Translation,
     TranslationVariableLanguages,
     Value,
+    features,
 )
 from .fingerprint import is_caching_enabled, set_caching_enabled
 from .info import DatasetInfo, MetricInfo, MongoDBClient
-from .prompt import Prompt, Prompts, PromptResult
 from .inspect import (
     get_dataset_config_names,
     get_dataset_infos,
@@ -72,6 +78,8 @@ from .iterable_dataset import IterableDataset
 from .keyhash import KeyHasher
 from .load import import_main_class, load_dataset, load_dataset_builder, load_from_disk, load_metric, prepare_module
 from .metric import Metric
+from .operations.aggregate import aggregating
+from .prompt import Prompt, PromptResult, Prompts
 from .splits import (
     NamedSplit,
     NamedSplitAll,
@@ -83,20 +91,8 @@ from .splits import (
     SubSplitInfo,
     percent,
 )
-from .utils import *
-from .enums import (
-    PLMType,
-    SettingType,
-    SignalType,
-    PromptShape
-)
-
-from .evaluation.processors import get_processor
-from .evaluation.processors.processor_registry import register_processor
-from .evaluation.processors.processor import Processor
-from .evaluation.loaders import get_loader
-from .constants import *
 from .tasks.task_info import Task, TaskCategory, TaskType, get_task_categories
-from .operations.aggregate import aggregating
+from .utils import *
+
 
 SCRIPTS_VERSION = "master" if _version.parse(__version__).is_devrelease else __version__

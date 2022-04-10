@@ -14,7 +14,9 @@ from datalabs.utils.filelock import FileLock
 class ExtractManager:
     def __init__(self, cache_dir=None):
         self.extract_dir = (
-            os.path.join(cache_dir, config.EXTRACTED_DATASETS_DIR) if cache_dir else config.EXTRACTED_DATASETS_PATH
+            os.path.join(cache_dir, config.EXTRACTED_DATASETS_DIR)
+            if cache_dir
+            else config.EXTRACTED_DATASETS_PATH
         )
         self.extractor = Extractor
 
@@ -28,11 +30,14 @@ class ExtractManager:
 
     def _do_extract(self, output_path, force_extract):
         return force_extract or (
-            not os.path.isfile(output_path) and not (os.path.isdir(output_path) and os.listdir(output_path))
+            not os.path.isfile(output_path)
+            and not (os.path.isdir(output_path) and os.listdir(output_path))
         )
 
     def extract(self, input_path, force_extract=False):
-        is_extractable, extractor = self.extractor.is_extractable(input_path, return_extractor=True)
+        is_extractable, extractor = self.extractor.is_extractable(
+            input_path, return_extractor=True
+        )
         if not is_extractable:
             return input_path
         output_path = self._get_output_path(input_path)
@@ -159,7 +164,14 @@ class ZstdExtractor:
 
 class Extractor:
     #  Put zip file to the last, b/c it is possible wrongly detected as zip (I guess it means: as tar or gzip)
-    extractors = [TarExtractor, GzipExtractor, ZipExtractor, XzExtractor, RarExtractor, ZstdExtractor]
+    extractors = [
+        TarExtractor,
+        GzipExtractor,
+        ZipExtractor,
+        XzExtractor,
+        RarExtractor,
+        ZstdExtractor,
+    ]
 
     @classmethod
     def is_extractable(cls, path, return_extractor=False):

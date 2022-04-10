@@ -28,27 +28,29 @@ processed the dataset as well:
  - number of examples (in each split)
  - etc.
 """
+from __future__ import annotations
+
 
 import copy
 import dataclasses
+import hashlib  # for mdb ids of prompts
 import json
 import os
 import re
-import requests
-import pymongo
 from dataclasses import asdict, dataclass, field
-from typing import List, Optional, Union, Any
+from typing import Any, Optional, Union
 
-from datalabs.tasks.text_classification import TextClassification
-from datalabs.tasks.text_classification import TopicClassification
-from datalabs.tasks.sequence_labeling import SequenceLabeling
-from datalabs.tasks.text_matching import TextMatching
-from datalabs.tasks.span_text_classification import SpanTextClassification
+import pymongo
+import requests
+
 from datalabs.prompt import Prompt
-import hashlib  # for mdb ids of prompts
+from datalabs.tasks.sequence_labeling import SequenceLabeling
+from datalabs.tasks.span_text_classification import SpanTextClassification
+from datalabs.tasks.text_classification import TextClassification, TopicClassification
+from datalabs.tasks.text_matching import TextMatching
 
 from . import config
-from .features import Features, Value, ClassLabel
+from .features import ClassLabel, Features, Value
 from .splits import SplitDict
 from .tasks import TaskTemplate, task_template_from_dict
 from .utils import Version
@@ -57,13 +59,6 @@ from .utils.py_utils import unique_values
 
 
 logger = get_logger(__name__)
-
-
-
-
-
-
-
 
 
 @dataclass
@@ -99,7 +94,9 @@ class PostProcessedInfo:
     @classmethod
     def from_dict(cls, post_processed_info_dict: dict) -> "PostProcessedInfo":
         field_names = set(f.name for f in dataclasses.fields(cls))
-        return cls(**{k: v for k, v in post_processed_info_dict.items() if k in field_names})
+        return cls(
+            **{k: v for k, v in post_processed_info_dict.items() if k in field_names}
+        )
 
 
 @dataclass
@@ -210,12 +207,9 @@ class Popularity:
 #                 self.id = hashlib.md5(self.template.encode()).hexdigest()
 
 
-
-
-
 class MongoDBClientCore:
     def __init__(self, cluster: str):
-        assert (re.match(r'cluster[01]', cluster))
+        assert re.match(r"cluster[01]", cluster)
 
         self.cluster = cluster
         self.url = ""
@@ -249,7 +243,9 @@ class MongoDBClient:
         target.drop()
 
     def query_metadata(self, dataset_name: str):
-        return self.__query("metadata", "dataset_metadata", {"dataset_name": dataset_name})
+        return self.__query(
+            "metadata", "dataset_metadata", {"dataset_name": dataset_name}
+        )
 
     def insert_metadata(self, metadata: dict):
         self.__insert("metadata", "dev_dataset_metadata", metadata)
@@ -293,7 +289,7 @@ class DatasetInfo:
     features_dataset: Optional[Features] = None
     post_processed: Optional[PostProcessedInfo] = None
     supervised_keys: Optional[SupervisedKeysData] = None
-    task_templates: Optional[List[TaskTemplate]] = None
+    task_templates: Optional[list[TaskTemplate]] = None
 
     # Set later by the builder
     builder_name: Optional[str] = None
@@ -309,7 +305,7 @@ class DatasetInfo:
     # size_in_bytes: Optional[int] = None
 
     # Newly Added
-    prompts: List[Prompt] = None
+    prompts: list[Prompt] = None
 
     # Needed by MongoDB
     # string
@@ -330,10 +326,14 @@ class DatasetInfo:
     multilinguality: Optional[str] = None
     transformation: Optional[str] = None
     # other type
-    languages: Optional[List] = field(default_factory=list)
+    languages: Optional[list] = field(default_factory=list)
     model_ids: Optional[list] = field(default_factory=list)
-    speaker_demographic: Optional[SpeakerDemographic] = field(default_factory=SpeakerDemographic)
-    annotator_demographic: Optional[AnnotatorDemographic] = field(default_factory=AnnotatorDemographic)
+    speaker_demographic: Optional[SpeakerDemographic] = field(
+        default_factory=SpeakerDemographic
+    )
+    annotator_demographic: Optional[AnnotatorDemographic] = field(
+        default_factory=AnnotatorDemographic
+    )
     speech_situation: Optional[SpeechSituation] = field(default_factory=SpeechSituation)
     size: Optional[SizeInfo] = field(default_factory=SizeInfo)
     popularity: Optional[Popularity] = field(default_factory=Popularity)
@@ -342,7 +342,9 @@ class DatasetInfo:
         # Convert back to the correct classes when we reload from dict
         if self.features is not None and not isinstance(self.features, Features):
             self.features = Features.from_dict(self.features)
-        if self.post_processed is not None and not isinstance(self.post_processed, PostProcessedInfo):
+        if self.post_processed is not None and not isinstance(
+            self.post_processed, PostProcessedInfo
+        ):
             self.post_processed = PostProcessedInfo.from_dict(self.post_processed)
         if self.version is not None and not isinstance(self.version, Version):
             if isinstance(self.version, str):
@@ -351,7 +353,9 @@ class DatasetInfo:
                 self.version = Version.from_dict(self.version)
         if self.splits is not None and not isinstance(self.splits, SplitDict):
             self.splits = SplitDict.from_split_dict(self.splits)
-        if self.supervised_keys is not None and not isinstance(self.supervised_keys, SupervisedKeysData):
+        if self.supervised_keys is not None and not isinstance(
+            self.supervised_keys, SupervisedKeysData
+        ):
             if isinstance(self.supervised_keys, (tuple, list)):
                 self.supervised_keys = SupervisedKeysData(*self.supervised_keys)
             else:
@@ -361,10 +365,14 @@ class DatasetInfo:
         if self.task_templates is not None:
             if isinstance(self.task_templates, (list, tuple)):
                 templates = [
-                    template if isinstance(template, TaskTemplate) else task_template_from_dict(template)
+                    template
+                    if isinstance(template, TaskTemplate)
+                    else task_template_from_dict(template)
                     for template in self.task_templates
                 ]
-                self.task_templates = [template for template in templates if template is not None]
+                self.task_templates = [
+                    template for template in templates if template is not None
+                ]
             elif isinstance(self.task_templates, TaskTemplate):
                 self.task_templates = [self.task_templates]
             else:
@@ -384,7 +392,7 @@ class DatasetInfo:
                             text_column=template.text_column,
                             label_column=template.label_column,
                             task=template.task,
-                            labels=labels
+                            labels=labels,
                         )
                     if isinstance(template, TopicClassification):
                         labels = None
@@ -406,7 +414,7 @@ class DatasetInfo:
                             text2_column=template.text2_column,
                             label_column=template.label_column,
                             task=template.task,
-                            labels=labels
+                            labels=labels,
                         )
                     if isinstance(template, SpanTextClassification):
                         labels = None
@@ -417,16 +425,19 @@ class DatasetInfo:
                             text_column=template.text_column,
                             label_column=template.label_column,
                             task=template.task,
-                            labels=labels
+                            labels=labels,
                         )
                     if isinstance(template, SequenceLabeling):
                         labels = None
                         # print(self.features)
                         # print(self.features[template.tags_column].feature)
-                        if isinstance(self.features[template.tags_column].feature, ClassLabel):
+                        if isinstance(
+                            self.features[template.tags_column].feature, ClassLabel
+                        ):
                             labels = self.features[template.tags_column].feature.names
                         self.task_templates[idx] = SequenceLabeling(
-                            tokens_column=template.tokens_column, tags_column=template.tags_column,
+                            tokens_column=template.tokens_column,
+                            tags_column=template.tags_column,
                             task=template.task,
                             labels=labels,
                         )
@@ -488,7 +499,9 @@ class DatasetInfo:
 
         Also save the license separately in LICENCE.
         """
-        with open(os.path.join(dataset_info_dir, config.DATASET_INFO_FILENAME), "wb") as f:
+        with open(
+            os.path.join(dataset_info_dir, config.DATASET_INFO_FILENAME), "wb"
+        ) as f:
             self._dump_info(f)
 
         with open(os.path.join(dataset_info_dir, config.LICENSE_FILENAME), "wb") as f:
@@ -506,9 +519,13 @@ class DatasetInfo:
         file.write(self.license.encode("utf-8"))
 
     @classmethod
-    def from_merge(cls, dataset_infos: List["DatasetInfo"]):
-        dataset_infos = [dset_info.copy() for dset_info in dataset_infos if dset_info is not None]
-        description = "\n\n".join(unique_values(info.description for info in dataset_infos))
+    def from_merge(cls, dataset_infos: list["DatasetInfo"]):
+        dataset_infos = [
+            dset_info.copy() for dset_info in dataset_infos if dset_info is not None
+        ]
+        description = "\n\n".join(
+            unique_values(info.description for info in dataset_infos)
+        )
         citation = "\n\n".join(unique_values(info.citation for info in dataset_infos))
         homepage = "\n\n".join(unique_values(info.homepage for info in dataset_infos))
         license = "\n\n".join(unique_values(info.license for info in dataset_infos))
@@ -517,9 +534,15 @@ class DatasetInfo:
         task_templates = None
 
         # Find common task templates across all dataset infos
-        all_task_templates = [info.task_templates for info in dataset_infos if info.task_templates is not None]
+        all_task_templates = [
+            info.task_templates
+            for info in dataset_infos
+            if info.task_templates is not None
+        ]
         if len(all_task_templates) > 1:
-            task_templates = list(set(all_task_templates[0]).intersection(*all_task_templates[1:]))
+            task_templates = list(
+                set(all_task_templates[0]).intersection(*all_task_templates[1:])
+            )
         elif len(all_task_templates):
             task_templates = list(set(all_task_templates[0]))
         # If no common task templates found, replace empty list with None
@@ -550,9 +573,15 @@ class DatasetInfo:
         """
         logger.info(f"Loading Dataset info from {dataset_info_dir}")
         if not dataset_info_dir:
-            raise ValueError("Calling DatasetInfo.from_directory() with undefined dataset_info_dir.")
+            raise ValueError(
+                "Calling DatasetInfo.from_directory() with undefined dataset_info_dir."
+            )
 
-        with open(os.path.join(dataset_info_dir, config.DATASET_INFO_FILENAME), "r", encoding="utf-8") as f:
+        with open(
+            os.path.join(dataset_info_dir, config.DATASET_INFO_FILENAME),
+            "r",
+            encoding="utf-8",
+        ) as f:
             dataset_info_dict = json.load(f)
         return cls.from_dict(dataset_info_dict)
 
@@ -572,7 +601,12 @@ class DatasetInfo:
         )
 
     def copy(self) -> "DatasetInfo":
-        protect_list = ["download_size", "post_processing_size", "dataset_size", "size_in_bytes"]
+        protect_list = [
+            "download_size",
+            "post_processing_size",
+            "dataset_size",
+            "size_in_bytes",
+        ]
         argv = filter(lambda item: item[0] not in protect_list, self.__dict__.items())
         return self.__class__(**{k: copy.deepcopy(v) for k, v in argv})
 
@@ -580,20 +614,34 @@ class DatasetInfo:
 class DatasetInfosDict(dict):
     def write_to_directory(self, dataset_infos_dir, overwrite=False):
         total_dataset_infos = {}
-        dataset_infos_path = os.path.join(dataset_infos_dir, config.DATASETDICT_INFOS_FILENAME)
+        dataset_infos_path = os.path.join(
+            dataset_infos_dir, config.DATASETDICT_INFOS_FILENAME
+        )
         if os.path.exists(dataset_infos_path) and not overwrite:
-            logger.info(f"Dataset Infos already exists in {dataset_infos_dir}. Completing it with new infos.")
+            logger.info(
+                f"Dataset Infos already exists in {dataset_infos_dir}. Completing it with new infos."
+            )
             total_dataset_infos = self.from_directory(dataset_infos_dir)
         else:
             logger.info(f"Writing new Dataset Infos in {dataset_infos_dir}")
         total_dataset_infos.update(self)
         with open(dataset_infos_path, "w", encoding="utf-8") as f:
-            json.dump({config_name: asdict(dset_info) for config_name, dset_info in total_dataset_infos.items()}, f)
+            json.dump(
+                {
+                    config_name: asdict(dset_info)
+                    for config_name, dset_info in total_dataset_infos.items()
+                },
+                f,
+            )
 
     @classmethod
     def from_directory(cls, dataset_infos_dir):
         logger.info(f"Loading Dataset Infos from {dataset_infos_dir}")
-        with open(os.path.join(dataset_infos_dir, config.DATASETDICT_INFOS_FILENAME), "r", encoding="utf-8") as f:
+        with open(
+            os.path.join(dataset_infos_dir, config.DATASETDICT_INFOS_FILENAME),
+            "r",
+            encoding="utf-8",
+        ) as f:
             dataset_infos_dict = {
                 config_name: DatasetInfo.from_dict(dataset_info_dict)
                 for config_name, dataset_info_dict in json.load(f).items()
@@ -618,8 +666,8 @@ class MetricInfo:
     inputs_description: str = field(default_factory=str)
     homepage: str = field(default_factory=str)
     license: str = field(default_factory=str)
-    codebase_urls: List[str] = field(default_factory=list)
-    reference_urls: List[str] = field(default_factory=list)
+    codebase_urls: list[str] = field(default_factory=list)
+    reference_urls: list[str] = field(default_factory=list)
     streamable: bool = False
     format: Optional[str] = None
 
@@ -630,7 +678,9 @@ class MetricInfo:
 
     def __post_init__(self):
         if "predictions" not in self.features:
-            raise ValueError("Need to have at least a 'predictions' field in 'features'.")
+            raise ValueError(
+                "Need to have at least a 'predictions' field in 'features'."
+            )
         if self.format is not None:
             for key, value in self.features.items():
                 if not isinstance(value, Value):
@@ -643,10 +693,18 @@ class MetricInfo:
         """Write `MetricInfo` as JSON to `metric_info_dir`.
         Also save the license separately in LICENCE.
         """
-        with open(os.path.join(metric_info_dir, config.METRIC_INFO_FILENAME), "w", encoding="utf-8") as f:
+        with open(
+            os.path.join(metric_info_dir, config.METRIC_INFO_FILENAME),
+            "w",
+            encoding="utf-8",
+        ) as f:
             json.dump(asdict(self), f)
 
-        with open(os.path.join(metric_info_dir, config.LICENSE_FILENAME), "w", encoding="utf-8") as f:
+        with open(
+            os.path.join(metric_info_dir, config.LICENSE_FILENAME),
+            "w",
+            encoding="utf-8",
+        ) as f:
             f.write(self.license)
 
     @classmethod
@@ -659,9 +717,15 @@ class MetricInfo:
         """
         logger.info(f"Loading Metric info from {metric_info_dir}")
         if not metric_info_dir:
-            raise ValueError("Calling MetricInfo.from_directory() with undefined metric_info_dir.")
+            raise ValueError(
+                "Calling MetricInfo.from_directory() with undefined metric_info_dir."
+            )
 
-        with open(os.path.join(metric_info_dir, config.METRIC_INFO_FILENAME), "r", encoding="utf-8") as f:
+        with open(
+            os.path.join(metric_info_dir, config.METRIC_INFO_FILENAME),
+            "r",
+            encoding="utf-8",
+        ) as f:
             metric_info_dict = json.load(f)
         return cls.from_dict(metric_info_dict)
 
@@ -671,10 +735,10 @@ class MetricInfo:
         return cls(**{k: v for k, v in metric_info_dict.items() if k in field_names})
 
 
-
 """
 The following is introduced for explainaboard
 """
+
 
 @dataclass
 class Table:
@@ -725,7 +789,7 @@ class BucketPerformance(Performance):
 @dataclass
 class Result:
     overall: Any = None
-    calibration: List[Performance] = None
+    calibration: list[Performance] = None
     fine_grained: Any = None
     is_print_case: bool = True
     is_print_confidence_interval: bool = True
@@ -751,7 +815,7 @@ class SysOutputInfo:
     model_name: Optional[str] = None
     dataset_name: Optional[str] = None
     sub_dataset_name: Optional[str] = None
-    metric_names: Optional[List[str]] = None
+    metric_names: Optional[list[str]] = None
     reload_stat: bool = True
     # language : str = "English"
 
@@ -824,4 +888,3 @@ class SysOutputInfo:
 
     def copy(self) -> "SysOutputInfo":
         return self.__class__(**{k: copy.deepcopy(v) for k, v in self.__dict__.items()})
-

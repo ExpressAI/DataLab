@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+from collections.abc import Callable
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and DataLab Authors.
 #
@@ -14,7 +17,7 @@
 import os
 from functools import partial
 from pathlib import Path, PurePath
-from typing import Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import Optional, Union
 
 import huggingface_hub
 from fsspec.implementations.local import LocalFileSystem
@@ -39,7 +42,9 @@ class Url(str):
     pass
 
 
-SPLIT_PATTERN_SHARDED = "data/{split}-[0-9][0-9][0-9][0-9][0-9]-of-[0-9][0-9][0-9][0-9][0-9].*"
+SPLIT_PATTERN_SHARDED = (
+    "data/{split}-[0-9][0-9][0-9][0-9][0-9]-of-[0-9][0-9][0-9][0-9][0-9].*"
+)
 
 DEFAULT_PATTERNS_SPLIT_IN_FILENAME = {
     str(Split.TRAIN): ["**train*"],
@@ -64,14 +69,24 @@ ALL_DEFAULT_PATTERNS = [
     DEFAULT_PATTERNS_ALL,
 ]
 WILDCARD_CHARACTERS = "*[]"
-FILES_TO_IGNORE = ["README.md", "config.json", "dataset_infos.json", "dummy_data.zip", "dataset_dict.json"]
+FILES_TO_IGNORE = [
+    "README.md",
+    "config.json",
+    "dataset_infos.json",
+    "dummy_data.zip",
+    "dataset_dict.json",
+]
 
 
 def contains_wildcards(pattern: str) -> bool:
-    return any(wilcard_character in pattern for wilcard_character in WILDCARD_CHARACTERS)
+    return any(
+        wilcard_character in pattern for wilcard_character in WILDCARD_CHARACTERS
+    )
 
 
-def sanitize_patterns(patterns: Union[Dict, List, str]) -> Dict[str, Union[List[str], "DataFilesList"]]:
+def sanitize_patterns(
+    patterns: Union[dict, list, str]
+) -> dict[str, Union[list[str], "DataFilesList"]]:
     """
     Take the data_files patterns from the user, and format them into a dictionary.
     Each key is the name of the split, and each value is a list of data files patterns (paths or urls).
@@ -81,7 +96,10 @@ def sanitize_patterns(patterns: Union[Dict, List, str]) -> Dict[str, Union[List[
         patterns: dictionary of split_name -> list_of _atterns
     """
     if isinstance(patterns, dict):
-        return {str(key): value if isinstance(value, list) else [value] for key, value in patterns.items()}
+        return {
+            str(key): value if isinstance(value, list) else [value]
+            for key, value in patterns.items()
+        }
     elif isinstance(patterns, str):
         return {DEFAULT_SPLIT: [patterns]}
     elif isinstance(patterns, list):
@@ -90,7 +108,9 @@ def sanitize_patterns(patterns: Union[Dict, List, str]) -> Dict[str, Union[List[
         return {DEFAULT_SPLIT: list(patterns)}
 
 
-def _get_data_files_patterns(pattern_resolver: Callable[[str], List[PurePath]]) -> Dict[str, List[str]]:
+def _get_data_files_patterns(
+    pattern_resolver: Callable[[str], list[PurePath]]
+) -> dict[str, list[str]]:
     """
     Get the default pattern from a directory or repository by testing all the supported patterns.
     The first patterns to return a non-empty list of data files is returned.
@@ -103,7 +123,9 @@ def _get_data_files_patterns(pattern_resolver: Callable[[str], List[PurePath]]) 
         data_files = pattern_resolver(pattern)
         if len(data_files) > 0:
             data_files = [p.as_posix() for p in data_files]
-            splits: Set[str] = set(string_to_dict(p, split_pattern)["split"] for p in data_files)
+            splits: set[str] = set(
+                string_to_dict(p, split_pattern)["split"] for p in data_files
+            )
             return {split: [split_pattern.format(split=split)] for split in splits}
     # then check the default patterns based on train/valid/test splits
     for patterns_dict in ALL_DEFAULT_PATTERNS:
@@ -119,12 +141,14 @@ def _get_data_files_patterns(pattern_resolver: Callable[[str], List[PurePath]]) 
                 pass
         if non_empty_splits:
             return {split: patterns_dict[split] for split in non_empty_splits}
-    raise FileNotFoundError(f"Couldn't resolve pattern {pattern} with resolver {pattern_resolver}")
+    raise FileNotFoundError(
+        f"Couldn't resolve pattern {pattern} with resolver {pattern_resolver}"
+    )
 
 
 def _resolve_single_pattern_locally(
-    base_path: str, pattern: str, allowed_extensions: Optional[List[str]] = None
-) -> List[Path]:
+    base_path: str, pattern: str, allowed_extensions: Optional[list[str]] = None
+) -> list[Path]:
     """
     Return the absolute paths to all the files that match the given patterns.
     It also supports absolute paths in patterns.
@@ -133,7 +157,9 @@ def _resolve_single_pattern_locally(
     pattern = os.path.join(base_path, pattern)
     data_files_ignore = FILES_TO_IGNORE
     fs = LocalFileSystem()
-    glob_iter = [PurePath(filepath) for filepath in fs.glob(pattern) if fs.isfile(filepath)]
+    glob_iter = [
+        PurePath(filepath) for filepath in fs.glob(pattern) if fs.isfile(filepath)
+    ]
     matched_paths = [
         Path(filepath).resolve()
         for filepath in glob_iter
@@ -161,8 +187,8 @@ def _resolve_single_pattern_locally(
 
 
 def resolve_patterns_locally_or_by_urls(
-    base_path: str, patterns: List[str], allowed_extensions: Optional[List[str]] = None
-) -> List[Union[Path, Url]]:
+    base_path: str, patterns: list[str], allowed_extensions: Optional[list[str]] = None
+) -> list[Union[Path, Url]]:
     """
     Resolve the paths and URLs of the data files from the patterns passed by the user.
     URLs are just returned as is.
@@ -206,7 +232,9 @@ def resolve_patterns_locally_or_by_urls(
         if is_remote_url(pattern):
             data_files.append(Url(pattern))
         else:
-            for path in _resolve_single_pattern_locally(base_path, pattern, allowed_extensions):
+            for path in _resolve_single_pattern_locally(
+                base_path, pattern, allowed_extensions
+            ):
                 data_files.append(path)
 
     if not data_files:
@@ -217,7 +245,7 @@ def resolve_patterns_locally_or_by_urls(
     return data_files
 
 
-def get_patterns_locally(base_path: str) -> Dict[str, List[str]]:
+def get_patterns_locally(base_path: str) -> dict[str, list[str]]:
     """
     Get the default pattern from a directory testing all the supported patterns.
     The first patterns to return a non-empty list of data files is returned.
@@ -305,17 +333,21 @@ def get_patterns_locally(base_path: str) -> Dict[str, List[str]]:
     try:
         return _get_data_files_patterns(resolver)
     except FileNotFoundError:
-        raise FileNotFoundError(f"The directory at {base_path} doesn't contain any data file") from None
+        raise FileNotFoundError(
+            f"The directory at {base_path} doesn't contain any data file"
+        ) from None
 
 
 def _resolve_single_pattern_in_dataset_repository(
     dataset_info: huggingface_hub.hf_api.DatasetInfo,
     pattern: str,
     allowed_extensions: Optional[list] = None,
-) -> List[PurePath]:
+) -> list[PurePath]:
     data_files_ignore = FILES_TO_IGNORE
     fs = HfFileSystem(repo_info=dataset_info)
-    glob_iter = [PurePath(filepath) for filepath in fs.glob(pattern) if fs.isfile(filepath)]
+    glob_iter = [
+        PurePath(filepath) for filepath in fs.glob(pattern) if fs.isfile(filepath)
+    ]
     matched_paths = [
         filepath
         for filepath in glob_iter
@@ -344,9 +376,9 @@ def _resolve_single_pattern_in_dataset_repository(
 
 def resolve_patterns_in_dataset_repository(
     dataset_info: huggingface_hub.hf_api.DatasetInfo,
-    patterns: List[str],
+    patterns: list[str],
     allowed_extensions: Optional[list] = None,
-) -> List[Url]:
+) -> list[Url]:
     """
     Resolve the URLs of the data files from the patterns passed by the user.
 
@@ -385,10 +417,18 @@ def resolve_patterns_in_dataset_repository(
     Returns:
         List[Url]: List of URLs to the files in the dataset repository that match the patterns.
     """
-    data_files_urls: List[Url] = []
+    data_files_urls: list[Url] = []
     for pattern in patterns:
-        for rel_path in _resolve_single_pattern_in_dataset_repository(dataset_info, pattern, allowed_extensions):
-            data_files_urls.append(Url(hf_hub_url(dataset_info.id, rel_path.as_posix(), revision=dataset_info.sha)))
+        for rel_path in _resolve_single_pattern_in_dataset_repository(
+            dataset_info, pattern, allowed_extensions
+        ):
+            data_files_urls.append(
+                Url(
+                    hf_hub_url(
+                        dataset_info.id, rel_path.as_posix(), revision=dataset_info.sha
+                    )
+                )
+            )
     if not data_files_urls:
         error_msg = f"Unable to resolve any data file that matches {patterns} in dataset repository {dataset_info.id}"
         if allowed_extensions is not None:
@@ -397,7 +437,9 @@ def resolve_patterns_in_dataset_repository(
     return data_files_urls
 
 
-def get_patterns_in_dataset_repository(dataset_info: huggingface_hub.hf_api.DatasetInfo) -> Dict[str, List[str]]:
+def get_patterns_in_dataset_repository(
+    dataset_info: huggingface_hub.hf_api.DatasetInfo,
+) -> dict[str, list[str]]:
     """
     Get the default pattern from a repository by testing all the supported patterns.
     The first patterns to return a non-empty list of data files is returned.
@@ -492,7 +534,7 @@ def get_patterns_in_dataset_repository(dataset_info: huggingface_hub.hf_api.Data
 
 def _get_single_origin_metadata_locally_or_by_urls(
     data_file: Union[Path, Url], use_auth_token: Optional[Union[bool, str]] = None
-) -> Tuple[str]:
+) -> tuple[str]:
     if isinstance(data_file, Url):
         data_file = str(data_file)
         return (request_etag(data_file, use_auth_token=use_auth_token),)
@@ -502,10 +544,15 @@ def _get_single_origin_metadata_locally_or_by_urls(
 
 
 def _get_origin_metadata_locally_or_by_urls(
-    data_files: List[Union[Path, Url]], max_workers=64, use_auth_token: Optional[Union[bool, str]] = None
-) -> Tuple[str]:
+    data_files: list[Union[Path, Url]],
+    max_workers=64,
+    use_auth_token: Optional[Union[bool, str]] = None,
+) -> tuple[str]:
     return thread_map(
-        partial(_get_single_origin_metadata_locally_or_by_urls, use_auth_token=use_auth_token),
+        partial(
+            _get_single_origin_metadata_locally_or_by_urls,
+            use_auth_token=use_auth_token,
+        ),
         data_files,
         max_workers=max_workers,
         tqdm_class=tqdm,
@@ -532,32 +579,40 @@ class DataFilesList(List[Union[Path, Url]]):
     This is useful for caching Dataset objects that are obtained from a list of data files.
     """
 
-    def __init__(self, data_files: List[Union[Path, Url]], origin_metadata: List[Tuple[str]]):
+    def __init__(
+        self, data_files: list[Union[Path, Url]], origin_metadata: list[tuple[str]]
+    ):
         super().__init__(data_files)
         self.origin_metadata = origin_metadata
 
     @classmethod
     def from_hf_repo(
         cls,
-        patterns: List[str],
+        patterns: list[str],
         dataset_info: huggingface_hub.hf_api.DatasetInfo,
-        allowed_extensions: Optional[List[str]] = None,
+        allowed_extensions: Optional[list[str]] = None,
     ) -> "DataFilesList":
-        data_files = resolve_patterns_in_dataset_repository(dataset_info, patterns, allowed_extensions)
+        data_files = resolve_patterns_in_dataset_repository(
+            dataset_info, patterns, allowed_extensions
+        )
         origin_metadata = [(dataset_info.id, dataset_info.sha) for _ in patterns]
         return cls(data_files, origin_metadata)
 
     @classmethod
     def from_local_or_remote(
         cls,
-        patterns: List[str],
+        patterns: list[str],
         base_path: Optional[str] = None,
-        allowed_extensions: Optional[List[str]] = None,
+        allowed_extensions: Optional[list[str]] = None,
         use_auth_token: Optional[Union[bool, str]] = None,
     ) -> "DataFilesList":
         base_path = base_path if base_path is not None else str(Path().resolve())
-        data_files = resolve_patterns_locally_or_by_urls(base_path, patterns, allowed_extensions)
-        origin_metadata = _get_origin_metadata_locally_or_by_urls(data_files, use_auth_token=use_auth_token)
+        data_files = resolve_patterns_locally_or_by_urls(
+            base_path, patterns, allowed_extensions
+        )
+        origin_metadata = _get_origin_metadata_locally_or_by_urls(
+            data_files, use_auth_token=use_auth_token
+        )
         return cls(data_files, origin_metadata)
 
 
@@ -580,9 +635,9 @@ class DataFilesDict(Dict[str, DataFilesList]):
     @classmethod
     def from_local_or_remote(
         cls,
-        patterns: Dict[str, Union[List[str], DataFilesList]],
+        patterns: dict[str, Union[list[str], DataFilesList]],
         base_path: Optional[str] = None,
-        allowed_extensions: Optional[List[str]] = None,
+        allowed_extensions: Optional[list[str]] = None,
         use_auth_token: Optional[Union[bool, str]] = None,
     ) -> "DataFilesDict":
         out = cls()
@@ -602,15 +657,17 @@ class DataFilesDict(Dict[str, DataFilesList]):
     @classmethod
     def from_hf_repo(
         cls,
-        patterns: Dict[str, Union[List[str], DataFilesList]],
+        patterns: dict[str, Union[list[str], DataFilesList]],
         dataset_info: huggingface_hub.hf_api.DatasetInfo,
-        allowed_extensions: Optional[List[str]] = None,
+        allowed_extensions: Optional[list[str]] = None,
     ) -> "DataFilesDict":
         out = cls()
         for key, patterns_for_key in patterns.items():
             out[key] = (
                 DataFilesList.from_hf_repo(
-                    patterns_for_key, dataset_info=dataset_info, allowed_extensions=allowed_extensions
+                    patterns_for_key,
+                    dataset_info=dataset_info,
+                    allowed_extensions=allowed_extensions,
                 )
                 if not isinstance(patterns_for_key, DataFilesList)
                 else patterns_for_key

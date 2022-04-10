@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and the TensorFlow Datasets Authors, DataLab Authors.
 #
@@ -11,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import TYPE_CHECKING, Any, List, Optional, TypeVar
+from typing import TYPE_CHECKING, Any, Optional, TypeVar
 
 import numpy as np
 
@@ -31,7 +33,9 @@ DatasetType = TypeVar("DatasetType", "Dataset", "IterableDataset")
 
 
 def interleave_datasets(
-    datasets: List[DatasetType], probabilities: Optional[List[float]] = None, seed: Optional[int] = None
+    datasets: list[DatasetType],
+    probabilities: Optional[list[float]] = None,
+    seed: Optional[int] = None,
 ) -> DatasetType:
     """
     Interleave several datalab (sources) into a single dataset.
@@ -96,7 +100,9 @@ def interleave_datasets(
             f"Expected a list Dataset objects or a list of IterableDataset objects, but first element is a {type(datasets[0])}"
         )
     for dataset in datasets[1:]:
-        if (map_style and not isinstance(dataset, Dataset)) or (iterable and not isinstance(dataset, IterableDataset)):
+        if (map_style and not isinstance(dataset, Dataset)) or (
+            iterable and not isinstance(dataset, IterableDataset)
+        ):
             raise ValueError(
                 f"Unable to interleave a {type(datasets[0])} with a {type(dataset)}. Expected a list of Dataset objects or a list of IterableDataset objects."
             )
@@ -107,8 +113,8 @@ def interleave_datasets(
 
 
 def _interleave_map_style_datasets(
-    datasets: List["Dataset"],
-    probabilities: Optional[List[float]] = None,
+    datasets: list["Dataset"],
+    probabilities: Optional[list[float]] = None,
     seed: Optional[int] = None,
     info: Optional[Any] = None,
     split: Optional[Any] = None,
@@ -139,7 +145,9 @@ def _interleave_map_style_datasets(
     format = datasets[0].format
     if any(dset.format != format for dset in datasets):
         format = {}
-        logger.info("Some of the datalab have disparate format. Resetting the format of the interleaved dataset.")
+        logger.info(
+            "Some of the datalab have disparate format. Resetting the format of the interleaved dataset."
+        )
 
     # To interleave the datalab, we concatenate them and then we re-order the indices
     concatenated_datasets = concatenate_datasets(datasets, info=info, split=split)
@@ -151,14 +159,21 @@ def _interleave_map_style_datasets(
         # Example: If lengths of the datalab are [3, 4, 5]
         # Then the resulting indices should be [0, 3, 7, 1, 4, 8, 2, 6, 9]
         # Note that we only have 3 examples per dataset since the first dataset ran out of examples
-        indices = (offsets.reshape(1, -1) + np.arange(min(lengths)).reshape(-1, 1)).flatten().tolist()
+        indices = (
+            (offsets.reshape(1, -1) + np.arange(min(lengths)).reshape(-1, 1))
+            .flatten()
+            .tolist()
+        )
     else:
 
         def iter_random_indices():
             """Get an infinite iterator that randomly samples the index of the source to pick examples from."""
             rng = np.random.default_rng(seed)
             while True:
-                yield from (int(i) for i in rng.choice(len(datasets), size=1000, p=probabilities))
+                yield from (
+                    int(i)
+                    for i in rng.choice(len(datasets), size=1000, p=probabilities)
+                )
 
         current_index = [0] * len(datasets)
         indices = []
@@ -173,8 +188,8 @@ def _interleave_map_style_datasets(
 
 
 def _interleave_iterable_datasets(
-    datasets: List["IterableDataset"],
-    probabilities: Optional[List[float]] = None,
+    datasets: list["IterableDataset"],
+    probabilities: Optional[list[float]] = None,
     seed: Optional[int] = None,
     info: Optional[Any] = None,
     split: Optional[Any] = None,
@@ -203,14 +218,18 @@ def _interleave_iterable_datasets(
 
     # Keep individual features formatting
     ex_iterables = [
-        MappedExamplesIterable(d._ex_iterable, d.features.encode_example) if d.features is not None else d._ex_iterable
+        MappedExamplesIterable(d._ex_iterable, d.features.encode_example)
+        if d.features is not None
+        else d._ex_iterable
         for d in datasets
     ]
     # Use cycling or random cycling or sources
     if probabilities is None:
         ex_iterable = CyclingMultiSourcesExamplesIterable(ex_iterables)
     else:
-        ex_iterable = RandomlyCyclingMultiSourcesExamplesIterable(ex_iterables, seed=seed, probabilities=probabilities)
+        ex_iterable = RandomlyCyclingMultiSourcesExamplesIterable(
+            ex_iterables, seed=seed, probabilities=probabilities
+        )
     # Set new info - we reset the features
     if info is None:
         info = DatasetInfo.from_merge([d.info for d in datasets])

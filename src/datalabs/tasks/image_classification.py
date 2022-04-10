@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # coding=utf-8
 # Copyright 2022 The HuggingFace Datasets, DataLab Authors.
 #
@@ -12,7 +14,7 @@
 # limitations under the License.
 
 from dataclasses import dataclass
-from typing import ClassVar, Dict, Optional, Tuple
+from typing import ClassVar, Optional
 
 from ..features import ClassLabel, Features, Value
 from .base import TaskTemplate
@@ -27,7 +29,7 @@ class ImageClassification(TaskTemplate):
     label_schema: ClassVar[Features] = Features({"labels": ClassLabel})
     image_file_path_column: str = "image_file_path"
     label_column: str = "labels"
-    labels: Optional[Tuple[str]] = None
+    labels: Optional[tuple[str]] = None
 
     def __post_init__(self):
         if self.labels:
@@ -39,7 +41,7 @@ class ImageClassification(TaskTemplate):
             self.label_schema["labels"] = ClassLabel(names=self.labels)
 
     @property
-    def column_mapping(self) -> Dict[str, str]:
+    def column_mapping(self) -> dict[str, str]:
         return {
             self.image_file_path_column: "image_file_path",
             self.label_column: "labels",

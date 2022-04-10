@@ -1,10 +1,13 @@
+from __future__ import annotations
+
+from collections.abc import Callable
 import json
 import logging
 import re
 from collections import Counter
 from dataclasses import asdict, dataclass, fields
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple, Type, Union
+from typing import Any, Optional, Union
 
 
 # loading package files: https://stackoverflow.com/a/20885799
@@ -24,7 +27,7 @@ this_url = f"{BASE_REF_URL}/{__file__}"
 logger = logging.getLogger(__name__)
 
 
-def load_json_resource(resource: str) -> Tuple[Any, str]:
+def load_json_resource(resource: str) -> tuple[Any, str]:
     content = pkg_resources.read_text(resources, resource)
     return json.loads(content), f"{BASE_REF_URL}/resources/{resource}"
 
@@ -36,9 +39,17 @@ known_language_codes, known_language_codes_url = load_json_resource("languages.j
 known_licenses, known_licenses_url = load_json_resource("licenses.json")
 known_task_ids, known_task_ids_url = load_json_resource("tasks.json")
 known_creators, known_creators_url = load_json_resource("creators.json")
-known_size_categories, known_size_categories_url = load_json_resource("size_categories.json")
-known_multilingualities, known_multilingualities_url = load_json_resource("multilingualities.json")
-known_source_datasets, known_source_datasets_url = ["original", "extended", r"extended\|.*"], this_url
+known_size_categories, known_size_categories_url = load_json_resource(
+    "size_categories.json"
+)
+known_multilingualities, known_multilingualities_url = load_json_resource(
+    "multilingualities.json"
+)
+known_source_datasets, known_source_datasets_url = [
+    "original",
+    "extended",
+    r"extended\|.*",
+], this_url
 
 
 class NoDuplicateSafeLoader(yaml.SafeLoader):
@@ -67,7 +78,7 @@ def yaml_block_from_readme(path: Path) -> Optional[str]:
     return None
 
 
-def metadata_dict_from_readme(path: Path) -> Optional[Dict[str, List[str]]]:
+def metadata_dict_from_readme(path: Path) -> Optional[dict[str, list[str]]]:
     """Loads a dataset's metadata from the dataset card (REAMDE.md), as a Python dict"""
     yaml_block = yaml_block_from_readme(path=path)
     if yaml_block is None:
@@ -80,8 +91,8 @@ ValidatorOutput = Tuple[List[str], Optional[str]]
 
 
 def tagset_validator(
-    items: Union[List[str], Dict[str, List[str]]],
-    reference_values: List[str],
+    items: Union[list[str], dict[str, list[str]]],
+    reference_values: list[str],
     name: str,
     url: str,
     escape_validation_predicate_fn: Optional[Callable[[Any], bool]] = None,
@@ -90,7 +101,10 @@ def tagset_validator(
     if isinstance(items, list):
         if escape_validation_predicate_fn is not None:
             invalid_values = [
-                v for v in items if not reference_values.match(v) and escape_validation_predicate_fn(v) is False
+                v
+                for v in items
+                if not reference_values.match(v)
+                and escape_validation_predicate_fn(v) is False
             ]
         else:
             invalid_values = [v for v in items if not reference_values.match(v)]
@@ -100,18 +114,24 @@ def tagset_validator(
         if escape_validation_predicate_fn is not None:
             for config_name, values in items.items():
                 invalid_values += [
-                    v for v in values if not reference_values.match(v) and escape_validation_predicate_fn(v) is False
+                    v
+                    for v in values
+                    if not reference_values.match(v)
+                    and escape_validation_predicate_fn(v) is False
                 ]
         else:
             for config_name, values in items.items():
                 invalid_values += [v for v in values if not reference_values.match(v)]
 
     if len(invalid_values) > 0:
-        return [], f"{invalid_values} are not registered tags for '{name}', reference at {url}"
+        return (
+            [],
+            f"{invalid_values} are not registered tags for '{name}', reference at {url}",
+        )
     return items, None
 
 
-def validate_type(value: Any, expected_type: Type):
+def validate_type(value: Any, expected_type: type):
     error_string = ""
     NoneType = type(None)
     if expected_type == NoneType:
@@ -121,12 +141,12 @@ def validate_type(value: Any, expected_type: Type):
             return error_string
     if expected_type == str:
         if not isinstance(value, str):
-            return f"Expected `{str}`. Found value: `{value}` of type: `{type(value)}`.\n"
+            return (
+                f"Expected `{str}`. Found value: `{value}` of type: `{type(value)}`.\n"
+            )
 
         elif isinstance(value, str) and len(value) == 0:
-            return (
-                f"Expected `{str}` with length > 0. Found value: `{value}` of type: `{type(value)}` with length: 0.\n"
-            )
+            return f"Expected `{str}` with length > 0. Found value: `{value}` of type: `{type(value)}` with length: 0.\n"
         else:
             return error_string
     # Add more `elif` statements if primitive type checking is needed
@@ -137,7 +157,9 @@ def validate_type(value: Any, expected_type: Type):
         if expected_type_origin == Union:
             for type_arg in expected_type_args:
                 temp_error_string = validate_type(value, type_arg)
-                if temp_error_string == "":  # at least one type is successfully validated
+                if (
+                    temp_error_string == ""
+                ):  # at least one type is successfully validated
                     return temp_error_string
                 else:
                     if error_string == "":
@@ -177,7 +199,8 @@ def validate_metadata_type(metadata_dict: dict):
     typing_errors = {}
     for field_name, field_value in metadata_dict.items():
         field_type_error = validate_type(
-            metadata_dict[field_name], field_types.get(field_name, Union[List[str], Dict[str, List[str]]])
+            metadata_dict[field_name],
+            field_types.get(field_name, Union[List[str], Dict[str, List[str]]]),
         )
         if field_type_error != "":
             typing_errors[field_name] = field_type_error
@@ -187,35 +210,48 @@ def validate_metadata_type(metadata_dict: dict):
 
 @dataclass
 class DatasetMetadata:
-    annotations_creators: Union[List[str], Dict[str, List[str]]]
-    language_creators: Union[List[str], Dict[str, List[str]]]
-    languages: Union[List[str], Dict[str, List[str]]]
-    licenses: Union[List[str], Dict[str, List[str]]]
-    multilinguality: Union[List[str], Dict[str, List[str]]]
-    pretty_name: Union[str, Dict[str, str]]
-    size_categories: Union[List[str], Dict[str, List[str]]]
-    source_datasets: Union[List[str], Dict[str, List[str]]]
-    task_categories: Union[List[str], Dict[str, List[str]]]
-    task_ids: Union[List[str], Dict[str, List[str]]]
+    annotations_creators: Union[list[str], dict[str, list[str]]]
+    language_creators: Union[list[str], dict[str, list[str]]]
+    languages: Union[list[str], dict[str, list[str]]]
+    licenses: Union[list[str], dict[str, list[str]]]
+    multilinguality: Union[list[str], dict[str, list[str]]]
+    pretty_name: Union[str, dict[str, str]]
+    size_categories: Union[list[str], dict[str, list[str]]]
+    source_datasets: Union[list[str], dict[str, list[str]]]
+    task_categories: Union[list[str], dict[str, list[str]]]
+    task_ids: Union[list[str], dict[str, list[str]]]
     paperswithcode_id: Optional[str] = None
 
     def validate(self):
         validate_metadata_type(metadata_dict=vars(self))
 
-        self.annotations_creators, annotations_creators_errors = self.validate_annotations_creators(
-            self.annotations_creators
-        )
-        self.language_creators, language_creators_errors = self.validate_language_creators(self.language_creators)
+        (
+            self.annotations_creators,
+            annotations_creators_errors,
+        ) = self.validate_annotations_creators(self.annotations_creators)
+        (
+            self.language_creators,
+            language_creators_errors,
+        ) = self.validate_language_creators(self.language_creators)
         self.languages, languages_errors = self.validate_language_codes(self.languages)
         self.licenses, licenses_errors = self.validate_licences(self.licenses)
-        self.multilinguality, multilinguality_errors = self.validate_mulitlinguality(self.multilinguality)
-        self.size_categories, size_categories_errors = self.validate_size_catgeories(self.size_categories)
-        self.source_datasets, source_datasets_errors = self.validate_source_datasets(self.source_datasets)
-        self.task_categories, task_categories_errors = self.validate_task_categories(self.task_categories)
-        self.task_ids, task_ids_errors = self.validate_task_ids(self.task_ids)
-        self.paperswithcode_id, paperswithcode_id_errors = self.validate_paperswithcode_id_errors(
-            self.paperswithcode_id
+        self.multilinguality, multilinguality_errors = self.validate_mulitlinguality(
+            self.multilinguality
         )
+        self.size_categories, size_categories_errors = self.validate_size_catgeories(
+            self.size_categories
+        )
+        self.source_datasets, source_datasets_errors = self.validate_source_datasets(
+            self.source_datasets
+        )
+        self.task_categories, task_categories_errors = self.validate_task_categories(
+            self.task_categories
+        )
+        self.task_ids, task_ids_errors = self.validate_task_ids(self.task_ids)
+        (
+            self.paperswithcode_id,
+            paperswithcode_id_errors,
+        ) = self.validate_paperswithcode_id_errors(self.paperswithcode_id)
 
         errors = {
             "annotations_creators": annotations_creators_errors,
@@ -237,7 +273,10 @@ class DatasetMetadata:
         if len(exception_msg_dict) > 0:
             raise TypeError(
                 "Could not validate the metadata, found the following errors:\n"
-                + "\n".join(f"* field '{fieldname}':\n\t{err}" for fieldname, err in exception_msg_dict.items())
+                + "\n".join(
+                    f"* field '{fieldname}':\n\t{err}"
+                    for fieldname, err in exception_msg_dict.items()
+                )
             )
 
     @classmethod
@@ -277,17 +316,31 @@ class DatasetMetadata:
         return cls(**metada_dict)
 
     @staticmethod
-    def validate_annotations_creators(annotations_creators: Union[List[str], Dict[str, List[str]]]) -> ValidatorOutput:
+    def validate_annotations_creators(
+        annotations_creators: Union[list[str], dict[str, list[str]]]
+    ) -> ValidatorOutput:
         return tagset_validator(
-            annotations_creators, known_creators["annotations"], "annotations_creators", known_creators_url
+            annotations_creators,
+            known_creators["annotations"],
+            "annotations_creators",
+            known_creators_url,
         )
 
     @staticmethod
-    def validate_language_creators(language_creators: Union[List[str], Dict[str, List[str]]]) -> ValidatorOutput:
-        return tagset_validator(language_creators, known_creators["language"], "language_creators", known_creators_url)
+    def validate_language_creators(
+        language_creators: Union[list[str], dict[str, list[str]]]
+    ) -> ValidatorOutput:
+        return tagset_validator(
+            language_creators,
+            known_creators["language"],
+            "language_creators",
+            known_creators_url,
+        )
 
     @staticmethod
-    def validate_language_codes(languages: Union[List[str], Dict[str, List[str]]]) -> ValidatorOutput:
+    def validate_language_codes(
+        languages: Union[list[str], dict[str, list[str]]]
+    ) -> ValidatorOutput:
         return tagset_validator(
             languages,
             known_language_codes.keys(),
@@ -297,7 +350,9 @@ class DatasetMetadata:
         )
 
     @staticmethod
-    def validate_licences(licenses: Union[List[str], Dict[str, List[str]]]) -> ValidatorOutput:
+    def validate_licences(
+        licenses: Union[list[str], dict[str, list[str]]]
+    ) -> ValidatorOutput:
         validated, error = tagset_validator(
             licenses,
             list(known_licenses.keys()),
@@ -308,27 +363,41 @@ class DatasetMetadata:
         return validated, error
 
     @staticmethod
-    def validate_task_categories(task_categories: Union[List[str], Dict[str, List[str]]]) -> ValidatorOutput:
+    def validate_task_categories(
+        task_categories: Union[list[str], dict[str, list[str]]]
+    ) -> ValidatorOutput:
         # TODO: we're currently ignoring all values starting with 'other' as our task taxonomy is bound to change
         #   in the near future and we don't want to waste energy in tagging against a moving taxonomy.
         known_set = list(known_task_ids.keys())
         validated, error = tagset_validator(
-            task_categories, known_set, "task_categories", known_task_ids_url, lambda e: e.startswith("other-")
+            task_categories,
+            known_set,
+            "task_categories",
+            known_task_ids_url,
+            lambda e: e.startswith("other-"),
         )
         return validated, error
 
     @staticmethod
-    def validate_task_ids(task_ids: Union[List[str], Dict[str, List[str]]]) -> ValidatorOutput:
+    def validate_task_ids(
+        task_ids: Union[list[str], dict[str, list[str]]]
+    ) -> ValidatorOutput:
         # TODO: we're currently ignoring all values starting with 'other' as our task taxonomy is bound to change
         #   in the near future and we don't want to waste energy in tagging against a moving taxonomy.
         known_set = [tid for _cat, d in known_task_ids.items() for tid in d["options"]]
         validated, error = tagset_validator(
-            task_ids, known_set, "task_ids", known_task_ids_url, lambda e: "-other-" in e or e.startswith("other-")
+            task_ids,
+            known_set,
+            "task_ids",
+            known_task_ids_url,
+            lambda e: "-other-" in e or e.startswith("other-"),
         )
         return validated, error
 
     @staticmethod
-    def validate_mulitlinguality(multilinguality: Union[List[str], Dict[str, List[str]]]) -> ValidatorOutput:
+    def validate_mulitlinguality(
+        multilinguality: Union[list[str], dict[str, list[str]]]
+    ) -> ValidatorOutput:
         validated, error = tagset_validator(
             multilinguality,
             list(known_multilingualities.keys()),
@@ -339,19 +408,35 @@ class DatasetMetadata:
         return validated, error
 
     @staticmethod
-    def validate_size_catgeories(size_cats: Union[List[str], Dict[str, List[str]]]) -> ValidatorOutput:
-        return tagset_validator(size_cats, known_size_categories, "size_categories", known_size_categories_url)
+    def validate_size_catgeories(
+        size_cats: Union[list[str], dict[str, list[str]]]
+    ) -> ValidatorOutput:
+        return tagset_validator(
+            size_cats,
+            known_size_categories,
+            "size_categories",
+            known_size_categories_url,
+        )
 
     @staticmethod
-    def validate_source_datasets(sources: Union[List[str], Dict[str, List[str]]]) -> ValidatorOutput:
-        return tagset_validator(sources, known_source_datasets, "source_datasets", known_source_datasets_url)
+    def validate_source_datasets(
+        sources: Union[list[str], dict[str, list[str]]]
+    ) -> ValidatorOutput:
+        return tagset_validator(
+            sources, known_source_datasets, "source_datasets", known_source_datasets_url
+        )
 
     @staticmethod
-    def validate_paperswithcode_id_errors(paperswithcode_id: Optional[str]) -> ValidatorOutput:
+    def validate_paperswithcode_id_errors(
+        paperswithcode_id: Optional[str],
+    ) -> ValidatorOutput:
         if paperswithcode_id is None:
             return paperswithcode_id, None
         else:
-            if " " in paperswithcode_id or paperswithcode_id.lower() != paperswithcode_id:
+            if (
+                " " in paperswithcode_id
+                or paperswithcode_id.lower() != paperswithcode_id
+            ):
                 return (
                     None,
                     f"The paperswithcode_id must be lower case and not contain spaces but got {paperswithcode_id}. You can find the paperswithcode_id in the URL of the dataset page on paperswithcode.com.",
@@ -360,10 +445,13 @@ class DatasetMetadata:
                 return paperswithcode_id, None
 
     @staticmethod
-    def validate_pretty_name(pretty_name: Union[str, Dict[str, str]]):
+    def validate_pretty_name(pretty_name: Union[str, dict[str, str]]):
         if isinstance(pretty_name, str):
             if len(pretty_name) == 0:
-                return None, f"The pretty name must have a length greater than 0 but got an empty string."
+                return (
+                    None,
+                    f"The pretty name must have a length greater than 0 but got an empty string.",
+                )
         else:
             error_string = ""
             for key, value in pretty_name.items():

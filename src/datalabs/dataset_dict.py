@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+from collections.abc import Callable
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and DataLab Authors.
 #
@@ -16,11 +19,12 @@ import json
 import os
 import re
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 import fsspec
 import numpy as np
 
+from datalabs import operations
 from datalabs.splits import NamedSplit, Split
 from datalabs.utils.doc_utils import is_documented_by
 
@@ -34,7 +38,7 @@ from .utils import logging
 from .utils.deprecation_utils import deprecated
 from .utils.typing import PathLike
 
-from datalabs import operations
+
 # from transformation.data import Data
 
 
@@ -47,16 +51,24 @@ class DatasetDict(dict):
     def _check_values_type(self):
         for dataset in self.values():
             if not isinstance(dataset, Dataset):
-                raise TypeError(f"Values in `DatasetDict` should of type `Dataset` but got type '{type(dataset)}'")
+                raise TypeError(
+                    f"Values in `DatasetDict` should of type `Dataset` but got type '{type(dataset)}'"
+                )
 
     def __getitem__(self, k) -> Dataset:
         if isinstance(k, (str, NamedSplit)) or len(self) == 0:
             return super().__getitem__(k)
         else:
             available_suggested_splits = [
-                str(split) for split in (Split.TRAIN, Split.TEST, Split.VALIDATION) if split in self
+                str(split)
+                for split in (Split.TRAIN, Split.TEST, Split.VALIDATION)
+                if split in self
             ]
-            suggested_split = available_suggested_splits[0] if available_suggested_splits else list(self)[0]
+            suggested_split = (
+                available_suggested_splits[0]
+                if available_suggested_splits
+                else list(self)[0]
+            )
             raise KeyError(
                 f"Invalid key: {k}. Please first select a split. For example: "
                 f"`my_dataset_dictionary['{suggested_split}'][{k}]`. "
@@ -64,37 +76,37 @@ class DatasetDict(dict):
             )
 
     @property
-    def data(self) -> Dict[str, Table]:
+    def data(self) -> dict[str, Table]:
         """The Apache Arrow tables backing each split."""
         self._check_values_type()
         return {k: dataset.data for k, dataset in self.items()}
 
     @property
-    def cache_files(self) -> Dict[str, Dict]:
+    def cache_files(self) -> dict[str, dict]:
         """The cache files containing the Apache Arrow table backing each split."""
         self._check_values_type()
         return {k: dataset.cache_files for k, dataset in self.items()}
 
     @property
-    def num_columns(self) -> Dict[str, int]:
+    def num_columns(self) -> dict[str, int]:
         """Number of columns in each split of the dataset."""
         self._check_values_type()
         return {k: dataset.num_columns for k, dataset in self.items()}
 
     @property
-    def num_rows(self) -> Dict[str, int]:
+    def num_rows(self) -> dict[str, int]:
         """Number of rows in each split of the dataset (same as :func:`datalab.Dataset.__len__`)."""
         self._check_values_type()
         return {k: dataset.num_rows for k, dataset in self.items()}
 
     @property
-    def column_names(self) -> Dict[str, List[str]]:
+    def column_names(self) -> dict[str, list[str]]:
         """Names of the columns in each split of the dataset."""
         self._check_values_type()
         return {k: dataset.column_names for k, dataset in self.items()}
 
     @property
-    def shape(self) -> Dict[str, Tuple[int]]:
+    def shape(self) -> dict[str, tuple[int]]:
         """Shape of each split of the dataset (number of columns, number of rows)."""
         self._check_values_type()
         return {k: dataset.shape for k, dataset in self.items()}
@@ -133,9 +145,11 @@ class DatasetDict(dict):
         Other columns are left unchanged.
         """
         self._check_values_type()
-        return DatasetDict({k: dataset.flatten(max_depth=max_depth) for k, dataset in self.items()})
+        return DatasetDict(
+            {k: dataset.flatten(max_depth=max_depth) for k, dataset in self.items()}
+        )
 
-    def unique(self, column: str) -> Dict[str, List[Any]]:
+    def unique(self, column: str) -> dict[str, list[Any]]:
         """Return a list of the unique elements in a column for each split.
 
         This is implemented in the low-level backend and as such, very fast.
@@ -151,7 +165,7 @@ class DatasetDict(dict):
         self._check_values_type()
         return {k: dataset.unique(column) for k, dataset in self.items()}
 
-    def cleanup_cache_files(self) -> Dict[str, int]:
+    def cleanup_cache_files(self) -> dict[str, int]:
         """Clean up all cache files in the dataset cache directory, excepted the currently used cache file if there is one.
         Be carefull when running this command that no other process is currently using other cache files.
 
@@ -180,7 +194,9 @@ class DatasetDict(dict):
                 For non-trivial conversion, e.g. string <-> ClassLabel you should use :func:`map` to update the Dataset.
         """
         self._check_values_type()
-        new_dataset_dict = {k: dataset.cast(features=features) for k, dataset in self.items()}
+        new_dataset_dict = {
+            k: dataset.cast(features=features) for k, dataset in self.items()
+        }
         self.update(new_dataset_dict)
 
     def cast(self, features: Features) -> "DatasetDict":
@@ -198,7 +214,9 @@ class DatasetDict(dict):
                 For non-trivial conversion, e.g. string <-> ClassLabel you should use :func:`map` to update the Dataset.
         """
         self._check_values_type()
-        return DatasetDict({k: dataset.cast(features=features) for k, dataset in self.items()})
+        return DatasetDict(
+            {k: dataset.cast(features=features) for k, dataset in self.items()}
+        )
 
     def cast_column(self, column: str, feature) -> "DatasetDict":
         """Cast column to feature for decoding.
@@ -211,10 +229,15 @@ class DatasetDict(dict):
             :class:`DatasetDict`
         """
         self._check_values_type()
-        return DatasetDict({k: dataset.cast_column(column=column, feature=feature) for k, dataset in self.items()})
+        return DatasetDict(
+            {
+                k: dataset.cast_column(column=column, feature=feature)
+                for k, dataset in self.items()
+            }
+        )
 
     @deprecated(help_message="Use DatasetDict.remove_columns instead.")
-    def remove_columns_(self, column_names: Union[str, List[str]]):
+    def remove_columns_(self, column_names: Union[str, list[str]]):
         """In-place version of :meth:`DatasetDict.remove_columns`.
 
         .. deprecated:: 1.4.0
@@ -224,10 +247,13 @@ class DatasetDict(dict):
             column_names (:obj:`Union[str, List[str]]`): Name of the column(s) to remove.
         """
         self._check_values_type()
-        new_dataset_dict = {k: dataset.remove_columns(column_names=column_names) for k, dataset in self.items()}
+        new_dataset_dict = {
+            k: dataset.remove_columns(column_names=column_names)
+            for k, dataset in self.items()
+        }
         self.update(new_dataset_dict)
 
-    def remove_columns(self, column_names: Union[str, List[str]]) -> "DatasetDict":
+    def remove_columns(self, column_names: Union[str, list[str]]) -> "DatasetDict":
         """
         Remove one or several column(s) from each split in the dataset
         and the features associated to the column(s).
@@ -241,7 +267,12 @@ class DatasetDict(dict):
             column_names (:obj:`Union[str, List[str]]`): Name of the column(s) to remove.
         """
         self._check_values_type()
-        return DatasetDict({k: dataset.remove_columns(column_names=column_names) for k, dataset in self.items()})
+        return DatasetDict(
+            {
+                k: dataset.remove_columns(column_names=column_names)
+                for k, dataset in self.items()
+            }
+        )
 
     @deprecated(help_message="Use DatasetDict.rename_column instead.")
     def rename_column_(self, original_column_name: str, new_column_name: str):
@@ -256,12 +287,17 @@ class DatasetDict(dict):
         """
         self._check_values_type()
         new_dataset_dict = {
-            k: dataset.rename_column(original_column_name=original_column_name, new_column_name=new_column_name)
+            k: dataset.rename_column(
+                original_column_name=original_column_name,
+                new_column_name=new_column_name,
+            )
             for k, dataset in self.items()
         }
         self.update(new_dataset_dict)
 
-    def rename_column(self, original_column_name: str, new_column_name: str) -> "DatasetDict":
+    def rename_column(
+        self, original_column_name: str, new_column_name: str
+    ) -> "DatasetDict":
         """
         Rename a column in the dataset and move the features associated to the original column under the new column name.
         The operations is applied to all the datalab of the dataset dictionary.
@@ -277,7 +313,10 @@ class DatasetDict(dict):
         self._check_values_type()
         return DatasetDict(
             {
-                k: dataset.rename_column(original_column_name=original_column_name, new_column_name=new_column_name)
+                k: dataset.rename_column(
+                    original_column_name=original_column_name,
+                    new_column_name=new_column_name,
+                )
                 for k, dataset in self.items()
             }
         )
@@ -289,13 +328,18 @@ class DatasetDict(dict):
             column (`str`): The name of the column to cast
         """
         self._check_values_type()
-        return DatasetDict({k: dataset.class_encode_column(column=column) for k, dataset in self.items()})
+        return DatasetDict(
+            {
+                k: dataset.class_encode_column(column=column)
+                for k, dataset in self.items()
+            }
+        )
 
     @contextlib.contextmanager
     def formatted_as(
         self,
         type: Optional[str] = None,
-        columns: Optional[List] = None,
+        columns: Optional[list] = None,
         output_all_columns: bool = False,
         **format_kwargs,
     ):
@@ -314,20 +358,25 @@ class DatasetDict(dict):
         old_format_type = {k: dataset._format_type for k, dataset in self.items()}
         old_format_kwargs = {k: dataset._format_kwargs for k, dataset in self.items()}
         old_format_columns = {k: dataset._format_columns for k, dataset in self.items()}
-        old_output_all_columns = {k: dataset._output_all_columns for k, dataset in self.items()}
+        old_output_all_columns = {
+            k: dataset._output_all_columns for k, dataset in self.items()
+        }
         try:
             self.set_format(type, columns, output_all_columns, **format_kwargs)
             yield
         finally:
             for k, dataset in self.items():
                 dataset.set_format(
-                    old_format_type[k], old_format_columns[k], old_output_all_columns[k], **old_format_kwargs[k]
+                    old_format_type[k],
+                    old_format_columns[k],
+                    old_output_all_columns[k],
+                    **old_format_kwargs[k],
                 )
 
     def set_format(
         self,
         type: Optional[str] = None,
-        columns: Optional[List] = None,
+        columns: Optional[list] = None,
         output_all_columns: bool = False,
         **format_kwargs,
     ):
@@ -349,7 +398,12 @@ class DatasetDict(dict):
         """
         self._check_values_type()
         for dataset in self.values():
-            dataset.set_format(type=type, columns=columns, output_all_columns=output_all_columns, **format_kwargs)
+            dataset.set_format(
+                type=type,
+                columns=columns,
+                output_all_columns=output_all_columns,
+                **format_kwargs,
+            )
 
     def reset_format(self):
         """Reset __getitem__ return format to python objects and all columns.
@@ -364,7 +418,7 @@ class DatasetDict(dict):
     def set_transform(
         self,
         transform: Optional[Callable],
-        columns: Optional[List] = None,
+        columns: Optional[list] = None,
         output_all_columns: bool = False,
     ):
         """Set __getitem__ return format using this transform. The transform is applied on-the-fly on batches when __getitem__ is called.
@@ -383,12 +437,17 @@ class DatasetDict(dict):
         """
         self._check_values_type()
         for dataset in self.values():
-            dataset.set_format("custom", columns=columns, output_all_columns=output_all_columns, transform=transform)
+            dataset.set_format(
+                "custom",
+                columns=columns,
+                output_all_columns=output_all_columns,
+                transform=transform,
+            )
 
     def with_format(
         self,
         type: Optional[str] = None,
-        columns: Optional[List] = None,
+        columns: Optional[list] = None,
         output_all_columns: bool = False,
         **format_kwargs,
     ) -> "DatasetDict":
@@ -410,13 +469,18 @@ class DatasetDict(dict):
             format_kwargs: keywords arguments passed to the convert function like `np.array`, `torch.tensor` or `tensorflow.ragged.constant`.
         """
         dataset = copy.deepcopy(self)
-        dataset.set_format(type=type, columns=columns, output_all_columns=output_all_columns, **format_kwargs)
+        dataset.set_format(
+            type=type,
+            columns=columns,
+            output_all_columns=output_all_columns,
+            **format_kwargs,
+        )
         return dataset
 
     def with_transform(
         self,
         transform: Optional[Callable],
-        columns: Optional[List] = None,
+        columns: Optional[list] = None,
         output_all_columns: bool = False,
     ) -> "DatasetDict":
         """Set __getitem__ return format using this transform. The transform is applied on-the-fly on batches when __getitem__ is called.
@@ -437,20 +501,22 @@ class DatasetDict(dict):
 
         """
         dataset = copy.deepcopy(self)
-        dataset.set_transform(transform=transform, columns=columns, output_all_columns=output_all_columns)
+        dataset.set_transform(
+            transform=transform, columns=columns, output_all_columns=output_all_columns
+        )
         return dataset
 
     def map(
         self,
         function,
         with_indices: bool = False,
-        input_columns: Optional[Union[str, List[str]]] = None,
+        input_columns: Optional[Union[str, list[str]]] = None,
         batched: bool = False,
         batch_size: Optional[int] = 1000,
-        remove_columns: Optional[Union[str, List[str]]] = None,
+        remove_columns: Optional[Union[str, list[str]]] = None,
         keep_in_memory: bool = False,
         load_from_cache_file: bool = True,
-        cache_file_names: Optional[Dict[str, Optional[str]]] = None,
+        cache_file_names: Optional[dict[str, Optional[str]]] = None,
         writer_batch_size: Optional[int] = 1000,
         features: Optional[Features] = None,
         disable_nullable: bool = False,
@@ -524,12 +590,12 @@ class DatasetDict(dict):
         self,
         function,
         with_indices=False,
-        input_columns: Optional[Union[str, List[str]]] = None,
+        input_columns: Optional[Union[str, list[str]]] = None,
         batch_size: Optional[int] = 1000,
-        remove_columns: Optional[List[str]] = None,
+        remove_columns: Optional[list[str]] = None,
         keep_in_memory: bool = False,
         load_from_cache_file: bool = True,
-        cache_file_names: Optional[Dict[str, Optional[str]]] = None,
+        cache_file_names: Optional[dict[str, Optional[str]]] = None,
         writer_batch_size: Optional[int] = 1000,
         fn_kwargs: Optional[dict] = None,
         num_proc: Optional[int] = None,
@@ -594,7 +660,7 @@ class DatasetDict(dict):
         kind: str = None,
         keep_in_memory: bool = False,
         load_from_cache_file: bool = True,
-        indices_cache_file_names: Optional[Dict[str, Optional[str]]] = None,
+        indices_cache_file_names: Optional[dict[str, Optional[str]]] = None,
         writer_batch_size: Optional[int] = 1000,
     ) -> "DatasetDict":
         """Create a new dataset sorted according to a column.
@@ -640,12 +706,12 @@ class DatasetDict(dict):
 
     def shuffle(
         self,
-        seeds: Optional[Union[int, Dict[str, Optional[int]]]] = None,
+        seeds: Optional[Union[int, dict[str, Optional[int]]]] = None,
         seed: Optional[int] = None,
-        generators: Optional[Dict[str, np.random.Generator]] = None,
+        generators: Optional[dict[str, np.random.Generator]] = None,
         keep_in_memory: bool = False,
         load_from_cache_file: bool = True,
-        indices_cache_file_names: Optional[Dict[str, Optional[str]]] = None,
+        indices_cache_file_names: Optional[dict[str, Optional[str]]] = None,
         writer_batch_size: Optional[int] = 1000,
     ) -> "DatasetDict":
         """Create a new Dataset where the rows are shuffled.
@@ -721,13 +787,21 @@ class DatasetDict(dict):
 
         json.dump(
             {"splits": list(self)},
-            fs.open(Path(dest_dataset_dict_path, config.DATASETDICT_JSON_FILENAME).as_posix(), "w", encoding="utf-8"),
+            fs.open(
+                Path(
+                    dest_dataset_dict_path, config.DATASETDICT_JSON_FILENAME
+                ).as_posix(),
+                "w",
+                encoding="utf-8",
+            ),
         )
         for k, dataset in self.items():
             dataset.save_to_disk(Path(dest_dataset_dict_path, k).as_posix(), fs)
 
     @staticmethod
-    def load_from_disk(dataset_dict_path: str, fs=None, keep_in_memory: Optional[bool] = None) -> "DatasetDict":
+    def load_from_disk(
+        dataset_dict_path: str, fs=None, keep_in_memory: Optional[bool] = None
+    ) -> "DatasetDict":
         """
         Load a dataset that was previously saved using :meth:`save_to_disk` from a filesystem using either
         :class:`~filesystems.S3FileSystem` or ``fsspec.spec.AbstractFileSystem``.
@@ -752,24 +826,34 @@ class DatasetDict(dict):
         else:
             fs = fsspec.filesystem("file")
             dest_dataset_dict_path = dataset_dict_path
-        dataset_dict_json_path = Path(dest_dataset_dict_path, config.DATASETDICT_JSON_FILENAME).as_posix()
-        dataset_info_path = Path(dest_dataset_dict_path, config.DATASET_INFO_FILENAME).as_posix()
+        dataset_dict_json_path = Path(
+            dest_dataset_dict_path, config.DATASETDICT_JSON_FILENAME
+        ).as_posix()
+        dataset_info_path = Path(
+            dest_dataset_dict_path, config.DATASET_INFO_FILENAME
+        ).as_posix()
         if fs.isfile(dataset_info_path) and not fs.isfile(dataset_dict_json_path):
             raise FileNotFoundError(
                 f"No such file or directory: '{dataset_dict_json_path}'. Expected to load a DatasetDict object, but got a Dataset. Please use datalab.load_from_disk instead."
             )
-        for k in json.load(fs.open(dataset_dict_json_path, "r", encoding="utf-8"))["splits"]:
+        for k in json.load(fs.open(dataset_dict_json_path, "r", encoding="utf-8"))[
+            "splits"
+        ]:
             dataset_dict_split_path = (
-                dataset_dict_path.split("://")[0] + "://" + Path(dest_dataset_dict_path, k).as_posix()
+                dataset_dict_path.split("://")[0]
+                + "://"
+                + Path(dest_dataset_dict_path, k).as_posix()
                 if is_remote_filesystem(fs)
                 else Path(dest_dataset_dict_path, k).as_posix()
             )
-            dataset_dict[k] = Dataset.load_from_disk(dataset_dict_split_path, fs, keep_in_memory=keep_in_memory)
+            dataset_dict[k] = Dataset.load_from_disk(
+                dataset_dict_split_path, fs, keep_in_memory=keep_in_memory
+            )
         return dataset_dict
 
     @staticmethod
     def from_csv(
-        path_or_paths: Dict[str, PathLike],
+        path_or_paths: dict[str, PathLike],
         features: Optional[Features] = None,
         cache_dir: str = None,
         keep_in_memory: bool = False,
@@ -791,12 +875,16 @@ class DatasetDict(dict):
         from .io.csv import CsvDatasetReader
 
         return CsvDatasetReader(
-            path_or_paths, features=features, cache_dir=cache_dir, keep_in_memory=keep_in_memory, **kwargs
+            path_or_paths,
+            features=features,
+            cache_dir=cache_dir,
+            keep_in_memory=keep_in_memory,
+            **kwargs,
         ).read()
 
     @staticmethod
     def from_json(
-        path_or_paths: Dict[str, PathLike],
+        path_or_paths: dict[str, PathLike],
         features: Optional[Features] = None,
         cache_dir: str = None,
         keep_in_memory: bool = False,
@@ -818,16 +906,20 @@ class DatasetDict(dict):
         from .io.json import JsonDatasetReader
 
         return JsonDatasetReader(
-            path_or_paths, features=features, cache_dir=cache_dir, keep_in_memory=keep_in_memory, **kwargs
+            path_or_paths,
+            features=features,
+            cache_dir=cache_dir,
+            keep_in_memory=keep_in_memory,
+            **kwargs,
         ).read()
 
     @staticmethod
     def from_parquet(
-        path_or_paths: Dict[str, PathLike],
+        path_or_paths: dict[str, PathLike],
         features: Optional[Features] = None,
         cache_dir: str = None,
         keep_in_memory: bool = False,
-        columns: Optional[List[str]] = None,
+        columns: Optional[list[str]] = None,
         **kwargs,
     ) -> "DatasetDict":
         """Create DatasetDict from Parquet file(s).
@@ -859,7 +951,7 @@ class DatasetDict(dict):
 
     @staticmethod
     def from_text(
-        path_or_paths: Dict[str, PathLike],
+        path_or_paths: dict[str, PathLike],
         features: Optional[Features] = None,
         cache_dir: str = None,
         keep_in_memory: bool = False,
@@ -881,20 +973,30 @@ class DatasetDict(dict):
         from .io.text import TextDatasetReader
 
         return TextDatasetReader(
-            path_or_paths, features=features, cache_dir=cache_dir, keep_in_memory=keep_in_memory, **kwargs
+            path_or_paths,
+            features=features,
+            cache_dir=cache_dir,
+            keep_in_memory=keep_in_memory,
+            **kwargs,
         ).read()
 
     @is_documented_by(Dataset.prepare_for_task)
     def prepare_for_task(self, task: Union[str, TaskTemplate]) -> "DatasetDict":
         self._check_values_type()
-        return DatasetDict({k: dataset.prepare_for_task(task=task) for k, dataset in self.items()})
+        return DatasetDict(
+            {k: dataset.prepare_for_task(task=task) for k, dataset in self.items()}
+        )
 
     @is_documented_by(Dataset.align_labels_with_mapping)
-    def align_labels_with_mapping(self, label2id: Dict, label_column: str) -> "DatasetDict":
+    def align_labels_with_mapping(
+        self, label2id: dict, label_column: str
+    ) -> "DatasetDict":
         self._check_values_type()
         return DatasetDict(
             {
-                k: dataset.align_labels_with_mapping(label2id=label2id, label_column=label_column)
+                k: dataset.align_labels_with_mapping(
+                    label2id=label2id, label_column=label_column
+                )
                 for k, dataset in self.items()
             }
         )
@@ -939,7 +1041,12 @@ class DatasetDict(dict):
             logger.warning(f"Pushing split {key} to the Hub.")
             # The split=key needs to be removed before merging
             self[key].push_to_hub(
-                repo_id, split=key, private=private, token=token, branch=branch, shard_size=shard_size
+                repo_id,
+                split=key,
+                private=private,
+                token=token,
+                branch=branch,
+                shard_size=shard_size,
             )
 
 

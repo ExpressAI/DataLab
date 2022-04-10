@@ -15,6 +15,9 @@
 
 # Lint as: python3
 """DatasetBuilder base class."""
+from __future__ import annotations
+
+from collections.abc import Mapping
 
 import abc
 import contextlib
@@ -22,12 +25,17 @@ import copy
 import inspect
 import os
 import shutil
+import sys
 import textwrap
 import urllib
 from dataclasses import dataclass
 from functools import partial
-from typing import Dict, Mapping, Optional, Tuple, Union
 from time import time
+from typing import Optional, Union
+
+from multiprocess import Pool
+from p_tqdm import p_map
+
 from datalabs.features import Features
 from datalabs.utils.mock_download_manager import MockDownloadManager
 
@@ -47,6 +55,7 @@ from .fingerprint import Hasher
 from .info import DatasetInfo, DatasetInfosDict, PostProcessedInfo
 from .iterable_dataset import ExamplesIterable, IterableDataset, _generate_examples_from_tables_wrapper
 from .naming import camelcase_to_snakecase, filename_prefix_for_split
+from .operations.featurize.text_matching import get_features_sample_level, get_schema_of_sample_level_features
 from .splits import Split, SplitDict, SplitGenerator
 from .utils import logging
 from .utils.download_manager import DownloadManager, GenerateMode
@@ -54,18 +63,10 @@ from .utils.file_utils import DownloadConfig, is_remote_url
 from .utils.filelock import FileLock
 from .utils.info_utils import get_size_checksum_dict, verify_checksums, verify_splits
 from .utils.streaming_download_manager import StreamingDownloadManager
-from multiprocess import Pool
-from p_tqdm import p_map
-from .operations.featurize.text_matching import (
-    get_features_sample_level,
-    get_schema_of_sample_level_features,
-    )
 
-import sys
 
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
-
 
 
 logger = logging.get_logger(__name__)
@@ -114,15 +115,21 @@ class BuilderConfig:
                     f"Bad characters from black list '{invalid_windows_characters}' found in '{self.name}'. "
                     f"They could create issues when creating a directory for this config on Windows filesystem."
                 )
-        if self.data_files is not None and not isinstance(self.data_files, DataFilesDict):
-            raise ValueError(f"Expected a DataFilesDict in data_files but got {self.data_files}")
+        if self.data_files is not None and not isinstance(
+            self.data_files, DataFilesDict
+        ):
+            raise ValueError(
+                f"Expected a DataFilesDict in data_files but got {self.data_files}"
+            )
 
     def __eq__(self, o):
         # we need to override the default dataclass __eq__ since it doesn't check for
         # other attributes that the ones of the signature.
         if set(self.__dict__.keys()) != set(o.__dict__.keys()):
             return False
-        return all((k, getattr(self, k)) == (k, getattr(o, k)) for k in self.__dict__.keys())
+        return all(
+            (k, getattr(self, k)) == (k, getattr(o, k)) for k in self.__dict__.keys()
+        )
 
     def create_config_id(
         self,
@@ -149,16 +156,24 @@ class BuilderConfig:
         # it was previously ignored before the introduction of config id because we didn't want
         # to change the config name. Now it's fine to take it into account for the config id.
         # config_kwargs_to_add_to_suffix.pop("data_dir", None)
-        if "data_dir" in config_kwargs_to_add_to_suffix and config_kwargs_to_add_to_suffix["data_dir"] is None:
+        if (
+            "data_dir" in config_kwargs_to_add_to_suffix
+            and config_kwargs_to_add_to_suffix["data_dir"] is None
+        ):
             config_kwargs_to_add_to_suffix.pop("data_dir", None)
         if config_kwargs_to_add_to_suffix:
             # we don't care about the order of the kwargs
             config_kwargs_to_add_to_suffix = {
-                k: config_kwargs_to_add_to_suffix[k] for k in sorted(config_kwargs_to_add_to_suffix)
+                k: config_kwargs_to_add_to_suffix[k]
+                for k in sorted(config_kwargs_to_add_to_suffix)
             }
-            if all(isinstance(v, (str, bool, int, float)) for v in config_kwargs_to_add_to_suffix.values()):
+            if all(
+                isinstance(v, (str, bool, int, float))
+                for v in config_kwargs_to_add_to_suffix.values()
+            ):
                 suffix = ",".join(
-                    str(k) + "=" + urllib.parse.quote_plus(str(v)) for k, v in config_kwargs_to_add_to_suffix.items()
+                    str(k) + "=" + urllib.parse.quote_plus(str(v))
+                    for k, v in config_kwargs_to_add_to_suffix.items()
                 )
                 if len(suffix) > 32:  # hash if too long
                     suffix = Hasher.hash(config_kwargs_to_add_to_suffix)
@@ -210,7 +225,6 @@ class DatasetBuilder:
     # Optional default config name to be used used when name is None
     DEFAULT_CONFIG_NAME = None
 
-
     def __init__(
         self,
         cache_dir: Optional[str] = None,
@@ -222,8 +236,8 @@ class DatasetBuilder:
         namespace: Optional[str] = None,
         data_files: Optional[Union[str, list, dict, DataFilesDict]] = None,
         data_dir: Optional[str] = None,
-        dataset_class = Dataset,
-        feature_expanding:bool = False,
+        dataset_class=Dataset,
+        feature_expanding: bool = False,
         num_proc: int = 1,
         **config_kwargs,
     ):
@@ -265,11 +279,17 @@ class DatasetBuilder:
 
         if data_files is not None and not isinstance(data_files, DataFilesDict):
             data_files = DataFilesDict.from_local_or_remote(
-                sanitize_patterns(data_files), base_path=base_path, use_auth_token=use_auth_token
+                sanitize_patterns(data_files),
+                base_path=base_path,
+                use_auth_token=use_auth_token,
             )
 
         # Prepare config: DatasetConfig contains name, version and description but can be extended by each dataset
-        if "features" in inspect.signature(self.BUILDER_CONFIG_CLASS.__init__).parameters and features is not None:
+        if (
+            "features"
+            in inspect.signature(self.BUILDER_CONFIG_CLASS.__init__).parameters
+            and features is not None
+        ):
             config_kwargs["features"] = features
         if data_files is not None:
             config_kwargs["data_files"] = data_files
@@ -298,12 +318,16 @@ class DatasetBuilder:
         # prepare data dirs
         self._cache_dir_root = os.path.expanduser(cache_dir or config.HF_DATASETS_CACHE)
         self._cache_downloaded_dir = (
-            os.path.join(cache_dir, config.DOWNLOADED_DATASETS_DIR) if cache_dir else config.DOWNLOADED_DATASETS_PATH
+            os.path.join(cache_dir, config.DOWNLOADED_DATASETS_DIR)
+            if cache_dir
+            else config.DOWNLOADED_DATASETS_PATH
         )
         self._cache_dir = self._build_cache_dir()
         if not is_remote_url(self._cache_dir_root):
             os.makedirs(self._cache_dir_root, exist_ok=True)
-        lock_path = os.path.join(self._cache_dir_root, self._cache_dir.replace(os.sep, "_") + ".lock")
+        lock_path = os.path.join(
+            self._cache_dir_root, self._cache_dir.replace(os.sep, "_") + ".lock"
+        )
         with FileLock(lock_path):
             if os.path.exists(self._cache_dir):  # check if data exist
                 if len(os.listdir(self._cache_dir)) > 0:
@@ -331,16 +355,22 @@ class DatasetBuilder:
     @classmethod
     def get_all_exported_dataset_infos(cls) -> dict:
         """Empty dict if doesn't exist"""
-        dset_infos_file_path = os.path.join(cls.get_imported_module_dir(), config.DATASETDICT_INFOS_FILENAME)
+        dset_infos_file_path = os.path.join(
+            cls.get_imported_module_dir(), config.DATASETDICT_INFOS_FILENAME
+        )
         if os.path.exists(dset_infos_file_path):
             return DatasetInfosDict.from_directory(cls.get_imported_module_dir())
         return {}
 
     def get_exported_dataset_info(self) -> DatasetInfo:
         """Empty DatasetInfo if doesn't exist"""
-        return self.get_all_exported_dataset_infos().get(self.config.name, DatasetInfo())
+        return self.get_all_exported_dataset_infos().get(
+            self.config.name, DatasetInfo()
+        )
 
-    def _create_builder_config(self, name=None, custom_features=None, **config_kwargs) -> Tuple[BuilderConfig, str]:
+    def _create_builder_config(
+        self, name=None, custom_features=None, **config_kwargs
+    ) -> tuple[BuilderConfig, str]:
         """Create and validate BuilderConfig object as well as a unique config id for this config.
         Raises ValueError if there are multiple builder configs and name and DEFAULT_CONFIG_NAME are None.
         config_kwargs override the defaults kwargs in config
@@ -351,29 +381,41 @@ class DatasetBuilder:
         if name is None and self.BUILDER_CONFIGS and not config_kwargs:
             if self.DEFAULT_CONFIG_NAME is not None:
                 builder_config = self.builder_configs.get(self.DEFAULT_CONFIG_NAME)
-                logger.warning(f"No config specified, defaulting to: {self.name}/{builder_config.name}")
+                logger.warning(
+                    f"No config specified, defaulting to: {self.name}/{builder_config.name}"
+                )
             else:
                 if len(self.BUILDER_CONFIGS) > 1:
-                    example_of_usage = f"load_dataset('{self.name}', '{self.BUILDER_CONFIGS[0].name}')"
+                    example_of_usage = (
+                        f"load_dataset('{self.name}', '{self.BUILDER_CONFIGS[0].name}')"
+                    )
                     raise ValueError(
                         "Config name is missing."
                         f"\nPlease pick one among the available configs: {list(self.builder_configs.keys())}"
                         + f"\nExample of usage:\n\t`{example_of_usage}`"
                     )
                 builder_config = self.BUILDER_CONFIGS[0]
-                logger.info(f"No config specified, defaulting to first: {self.name}/{builder_config.name}")
+                logger.info(
+                    f"No config specified, defaulting to first: {self.name}/{builder_config.name}"
+                )
 
         # try get config by name
         if isinstance(name, str):
             builder_config = self.builder_configs.get(name)
             if builder_config is None and self.BUILDER_CONFIGS:
-                raise ValueError(f"BuilderConfig {name} not found. Available: {list(self.builder_configs.keys())}")
+                raise ValueError(
+                    f"BuilderConfig {name} not found. Available: {list(self.builder_configs.keys())}"
+                )
 
         # if not using an existing config, then create a new config on the fly with config_kwargs
         if not builder_config:
             if name is not None:
                 config_kwargs["name"] = name
-            if "version" not in config_kwargs and hasattr(self, "VERSION") and self.VERSION:
+            if (
+                "version" not in config_kwargs
+                and hasattr(self, "VERSION")
+                and self.VERSION
+            ):
                 config_kwargs["version"] = self.VERSION
             builder_config = self.BUILDER_CONFIG_CLASS(**config_kwargs)
 
@@ -383,11 +425,15 @@ class DatasetBuilder:
             for key, value in config_kwargs.items():
                 if value is not None:
                     if not hasattr(builder_config, key):
-                        raise ValueError(f"BuilderConfig {builder_config} doesn't have a '{key}' key.")
+                        raise ValueError(
+                            f"BuilderConfig {builder_config} doesn't have a '{key}' key."
+                        )
                     setattr(builder_config, key, value)
 
         if not builder_config.name:
-            raise ValueError(f"BuilderConfig must have a name, got {builder_config.name}")
+            raise ValueError(
+                f"BuilderConfig must have a name, got {builder_config.name}"
+            )
 
         # compute the config id that is going to be used for caching
         config_id = builder_config.create_config_id(
@@ -404,7 +450,9 @@ class DatasetBuilder:
                     f"BuilderConfig. Change the name. Available BuilderConfigs: {list(self.builder_configs.keys())}"
                 )
             if not builder_config.version:
-                raise ValueError(f"BuilderConfig {builder_config.name} must have a version")
+                raise ValueError(
+                    f"BuilderConfig {builder_config.name} must have a version"
+                )
             # if not builder_config.description:
             #     raise ValueError(f"BuilderConfig {builder_config.name} must have a description"  )
 
@@ -418,7 +466,9 @@ class DatasetBuilder:
         configs = {config.name: config for config in cls.BUILDER_CONFIGS}
         if len(configs) != len(cls.BUILDER_CONFIGS):
             names = [config.name for config in cls.BUILDER_CONFIGS]
-            raise ValueError(f"Names in BUILDER_CONFIGS must not be duplicated. Got {names}")
+            raise ValueError(
+                f"Names in BUILDER_CONFIGS must not be duplicated. Got {names}"
+            )
         return configs
 
     @property
@@ -433,7 +483,9 @@ class DatasetBuilder:
             self.namespace___self.name/self.config.version/self.hash/
         If any of these element is missing or if ``with_version=False`` the corresponding subfolders are dropped.
         """
-        builder_data_dir = self.name if self.namespace is None else f"{self.namespace}___{self.name}"
+        builder_data_dir = (
+            self.name if self.namespace is None else f"{self.namespace}___{self.name}"
+        )
         builder_config = self.config
         hash = self.hash
         if builder_config:
@@ -447,8 +499,12 @@ class DatasetBuilder:
 
     def _build_cache_dir(self):
         """Return the data directory for the current version."""
-        builder_data_dir = os.path.join(self._cache_dir_root, self._relative_data_dir(with_version=False))
-        version_data_dir = os.path.join(self._cache_dir_root, self._relative_data_dir(with_version=True))
+        builder_data_dir = os.path.join(
+            self._cache_dir_root, self._relative_data_dir(with_version=False)
+        )
+        version_data_dir = os.path.join(
+            self._cache_dir_root, self._relative_data_dir(with_version=True)
+        )
 
         def _other_versions_on_disk():
             """Returns previous versions on disk."""
@@ -521,7 +577,9 @@ class DatasetBuilder:
                 If True, will get token from ~/.huggingface.
 
         """
-        download_mode = GenerateMode(download_mode or GenerateMode.REUSE_DATASET_IF_EXISTS)
+        download_mode = GenerateMode(
+            download_mode or GenerateMode.REUSE_DATASET_IF_EXISTS
+        )
         verify_infos = not ignore_verifications
         base_path = base_path if base_path is not None else self.base_path
         if dl_manager is None:
@@ -545,7 +603,9 @@ class DatasetBuilder:
         self.dl_manager = dl_manager
 
         # Prevent parallel disk operations
-        lock_path = os.path.join(self._cache_dir_root, self._cache_dir.replace(os.sep, "_") + ".lock")
+        lock_path = os.path.join(
+            self._cache_dir_root, self._cache_dir.replace(os.sep, "_") + ".lock"
+        )
         with FileLock(lock_path):
             data_exists = os.path.exists(self._cache_dir)
             if data_exists and download_mode == GenerateMode.REUSE_DATASET_IF_EXISTS:
@@ -556,8 +616,12 @@ class DatasetBuilder:
                 self.download_post_processing_resources(dl_manager)
                 return
             logger.info(f"Generating dataset {self.name} ({self._cache_dir})")
-            if not is_remote_url(self._cache_dir_root):  # if cache dir is local, check for available space
-                if not utils.has_sufficient_disk_space(self.info.size_in_bytes or 0, directory=self._cache_dir_root):
+            if not is_remote_url(
+                self._cache_dir_root
+            ):  # if cache dir is local, check for available space
+                if not utils.has_sufficient_disk_space(
+                    self.info.size_in_bytes or 0, directory=self._cache_dir_root
+                ):
                     raise IOError(
                         f"Not enough disk space. Needed: {utils.size_str(self.info.size_in_bytes or 0)} (download: {utils.size_str(self.info.download_size or 0)}, generated: {utils.size_str(self.info.dataset_size or 0)}, post-processed: {utils.size_str(self.info.post_processing_size or 0)})"
                     )
@@ -605,25 +669,41 @@ class DatasetBuilder:
                     downloaded_from_gcs = False
                     if try_from_hf_gcs:
                         try:
-                            self._download_prepared_from_hf_gcs(dl_manager.download_config)
+                            self._download_prepared_from_hf_gcs(
+                                dl_manager.download_config
+                            )
                             downloaded_from_gcs = True
                         except (DatasetNotOnHfGcsError, MissingFilesOnHfGcsError):
-                            logger.info("Dataset not on Hf google storage. Downloading and preparing it from source")
+                            logger.info(
+                                "Dataset not on Hf google storage. Downloading and preparing it from source"
+                            )
                         except ConnectionError:
-                            logger.warning("HF google storage unreachable. Downloading and preparing it from source")
+                            logger.warning(
+                                "HF google storage unreachable. Downloading and preparing it from source"
+                            )
                     if not downloaded_from_gcs:
                         self._download_and_prepare(
-                            dl_manager=dl_manager, verify_infos=verify_infos, **download_and_prepare_kwargs
+                            dl_manager=dl_manager,
+                            verify_infos=verify_infos,
+                            **download_and_prepare_kwargs,
                         )
                     # Sync info
                     eprint(f"self.info.dataset_size: {self.info.dataset_size}")
                     eprint(f"self.info.download_size: {self.info.download_size}")
 
-
-                    self.info.dataset_size = sum(split.num_bytes for split in self.info.splits.values())
-                    self.info.download_checksums = dl_manager.get_recorded_sizes_checksums()
-                    if self.info.dataset_size is not None and self.info.download_size is not None:
-                        self.info.size_in_bytes = self.info.dataset_size + self.info.download_size
+                    self.info.dataset_size = sum(
+                        split.num_bytes for split in self.info.splits.values()
+                    )
+                    self.info.download_checksums = (
+                        dl_manager.get_recorded_sizes_checksums()
+                    )
+                    if (
+                        self.info.dataset_size is not None
+                        and self.info.download_size is not None
+                    ):
+                        self.info.size_in_bytes = (
+                            self.info.dataset_size + self.info.download_size
+                        )
                     # Save info
                     self._save_info()
 
@@ -636,7 +716,10 @@ class DatasetBuilder:
             )
 
     def _check_manual_download(self, dl_manager):
-        if self.manual_download_instructions is not None and dl_manager.manual_dir is None:
+        if (
+            self.manual_download_instructions is not None
+            and dl_manager.manual_dir is None
+        ):
             raise ManualDownloadError(
                 textwrap.dedent(
                     f"""The dataset {self.name} with config {self.config.name} requires manual data.
@@ -655,16 +738,26 @@ class DatasetBuilder:
         downloaded_info = DatasetInfo.from_directory(self._cache_dir)
         self.info.update(downloaded_info)
         # download post processing resources
-        remote_cache_dir = HF_GCP_BASE_URL + "/" + relative_data_dir.replace(os.sep, "/")
+        remote_cache_dir = (
+            HF_GCP_BASE_URL + "/" + relative_data_dir.replace(os.sep, "/")
+        )
         for split in self.info.splits:
             for resource_file_name in self._post_processing_resources(split).values():
                 if os.sep in resource_file_name:
-                    raise ValueError(f"Resources shouldn't be in a sub-directory: {resource_file_name}")
+                    raise ValueError(
+                        f"Resources shouldn't be in a sub-directory: {resource_file_name}"
+                    )
                 try:
-                    resource_path = utils.cached_path(remote_cache_dir + "/" + resource_file_name)
-                    shutil.move(resource_path, os.path.join(self._cache_dir, resource_file_name))
+                    resource_path = utils.cached_path(
+                        remote_cache_dir + "/" + resource_file_name
+                    )
+                    shutil.move(
+                        resource_path, os.path.join(self._cache_dir, resource_file_name)
+                    )
                 except ConnectionError:
-                    logger.info(f"Couldn't download resourse file {resource_file_name} from Hf google storage.")
+                    logger.info(
+                        f"Couldn't download resourse file {resource_file_name} from Hf google storage."
+                    )
         logger.info("Dataset downloaded from Hf google storage.")
 
     def _download_and_prepare(self, dl_manager, verify_infos, **prepare_split_kwargs):
@@ -682,13 +775,17 @@ class DatasetBuilder:
         """
         # Generating data for all splits
         split_dict = SplitDict(dataset_name=self.name)
-        split_generators_kwargs = self._make_split_generators_kwargs(prepare_split_kwargs)
+        split_generators_kwargs = self._make_split_generators_kwargs(
+            prepare_split_kwargs
+        )
         split_generators = self._split_generators(dl_manager, **split_generators_kwargs)
 
         # Checksums verification
         if verify_infos:
             verify_checksums(
-                self.info.download_checksums, dl_manager.get_recorded_sizes_checksums(), "dataset source files"
+                self.info.download_checksums,
+                dl_manager.get_recorded_sizes_checksums(),
+                "dataset source files",
             )
 
         # Build splits
@@ -725,30 +822,42 @@ class DatasetBuilder:
 
     def download_post_processing_resources(self, dl_manager):
         for split in self.info.splits:
-            for resource_name, resource_file_name in self._post_processing_resources(split).items():
+            for resource_name, resource_file_name in self._post_processing_resources(
+                split
+            ).items():
                 if os.sep in resource_file_name:
-                    raise ValueError(f"Resources shouldn't be in a sub-directory: {resource_file_name}")
+                    raise ValueError(
+                        f"Resources shouldn't be in a sub-directory: {resource_file_name}"
+                    )
                 resource_path = os.path.join(self._cache_dir, resource_file_name)
                 if not os.path.exists(resource_path):
                     downloaded_resource_path = self._download_post_processing_resources(
                         split, resource_name, dl_manager
                     )
                     if downloaded_resource_path:
-                        logger.info(f"Downloaded post-processing resource {resource_name} as {resource_file_name}")
+                        logger.info(
+                            f"Downloaded post-processing resource {resource_name} as {resource_file_name}"
+                        )
                         shutil.move(downloaded_resource_path, resource_path)
 
     def _load_info(self) -> DatasetInfo:
         return DatasetInfo.from_directory(self._cache_dir)
 
     def _save_info(self):
-        lock_path = os.path.join(self._cache_dir_root, self._cache_dir.replace(os.sep, "_") + ".lock")
+        lock_path = os.path.join(
+            self._cache_dir_root, self._cache_dir.replace(os.sep, "_") + ".lock"
+        )
         with FileLock(lock_path):
             self.info.write_to_directory(self._cache_dir)
 
     def _save_infos(self):
-        lock_path = os.path.join(self._cache_dir_root, self._cache_dir.replace(os.sep, "_") + ".lock")
+        lock_path = os.path.join(
+            self._cache_dir_root, self._cache_dir.replace(os.sep, "_") + ".lock"
+        )
         with FileLock(lock_path):
-            DatasetInfosDict(**{self.config.name: self.info}).write_to_directory(self.get_imported_module_dir())
+            DatasetInfosDict(**{self.config.name: self.info}).write_to_directory(
+                self.get_imported_module_dir()
+            )
 
     def _make_split_generators_kwargs(self, prepare_split_kwargs):
         """Get kwargs for `self._split_generators()` from `prepare_split_kwargs`."""
@@ -756,7 +865,11 @@ class DatasetBuilder:
         return {}
 
     def as_dataset(
-        self, split: Optional[Split] = None, run_post_process=True, ignore_verifications=False, in_memory=False
+        self,
+        split: Optional[Split] = None,
+        run_post_process=True,
+        ignore_verifications=False,
+        in_memory=False,
     ) -> Union[Dataset, DatasetDict]:
         """Return a Dataset for the specified split.
 
@@ -780,7 +893,9 @@ class DatasetBuilder:
                 )
             )
 
-        logger.debug(f'Constructing Dataset for split {split or ", ".join(self.info.splits)}, from {self._cache_dir}')
+        logger.debug(
+            f'Constructing Dataset for split {split or ", ".join(self.info.splits)}, from {self._cache_dir}'
+        )
 
         # By default, return all splits
         if split is None:
@@ -793,7 +908,7 @@ class DatasetBuilder:
                 run_post_process=run_post_process,
                 ignore_verifications=ignore_verifications,
                 in_memory=in_memory,
-                dataset_class = self.dataset_class,
+                dataset_class=self.dataset_class,
             ),
             split,
             map_tuple=True,
@@ -809,7 +924,7 @@ class DatasetBuilder:
         run_post_process: bool,
         ignore_verifications: bool,
         in_memory: bool = False,
-        dataset_class = Dataset,
+        dataset_class=Dataset,
     ):
         """as_dataset for a single split."""
         verify_infos = not ignore_verifications
@@ -823,15 +938,19 @@ class DatasetBuilder:
         ds = self._as_dataset(
             split=split,
             in_memory=in_memory,
-            dataset_class = dataset_class,
+            dataset_class=dataset_class,
         )
         if run_post_process:
             for resource_file_name in self._post_processing_resources(split).values():
                 if os.sep in resource_file_name:
-                    raise ValueError(f"Resources shouldn't be in a sub-directory: {resource_file_name}")
+                    raise ValueError(
+                        f"Resources shouldn't be in a sub-directory: {resource_file_name}"
+                    )
             resources_paths = {
                 resource_name: os.path.join(self._cache_dir, resource_file_name)
-                for resource_name, resource_file_name in self._post_processing_resources(split).items()
+                for resource_name, resource_file_name in self._post_processing_resources(
+                    split
+                ).items()
             }
             post_processed = self._post_process(ds, resources_paths)
             if post_processed is not None:
@@ -841,24 +960,40 @@ class DatasetBuilder:
                     size_checksum = get_size_checksum_dict(resource_path)
                     recorded_checksums[resource_name] = size_checksum
                 if verify_infos:
-                    if self.info.post_processed is None or self.info.post_processed.resources_checksums is None:
+                    if (
+                        self.info.post_processed is None
+                        or self.info.post_processed.resources_checksums is None
+                    ):
                         expected_checksums = None
                     else:
-                        expected_checksums = self.info.post_processed.resources_checksums.get(split)
-                    verify_checksums(expected_checksums, recorded_checksums, "post processing resources")
+                        expected_checksums = (
+                            self.info.post_processed.resources_checksums.get(split)
+                        )
+                    verify_checksums(
+                        expected_checksums,
+                        recorded_checksums,
+                        "post processing resources",
+                    )
                 if self.info.post_processed is None:
                     self.info.post_processed = PostProcessedInfo()
                 if self.info.post_processed.resources_checksums is None:
                     self.info.post_processed.resources_checksums = {}
-                self.info.post_processed.resources_checksums[str(split)] = recorded_checksums
+                self.info.post_processed.resources_checksums[
+                    str(split)
+                ] = recorded_checksums
                 self.info.post_processing_size = sum(
                     checksums_dict["num_bytes"]
                     for split_checksums_dicts in self.info.post_processed.resources_checksums.values()
                     for checksums_dict in split_checksums_dicts.values()
                 )
-                if self.info.dataset_size is not None and self.info.download_size is not None:
+                if (
+                    self.info.dataset_size is not None
+                    and self.info.download_size is not None
+                ):
                     self.info.size_in_bytes = (
-                        self.info.dataset_size + self.info.download_size + self.info.post_processing_size
+                        self.info.dataset_size
+                        + self.info.download_size
+                        + self.info.post_processing_size
                     )
                 self._save_info()
                 ds._info.post_processed = self.info.post_processed
@@ -874,9 +1009,12 @@ class DatasetBuilder:
 
         return ds
 
-
-
-    def _as_dataset(self, split: Union[ReadInstruction, Split] = Split.TRAIN, in_memory: bool = False, dataset_class = Dataset):
+    def _as_dataset(
+        self,
+        split: Union[ReadInstruction, Split] = Split.TRAIN,
+        in_memory: bool = False,
+        dataset_class=Dataset,
+    ):
         """Constructs a `Dataset`.
 
         This is the internal implementation to overwrite called when user calls
@@ -904,7 +1042,9 @@ class DatasetBuilder:
         """The dataset fingerprint is the hash of the relative directory dataset_name/config_name/version/hash, as well as the split specs."""
         hasher = Hasher()
         hasher.update(self._relative_data_dir().replace(os.sep, "/"))
-        hasher.update(str(split))  # for example: train, train+test, train[:10%], test[:33%](pct1_dropremainder)
+        hasher.update(
+            str(split)
+        )  # for example: train, train+test, train[:10%], test[:33%](pct1_dropremainder)
         fingerprint = hasher.hexdigest()
         return fingerprint
 
@@ -913,7 +1053,7 @@ class DatasetBuilder:
         split: Optional[str] = None,
         base_path: Optional[str] = None,
         use_auth_token: Optional[str] = None,
-    ) -> Union[Dict[str, IterableDataset], IterableDataset]:
+    ) -> Union[dict[str, IterableDataset], IterableDataset]:
         if not isinstance(self, (GeneratorBasedBuilder, ArrowBasedBuilder)):
             raise ValueError(f"Builder {self.name} is not streamable.")
 
@@ -931,7 +1071,9 @@ class DatasetBuilder:
         elif split in splits_generators:
             splits_generator = splits_generators[split]
         else:
-            raise ValueError(f"Bad split: {split}. Available splits: {list(splits_generators)}")
+            raise ValueError(
+                f"Bad split: {split}. Available splits: {list(splits_generators)}"
+            )
 
         # Create a dataset for each of the given splits
         datasets = utils.map_nested(
@@ -950,11 +1092,13 @@ class DatasetBuilder:
         ex_iterable = self._get_examples_iterable_for_split(splits_generator)
         return IterableDataset(ex_iterable, info=self.info, split=splits_generator.name)
 
-    def _post_process(self, dataset: Dataset, resources_paths: Mapping[str, str]) -> Optional[Dataset]:
+    def _post_process(
+        self, dataset: Dataset, resources_paths: Mapping[str, str]
+    ) -> Optional[Dataset]:
         """Run dataset transforms or add indexes"""
         return None
 
-    def _post_processing_resources(self, split: str) -> Dict[str, str]:
+    def _post_processing_resources(self, split: str) -> dict[str, str]:
         """Mapping resource_name -> resource_file_name"""
         return {}
 
@@ -1021,7 +1165,9 @@ class DatasetBuilder:
         """
         raise NotImplementedError()
 
-    def _get_examples_iterable_for_split(self, split_generator: SplitGenerator) -> ExamplesIterable:
+    def _get_examples_iterable_for_split(
+        self, split_generator: SplitGenerator
+    ) -> ExamplesIterable:
         """Generate the examples on the fly.
 
         Args:
@@ -1121,7 +1267,9 @@ class GeneratorBasedBuilder(DatasetBuilder):
         split_generator.split_info.num_examples = num_examples
         split_generator.split_info.num_bytes = num_bytes
 
-    def _get_examples_iterable_for_split(self, split_generator: SplitGenerator) -> ExamplesIterable:
+    def _get_examples_iterable_for_split(
+        self, split_generator: SplitGenerator
+    ) -> ExamplesIterable:
         return ExamplesIterable(self._generate_examples, split_generator.gen_kwargs)
 
 
@@ -1167,7 +1315,10 @@ class ArrowBasedBuilder(DatasetBuilder):
         generator = self._generate_tables(**split_generator.gen_kwargs)
         with ArrowWriter(features=self.info.features, path=fpath) as writer:
             for key, table in utils.tqdm(
-                generator, unit=" tables", leave=False, disable=True  # bool(logging.get_verbosity() == logging.NOTSET)
+                generator,
+                unit=" tables",
+                leave=False,
+                disable=True,  # bool(logging.get_verbosity() == logging.NOTSET)
             ):
                 writer.write_table(table)
             num_examples, num_bytes = writer.finalize()
@@ -1177,9 +1328,12 @@ class ArrowBasedBuilder(DatasetBuilder):
         if self.info.features is None:
             self.info.features = writer._features
 
-    def _get_examples_iterable_for_split(self, split_generator: SplitGenerator) -> ExamplesIterable:
+    def _get_examples_iterable_for_split(
+        self, split_generator: SplitGenerator
+    ) -> ExamplesIterable:
         return ExamplesIterable(
-            _generate_examples_from_tables_wrapper(self._generate_tables), kwargs=split_generator.gen_kwargs
+            _generate_examples_from_tables_wrapper(self._generate_tables),
+            kwargs=split_generator.gen_kwargs,
         )
 
 
@@ -1204,7 +1358,9 @@ class BeamBasedBuilder(DatasetBuilder):
         # it's in the call signature of `_split_generators()`.
         # This allows for global preprocessing in beam.
         split_generators_kwargs = {}
-        split_generators_arg_names = inspect.signature(self._split_generators).parameters.keys()
+        split_generators_arg_names = inspect.signature(
+            self._split_generators
+        ).parameters.keys()
         if "pipeline" in split_generators_arg_names:
             split_generators_kwargs["pipeline"] = prepare_split_kwargs["pipeline"]
         return split_generators_kwargs
@@ -1247,7 +1403,6 @@ class BeamBasedBuilder(DatasetBuilder):
     def _download_and_prepare(self, dl_manager, verify_infos):
         # Create the Beam pipeline and forward it to _prepare_split
         import apache_beam as beam
-
         import datasets.utils.beam_utils as beam_utils
 
         beam_runner = self._beam_runner
@@ -1272,7 +1427,9 @@ class BeamBasedBuilder(DatasetBuilder):
         # Beam type checking assumes transforms multiple outputs are of same type,
         # which is not our case. Plus it doesn't handle correctly all types, so we
         # are better without it.
-        beam_options.view_as(beam.options.pipeline_options.TypeOptions).pipeline_type_check = False
+        beam_options.view_as(
+            beam.options.pipeline_options.TypeOptions
+        ).pipeline_type_check = False
         # Use a single pipeline for all splits
         pipeline = beam_utils.BeamPipeline(
             runner=beam_runner,
@@ -1303,7 +1460,9 @@ class BeamBasedBuilder(DatasetBuilder):
             import apache_beam as beam
 
             fs = beam.io.filesystems.FileSystems
-            with fs.create(os.path.join(self._cache_dir, config.DATASET_INFO_FILENAME)) as f:
+            with fs.create(
+                os.path.join(self._cache_dir, config.DATASET_INFO_FILENAME)
+            ) as f:
                 self.info._dump_info(f)
             with fs.create(os.path.join(self._cache_dir, config.LICENSE_FILENAME)) as f:
                 self.info._dump_license(f)
@@ -1319,7 +1478,10 @@ class BeamBasedBuilder(DatasetBuilder):
         fname = f"{self.name}-{split_name}.arrow"
         fpath = os.path.join(self._cache_dir, fname)
         beam_writer = BeamWriter(
-            features=self.info.features, path=fpath, namespace=split_name, cache_dir=self._cache_dir
+            features=self.info.features,
+            path=fpath,
+            namespace=split_name,
+            cache_dir=self._cache_dir,
         )
         self._beam_writers[split_name] = beam_writer
 
@@ -1331,9 +1493,15 @@ class BeamBasedBuilder(DatasetBuilder):
         def _build_pcollection(pipeline):
             """PTransformation which build a single split."""
             # Encode the PCollection
-            pcoll_examples = self._build_pcollection(pipeline, **split_generator.gen_kwargs)
-            pcoll_examples |= "Encode" >> beam.Map(lambda key_ex: (key_ex[0], encode_example(key_ex[1])))
+            pcoll_examples = self._build_pcollection(
+                pipeline, **split_generator.gen_kwargs
+            )
+            pcoll_examples |= "Encode" >> beam.Map(
+                lambda key_ex: (key_ex[0], encode_example(key_ex[1]))
+            )
             return beam_writer.write_from_pcollection(pcoll_examples)
 
         # Add the PCollection to the pipeline
-        _ = pipeline | split_name >> _build_pcollection()  # pylint: disable=no-value-for-parameter
+        _ = (
+            pipeline | split_name >> _build_pcollection()
+        )  # pylint: disable=no-value-for-parameter

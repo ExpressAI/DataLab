@@ -44,22 +44,34 @@ class Text(datalabs.ArrowBasedBuilder):
         If dict, then keys should be from the `datalab.Split` enum.
         """
         if not self.config.data_files:
-            raise ValueError(f"At least one data file must be specified, but got data_files={self.config.data_files}")
+            raise ValueError(
+                f"At least one data file must be specified, but got data_files={self.config.data_files}"
+            )
         data_files = dl_manager.download_and_extract(self.config.data_files)
         if isinstance(data_files, (str, list, tuple)):
             files = data_files
             if isinstance(files, str):
                 files = [files]
-            return [datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"files": files})]
+            return [
+                datalabs.SplitGenerator(
+                    name=datalabs.Split.TRAIN, gen_kwargs={"files": files}
+                )
+            ]
         splits = []
         for split_name, files in data_files.items():
             if isinstance(files, str):
                 files = [files]
-            splits.append(datalabs.SplitGenerator(name=split_name, gen_kwargs={"files": files}))
+            splits.append(
+                datalabs.SplitGenerator(name=split_name, gen_kwargs={"files": files})
+            )
         return splits
 
     def _generate_tables(self, files):
-        schema = pa.schema(self.config.features.type if self.config.features is not None else {"text": pa.string()})
+        schema = pa.schema(
+            self.config.features.type
+            if self.config.features is not None
+            else {"text": pa.string()}
+        )
         for file_idx, file in enumerate(files):
             batch_idx = 0
             with open(file, "r", encoding=self.config.encoding) as f:

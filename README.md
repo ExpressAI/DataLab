@@ -45,6 +45,17 @@ pip install .
 python -m nltk.downloader omw-1.4 # to support more feature calculation
 ```
 
+#### Developers
+```shell
+pip install -e .[dev]
+pre-commit install
+
+git init .
+pre-commit run --all-files
+```
+
+
+
 ## Getting started (Documentation)
 Here we give several examples to showcase the usage of DataLab. For more information, please refer to the corresponding sections in our [**documentation**](https://expressai.github.io/DataLab/).
 

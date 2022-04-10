@@ -15,8 +15,12 @@
 
 # Lint as: python3
 """ List and inspect datalab and metrics."""
+from __future__ import annotations
 
-from typing import Dict, List, Mapping, Optional, Sequence, Union
+from collections.abc import Sequence
+from collections.abc import Mapping
+
+from typing import Optional, Union
 
 import huggingface_hub
 
@@ -66,7 +70,12 @@ def list_metrics(with_community_metrics=True, with_details=False):
     return metrics
 
 
-def inspect_dataset(path: str, local_path: str, download_config: Optional[DownloadConfig] = None, **download_kwargs):
+def inspect_dataset(
+    path: str,
+    local_path: str,
+    download_config: Optional[DownloadConfig] = None,
+    **download_kwargs,
+):
     r"""
     Allow inspection/modification of a dataset script by copying on local drive at local_path.
 
@@ -82,7 +91,10 @@ def inspect_dataset(path: str, local_path: str, download_config: Optional[Downlo
         **download_kwargs: optional attributes for DownloadConfig() which will override the attributes in download_config if supplied.
     """
     dataset_module = dataset_module_factory(
-        path, download_config=download_config, force_local_path=local_path, **download_kwargs
+        path,
+        download_config=download_config,
+        force_local_path=local_path,
+        **download_kwargs,
     )
     print(
         f"The processing script for dataset {path} can be inspected at {local_path}. "
@@ -91,7 +103,12 @@ def inspect_dataset(path: str, local_path: str, download_config: Optional[Downlo
     )
 
 
-def inspect_metric(path: str, local_path: str, download_config: Optional[DownloadConfig] = None, **download_kwargs):
+def inspect_metric(
+    path: str,
+    local_path: str,
+    download_config: Optional[DownloadConfig] = None,
+    **download_kwargs,
+):
     r"""
     Allow inspection/modification of a metric script by copying it on local drive at local_path.
 
@@ -107,7 +124,10 @@ def inspect_metric(path: str, local_path: str, download_config: Optional[Downloa
         **download_kwargs: optional attributes for DownloadConfig() which will override the attributes in download_config if supplied.
     """
     metric_module = metric_module_factory(
-        path, download_config=download_config, force_local_path=local_path, **download_kwargs
+        path,
+        download_config=download_config,
+        force_local_path=local_path,
+        **download_kwargs,
     )
     print(
         f"The processing scripts for metric {path} can be inspected at {local_path}. "
@@ -123,7 +143,7 @@ def get_dataset_infos(
     download_mode: Optional[GenerateMode] = None,
     force_local_path: Optional[str] = None,
     dynamic_modules_path: Optional[str] = None,
-    data_files: Optional[Union[Dict, List, str]] = None,
+    data_files: Optional[Union[dict, list, str]] = None,
     **download_kwargs,
 ):
     """Get the meta information about a dataset, returned as a dict mapping config name to DatasetInfoDict.
@@ -173,7 +193,7 @@ def get_dataset_config_names(
     download_mode: Optional[GenerateMode] = None,
     force_local_path: Optional[str] = None,
     dynamic_modules_path: Optional[str] = None,
-    data_files: Optional[Union[Dict, List, str]] = None,
+    data_files: Optional[Union[dict, list, str]] = None,
     **download_kwargs,
 ):
     """Get the list of available config names for a particular dataset.
@@ -213,14 +233,18 @@ def get_dataset_config_names(
         **download_kwargs,
     )
     builder_cls = import_main_class(dataset_module.module_path)
-    return list(builder_cls.builder_configs.keys()) or [dataset_module.builder_kwargs.get("name", "default")]
+    return list(builder_cls.builder_configs.keys()) or [
+        dataset_module.builder_kwargs.get("name", "default")
+    ]
 
 
 def get_dataset_split_names(
     path: str,
     config_name: Optional[str] = None,
     data_dir: Optional[str] = None,
-    data_files: Optional[Union[str, Sequence[str], Mapping[str, Union[str, Sequence[str]]]]] = None,
+    data_files: Optional[
+        Union[str, Sequence[str], Mapping[str, Union[str, Sequence[str]]]]
+    ] = None,
     cache_dir: Optional[str] = None,
     features: Optional[Features] = None,
     download_config: Optional[DownloadConfig] = None,
@@ -273,8 +297,12 @@ def get_dataset_split_names(
         try:
             return [
                 split_generator.name
-                for split_generator in builder._split_generators(StreamingDownloadManager(base_path=builder.base_path))
+                for split_generator in builder._split_generators(
+                    StreamingDownloadManager(base_path=builder.base_path)
+                )
             ]
         except Exception as err:
-            raise SplitsNotFoundError("The split names could not be parsed from the dataset config.") from err
+            raise SplitsNotFoundError(
+                "The split names could not be parsed from the dataset config."
+            ) from err
     return list(builder.info.splits.keys())

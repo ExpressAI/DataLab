@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and DataLab Authors.
 #
@@ -16,7 +18,7 @@ import os
 import tempfile
 from functools import wraps
 from itertools import groupby
-from typing import List, Optional, Tuple, TypeVar, Union
+from typing import Optional, Tuple, TypeVar, Union
 
 import numpy as np
 import pyarrow as pa
@@ -62,7 +64,7 @@ def _memory_mapped_arrow_table_from_file(filename: str) -> pa.Table:
 def _write_table_to_file(table: pa.Table, filename: str) -> int:
     with open(filename, "wb") as sink:
         writer = pa.RecordBatchStreamWriter(sink=sink, schema=table.schema)
-        batches: List[pa.RecordBatch] = table.to_batches()
+        batches: list[pa.RecordBatch] = table.to_batches()
         for batch in batches:
             writer.write_batch(batch)
         writer.close()
@@ -79,7 +81,7 @@ def _deepcopy(x, memo: dict):
     return result
 
 
-def _interpolation_search(arr: List[int], x: int) -> int:
+def _interpolation_search(arr: list[int], x: int) -> int:
     """
     Return the position i of a sorted array so that arr[i] <= x < arr[i+1]
 
@@ -108,10 +110,14 @@ def _interpolation_search(arr: List[int], x: int) -> int:
 class IndexedTableMixin:
     def __init__(self, table: pa.Table):
         self._schema = table.schema
-        self._batches = [recordbatch for recordbatch in table.to_batches() if len(recordbatch) > 0]
-        self._offsets: np.ndarray = np.cumsum([0] + [len(b) for b in self._batches], dtype=np.int64)
+        self._batches = [
+            recordbatch for recordbatch in table.to_batches() if len(recordbatch) > 0
+        ]
+        self._offsets: np.ndarray = np.cumsum(
+            [0] + [len(b) for b in self._batches], dtype=np.int64
+        )
 
-    def fast_gather(self, indices: Union[List[int], np.ndarray]) -> pa.Table:
+    def fast_gather(self, indices: Union[list[int], np.ndarray]) -> pa.Table:
         """
         Create a pa.Table by gathering the records at the records at the specified indices. Should be faster
         than pa.concat_tables(table.fast_slice(int(i) % table.num_rows, 1) for i in indices) since NumPy can compute
@@ -181,7 +187,9 @@ class Table(IndexedTableMixin):
         # So we write the table on disk instead
         if self.table.nbytes >= config.MAX_TABLE_NBYTES_FOR_PICKLING:
             table = self.table
-            with tempfile.NamedTemporaryFile("wb", delete=False, suffix=".arrow") as tmp_file:
+            with tempfile.NamedTemporaryFile(
+                "wb", delete=False, suffix=".arrow"
+            ) as tmp_file:
                 filename = tmp_file.name
                 logger.debug(
                     f"Attempting to pickle a table bigger than 4GiB. Writing it on the disk instead at {filename}"
@@ -461,10 +469,12 @@ class MemoryMappedTable(TableBlock):
     stay low.
     """
 
-    def __init__(self, table: pa.Table, path: str, replays: Optional[List[Replay]] = None):
+    def __init__(
+        self, table: pa.Table, path: str, replays: Optional[list[Replay]] = None
+    ):
         super().__init__(table)
         self.path = path
-        self.replays: List[Replay] = replays if replays is not None else []
+        self.replays: list[Replay] = replays if replays is not None else []
 
     @classmethod
     def from_file(cls, filename: str, replays=None):
@@ -483,13 +493,15 @@ class MemoryMappedTable(TableBlock):
         MemoryMappedTable.__init__(self, table, path=path, replays=replays)
 
     @staticmethod
-    def _apply_replays(table: pa.Table, replays: Optional[List[Replay]] = None) -> pa.Table:
+    def _apply_replays(
+        table: pa.Table, replays: Optional[list[Replay]] = None
+    ) -> pa.Table:
         if replays is not None:
             for name, args, kwargs in replays:
                 table = getattr(table, name)(*args, **kwargs)
         return table
 
-    def _append_replay(self, replay: Replay) -> List[Replay]:
+    def _append_replay(self, replay: Replay) -> list[Replay]:
         replays = copy.deepcopy(self.replays)
         replays.append(replay)
         return replays
@@ -499,7 +511,9 @@ class MemoryMappedTable(TableBlock):
         replay = ("slice", (offset, length), {})
         replays = self._append_replay(replay)
         # Use fast slicing here
-        return MemoryMappedTable(self.fast_slice(offset=offset, length=length), self.path, replays)
+        return MemoryMappedTable(
+            self.fast_slice(offset=offset, length=length), self.path, replays
+        )
 
     @inject_arrow_table_documentation(pa.Table.filter)
     def filter(self, *args, **kwargs):
@@ -511,13 +525,17 @@ class MemoryMappedTable(TableBlock):
     def flatten(self, *args, **kwargs):
         replay = ("flatten", copy.deepcopy(args), copy.deepcopy(kwargs))
         replays = self._append_replay(replay)
-        return MemoryMappedTable(self.table.flatten(*args, **kwargs), self.path, replays)
+        return MemoryMappedTable(
+            self.table.flatten(*args, **kwargs), self.path, replays
+        )
 
     @inject_arrow_table_documentation(pa.Table.combine_chunks)
     def combine_chunks(self, *args, **kwargs):
         replay = ("combine_chunks", copy.deepcopy(args), copy.deepcopy(kwargs))
         replays = self._append_replay(replay)
-        return MemoryMappedTable(self.table.combine_chunks(*args, **kwargs), self.path, replays)
+        return MemoryMappedTable(
+            self.table.combine_chunks(*args, **kwargs), self.path, replays
+        )
 
     @inject_arrow_table_documentation(pa.Table.cast)
     def cast(self, *args, **kwargs):
@@ -529,37 +547,49 @@ class MemoryMappedTable(TableBlock):
     def replace_schema_metadata(self, *args, **kwargs):
         replay = ("replace_schema_metadata", copy.deepcopy(args), copy.deepcopy(kwargs))
         replays = self._append_replay(replay)
-        return MemoryMappedTable(self.table.replace_schema_metadata(*args, **kwargs), self.path, replays)
+        return MemoryMappedTable(
+            self.table.replace_schema_metadata(*args, **kwargs), self.path, replays
+        )
 
     @inject_arrow_table_documentation(pa.Table.add_column)
     def add_column(self, *args, **kwargs):
         replay = ("add_column", copy.deepcopy(args), copy.deepcopy(kwargs))
         replays = self._append_replay(replay)
-        return MemoryMappedTable(self.table.add_column(*args, **kwargs), self.path, replays)
+        return MemoryMappedTable(
+            self.table.add_column(*args, **kwargs), self.path, replays
+        )
 
     @inject_arrow_table_documentation(pa.Table.append_column)
     def append_column(self, *args, **kwargs):
         replay = ("append_column", copy.deepcopy(args), copy.deepcopy(kwargs))
         replays = self._append_replay(replay)
-        return MemoryMappedTable(self.table.append_column(*args, **kwargs), self.path, replays)
+        return MemoryMappedTable(
+            self.table.append_column(*args, **kwargs), self.path, replays
+        )
 
     @inject_arrow_table_documentation(pa.Table.remove_column)
     def remove_column(self, *args, **kwargs):
         replay = ("remove_column", copy.deepcopy(args), copy.deepcopy(kwargs))
         replays = self._append_replay(replay)
-        return MemoryMappedTable(self.table.remove_column(*args, **kwargs), self.path, replays)
+        return MemoryMappedTable(
+            self.table.remove_column(*args, **kwargs), self.path, replays
+        )
 
     @inject_arrow_table_documentation(pa.Table.set_column)
     def set_column(self, *args, **kwargs):
         replay = ("set_column", copy.deepcopy(args), copy.deepcopy(kwargs))
         replays = self._append_replay(replay)
-        return MemoryMappedTable(self.table.set_column(*args, **kwargs), self.path, replays)
+        return MemoryMappedTable(
+            self.table.set_column(*args, **kwargs), self.path, replays
+        )
 
     @inject_arrow_table_documentation(pa.Table.rename_columns)
     def rename_columns(self, *args, **kwargs):
         replay = ("rename_columns", copy.deepcopy(args), copy.deepcopy(kwargs))
         replays = self._append_replay(replay)
-        return MemoryMappedTable(self.table.rename_columns(*args, **kwargs), self.path, replays)
+        return MemoryMappedTable(
+            self.table.rename_columns(*args, **kwargs), self.path, replays
+        )
 
     @inject_arrow_table_documentation(pa.Table.drop)
     def drop(self, *args, **kwargs):
@@ -572,7 +602,9 @@ class MemoryMappedTable(TableBlock):
 # The ``blocks`` attributes stores a list of list of blocks.
 # The first axis concatenates the tables along the axis 0 (it appends rows),
 # while the second axis concatenates tables along the axis 1 (it appends columns).
-TableBlockContainer = TypeVar("TableBlockContainer", TableBlock, List[TableBlock], List[List[TableBlock]])
+TableBlockContainer = TypeVar(
+    "TableBlockContainer", TableBlock, List[TableBlock], List[List[TableBlock]]
+)
 
 
 class ConcatenationTable(Table):
@@ -598,7 +630,7 @@ class ConcatenationTable(Table):
     and the blocks by accessing the ConcatenationTable.blocks attribute.
     """
 
-    def __init__(self, table: pa.Table, blocks: List[List[TableBlock]]):
+    def __init__(self, table: pa.Table, blocks: list[list[TableBlock]]):
         super().__init__(table)
         self.blocks = blocks
         # Check that all the blocks have the right type.
@@ -620,15 +652,21 @@ class ConcatenationTable(Table):
         ConcatenationTable.__init__(self, table, blocks=blocks)
 
     @staticmethod
-    def _concat_blocks(blocks: List[Union[TableBlock, pa.Table]], axis: int = 0) -> pa.Table:
-        pa_tables = [table.table if hasattr(table, "table") else table for table in blocks]
+    def _concat_blocks(
+        blocks: list[Union[TableBlock, pa.Table]], axis: int = 0
+    ) -> pa.Table:
+        pa_tables = [
+            table.table if hasattr(table, "table") else table for table in blocks
+        ]
         if axis == 0:
             # Align schemas: re-order the columns to make the schemas match before concatenating over rows
             schema = pa_tables[0].schema
             pa_tables = [
                 table
                 if table.schema == schema
-                else pa.Table.from_arrays([table[name] for name in schema.names], names=schema.names)
+                else pa.Table.from_arrays(
+                    [table[name] for name in schema.names], names=schema.names
+                )
                 for table in pa_tables
             ]
             return pa.concat_tables(pa_tables)
@@ -644,7 +682,9 @@ class ConcatenationTable(Table):
             raise ValueError("'axis' must be either 0 or 1")
 
     @classmethod
-    def _concat_blocks_horizontally_and_vertically(cls, blocks: List[List[TableBlock]]) -> pa.Table:
+    def _concat_blocks_horizontally_and_vertically(
+        cls, blocks: list[list[TableBlock]]
+    ) -> pa.Table:
         pa_tables_to_concat_vertically = []
         for i, tables in enumerate(blocks):
             if not tables:
@@ -654,18 +694,27 @@ class ConcatenationTable(Table):
         return cls._concat_blocks(pa_tables_to_concat_vertically, axis=0)
 
     @classmethod
-    def _merge_blocks(cls, blocks: TableBlockContainer, axis: Optional[int] = None) -> TableBlockContainer:
+    def _merge_blocks(
+        cls, blocks: TableBlockContainer, axis: Optional[int] = None
+    ) -> TableBlockContainer:
         if axis is not None:
             merged_blocks = []
-            for is_in_memory, block_group in groupby(blocks, key=lambda x: isinstance(x, InMemoryTable)):
+            for is_in_memory, block_group in groupby(
+                blocks, key=lambda x: isinstance(x, InMemoryTable)
+            ):
                 if is_in_memory:
-                    block_group = [InMemoryTable(cls._concat_blocks(list(block_group), axis=axis))]
+                    block_group = [
+                        InMemoryTable(cls._concat_blocks(list(block_group), axis=axis))
+                    ]
                 merged_blocks += list(block_group)
         else:  # both
-            merged_blocks = [cls._merge_blocks(row_block, axis=1) for row_block in blocks]
+            merged_blocks = [
+                cls._merge_blocks(row_block, axis=1) for row_block in blocks
+            ]
             if all(len(row_block) == 1 for row_block in merged_blocks):
                 merged_blocks = cls._merge_blocks(
-                    [block for row_block in merged_blocks for block in row_block], axis=0
+                    [block for row_block in merged_blocks for block in row_block],
+                    axis=0,
                 )
         return merged_blocks
 
@@ -693,7 +742,9 @@ class ConcatenationTable(Table):
             return cls(table, blocks)
 
     @classmethod
-    def from_tables(cls, tables: List[Union[pa.Table, Table]], axis: int = 0) -> "ConcatenationTable":
+    def from_tables(
+        cls, tables: list[Union[pa.Table, Table]], axis: int = 0
+    ) -> "ConcatenationTable":
         """Create ConcatenationTable from list of tables.
 
         Args:
@@ -721,10 +772,14 @@ class ConcatenationTable(Table):
                 splits.append((offset, length))
                 offset += length
             return [
-                [block.slice(offset=split[0], length=split[1]) for block in blocks_to_split[0]] for split in splits
+                [
+                    block.slice(offset=split[0], length=split[1])
+                    for block in blocks_to_split[0]
+                ]
+                for split in splits
             ]
 
-        def _extend_blocks(result, blocks: List[List[TableBlock]], axis: int = 0):
+        def _extend_blocks(result, blocks: list[list[TableBlock]], axis: int = 0):
             if axis == 0:
                 result.extend(blocks)
             elif axis == 1:
@@ -805,7 +860,15 @@ class ConcatenationTable(Table):
             for subtable in subtables:
                 subfields = []
                 for name in subtable.column_names:
-                    subfields.append(fields.pop(next(i for i, field in enumerate(fields) if field.name == name)))
+                    subfields.append(
+                        fields.pop(
+                            next(
+                                i
+                                for i, field in enumerate(fields)
+                                if field.name == name
+                            )
+                        )
+                    )
                 subschema = pa.schema(subfields)
                 new_tables.append(subtable.cast(subschema, *args, **kwargs))
             blocks.append(new_tables)
@@ -835,7 +898,9 @@ class ConcatenationTable(Table):
         for tables in self.blocks:
             blocks.append(
                 [
-                    t.remove_column(t.column_names.index(name), *args, **kwargs) if name in t.column_names else t
+                    t.remove_column(t.column_names.index(name), *args, **kwargs)
+                    if name in t.column_names
+                    else t
                     for t in tables
                 ]
             )
@@ -852,7 +917,12 @@ class ConcatenationTable(Table):
         blocks = []
         for tables in self.blocks:
             blocks.append(
-                [t.rename_columns([names[name] for name in t.column_names], *args, **kwargs) for t in tables]
+                [
+                    t.rename_columns(
+                        [names[name] for name in t.column_names], *args, **kwargs
+                    )
+                    for t in tables
+                ]
             )
         return ConcatenationTable(table, blocks)
 
@@ -861,11 +931,16 @@ class ConcatenationTable(Table):
         table = self.table.drop(columns)
         blocks = []
         for tables in self.blocks:
-            blocks.append([t.drop([c for c in columns if c in t.column_names], *args, **kwargs) for t in tables])
+            blocks.append(
+                [
+                    t.drop([c for c in columns if c in t.column_names], *args, **kwargs)
+                    for t in tables
+                ]
+            )
         return ConcatenationTable(table, blocks)
 
 
-def concat_tables(tables: List[Table], axis: int = 0) -> Table:
+def concat_tables(tables: list[Table], axis: int = 0) -> Table:
     """
     Concatenate tables.
 
@@ -888,7 +963,7 @@ def concat_tables(tables: List[Table], axis: int = 0) -> Table:
     return ConcatenationTable.from_tables(tables, axis=axis)
 
 
-def list_table_cache_files(table: Table) -> List[str]:
+def list_table_cache_files(table: Table) -> list[str]:
     """
     Get the cache files that are loaded by the table.
     Cache file are used when parts of the table come from the disk via memory mapping.
@@ -931,9 +1006,18 @@ def cast_with_sliced_list_support(pa_table: pa.Table, schema: pa.Schema) -> pa.T
             return array.values.slice(0, 0)
         else:
             values_offset = array.offsets[0]  # the relevant values start at this index
-            new_values = array.values.slice(values_offset.as_py())  # get the values to start at the right position
-            new_offsets = pc.subtract(array.offsets, values_offset)  # update the offsets accordingly
+            new_values = array.values.slice(
+                values_offset.as_py()
+            )  # get the values to start at the right position
+            new_offsets = pc.subtract(
+                array.offsets, values_offset
+            )  # update the offsets accordingly
             return pa.ListArray.from_arrays(new_offsets, new_values)
 
-    arrays = [reset_sliced_list_offset(array) if isinstance(array.type, pa.ListType) else array for array in pa_table]
+    arrays = [
+        reset_sliced_list_offset(array)
+        if isinstance(array.type, pa.ListType)
+        else array
+        for array in pa_table
+    ]
     return pa.Table.from_arrays(arrays, schema=schema)

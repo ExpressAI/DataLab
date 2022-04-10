@@ -46,7 +46,11 @@ class patch_submodule:
         *submodules, attr = self.target.split(".")
         current = self.obj
         for key in submodules:
-            setattr(current, key, _PatchedModuleObj(getattr(current, key, None), attrs=self.attrs))
+            setattr(
+                current,
+                key,
+                _PatchedModuleObj(getattr(current, key, None), attrs=self.attrs),
+            )
             current = getattr(current, key)
         setattr(current, attr, self.new)
 

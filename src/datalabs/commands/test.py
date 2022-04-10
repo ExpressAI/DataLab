@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+from collections.abc import Generator
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and the DataLab Datasets Authors.
 #
@@ -15,7 +18,6 @@ import os
 from argparse import ArgumentParser
 from pathlib import Path
 from shutil import copyfile, rmtree
-from typing import Generator
 
 import datalabs.config
 from datalabs.builder import DatasetBuilder
@@ -49,7 +51,9 @@ class TestCommand(BaseDatasetsCLICommand):
     @staticmethod
     def register_subcommand(parser: ArgumentParser):
         test_parser = parser.add_parser("test", help="Test dataset implementation.")
-        test_parser.add_argument("--name", type=str, default=None, help="Dataset processing name")
+        test_parser.add_argument(
+            "--name", type=str, default=None, help="Dataset processing name"
+        )
         test_parser.add_argument(
             "--cache_dir",
             type=str,
@@ -62,12 +66,20 @@ class TestCommand(BaseDatasetsCLICommand):
             default=None,
             help="Can be used to specify a manual directory to get the files from.",
         )
-        test_parser.add_argument("--all_configs", action="store_true", help="Test all dataset configurations")
-        test_parser.add_argument("--save_infos", action="store_true", help="Save the dataset infos file")
         test_parser.add_argument(
-            "--ignore_verifications", action="store_true", help="Run the test without checksums and splits checks"
+            "--all_configs", action="store_true", help="Test all dataset configurations"
         )
-        test_parser.add_argument("--force_redownload", action="store_true", help="Force dataset redownload")
+        test_parser.add_argument(
+            "--save_infos", action="store_true", help="Save the dataset infos file"
+        )
+        test_parser.add_argument(
+            "--ignore_verifications",
+            action="store_true",
+            help="Run the test without checksums and splits checks",
+        )
+        test_parser.add_argument(
+            "--force_redownload", action="store_true", help="Force dataset redownload"
+        )
         test_parser.add_argument(
             "--clear_cache",
             action="store_true",
@@ -85,7 +97,9 @@ class TestCommand(BaseDatasetsCLICommand):
             default=1,
             help="Number of processes to use for multiprocessing testing",
         )
-        test_parser.add_argument("dataset", type=str, help="Name of the dataset to download")
+        test_parser.add_argument(
+            "dataset", type=str, help="Name of the dataset to download"
+        )
         test_parser.set_defaults(func=test_command_factory)
 
     def __init__(
@@ -134,7 +148,9 @@ class TestCommand(BaseDatasetsCLICommand):
 
         if self._all_configs and len(builder_cls.BUILDER_CONFIGS) > 0:
             n_builders = len(builder_cls.BUILDER_CONFIGS) // self._num_proc
-            n_builders += (len(builder_cls.BUILDER_CONFIGS) % self._num_proc) > self._proc_rank
+            n_builders += (
+                len(builder_cls.BUILDER_CONFIGS) % self._num_proc
+            ) > self._proc_rank
         else:
             n_builders = 1 if self._proc_rank == 0 else 0
 
@@ -151,7 +167,10 @@ class TestCommand(BaseDatasetsCLICommand):
             else:
                 if self._proc_rank == 0:
                     yield builder_cls(
-                        name=name, cache_dir=self._cache_dir, data_dir=self._data_dir, **module.builder_kwargs
+                        name=name,
+                        cache_dir=self._cache_dir,
+                        data_dir=self._data_dir,
+                        **module.builder_kwargs,
                     )
 
         for j, builder in enumerate(get_builders()):
@@ -172,7 +191,8 @@ class TestCommand(BaseDatasetsCLICommand):
             # upload them on S3 at the same time afterwards.
             if self._save_infos:
                 dataset_infos_path = os.path.join(
-                    builder_cls.get_imported_module_dir(), datasets.config.DATASETDICT_INFOS_FILENAME
+                    builder_cls.get_imported_module_dir(),
+                    datasets.config.DATASETDICT_INFOS_FILENAME,
                 )
                 name = Path(path).name + ".py"
                 combined_path = os.path.join(path, name)
@@ -186,7 +206,9 @@ class TestCommand(BaseDatasetsCLICommand):
 
                 # Move dataset_info back to the user
                 if dataset_dir is not None:
-                    user_dataset_infos_path = os.path.join(dataset_dir, datasets.config.DATASETDICT_INFOS_FILENAME)
+                    user_dataset_infos_path = os.path.join(
+                        dataset_dir, datasets.config.DATASETDICT_INFOS_FILENAME
+                    )
                     copyfile(dataset_infos_path, user_dataset_infos_path)
                     print(f"Dataset Infos file saved at {user_dataset_infos_path}")
 
@@ -195,7 +217,9 @@ class TestCommand(BaseDatasetsCLICommand):
                 if os.path.isdir(builder._cache_dir):
                     logger.warning(f"Clearing cache at {builder._cache_dir}")
                     rmtree(builder._cache_dir)
-                download_dir = os.path.join(self._cache_dir, datasets.config.DOWNLOADED_DATASETS_DIR)
+                download_dir = os.path.join(
+                    self._cache_dir, datasets.config.DOWNLOADED_DATASETS_DIR
+                )
                 if os.path.isdir(download_dir):
                     logger.warning(f"Clearing cache at {download_dir}")
                     rmtree(download_dir)

@@ -1,30 +1,39 @@
-from typing import Dict, List, Any, Optional
-from typing import Callable, Mapping
+from __future__ import annotations
 
+from collections.abc import Mapping
+from collections.abc import Callable
 import os
 import sys
+from typing import Any, Dict, Optional
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from operation import DatasetOperation, dataset_operation
 from prompt.prompting import *
 
 
 class SummarizationPrompting(Prompting, DatasetOperation):
-
-    def __init__(self,
-                 name: str = None,
-                 func: Callable[..., Any] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor: str = None,
-                 processed_fields: List = ["text", "summary"],
-                 generated_field: str = None,
-                 task="summarization",
-                 description=None,
-                 template=None,
-                 ):
-        super().__init__(name=name, func=func, resources=resources, contributor=contributor,
-                         task=task, description=description)
-        self._type = 'SummarizationPrompting'
+    def __init__(
+        self,
+        name: str = None,
+        func: Callable[..., Any] = None,
+        resources: Optional[Mapping[str, Any]] = None,
+        contributor: str = None,
+        processed_fields: list = ["text", "summary"],
+        generated_field: str = None,
+        task="summarization",
+        description=None,
+        template=None,
+    ):
+        super().__init__(
+            name=name,
+            func=func,
+            resources=resources,
+            contributor=contributor,
+            task=task,
+            description=description,
+        )
+        self._type = "SummarizationPrompting"
         self.processed_fields = ["text", "summary"]
         if isinstance(processed_fields, str):
             self.processed_fields[0] = processed_fields
@@ -46,17 +55,23 @@ class SummarizationPrompting(Prompting, DatasetOperation):
 
 
 class summarization_prompting(prompting, dataset_operation):
-    def __init__(self,
-                 name: Optional[str] = None,
-                 resources: Optional[Mapping[str, Any]] = None,
-                 contributor: str = None,
-                 processed_fields: List = ["text", "summary"],
-                 generated_field: str = None,
-                 task="summarization",
-                 description=None,
-                 template=None,
-                 ):
-        super().__init__(name=name, resources=resources, contributor=contributor, description=description)
+    def __init__(
+        self,
+        name: Optional[str] = None,
+        resources: Optional[Mapping[str, Any]] = None,
+        contributor: str = None,
+        processed_fields: list = ["text", "summary"],
+        generated_field: str = None,
+        task="summarization",
+        description=None,
+        template=None,
+    ):
+        super().__init__(
+            name=name,
+            resources=resources,
+            contributor=contributor,
+            description=description,
+        )
         self.processed_fields = processed_fields
         self.generated_field = generated_field
         self.task = task
@@ -69,14 +84,17 @@ class summarization_prompting(prompting, dataset_operation):
         else:
             f = param_arg[0]
             name = self.name or f.__name__
-            tf_cls = SummarizationPrompting(name=name, func=f,
-                                            resources=self.resources,
-                                            contributor=self.contributor,
-                                            processed_fields=self.processed_fields,
-                                            generated_field=self.generated_field,
-                                            task=self.task,
-                                            description=self.description,
-                                            template=self.template, )
+            tf_cls = SummarizationPrompting(
+                name=name,
+                func=f,
+                resources=self.resources,
+                contributor=self.contributor,
+                processed_fields=self.processed_fields,
+                generated_field=self.generated_field,
+                task=self.task,
+                description=self.description,
+                template=self.template,
+            )
             return tf_cls
 
 
@@ -97,11 +115,14 @@ print(next(res))
 """
 
 
-@summarization_prompting(name="template_summ1", contributor="datalab",
-                         template="{text} Write a TLDR (Too Long Didn\'\'t Read) summary for the above text.",
-                         description="Prompt template: {text} Write a TLDR (Too Long Didn\'\'t Read) summary for the above text.",
-                         task="summarization",
-                         processed_fields=['text', 'summary'],)
+@summarization_prompting(
+    name="template_summ1",
+    contributor="datalab",
+    template="{text} Write a TLDR (Too Long Didn''t Read) summary for the above text.",
+    description="Prompt template: {text} Write a TLDR (Too Long Didn''t Read) summary for the above text.",
+    task="summarization",
+    processed_fields=["text", "summary"],
+)
 def template_summ1(sample: dict):
     tp1 = "{text} Write a TLDR (Too Long Didn\\'t Read) summary for the above text."
 
@@ -112,15 +133,17 @@ def template_summ1(sample: dict):
     # instantiation
     text_prompt = eval("f'{}'".format(tp1))
 
-    return {"text_prompt": text_prompt,
-            "summary_prompt": summary}
+    return {"text_prompt": text_prompt, "summary_prompt": summary}
 
 
-@summarization_prompting(name="template_summ2", contributor="datalab",
-                         template="{text} Can you summarize the previous text?",
-                         description="Prompt template: {text} Can you summarize the previous text?",
-                         task="summarization",
-                         processed_fields=['text', 'summary'],)
+@summarization_prompting(
+    name="template_summ2",
+    contributor="datalab",
+    template="{text} Can you summarize the previous text?",
+    description="Prompt template: {text} Can you summarize the previous text?",
+    task="summarization",
+    processed_fields=["text", "summary"],
+)
 def template_summ2(sample: dict):
     tp1 = "{text} Can you summarize the previous text?"
 
@@ -131,15 +154,17 @@ def template_summ2(sample: dict):
     # instantiation
     text_prompt = eval("f'{}'".format(tp1))
 
-    return {"text_prompt": text_prompt,
-            "summary_prompt": summary}
+    return {"text_prompt": text_prompt, "summary_prompt": summary}
 
 
-@summarization_prompting(name="template_summ3", contributor="datalab",
-                         template="{text} what are the main points one should remember from this text?",
-                         description="Prompt template: {text} what are the main points one should remember from this text?",
-                         task="summarization",
-                         processed_fields=['text', 'summary'],)
+@summarization_prompting(
+    name="template_summ3",
+    contributor="datalab",
+    template="{text} what are the main points one should remember from this text?",
+    description="Prompt template: {text} what are the main points one should remember from this text?",
+    task="summarization",
+    processed_fields=["text", "summary"],
+)
 def template_summ3(sample: dict):
     tp1 = "{text} what are the main points one should remember from this text?"
 
@@ -150,15 +175,17 @@ def template_summ3(sample: dict):
     # instantiation
     text_prompt = eval("f'{}'".format(tp1))
 
-    return {"text_prompt": text_prompt,
-            "summary_prompt": summary}
+    return {"text_prompt": text_prompt, "summary_prompt": summary}
 
 
-@summarization_prompting(name="template_summ4", contributor="datalab",
-                         template="{text} In a few sentences, what does the previous paragraph say?",
-                         description="Prompt template: {text} In a few sentences, what does the previous paragraph say?",
-                         task="summarization",
-                         processed_fields=['text', 'summary'],)
+@summarization_prompting(
+    name="template_summ4",
+    contributor="datalab",
+    template="{text} In a few sentences, what does the previous paragraph say?",
+    description="Prompt template: {text} In a few sentences, what does the previous paragraph say?",
+    task="summarization",
+    processed_fields=["text", "summary"],
+)
 def template_summ4(sample: dict):
     tp1 = "{text} In a few sentences, what does the previous paragraph say?"
 
@@ -169,15 +196,17 @@ def template_summ4(sample: dict):
     # instantiation
     text_prompt = eval("f'{}'".format(tp1))
 
-    return {"text_prompt": text_prompt,
-            "summary_prompt": summary}
+    return {"text_prompt": text_prompt, "summary_prompt": summary}
 
 
-@summarization_prompting(name="template_summ5", contributor="datalab",
-                         template="{text} Condense the text down to the essentials.",
-                         description="Prompt template: {text} Condense the text down to the essentials.",
-                         task="summarization",
-                         processed_fields=['text', 'summary'],)
+@summarization_prompting(
+    name="template_summ5",
+    contributor="datalab",
+    template="{text} Condense the text down to the essentials.",
+    description="Prompt template: {text} Condense the text down to the essentials.",
+    task="summarization",
+    processed_fields=["text", "summary"],
+)
 def template_summ5(sample: dict):
     tp1 = "{text} Condense the text down to the essentials."
 
@@ -188,15 +217,17 @@ def template_summ5(sample: dict):
     # instantiation
     text_prompt = eval("f'{}'".format(tp1))
 
-    return {"text_prompt": text_prompt,
-            "summary_prompt": summary}
+    return {"text_prompt": text_prompt, "summary_prompt": summary}
 
 
-@summarization_prompting(name="template_summ6", contributor="datalab",
-                         template="{text} What can be a short description of the text?",
-                         description="Prompt template: {text} What can be a short description of the text?",
-                         task="summarization",
-                         processed_fields=['text', 'summary'],)
+@summarization_prompting(
+    name="template_summ6",
+    contributor="datalab",
+    template="{text} What can be a short description of the text?",
+    description="Prompt template: {text} What can be a short description of the text?",
+    task="summarization",
+    processed_fields=["text", "summary"],
+)
 def template_summ6(sample: dict):
     tp1 = "{text} What can be a short description of the text?"
 
@@ -207,15 +238,17 @@ def template_summ6(sample: dict):
     # instantiation
     text_prompt = eval("f'{}'".format(tp1))
 
-    return {"text_prompt": text_prompt,
-            "summary_prompt": summary}
+    return {"text_prompt": text_prompt, "summary_prompt": summary}
 
 
-@summarization_prompting(name="template_summ7", contributor="datalab",
-                         template="{text} How would you summarize the key points of the text?",
-                         description="Prompt template: {text} How would you summarize the key points of the text?",
-                         task="summarization",
-                         processed_fields=['text', 'summary'],)
+@summarization_prompting(
+    name="template_summ7",
+    contributor="datalab",
+    template="{text} How would you summarize the key points of the text?",
+    description="Prompt template: {text} How would you summarize the key points of the text?",
+    task="summarization",
+    processed_fields=["text", "summary"],
+)
 def template_summ7(sample: dict):
     tp1 = "{text} How would you summarize the key points of the text?"
 
@@ -226,15 +259,17 @@ def template_summ7(sample: dict):
     # instantiation
     text_prompt = eval("f'{}'".format(tp1))
 
-    return {"text_prompt": text_prompt,
-            "summary_prompt": summary}
+    return {"text_prompt": text_prompt, "summary_prompt": summary}
 
 
-@summarization_prompting(name="template_summ8", contributor="datalab",
-                         template="{text} Can you express the main content of the text?",
-                         description="Prompt template: {text} Can you express the main content of the text?",
-                         task="summarization",
-                         processed_fields=['text', 'summary'],)
+@summarization_prompting(
+    name="template_summ8",
+    contributor="datalab",
+    template="{text} Can you express the main content of the text?",
+    description="Prompt template: {text} Can you express the main content of the text?",
+    task="summarization",
+    processed_fields=["text", "summary"],
+)
 def template_summ8(sample: dict):
     tp1 = "{text} Can you express the main content of the text?"
 
@@ -245,5 +280,4 @@ def template_summ8(sample: dict):
     # instantiation
     text_prompt = eval("f'{}'".format(tp1))
 
-    return {"text_prompt": text_prompt,
-            "summary_prompt": summary}
+    return {"text_prompt": text_prompt, "summary_prompt": summary}

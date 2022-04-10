@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and the DataLab Datasets Authors.
 #
@@ -12,7 +14,6 @@
 # limitations under the License.
 
 import importlib
-from typing import List
 
 import fsspec
 
@@ -25,7 +26,7 @@ _has_s3fs = importlib.util.find_spec("s3fs") is not None
 if _has_s3fs:
     from .s3filesystem import S3FileSystem  # noqa: F401
 
-COMPRESSION_FILESYSTEMS: List[compression.BaseCompressedFileFileSystem] = [
+COMPRESSION_FILESYSTEMS: list[compression.BaseCompressedFileFileSystem] = [
     compression.Bz2FileSystem,
     compression.GzipFileSystem,
     compression.Lz4FileSystem,

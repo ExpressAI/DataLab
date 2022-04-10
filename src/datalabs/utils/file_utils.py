@@ -3,6 +3,8 @@ Utilities for working with the local dataset cache.
 This file is adapted from the AllenNLP library at https://github.com/allenai/allennlp
 Copyright by the AllenNLP authors.
 """
+from __future__ import annotations
+
 
 import copy
 import io
@@ -21,7 +23,7 @@ from dataclasses import dataclass
 from functools import partial
 from hashlib import sha256
 from pathlib import Path
-from typing import Dict, Optional, TypeVar, Union
+from typing import Optional, TypeVar, Union
 from urllib.parse import urljoin, urlparse
 
 import numpy as np
@@ -47,7 +49,9 @@ def init_hf_modules(hf_modules_cache: Optional[Union[Path, str]] = None) -> str:
     It can also be set with the environment variable HF_MODULES_CACHE.
     This is used to add modules such as `datasets_modules`
     """
-    hf_modules_cache = hf_modules_cache if hf_modules_cache is not None else config.HF_MODULES_CACHE
+    hf_modules_cache = (
+        hf_modules_cache if hf_modules_cache is not None else config.HF_MODULES_CACHE
+    )
     hf_modules_cache = str(hf_modules_cache)
     if hf_modules_cache not in sys.path:
         sys.path.append(hf_modules_cache)
@@ -84,7 +88,9 @@ def temp_seed(seed: int, set_pytorch=False, set_tensorflow=False):
         tf.random.set_global_generator(temp_gen)
 
         if not tf.executing_eagerly():
-            raise ValueError("Setting random seed for TensorFlow is only available in eager mode")
+            raise ValueError(
+                "Setting random seed for TensorFlow is only available in eager mode"
+            )
 
         tf_context = tfpycontext.context()  # eager mode context
         tf_seed = tf_context._seed
@@ -122,7 +128,9 @@ def is_local_path(url_or_filename: str) -> bool:
     # On unix the scheme of a local path is empty (for both absolute and relative),
     # while on windows the scheme is the drive name (ex: "c") for absolute paths.
     # for details on the windows behavior, see https://bugs.python.org/issue42215
-    return urlparse(url_or_filename).scheme == "" or os.path.ismount(urlparse(url_or_filename).scheme + ":/")
+    return urlparse(url_or_filename).scheme == "" or os.path.ismount(
+        urlparse(url_or_filename).scheme + ":/"
+    )
 
 
 def is_relative_path(url_or_filename: str) -> bool:
@@ -137,9 +145,17 @@ def relative_to_absolute_path(path: T) -> T:
 
 def hf_bucket_url(identifier: str, filename: str, use_cdn=False, dataset=True) -> str:
     if dataset:
-        endpoint = config.CLOUDFRONT_DATASETS_DISTRIB_PREFIX if use_cdn else config.S3_DATASETS_BUCKET_PREFIX
+        endpoint = (
+            config.CLOUDFRONT_DATASETS_DISTRIB_PREFIX
+            if use_cdn
+            else config.S3_DATASETS_BUCKET_PREFIX
+        )
     else:
-        endpoint = config.CLOUDFRONT_METRICS_DISTRIB_PREFIX if use_cdn else config.S3_METRICS_BUCKET_PREFIX
+        endpoint = (
+            config.CLOUDFRONT_METRICS_DISTRIB_PREFIX
+            if use_cdn
+            else config.S3_METRICS_BUCKET_PREFIX
+        )
     return "/".join((endpoint, identifier, filename))
 
 
@@ -147,17 +163,26 @@ def head_hf_s3(
     identifier: str, filename: str, use_cdn=False, dataset=True, max_retries=0
 ) -> Union[requests.Response, Exception]:
     return http_head(
-        hf_bucket_url(identifier=identifier, filename=filename, use_cdn=use_cdn, dataset=dataset),
+        hf_bucket_url(
+            identifier=identifier, filename=filename, use_cdn=use_cdn, dataset=dataset
+        ),
         max_retries=max_retries,
     )
 
 
-def hf_github_url(path: str, name: str, dataset=True, revision: Optional[str] = None, version="deprecated") -> str:
+def hf_github_url(
+    path: str,
+    name: str,
+    dataset=True,
+    revision: Optional[str] = None,
+    version="deprecated",
+) -> str:
     from .. import SCRIPTS_VERSION
 
     if version != "deprecated":
         warnings.warn(
-            "'version' was renamed to 'revision' in version 1.13 and will be removed in 1.15.", FutureWarning
+            "'version' was renamed to 'revision' in version 1.13 and will be removed in 1.15.",
+            FutureWarning,
         )
         revision = version
     revision = revision or os.getenv("HF_SCRIPTS_VERSION", SCRIPTS_VERSION)
@@ -167,10 +192,13 @@ def hf_github_url(path: str, name: str, dataset=True, revision: Optional[str] = 
         return config.REPO_METRICS_URL.format(revision=revision, path=path, name=name)
 
 
-def hf_hub_url(path: str, name: str, revision: Optional[str] = None, version="deprecated") -> str:
+def hf_hub_url(
+    path: str, name: str, revision: Optional[str] = None, version="deprecated"
+) -> str:
     if version != "deprecated":
         warnings.warn(
-            "'version' was renamed to 'revision' in version 1.13 and will be removed in 1.15.", FutureWarning
+            "'version' was renamed to 'revision' in version 1.13 and will be removed in 1.15.",
+            FutureWarning,
         )
         revision = version
     revision = revision or config.HUB_DEFAULT_VERSION
@@ -179,7 +207,10 @@ def hf_hub_url(path: str, name: str, revision: Optional[str] = None, version="de
 
 def url_or_path_join(base_name: str, *pathnames: str) -> str:
     if is_remote_url(base_name):
-        return posixpath.join(base_name, *(str(pathname).replace(os.sep, "/").lstrip("/") for pathname in pathnames))
+        return posixpath.join(
+            base_name,
+            *(str(pathname).replace(os.sep, "/").lstrip("/") for pathname in pathnames),
+        )
     else:
         return Path(base_name, *pathnames).as_posix()
 
@@ -247,7 +278,7 @@ class DownloadConfig:
     force_download: bool = False
     resume_download: bool = False
     local_files_only: bool = False
-    proxies: Optional[Dict] = None
+    proxies: Optional[dict] = None
     user_agent: Optional[str] = None
     extract_compressed_file: bool = False
     force_extract: bool = False
@@ -316,7 +347,9 @@ def cached_path(
         raise FileNotFoundError(f"Local file {url_or_filename} doesn't exist")
     else:
         # Something unknown
-        raise ValueError(f"unable to parse {url_or_filename} as a URL or as a local path")
+        raise ValueError(
+            f"unable to parse {url_or_filename} as a URL or as a local path"
+        )
 
     if output_path is None:
         return output_path
@@ -347,7 +380,9 @@ def get_datasets_user_agent(user_agent: Optional[Union[str, dict]] = None) -> st
     return ua
 
 
-def get_authentication_headers_for_url(url: str, use_auth_token: Optional[Union[str, bool]] = None) -> dict:
+def get_authentication_headers_for_url(
+    url: str, use_auth_token: Optional[Union[str, bool]] = None
+) -> dict:
     """Handle the HF authentication"""
     headers = {}
     if url.startswith(config.HF_ENDPOINT):
@@ -371,7 +406,9 @@ def _raise_if_offline_mode_is_enabled(msg: Optional[str] = None):
     """Raise an OfflineModeIsEnabled error (subclass of ConnectionError) if HF_DATASETS_OFFLINE is True."""
     if config.HF_DATASETS_OFFLINE:
         raise OfflineModeIsEnabled(
-            "Offline mode is enabled." if msg is None else "Offline mode is enabled. " + str(msg)
+            "Offline mode is enabled."
+            if msg is None
+            else "Offline mode is enabled. " + str(msg)
         )
 
 
@@ -402,14 +439,23 @@ def _request_with_retry(
     while not success:
         tries += 1
         try:
-            response = requests.request(method=method.upper(), url=url, timeout=timeout, **params)
+            response = requests.request(
+                method=method.upper(), url=url, timeout=timeout, **params
+            )
             success = True
-        except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError) as err:
+        except (
+            requests.exceptions.ConnectTimeout,
+            requests.exceptions.ConnectionError,
+        ) as err:
             if tries > max_retries:
                 raise err
             else:
-                logger.info(f"{method} request to {url} timed out, retrying... [{tries/max_retries}]")
-                sleep_time = min(max_wait_time, base_wait_time * 2 ** (tries - 1))  # Exponential backoff
+                logger.info(
+                    f"{method} request to {url} timed out, retrying... [{tries/max_retries}]"
+                )
+                sleep_time = min(
+                    max_wait_time, base_wait_time * 2 ** (tries - 1)
+                )  # Exponential backoff
                 time.sleep(sleep_time)
     return response
 
@@ -434,9 +480,20 @@ def ftp_get(url, temp_file, timeout=10.0):
         raise ConnectionError(e) from None
 
 
-def http_get(url, temp_file, proxies=None, resume_size=0, headers=None, cookies=None, timeout=100.0, max_retries=0):
+def http_get(
+    url,
+    temp_file,
+    proxies=None,
+    resume_size=0,
+    headers=None,
+    cookies=None,
+    timeout=100.0,
+    max_retries=0,
+):
     headers = copy.deepcopy(headers) or {}
-    headers["user-agent"] = get_datasets_user_agent(user_agent=headers.get("user-agent"))
+    headers["user-agent"] = get_datasets_user_agent(
+        user_agent=headers.get("user-agent")
+    )
     if resume_size > 0:
         headers["Range"] = f"bytes={resume_size:d}-"
     response = _request_with_retry(
@@ -469,10 +526,18 @@ def http_get(url, temp_file, proxies=None, resume_size=0, headers=None, cookies=
 
 
 def http_head(
-    url, proxies=None, headers=None, cookies=None, allow_redirects=True, timeout=10.0, max_retries=0
+    url,
+    proxies=None,
+    headers=None,
+    cookies=None,
+    allow_redirects=True,
+    timeout=10.0,
+    max_retries=0,
 ) -> requests.Response:
     headers = copy.deepcopy(headers) or {}
-    headers["user-agent"] = get_datasets_user_agent(user_agent=headers.get("user-agent"))
+    headers["user-agent"] = get_datasets_user_agent(
+        user_agent=headers.get("user-agent")
+    )
     response = _request_with_retry(
         method="HEAD",
         url=url,
@@ -486,7 +551,9 @@ def http_head(
     return response
 
 
-def request_etag(url: str, use_auth_token: Optional[Union[str, bool]] = None) -> Optional[str]:
+def request_etag(
+    url: str, use_auth_token: Optional[Union[str, bool]] = None
+) -> Optional[str]:
     headers = get_authentication_headers_for_url(url, use_auth_token=use_auth_token)
     response = http_head(url, headers=headers, max_retries=3)
     response.raise_for_status()
@@ -576,20 +643,32 @@ def get_from_cache(
                 connected = True
             # In some edge cases, head request returns 400 but the connection is actually ok
             elif (
-                (response.status_code == 400 and "firebasestorage.googleapis.com" in url)
+                (
+                    response.status_code == 400
+                    and "firebasestorage.googleapis.com" in url
+                )
                 or (response.status_code == 405 and "drive.google.com" in url)
                 or (
                     response.status_code == 403
                     and (
-                        re.match(r"^https?://github.com/.*?/.*?/releases/download/.*?/.*?$", url)
-                        or re.match(r"^https://.*?s3.*?amazonaws.com/.*?$", response.url)
+                        re.match(
+                            r"^https?://github.com/.*?/.*?/releases/download/.*?/.*?$",
+                            url,
+                        )
+                        or re.match(
+                            r"^https://.*?s3.*?amazonaws.com/.*?$", response.url
+                        )
                     )
                 )
                 or (response.status_code == 403 and "ndownloader.figstatic.com" in url)
             ):
                 connected = True
                 logger.info(f"Couldn't get ETag version for url {url}")
-            elif response.status_code == 401 and config.HF_ENDPOINT in url and use_auth_token is None:
+            elif (
+                response.status_code == 401
+                and config.HF_ENDPOINT in url
+                and use_auth_token is None
+            ):
                 raise ConnectionError(
                     f"Unauthorized for URL {url}. Please use the parameter ``use_auth_token=True`` after logging in with ``huggingface-cli login``"
                 )
@@ -614,7 +693,9 @@ def get_from_cache(
         if head_error is not None:
             raise ConnectionError(f"Couldn't reach {url} ({repr(head_error)})")
         elif response is not None:
-            raise ConnectionError(f"Couldn't reach {url} (error {response.status_code})")
+            raise ConnectionError(
+                f"Couldn't reach {url} (error {response.status_code})"
+            )
         else:
             raise ConnectionError(f"Couldn't reach {url}")
 
@@ -644,13 +725,17 @@ def get_from_cache(
             else:
                 resume_size = 0
         else:
-            temp_file_manager = partial(tempfile.NamedTemporaryFile, dir=cache_dir, delete=False)
+            temp_file_manager = partial(
+                tempfile.NamedTemporaryFile, dir=cache_dir, delete=False
+            )
             resume_size = 0
 
         # Download to temporary file, then copy to cache dir once finished.
         # Otherwise you get corrupt cache entries if the download gets interrupted.
         with temp_file_manager() as temp_file:
-            logger.info(f"{url} not found in cache or force_download set to True, downloading to {temp_file.name}")
+            logger.info(
+                f"{url} not found in cache or force_download set to True, downloading to {temp_file.name}"
+            )
 
             # GET file object
             if url.startswith("ftp://"):
@@ -680,7 +765,9 @@ def get_from_cache(
 
 def add_start_docstrings(*docstr):
     def docstring_decorator(fn):
-        fn.__doc__ = "".join(docstr) + "\n\n" + (fn.__doc__ if fn.__doc__ is not None else "")
+        fn.__doc__ = (
+            "".join(docstr) + "\n\n" + (fn.__doc__ if fn.__doc__ is not None else "")
+        )
         return fn
 
     return docstring_decorator
@@ -688,7 +775,9 @@ def add_start_docstrings(*docstr):
 
 def add_end_docstrings(*docstr):
     def docstring_decorator(fn):
-        fn.__doc__ = (fn.__doc__ if fn.__doc__ is not None else "") + "\n\n" + "".join(docstr)
+        fn.__doc__ = (
+            (fn.__doc__ if fn.__doc__ is not None else "") + "\n\n" + "".join(docstr)
+        )
         return fn
 
     return docstring_decorator

@@ -29,9 +29,13 @@ def upload_local_to_remote(local_file_path, remote_file_path, force_upload=False
     fs = FileSystems
     if fs.exists(remote_file_path):
         if force_upload:
-            logger.info(f"Remote path already exist: {remote_file_path}. Overwriting it as force_upload=True.")
+            logger.info(
+                f"Remote path already exist: {remote_file_path}. Overwriting it as force_upload=True."
+            )
         else:
-            logger.info(f"Remote path already exist: {remote_file_path}. Skipping it as force_upload=False.")
+            logger.info(
+                f"Remote path already exist: {remote_file_path}. Skipping it as force_upload=False."
+            )
             return
     with fs.create(remote_file_path) as remote_file:
         with open(local_file_path, "rb") as local_file:
@@ -46,9 +50,13 @@ def download_remote_to_local(remote_file_path, local_file_path, force_download=F
     fs = FileSystems
     if os.path.exists(local_file_path):
         if force_download:
-            logger.info(f"Local path already exist: {remote_file_path}. Overwriting it as force_upload=True.")
+            logger.info(
+                f"Local path already exist: {remote_file_path}. Overwriting it as force_upload=True."
+            )
         else:
-            logger.info(f"Local path already exist: {remote_file_path}. Skipping it as force_upload=False.")
+            logger.info(
+                f"Local path already exist: {remote_file_path}. Skipping it as force_upload=False."
+            )
             return
     with fs.open(remote_file_path) as remote_file:
         with open(local_file_path, "wb") as local_file:

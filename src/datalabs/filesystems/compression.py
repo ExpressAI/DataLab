@@ -23,14 +23,16 @@ class BaseCompressedFileFileSystem(AbstractArchiveFileSystem):
     """Read contents of compressed file as a filesystem with one file inside."""
 
     root_marker = ""
-    protocol: str = (
-        None  # protocol passed in prefix to the url. ex: "gzip", for gzip://file.txt::http://foo.bar/file.txt.gz
-    )
+    protocol: str = None  # protocol passed in prefix to the url. ex: "gzip", for gzip://file.txt::http://foo.bar/file.txt.gz
     compression: str = None  # compression type in fsspec. ex: "gzip"
     extension: str = None  # extension of the filename to strip. ex: "".gz" to get file.txt from file.txt.gz
 
     def __init__(
-        self, fo: str = "", target_protocol: Optional[str] = None, target_options: Optional[dict] = None, **kwargs
+        self,
+        fo: str = "",
+        target_protocol: Optional[str] = None,
+        target_options: Optional[dict] = None,
+        **kwargs,
     ):
         """
         The compressed file system can be instantiated from any compressed file.
@@ -48,7 +50,11 @@ class BaseCompressedFileFileSystem(AbstractArchiveFileSystem):
         super().__init__(self, **kwargs)
         # always open as "rb" since fsspec can then use the TextIOWrapper to make it work for "r" mode
         self.file = fsspec.open(
-            fo, mode="rb", protocol=target_protocol, compression=self.compression, **(target_options or {})
+            fo,
+            mode="rb",
+            protocol=target_protocol,
+            compression=self.compression,
+            **(target_options or {}),
         )
         self.info = self.file.fs.info(self.file.path)
         self.compressed_name = os.path.basename(self.file.path.split("::")[0])
@@ -83,9 +89,13 @@ class BaseCompressedFileFileSystem(AbstractArchiveFileSystem):
     ):
         path = self._strip_protocol(path)
         if mode != "rb":
-            raise ValueError(f"Tried to read with mode {mode} on file {self.file.path} opened with mode 'rb'")
+            raise ValueError(
+                f"Tried to read with mode {mode} on file {self.file.path} opened with mode 'rb'"
+            )
         if path != self.uncompressed_name:
-            raise FileNotFoundError(f"Expected file {self.uncompressed_name} but got {path}")
+            raise FileNotFoundError(
+                f"Expected file {self.uncompressed_name} but got {path}"
+            )
         return self.file.open()
 
 

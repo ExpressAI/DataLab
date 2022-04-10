@@ -14,46 +14,40 @@
 # limitations under the License.
 
 
-from typing import Dict, List, Any, Optional
-from typing import Callable, Mapping, Iterator
+from typing import Any, Callable, Dict, Iterator, List, Mapping, Optional
+
 from tqdm import tqdm
+
 from datalabs.operations.aggregate import Aggregating, aggregating
 
 
 class QAExtractiveAggregating(Aggregating):
-
-
-    def __init__(self, *args, **kwargs
-                 ):
+    def __init__(self, *args, **kwargs):
 
         super(QAExtractiveAggregating, self).__init__(*args, **kwargs)
         self._data_type = "dataset"
 
 
-
 class qa_extractive_aggregating(aggregating):
-    def __init__(self, *args, **kwargs
-                 ):
-
+    def __init__(self, *args, **kwargs):
 
         super(qa_extractive_aggregating, self).__init__(*args, **kwargs)
         # print(self.__dict__)
 
-
     def __call__(self, *param_arg):
         if callable(self.name):
 
-            tf_class = QAExtractiveAggregating(name = self.name.__name__, func=self.name)
+            tf_class = QAExtractiveAggregating(name=self.name.__name__, func=self.name)
             return tf_class(*param_arg)
         else:
             f = param_arg[0]
             name = self.name or f.__name__
-            tf_cls = QAExtractiveAggregating(name=name, func = f,
-                                   resources = self.resources,
-                                   contributor = self.contributor,
-                                   task = self.task,
-                                   description= self.description,)
+            tf_cls = QAExtractiveAggregating(
+                name=name,
+                func=f,
+                resources=self.resources,
+                contributor=self.contributor,
+                task=self.task,
+                description=self.description,
+            )
             return tf_cls
-
-
-
