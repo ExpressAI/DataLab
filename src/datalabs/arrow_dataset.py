@@ -83,8 +83,8 @@ from .utils.typing import PathLike
 from .operations.data import  Data, TextData
 from .operations.operation import OperationFunction, DatasetOperation
 
-import tqdm
-# from p_tqdm import p_map
+# import tqdm
+from p_tqdm import p_map
 
 # from .operations.prompt.text_classification import *
 if TYPE_CHECKING:
@@ -793,12 +793,12 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                     else:
                         return func(sample)
 
-                with Pool(processes=num_proc) as pool:
-                    attr_columns = pool.map(process_each, range(self.num_rows))
+                # with Pool(processes=num_proc) as pool:
+                #     attr_columns = pool.map(process_each, range(self.num_rows))
 
 
 
-                #attr_columns = p_map(process_each, range(self.num_rows), num_cpus=num_proc)
+                attr_columns = p_map(process_each, range(self.num_rows), num_cpus=num_proc)
                 # with Pool(processes=num_proc) as pool:
                 #     progress_bar = tqdm(total=self.num_rows)
                 #     attr_columns = tqdm(pool.imap(process_each, range(self.num_rows)))
