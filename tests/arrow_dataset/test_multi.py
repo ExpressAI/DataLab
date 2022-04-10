@@ -1,8 +1,11 @@
-import unittest
 import math
-from datalabs import load_dataset
-from featurize import *
 from time import perf_counter
+import unittest
+
+from featurize import *
+
+from datalabs import load_dataset
+
 
 class MyTestCase(unittest.TestCase):
     def test_Data_featurize(self):
@@ -18,5 +21,6 @@ class MyTestCase(unittest.TestCase):
         two_end = perf_counter()
         print("Two proc: " + str(two_end - two_start))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

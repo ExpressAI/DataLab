@@ -1,11 +1,10 @@
 import unittest
-import datalabs
+
 from data import Data, TextData
-from operation import OperationFunction, operation_function
 from featurize import *
+from operation import operation_function, OperationFunction
 
-
-
+import datalabs
 
 """
 from datalab.operations.edit.core import add_typos_checklist
@@ -23,13 +22,12 @@ res = dataset["test"].apply(get_length)
 
 """
 
+
 class MyTestCase(unittest.TestCase):
-
-
     def test_Data_PREPROCESSING_REGISTRY(self):
         print("\n---- test_Data_PREPROCESSING_REGISTRY ---")
 
-        a = ['I love this movie', 'do you love this movie']
+        a = ["I love this movie", "do you love this movie"]
         A = TextData(a)
 
         # print(A.data)
@@ -37,9 +35,6 @@ class MyTestCase(unittest.TestCase):
         B = A.apply(get_length)
         # for b in B:
         #     print(b)
-
-
-
 
     # def test_Data_PREPROCESSING_REGISTRY(self):
     #     print("\n---- test_Data_PREPROCESSING_REGISTRY ---")
@@ -56,7 +51,10 @@ class MyTestCase(unittest.TestCase):
     def test_Data_featurize(self):
         print("\n---- test_Data_featurize ---")
 
-        a = ['I love this movie.', 'apple is looking at buying U.K. startup for $1 billion.']
+        a = [
+            "I love this movie.",
+            "apple is looking at buying U.K. startup for $1 billion.",
+        ]
         A = TextData(a)
 
         B = A.apply(get_length)
@@ -76,7 +74,5 @@ class MyTestCase(unittest.TestCase):
         #     print(b)
 
 
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

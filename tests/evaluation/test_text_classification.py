@@ -1,15 +1,12 @@
-import unittest
-from datalabs import load_dataset
-from datalabs.operations.infer.inference import inference
-from datalabs.operations.aggregate.auto_eval import explainaboard
-
-import pathlib
 import os
-from datalabs import FileType, Source, TaskType, get_loader, get_processor
+import pathlib
+import unittest
 
+from datalabs import FileType, get_loader, get_processor, load_dataset, Source, TaskType
+from datalabs.operations.aggregate.auto_eval import explainaboard
+from datalabs.operations.infer.inference import inference
 
 artifacts_path = os.path.dirname(pathlib.Path(__file__)) + "/artifacts/"
-
 
 
 class MyTestCase(unittest.TestCase):
@@ -37,6 +34,5 @@ class MyTestCase(unittest.TestCase):
         # analysis.write_to_directory("./")
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

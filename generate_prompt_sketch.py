@@ -4,12 +4,12 @@ import pickle
 
 import fire
 import pandas as pd
-from datalabs import Prompt
-from datalabs import load_dataset
+
+from datalabs import load_dataset, Prompt
 
 
 def read_pickle(file):
-    with open(file, 'rb') as f:
+    with open(file, "rb") as f:
         data = pickle.load(f)
     return data
 
@@ -42,16 +42,21 @@ def process_prompt(dataset, signal_type, outpath):
             answers = [a.strip() for a in answers]
 
             datalab_ds = load_dataset(dataset)
-            datalab_labels = datalab_ds["train"]._info.__dict__["features"]["label"].names
+            datalab_labels = (
+                datalab_ds["train"]._info.__dict__["features"]["label"].names
+            )
             assert len(datalab_labels) == len(answers)
-            answers = [{datalab_label: [answer]} for datalab_label, answer in zip(datalab_labels, answers)]
+            answers = [
+                {datalab_label: [answer]}
+                for datalab_label, answer in zip(datalab_labels, answers)
+            ]
             # answers = {idx: label for idx, label in enumerate(answers)}
         else:
             answers = None
         features = {
             "length": len(template.split(" ")),
             "shape": "prefix",
-            "skeleton": tgt.name
+            "skeleton": tgt.name,
         }
         reference = tgt.reference
         if reference is None or len(reference) == 0:
@@ -65,7 +70,7 @@ def process_prompt(dataset, signal_type, outpath):
             supported_plm_types=["left-to-right", "encoder-decoder"],
             signal_type=signal_type.split(","),
             features=features,
-            reference=reference
+            reference=reference,
         )
         count += 1
         prompts.append(prompt.__dict__)

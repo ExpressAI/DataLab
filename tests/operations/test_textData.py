@@ -1,7 +1,8 @@
 import unittest
-import datalabs
+
 from data import Data, TextData
 
+import datalabs
 
 """
 from datalab.operations.edit.core import add_typos_checklist
@@ -19,23 +20,22 @@ res = dataset["test"].apply(get_length)
 
 """
 
-class MyTestCase(unittest.TestCase):
 
+class MyTestCase(unittest.TestCase):
     def test_Data(self):
-        a = ['I love this movie', 'do you love this movie']
+        a = ["I love this movie", "do you love this movie"]
         A = Data(a)
         print(A.data)
 
-
         self.assertEqual(A.data, a)
 
-
     def test_TextData(self):
-        a = ['I love this movie', 'do you love this movie']
+        a = ["I love this movie", "do you love this movie"]
         A = TextData(a)
         print(A.data)
 
+        self.assertEqual(A.data, [{"text": text} for text in a])
 
-        self.assertEqual(A.data, [{"text":text} for text in a])
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
