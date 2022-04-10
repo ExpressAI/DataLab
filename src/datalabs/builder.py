@@ -55,6 +55,11 @@ from .utils.filelock import FileLock
 from .utils.info_utils import get_size_checksum_dict, verify_checksums, verify_splits
 from .utils.streaming_download_manager import StreamingDownloadManager
 from multiprocess import Pool
+from p_tqdm import p_map
+from .operations.featurize.text_matching import (
+    get_features_sample_level,
+    get_schema_of_sample_level_features,
+    )
 
 import sys
 
@@ -1101,48 +1106,15 @@ class GeneratorBasedBuilder(DatasetBuilder):
             check_duplicates=True,
         ) as writer:
             try:
-                if self.feature_expanding:
-                    if self.num_proc == 1:
-                        generator = map(lambda i: i[1], generator)
-                    else:
-                        def initializer():
-                            global timer
-                            timer = { "counter": 0 }
-
-                        def cast(item):
-                            print("cast --------- function")
-                            timer["counter"] += 1
-                            print("\r Loading%s %d" % (dotted(4), timer["counter"]), end="")
-                            return item[1]
-
-                        def dotted(max_dot):
-                            max_dot = 3
-                            timest = int(time()) % (max_dot + 1)
-                            return "." * timest + " " * (max_dot - timest)
-
-                        with Pool(self.num_proc, initializer, ()) as pool:
-                            print("Pool --------- function")
-                            generator = pool.map(cast, generator)
-                    generator = enumerate(generator)
-
-                iter = utils.tqdm(
+                for key, record in utils.tqdm(
                     generator,
                     unit=" examples",
                     total=split_info.num_examples,
                     leave=False,
                     disable=bool(logging.get_verbosity() == logging.NOTSET),
-                )
-
-                def print_line(str):
-                    from os import get_terminal_size
-                    dup = get_terminal_size().columns - len(str)
-                    print("\r" + str + " " * dup)
-                print_line("Done.")
-
-                for key, record in iter:
+                ):
                     example = self.info.features.encode_example(record)
                     writer.write(example, key)
-
             finally:
                 num_examples, num_bytes = writer.finalize()
 

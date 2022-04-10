@@ -23,6 +23,14 @@ def get_feature_schemas(features_sample, get_schema_of_sample_level_features):
 
 
 
+def get_features_dataset(dataset_level_schema):
+    features_dataset = {}
+    dict_feature_argument = get_feature_arguments(dataset_level_schema, field="",
+                                                  feature_level="dataset_level")
+    features_dataset.update(Features(dict_feature_argument))
+
+    return features_dataset
+
 def prefix_dict_key(dict_obj, prefix):
     if prefix == "":
         return dict_obj

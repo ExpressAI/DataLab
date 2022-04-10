@@ -1,9 +1,9 @@
 from datalabs import load_dataset
 from dataclasses import asdict, dataclass, field
-
+import multiprocessing
 # this is task-dependent
 from aggregate.text_classification import get_features_dataset_level as get_features_dataset_level_text_classification
-from datalabs.utils.more_features import prefix_dict_key
+from datalabs.utils.more_features import prefix_dict_key, get_features_dataset
 
 
 def get_paper_template(year=None, venue=None, title=None,
@@ -87,7 +87,7 @@ def get_transformation_template(type):
 
 
 
-def get_info(dataset_name:str, sub_dataset_name_sdk:str, calculate_features = False, field = "text"):
+def get_info(dataset_name:str, sub_dataset_name_sdk:str, calculate_features = False, feature_func = None):
     """
     Input:
     dataset_name: the dataset name of dataloader script, for example, mr
@@ -100,43 +100,67 @@ def get_info(dataset_name:str, sub_dataset_name_sdk:str, calculate_features = Fa
 
 
     # load dataset
+    dataset = load_dataset(dataset_name) if sub_dataset_name_sdk == None else load_dataset(dataset_name, sub_dataset_name_sdk)
 
+    # get split
+    all_splits = list(dataset['train']._info.splits.keys())
 
-    dataset = load_dataset(dataset_name, feature_expanding = calculate_features) if sub_dataset_name_sdk == None else load_dataset(dataset_name, sub_dataset_name_sdk, feature_expanding = calculate_features)
-
-
-    # Feature
-    all_splits = dataset['train']._info.splits.keys()
 
     # task
     task_category  = dataset['train']._info.task_templates[0].task_category # this should be more general
 
+    # get raw features
+    raw_features = asdict(dataset[all_splits[0]]._info)["features"]
 
     features_mongodb = {}
+
+
+    #from featurize.text_matching import get_features_sample_level
+
     for split_name in all_splits:
+        # if split_name == 'train':
+        #     continue
+
+        # get sample-level advanced features
+        dataset[split_name] = dataset[split_name].apply(feature_func, num_proc=multiprocessing.cpu_count(), mode="memory")
+        all_features = asdict(dataset[split_name]._info)["features"]
+
+        # turn on advanced fields
+        for feature_name, feature_info in all_features.items():
+            if feature_name not in raw_features.keys():
+                feature_info["raw_feature"] = False
+                feature_info["is_bucket"] = True
+
 
         # add sample-level features
-        features_mongodb.update(asdict(dataset[split_name]._info)["features"])
+        features_mongodb.update(all_features)
 
 
-        # add dataset-level features
-        features_dataset = {}
-        if calculate_features:
-            ## operation_dataset_level_feature: for example, get_features_dataset_level_text_classification
-            #operation_dataset_level_feature = eval("get_features_dataset_level" + "_" + task_category.replace("-","_"))
-            operation_dataset_level_feature = get_features_dataset_level_text_classification
 
-            dataset[split_name] = dataset[split_name].apply(operation_dataset_level_feature, mode="memory", prefix="avg")
-            features_dataset = asdict(dataset[split_name]._info)["features_dataset"]
+
+
+
+    for split_name in all_splits:
+
+        # if split_name == "train":
+        #     continue
+
+
+        # calculate dataset-level features
+        dataset[split_name] = dataset[split_name].apply(get_features_dataset_level_text_classification, mode="memory", prefix="avg")
+
+        features_dataset = get_features_dataset(dataset[split_name]._stat)
 
 
         for attr, feat_info in features_dataset.items():
+
+            feat_info = asdict(feat_info)
             value = dataset[split_name]._stat[attr]
             feat_info["value"] = value
             features_dataset[attr] = feat_info
-
         features_dataset_new = prefix_dict_key(features_dataset, prefix=split_name)
 
+        # add dataset-level features
         features_mongodb.update(features_dataset_new)
 
 
