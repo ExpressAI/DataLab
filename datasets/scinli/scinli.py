@@ -7,15 +7,8 @@ import os
 
 import datalabs
 from datalabs.tasks import TextMatching
+import tqdm
 
-# the following package are needed when more additional features are expected to be calculated
-from featurize.text_matching import (
-    get_features_sample_level,
-    get_schema_of_sample_level_features,
-    )
-from datalabs.utils.more_features import (
-    get_feature_schemas,
-)
 
 
 
@@ -53,10 +46,6 @@ class MultiNli(datalabs.GeneratorBasedBuilder):
                 }
             )
 
-        if self.feature_expanding:
-            features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                    get_schema_of_sample_level_features)
-
         return datalabs.DatasetInfo(
             description = _DESCRIPTION,
             features=features_sample,
@@ -93,6 +82,7 @@ class MultiNli(datalabs.GeneratorBasedBuilder):
 
         with open(filepath, encoding="utf-8") as f:
             for id_, row in enumerate(f):
+            # for id_, row in enumerate(f):
                 data = json.loads(row)
                 if data["label"] == "-":
                     continue
@@ -103,12 +93,5 @@ class MultiNli(datalabs.GeneratorBasedBuilder):
                     "label": data["label"],
                 }
 
-
                 if not self.feature_expanding:
-                    yield id_, raw_feature_info
-
-                else:
-                    additional_feature_info = get_features_sample_level(raw_feature_info)
-                    raw_feature_info.update(additional_feature_info)
-                    # print(additional_feature_info)
                     yield id_, raw_feature_info

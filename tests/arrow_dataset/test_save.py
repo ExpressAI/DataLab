@@ -15,7 +15,7 @@ class MyTestCase(unittest.TestCase):
         dataset_test_new = dataset['test'].apply(get_length)
         dataset_test_new2 = dataset['test'].apply(get_length, mode = "realtime")
         dataset_test_new3 = dataset['test'].apply(get_length, mode = "memory")
-        dataset_test_new4 = dataset['test'].apply(get_length, mode="local")
+        # dataset_test_new4 = dataset['test'].apply(get_length, mode="local")
 
         print(dataset_test_new3.features.keys())
         self.assertEqual(list(dataset_test_new3.features.keys()), ['text', 'label', 'length'])

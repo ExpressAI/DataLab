@@ -82,6 +82,9 @@ from .utils.typing import PathLike
 
 from .operations.data import  Data, TextData
 from .operations.operation import OperationFunction, DatasetOperation
+
+from p_tqdm import p_map
+
 # from .operations.prompt.text_classification import *
 if TYPE_CHECKING:
     from .dataset_dict import DatasetDict
@@ -775,21 +778,21 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             attr_columns = next(self.apply_basic(func))
 
         else:
-            if num_proc == 1:
-                attr_columns = [item for item in self.apply_basic(func)]
-            elif num_proc > 1:
-                def process_each(index):
-                    sample = self._getitem(index, decoded=False)
-                    if func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
-                        return func(sample[func.processed_fields[0]])
-                    elif func._type in ["TopicClassificationPrompting", "SentimentClassificationPrompting", "NLIPrompting"]:
-                        labels = self._info.task_templates[0].labels
-                        labels_to_answers = dict(zip(range(len(labels)), labels))
-                        return func(sample, labels_to_answers)
-                    else:
-                        return func(sample)
-                with Pool(processes=num_proc) as pool:
-                    attr_columns = pool.map(process_each, range(self.num_rows))
+            def process_each(index):
+                sample = self._getitem(index, decoded=False)
+                if func._type in ["Editing", "Preprocessing", "Featurizing", "OperationFunction"]:
+                    return func(sample[func.processed_fields[0]])
+                elif func._type in ["TopicClassificationPrompting", "SentimentClassificationPrompting", "NLIPrompting"]:
+                    labels = self._info.task_templates[0].labels
+                    labels_to_answers = dict(zip(range(len(labels)), labels))
+                    return func(sample, labels_to_answers)
+                else:
+                    return func(sample)
+
+            # with Pool(processes=num_proc) as pool:
+            #     attr_columns = pool.map(process_each, range(self.num_rows))
+            attr_columns = p_map(process_each, range(self.num_rows), num_cpus=num_proc)
+
 
         attr_names = attr_columns[0].keys()
         for attr_name in attr_names:
@@ -821,9 +824,10 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                         return [func(self._getitem(index, decoded=False), labels_to_answers) for index in range_limit]
                     else:
                         return [func(self._getitem(index, decoded=False)) for index in range_limit]
+
                 with Pool(processes=num_proc) as pool:
                     attr_columns = []
-                    temp_columns = pool.map(process_batch, range(num_proc))
+                    temp_columns = pool.map(process_batch, range(num_proc)) # TODO(Pengfei): this is a little strange
                     for items in temp_columns:
                         attr_columns += items
 
