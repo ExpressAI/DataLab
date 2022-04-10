@@ -1,5 +1,16 @@
 from __future__ import annotations
 
+from argparse import ArgumentParser
+import os
+from pathlib import Path
+from shutil import copyfile
+
+from datalabs import config
+from datalabs.builder import DatasetBuilder
+from datalabs.commands import BaseDatasetsCLICommand
+from datalabs.load import dataset_module_factory, import_main_class
+from datalabs.utils.download_manager import DownloadConfig, GenerateMode
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and the DataLab Datasets Authors.
 #
@@ -12,17 +23,6 @@ from __future__ import annotations
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import os
-from argparse import ArgumentParser
-from pathlib import Path
-from shutil import copyfile
-
-from datalabs import config
-from datalabs.builder import DatasetBuilder
-from datalabs.commands import BaseDatasetsCLICommand
-from datalabs.load import dataset_module_factory, import_main_class
-from datalabs.utils.download_manager import DownloadConfig, GenerateMode
 
 
 def run_beam_command_factory(args):

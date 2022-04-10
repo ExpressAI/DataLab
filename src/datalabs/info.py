@@ -30,14 +30,13 @@ processed the dataset as well:
 """
 from __future__ import annotations
 
-
 import copy
 import dataclasses
+from dataclasses import asdict, dataclass, field
 import hashlib  # for mdb ids of prompts
 import json
 import os
 import re
-from dataclasses import asdict, dataclass, field
 from typing import Any, Optional, Union
 
 import pymongo
@@ -52,11 +51,10 @@ from datalabs.tasks.text_matching import TextMatching
 from . import config
 from .features import ClassLabel, Features, Value
 from .splits import SplitDict
-from .tasks import TaskTemplate, task_template_from_dict
+from .tasks import task_template_from_dict, TaskTemplate
 from .utils import Version
 from .utils.logging import get_logger
 from .utils.py_utils import unique_values
-
 
 logger = get_logger(__name__)
 

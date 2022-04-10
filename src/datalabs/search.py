@@ -1,5 +1,16 @@
 from __future__ import annotations
 
+import importlib.util
+import os
+from pathlib import PurePath
+import tempfile
+from typing import NamedTuple, Optional, TYPE_CHECKING, Union
+
+import numpy as np
+
+from . import utils
+from .utils import logging
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors.
 #
@@ -12,17 +23,6 @@ from __future__ import annotations
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import importlib.util
-import os
-import tempfile
-from pathlib import PurePath
-from typing import TYPE_CHECKING, NamedTuple, Optional, Union
-
-import numpy as np
-
-from . import utils
-from .utils import logging
 
 
 if TYPE_CHECKING:
@@ -134,8 +134,8 @@ class ElasticSearchIndex(BaseIndex):
         host = host or "localhost"
         port = port or 9200
 
-        import elasticsearch.helpers  # noqa: need this to properly load all the es features
         from elasticsearch import Elasticsearch  # noqa: F811
+        import elasticsearch.helpers  # noqa: need this to properly load all the es features
 
         self.es_client = (
             es_client

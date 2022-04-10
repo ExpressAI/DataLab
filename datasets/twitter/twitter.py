@@ -14,8 +14,8 @@
 import csv
 
 import datalabs
-from datalabs.tasks import AspectBasedSentimentClassification
 from datalabs import Dataset
+from datalabs.tasks import AspectBasedSentimentClassification
 
 _DESCRIPTION = """\
 Twitter is an aspect-based sentiment classification dataset, processed from tweets. Each tweet is labeled as positive,
@@ -54,7 +54,9 @@ class Twitter(datalabs.GeneratorBasedBuilder):
                 {
                     "aspect": datalabs.Value("string"),
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["positive", "negative", "neutral"]),
+                    "label": datalabs.features.ClassLabel(
+                        names=["positive", "negative", "neutral"]
+                    ),
                 }
             ),
             homepage="https://aclanthology.org/P14-2009.pdf",
@@ -62,10 +64,9 @@ class Twitter(datalabs.GeneratorBasedBuilder):
             languages=["en"],
             task_templates=[
                 AspectBasedSentimentClassification(
-                    aspect_column="aspect",
-                    text_column="text",
-                    label_column="label"
-                )]
+                    aspect_column="aspect", text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -74,14 +75,18 @@ class Twitter(datalabs.GeneratorBasedBuilder):
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         print(f"test_path: \t{test_path}")
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
         """Generate Twitter examples."""
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter='\t')
+            csv_reader = csv.reader(csv_file, delimiter="\t")
             for id_, row in enumerate(csv_reader):
                 aspect, text, label = row
                 yield id_, {"aspect": aspect, "text": text, "label": label}

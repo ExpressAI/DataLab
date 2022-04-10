@@ -3,16 +3,14 @@ import re
 import sys
 
 import nltk
+from nltk.corpus import wordnet
 import numpy as np
 import spacy
-from nltk.corpus import wordnet
-
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))
 )
 from edit.editing import *
-
 
 """
 Base Class for implementing the different input transformations a generation should be robust against.

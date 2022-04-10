@@ -1,19 +1,17 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 import os
 import sys
 from typing import Any, Dict, Optional
 
 from .featurizing import Featurizing, featurizing
 
-
 # from ..operation import DatasetOperation, dataset_operation
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from operation import DatasetOperation, dataset_operation
+from operation import dataset_operation, DatasetOperation
 
 from .general import get_features_sample_level as get_features_sample_level_general
 

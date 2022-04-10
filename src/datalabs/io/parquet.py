@@ -17,7 +17,7 @@ from typing import BinaryIO, Optional, Union
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from .. import Dataset, Features, NamedSplit, config
+from .. import config, Dataset, Features, NamedSplit
 from ..formatting import query_table
 from ..packaged_modules import _PACKAGED_DATASETS_MODULES
 from ..packaged_modules.parquet.parquet import Parquet

@@ -21,7 +21,6 @@ import datalabs
 
 from .wmt_utils import Wmt, WmtConfig
 
-
 _URL = "http://www.statmt.org/wmt16/translation-task.html"
 _CITATION = """
 @InProceedings{bojar-EtAl:2016:WMT1,

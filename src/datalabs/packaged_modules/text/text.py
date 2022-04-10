@@ -17,7 +17,6 @@ import pyarrow as pa
 
 import datalabs
 
-
 logger = datalabs.utils.logging.get_logger(__name__)
 
 

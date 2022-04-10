@@ -1,21 +1,17 @@
 import json
 import os
-import datalabs
-from datalabs.tasks import Summarization
-import tempfile
 import subprocess
-
+import tempfile
 
 # the following package are needed when more additional features are expected to be calculated
 from featurize.summarization import (
     get_features_sample_level,
     get_schema_of_sample_level_features,
-    )
-from datalabs.utils.more_features import (
-    get_feature_schemas,
 )
 
-
+import datalabs
+from datalabs.tasks import Summarization
+from datalabs.utils.more_features import get_feature_schemas
 
 _DESCRIPTION = """
  Reddit TIFU dataset, consisting of 120K posts from the online discussion forum Reddit
@@ -42,21 +38,43 @@ _CITATION = """\
 _ABSTRACT = "summary"
 _ARTICLE = "text"
 
+
 def _gdrive_url(id):
     return f"https://drive.google.com/uc?id={id}&export=download"
 
+
 def custom_download(url, path):
     with tempfile.TemporaryDirectory() as tmpdir:
-        response = subprocess.check_output([
-            "wget", "--save-cookies", os.path.join(tmpdir, "cookies.txt"), 
-            f"{url}", "-O-"])
+        response = subprocess.check_output(
+            [
+                "wget",
+                "--save-cookies",
+                os.path.join(tmpdir, "cookies.txt"),
+                f"{url}",
+                "-O-",
+            ]
+        )
         with open(os.path.join(tmpdir, "response.txt"), "w") as f:
             f.write(response.decode("utf-8"))
-        response = subprocess.check_output(["sed", "-rn", 's/.*confirm=([0-9A-Za-z_]+).*/\\1/p', os.path.join(tmpdir, "response.txt")])
+        response = subprocess.check_output(
+            [
+                "sed",
+                "-rn",
+                "s/.*confirm=([0-9A-Za-z_]+).*/\\1/p",
+                os.path.join(tmpdir, "response.txt"),
+            ]
+        )
         response = response.decode("utf-8")
-        subprocess.check_output([
-            "wget", "--load-cookies", os.path.join(tmpdir, "cookies.txt"), "-O", path,
-            url+f"&confirm={response}"])
+        subprocess.check_output(
+            [
+                "wget",
+                "--load-cookies",
+                os.path.join(tmpdir, "cookies.txt"),
+                "-O",
+                path,
+                url + f"&confirm={response}",
+            ]
+        )
 
 
 class RedditTIFUConfig(datalabs.BuilderConfig):
@@ -72,6 +90,7 @@ class RedditTIFUConfig(datalabs.BuilderConfig):
 
 class RedditTIFUDataset(datalabs.GeneratorBasedBuilder):
     """RedditTIFU Dataset."""
+
     _FILE_ID = "1ffWfITKFMJeqjT8loC8aiCLRNJpc_XnF"
     BUILDER_CONFIGS = [
         RedditTIFUConfig(
@@ -89,18 +108,18 @@ class RedditTIFUDataset(datalabs.GeneratorBasedBuilder):
 
     def _info(self):
 
-
         features_dataset = {}
         features_sample = datalabs.Features(
-                {
-                    _ARTICLE: datalabs.Value("string"),
-                    _ABSTRACT: datalabs.Value("string"),
-                    # "id": datalab.Value("string"),
-                }
-            )
+            {
+                _ARTICLE: datalabs.Value("string"),
+                _ABSTRACT: datalabs.Value("string"),
+                # "id": datalab.Value("string"),
+            }
+        )
         if self.feature_expanding:
-            features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                    get_schema_of_sample_level_features)
+            features_sample, features_dataset = get_feature_schemas(
+                features_sample, get_schema_of_sample_level_features
+            )
 
         # Should return a datalab.DatasetInfo object
         return datalabs.DatasetInfo(
@@ -110,16 +129,15 @@ class RedditTIFUDataset(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage=None,
             citation=_CITATION,
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
+            task_templates=[
+                Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT),
             ],
         )
 
     def _split_generators(self, dl_manager):
         # f_path = dl_manager.download(_gdrive_url(self._FILE_ID))
         f_path = dl_manager.download_custom(_gdrive_url(self._FILE_ID), custom_download)
-    
+
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"f_path": f_path}
@@ -131,7 +149,7 @@ class RedditTIFUDataset(datalabs.GeneratorBasedBuilder):
         cnt = 0
         with open(f_path, encoding="utf-8") as f:
             for line in f:
-                data = json.loads(line) 
+                data = json.loads(line)
                 if self.config.name == "short":
                     # short version dataset
 
@@ -140,11 +158,12 @@ class RedditTIFUDataset(datalabs.GeneratorBasedBuilder):
                         _ABSTRACT: data["trimmed_title"],
                     }
 
-
                     if not self.feature_expanding:
                         yield cnt, raw_feature_info
                     else:
-                        additional_feature_info = get_features_sample_level(raw_feature_info)
+                        additional_feature_info = get_features_sample_level(
+                            raw_feature_info
+                        )
                         raw_feature_info.update(additional_feature_info)
                         # print(additional_feature_info)
                         yield cnt, raw_feature_info
@@ -158,11 +177,12 @@ class RedditTIFUDataset(datalabs.GeneratorBasedBuilder):
                         _ABSTRACT: data["tldr"],
                     }
 
-
                     if not self.feature_expanding:
                         yield cnt, raw_feature_info
                     else:
-                        additional_feature_info = get_features_sample_level(raw_feature_info)
+                        additional_feature_info = get_features_sample_level(
+                            raw_feature_info
+                        )
                         raw_feature_info.update(additional_feature_info)
                         # print(additional_feature_info)
                         yield cnt, raw_feature_info

@@ -3,12 +3,10 @@ import os
 import random
 import sys
 
-
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))
 )
 from edit.editing import *
-
 
 """
 Class for creating augmentations by insterting filler words and phrases in English.

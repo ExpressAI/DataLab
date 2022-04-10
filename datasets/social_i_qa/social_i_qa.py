@@ -18,7 +18,6 @@ import os
 import datalabs
 from datalabs.tasks import QuestionAnsweringMultipleChoices
 
-
 # TODO(social_i_qa): BibTeX citation
 _CITATION = """
 """
@@ -27,7 +26,9 @@ _CITATION = """
 _DESCRIPTION = """\
 We introduce Social IQa: Social Interaction QA, a new question-answering benchmark for testing social commonsense intelligence. Contrary to many prior benchmarks that focus on physical or taxonomic knowledge, Social IQa focuses on reasoning about people’s actions and their social implications. For example, given an action like "Jesse saw a concert" and a question like "Why did Jesse do this?", humans can easily infer that Jesse wanted "to see their favorite performer" or "to enjoy the music", and not "to see what's happening inside" or "to see if it works". The actions in Social IQa span a wide variety of social situations, and answer candidates contain both human-curated answers and adversarially-filtered machine-generated candidates. Social IQa contains over 37,000 QA pairs for evaluating models’ abilities to reason about the social implications of everyday events and situations. (Less)
 """
-_URL = "https://storage.googleapis.com/ai2-mosaic/public/socialiqa/socialiqa-train-dev.zip"
+_URL = (
+    "https://storage.googleapis.com/ai2-mosaic/public/socialiqa/socialiqa-train-dev.zip"
+)
 
 
 class SocialIQa(datalabs.GeneratorBasedBuilder):
@@ -47,14 +48,12 @@ class SocialIQa(datalabs.GeneratorBasedBuilder):
                     "id": datalabs.Value("string"),
                     "context": datalabs.Value("string"),  # context ->article
                     "question": datalabs.Value("string"),
-                    "answers":  # answers -> label
-                        {
-                            "text": datalabs.Value("string"),
-                            "option_index": datalabs.Value("int32"),
-                        },
-                    "options": datalabs.features.Sequence(datalabs.Value("string"))
+                    "answers": {  # answers -> label
+                        "text": datalabs.Value("string"),
+                        "option_index": datalabs.Value("int32"),
+                    },
+                    "options": datalabs.features.Sequence(datalabs.Value("string")),
                 }
-
                 # {
                 #     # These are the features of your dataset like images, labels ...
                 #     "context": datalabs.Value("string"),
@@ -74,7 +73,9 @@ class SocialIQa(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 QuestionAnsweringMultipleChoices(
-                    question_column="question", context_column="context", answers_column="answers",
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                     options_column="options",
                     task="question-answering-multiple-choices-with-context",
                 )
@@ -113,7 +114,19 @@ class SocialIQa(datalabs.GeneratorBasedBuilder):
         with open(labelpath, encoding="utf-8") as f:
             labels = [label.strip() for label in f]
 
-        dict_map = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6, "H": 7, "I": 8, "J": 9, "K": 10}
+        dict_map = {
+            "A": 0,
+            "B": 1,
+            "C": 2,
+            "D": 3,
+            "E": 4,
+            "F": 5,
+            "G": 6,
+            "H": 7,
+            "I": 8,
+            "J": 9,
+            "K": 10,
+        }
         id_sample = 0
         with open(filepath, encoding="utf-8") as f1:
             for id_, row in enumerate(f1):
@@ -124,16 +137,16 @@ class SocialIQa(datalabs.GeneratorBasedBuilder):
                 answerA = data["answerA"]
                 answerB = data["answerB"]
                 answerC = data["answerC"]
-                options = [answerA,answerB,answerC]
+                options = [answerA, answerB, answerC]
                 question = data["question"]
-                option_index = int(label)-1
+                option_index = int(label) - 1
                 yield id_, {
                     "id": str(id_sample - 1),
                     "context": context,
                     "question": question,
                     "options": options,
                     "answers": {
-                                "option_index": option_index,  # convert A->0, B->1, C->2, D->3
-                                "text": options[option_index],
-                            },
+                        "option_index": option_index,  # convert A->0, B->1, C->2, D->3
+                        "text": options[option_index],
+                    },
                 }

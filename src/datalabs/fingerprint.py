@@ -1,5 +1,27 @@
 from __future__ import annotations
 
+from dataclasses import asdict
+from functools import wraps
+import inspect
+import json
+import os
+from pathlib import Path
+import random
+import shutil
+import tempfile
+from typing import Any, Optional, TYPE_CHECKING, Union
+import weakref
+
+import numpy as np
+import pyarrow as pa
+import xxhash
+
+from datalabs.table import ConcatenationTable, InMemoryTable, MemoryMappedTable, Table
+
+from .info import DatasetInfo
+from .utils.logging import get_logger
+from .utils.py_utils import dumps
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors.
 #
@@ -12,28 +34,6 @@ from __future__ import annotations
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import inspect
-import json
-import os
-import random
-import shutil
-import tempfile
-import weakref
-from dataclasses import asdict
-from functools import wraps
-from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional, Union
-
-import numpy as np
-import pyarrow as pa
-import xxhash
-
-from datalabs.table import ConcatenationTable, InMemoryTable, MemoryMappedTable, Table
-
-from .info import DatasetInfo
-from .utils.logging import get_logger
-from .utils.py_utils import dumps
 
 
 if TYPE_CHECKING:

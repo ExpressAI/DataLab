@@ -10,9 +10,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from dataclasses import dataclass
 import io
 import json
-from dataclasses import dataclass
 from typing import Optional
 
 import pyarrow as pa
@@ -20,7 +20,6 @@ import pyarrow.json as paj
 
 import datalabs
 from datalabs.utils.file_utils import readline
-
 
 logger = datalabs.utils.logging.get_logger(__name__)
 

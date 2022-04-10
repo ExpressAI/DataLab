@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+from dataclasses import dataclass, field
+from typing import Any, ClassVar, Optional
+
+import pyarrow as pa
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and the DataLab Datasets Authors.
 #
@@ -12,11 +17,6 @@ from __future__ import annotations
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from dataclasses import dataclass, field
-from typing import Any, ClassVar, Optional
-
-import pyarrow as pa
 
 
 @dataclass

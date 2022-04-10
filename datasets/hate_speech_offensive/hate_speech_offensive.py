@@ -63,7 +63,9 @@ class HateSpeechOffensive(datalabs.GeneratorBasedBuilder):
                     "hate_speech_count": datalabs.Value("int64"),
                     "offensive_language_count": datalabs.Value("int64"),
                     "neither_count": datalabs.Value("int64"),
-                    "label": datalabs.ClassLabel(names=["hate speech", "offensive language", "neither"]),
+                    "label": datalabs.ClassLabel(
+                        names=["hate speech", "offensive language", "neither"]
+                    ),
                     "text": datalabs.Value("string"),
                 }
             ),
@@ -71,7 +73,9 @@ class HateSpeechOffensive(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             license=_LICENSE,
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[
+                TextClassification(text_column="text", label_column="label")
+            ],
         )
 
     def _split_generators(self, dl_manager):

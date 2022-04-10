@@ -15,11 +15,11 @@
 """To write records into Parquet files."""
 from __future__ import annotations
 
+from dataclasses import asdict
 import errno
 import json
 import os
 import socket
-from dataclasses import asdict
 from typing import Any, Optional, Union
 
 import numpy as np
@@ -27,9 +27,9 @@ import pyarrow as pa
 
 from . import config, utils
 from .features import (
-    Features,
     _ArrayXDExtensionType,
     cast_to_python_objects,
+    Features,
     list_of_np_array_to_pyarrow_listarray,
     numpy_to_pyarrow_listarray,
 )
@@ -37,7 +37,6 @@ from .info import DatasetInfo
 from .keyhash import DuplicatedKeysError, KeyHasher
 from .utils import logging
 from .utils.file_utils import hash_url_to_filename
-
 
 logger = logging.get_logger(__name__)
 

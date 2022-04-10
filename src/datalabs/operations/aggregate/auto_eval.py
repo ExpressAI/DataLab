@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 import os
 import sys
 from typing import Any, Dict, Iterator, Optional
@@ -11,11 +10,9 @@ from tqdm import tqdm
 
 from .aggregating import Aggregating, aggregating
 
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from data import TextData
-from operation import DatasetOperation, dataset_operation
-
+from operation import dataset_operation, DatasetOperation
 
 # Build-in ExplainaBoard
 # from datalabs import get_processor

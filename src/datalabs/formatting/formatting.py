@@ -1,7 +1,17 @@
 from __future__ import annotations
 
-from collections.abc import Callable
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
+
+# Lint as: python3
+from typing import Any, Generic, MutableMapping, Optional, TypeVar, Union
+
+import numpy as np
+import pandas as pd
+import pyarrow as pa
+
+from ..features import _ArrayXDExtensionType, _is_zero_copy_only, pandas_types_mapper
+from ..table import Table
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Authors.
 #
@@ -16,16 +26,6 @@ from collections.abc import Iterable
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-# Lint as: python3
-from typing import Any, Generic, MutableMapping, Optional, TypeVar, Union
-
-import numpy as np
-import pandas as pd
-import pyarrow as pa
-
-from ..features import _ArrayXDExtensionType, _is_zero_copy_only, pandas_types_mapper
-from ..table import Table
 
 
 T = TypeVar("T")

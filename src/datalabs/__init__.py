@@ -20,13 +20,12 @@
 
 __version__ = "1.16.2.dev0"
 
-import pyarrow
 from packaging import version as _version
+import pyarrow
 from pyarrow import total_allocated_bytes
 
 from .operations import operation
 from .operations.data import *
-
 
 # from .operations import operation
 # from .operations import data
@@ -37,10 +36,16 @@ if _version.parse(pyarrow.__version__).major < 3:
         "If you are running this in a Google Colab, you should probably just restart the runtime to use the right version of `pyarrow`."
     )
 
-from .arrow_dataset import Dataset, concatenate_datasets
+from .arrow_dataset import concatenate_datasets, Dataset
 from .arrow_reader import ArrowReader, ReadInstruction
 from .arrow_writer import ArrowWriter
-from .builder import ArrowBasedBuilder, BeamBasedBuilder, BuilderConfig, DatasetBuilder, GeneratorBasedBuilder
+from .builder import (
+    ArrowBasedBuilder,
+    BeamBasedBuilder,
+    BuilderConfig,
+    DatasetBuilder,
+    GeneratorBasedBuilder,
+)
 from .combine import interleave_datasets
 from .constants import *
 from .dataset_dict import DatasetDict, IterableDatasetDict
@@ -57,11 +62,11 @@ from .features import (
     Audio,
     ClassLabel,
     Features,
+    features,
     Sequence,
     Translation,
     TranslationVariableLanguages,
     Value,
-    features,
 )
 from .fingerprint import is_caching_enabled, set_caching_enabled
 from .info import DatasetInfo, MetricInfo, MongoDBClient
@@ -76,23 +81,29 @@ from .inspect import (
 )
 from .iterable_dataset import IterableDataset
 from .keyhash import KeyHasher
-from .load import import_main_class, load_dataset, load_dataset_builder, load_from_disk, load_metric, prepare_module
+from .load import (
+    import_main_class,
+    load_dataset,
+    load_dataset_builder,
+    load_from_disk,
+    load_metric,
+    prepare_module,
+)
 from .metric import Metric
 from .operations.aggregate import aggregating
 from .prompt import Prompt, PromptResult, Prompts
 from .splits import (
     NamedSplit,
     NamedSplitAll,
+    percent,
     Split,
     SplitBase,
     SplitDict,
     SplitGenerator,
     SplitInfo,
     SubSplitInfo,
-    percent,
 )
-from .tasks.task_info import Task, TaskCategory, TaskType, get_task_categories
+from .tasks.task_info import get_task_categories, Task, TaskCategory, TaskType
 from .utils import *
-
 
 SCRIPTS_VERSION = "master" if _version.parse(__version__).is_devrelease else __version__

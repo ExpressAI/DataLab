@@ -17,44 +17,41 @@
 """ Simple Dataset wrapping an Arrow Table."""
 from __future__ import annotations
 
-from collections.abc import Callable
-from collections.abc import Iterator
-
+from collections import Counter, UserDict
+from collections.abc import Callable, Iterable, Iterator, Mapping
 import contextlib
 import copy
-import json
-import os
-import re
-import shutil
-import tempfile
-import weakref
-from collections import Counter, UserDict
-from collections.abc import Iterable, Mapping
 from copy import deepcopy
 from dataclasses import asdict
 from functools import partial, wraps
 from io import BytesIO
+import json
 from math import ceil, floor
+import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, BinaryIO, Optional, Union
+import re
+import shutil
+import tempfile
+from typing import Any, BinaryIO, Optional, TYPE_CHECKING, Union
+import weakref
 
 import fsspec
-import numpy as np
-import pandas as pd
-import pyarrow as pa
-import pyarrow.compute as pc
 from huggingface_hub import HfApi, HfFolder
 from multiprocess import Pool, RLock
+import numpy as np
 
 # import tqdm
 from p_tqdm import p_map
+import pandas as pd
+import pyarrow as pa
+import pyarrow.compute as pc
 from requests import HTTPError
 from tqdm.auto import tqdm
 
 from . import config, utils
 from .arrow_reader import ArrowReader
 from .arrow_writer import ArrowWriter, OptimizedTypedSequence
-from .features import ClassLabel, Features, Sequence, Value, _ArrayXD
+from .features import _ArrayXD, ClassLabel, Features, Sequence, Value
 from .filesystems import extract_path_from_uri, is_remote_filesystem
 from .fingerprint import (
     fingerprint_transform,
@@ -65,20 +62,25 @@ from .fingerprint import (
     maybe_register_dataset_for_temp_dir_deletion,
     update_fingerprint,
 )
-from .formatting import format_table, get_format_type_from_alias, get_formatter, query_table
+from .formatting import (
+    format_table,
+    get_format_type_from_alias,
+    get_formatter,
+    query_table,
+)
 from .info import DatasetInfo, MongoDBClient
 from .operations.data import Data, TextData
 from .operations.operation import DatasetOperation, OperationFunction
 from .search import IndexableMixin
 from .splits import NamedSplit, Split
 from .table import (
-    ConcatenationTable,
-    InMemoryTable,
-    MemoryMappedTable,
-    Table,
     cast_with_sliced_list_support,
     concat_tables,
+    ConcatenationTable,
+    InMemoryTable,
     list_table_cache_files,
+    MemoryMappedTable,
+    Table,
 )
 from .tasks import TaskTemplate
 from .tasks.text_classification import TextClassification
@@ -87,7 +89,6 @@ from .utils.deprecation_utils import deprecated
 from .utils.file_utils import estimate_dataset_size
 from .utils.info_utils import is_small_dataset
 from .utils.typing import PathLike
-
 
 # from .operations.prompt.text_classification import *
 if TYPE_CHECKING:
@@ -3633,7 +3634,9 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             test_new_fingerprint (:obj:`str`, optional, defaults to `None`): the new fingerprint of the test set after transform.
                 If `None`, the new fingerprint is computed using a hash of the previous fingerprint, and the transform arguments
         """
-        from .dataset_dict import DatasetDict  # import here because of circular dependency
+        from .dataset_dict import (  # import here because of circular dependency
+            DatasetDict,
+        )
 
         if len(self.list_indexes()) > 0:
             raise DatasetTransformationNotAllowedError(

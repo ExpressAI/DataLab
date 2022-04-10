@@ -18,10 +18,10 @@
 import json
 import os
 
-# import datasets
-
 import datalabs
 from datalabs.tasks import SemanticParsing
+
+# import datasets
 
 
 # logger = datasets.logging.get_logger(__name__)
@@ -44,7 +44,9 @@ _HOMEPAGE = "https://yale-lily.github.io/spider"
 
 _LICENSE = "CC BY-SA 4.0"
 
-_URL = "https://drive.google.com/uc?export=download&id=1_AckYkinAnhqmRQtGsQgUKAnTHxxX5J0"
+_URL = (
+    "https://drive.google.com/uc?export=download&id=1_AckYkinAnhqmRQtGsQgUKAnTHxxX5J0"
+)
 
 
 class Spider(datalabs.GeneratorBasedBuilder):
@@ -65,7 +67,9 @@ class Spider(datalabs.GeneratorBasedBuilder):
                 "query": datalabs.Value("string"),
                 "question": datalabs.Value("string"),
                 "query_toks": datalabs.features.Sequence(datalabs.Value("string")),
-                "query_toks_no_value": datalabs.features.Sequence(datalabs.Value("string")),
+                "query_toks_no_value": datalabs.features.Sequence(
+                    datalabs.Value("string")
+                ),
                 "question_toks": datalabs.features.Sequence(datalabs.Value("string")),
             }
         )
@@ -77,9 +81,7 @@ class Spider(datalabs.GeneratorBasedBuilder):
             license=_LICENSE,
             citation=_CITATION,
             task_templates=[
-                SemanticParsing(
-                    question_column="question", query_column="query"
-                )
+                SemanticParsing(question_column="question", query_column="query")
             ],
         )
 
@@ -90,13 +92,17 @@ class Spider(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={
-                    "data_filepath": os.path.join(downloaded_filepath, "spider/train_spider.json"),
+                    "data_filepath": os.path.join(
+                        downloaded_filepath, "spider/train_spider.json"
+                    ),
                 },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 gen_kwargs={
-                    "data_filepath": os.path.join(downloaded_filepath, "spider/dev.json"),
+                    "data_filepath": os.path.join(
+                        downloaded_filepath, "spider/dev.json"
+                    ),
                 },
             ),
         ]

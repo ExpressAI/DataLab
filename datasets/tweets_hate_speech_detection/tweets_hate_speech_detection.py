@@ -22,7 +22,6 @@ import csv
 import datalabs
 from datalabs.tasks import TextClassification
 
-
 _DESCRIPTION = """\
 The objective of this task is to detect hate speech in tweets. For the sake of simplicity, we say a tweet contains hate speech if it has a racist or sexist sentiment associated with it. So, the task is to classify racist or sexist tweets from other tweets.
 
@@ -38,9 +37,7 @@ year={2018}
 }
 """
 
-_TRAIN_DOWNLOAD_URL = (
-    "https://raw.githubusercontent.com/sharmaroshan/Twitter-Sentiment-Analysis/master/train_tweet.csv"
-)
+_TRAIN_DOWNLOAD_URL = "https://raw.githubusercontent.com/sharmaroshan/Twitter-Sentiment-Analysis/master/train_tweet.csv"
 
 
 class TweetsHateSpeechDetection(datalabs.GeneratorBasedBuilder):
@@ -51,29 +48,41 @@ class TweetsHateSpeechDetection(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                    "label": datalabs.ClassLabel(names=["no-hate-speech", "hate-speech"]),
+                    "label": datalabs.ClassLabel(
+                        names=["no-hate-speech", "hate-speech"]
+                    ),
                     "text": datalabs.Value("string"),
                 }
             ),
             homepage="https://github.com/sharmaroshan/Twitter-Sentiment-Analysis",
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[
+                TextClassification(text_column="text", label_column="label")
+            ],
         )
 
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
 
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
         """Generate Tweet examples."""
-        textualize_label = {"0":"no-hate-speech",
-                                 "1":"hate-speech",}
+        textualize_label = {
+            "0": "no-hate-speech",
+            "1": "hate-speech",
+        }
         with open(filepath, encoding="utf-8") as csv_file:
             csv_reader = csv.reader(
-                csv_file, quotechar='"', delimiter=",", quoting=csv.QUOTE_ALL, skipinitialspace=True
+                csv_file,
+                quotechar='"',
+                delimiter=",",
+                quoting=csv.QUOTE_ALL,
+                skipinitialspace=True,
             )
             next(csv_reader, None)
             for id_, row in enumerate(csv_reader):

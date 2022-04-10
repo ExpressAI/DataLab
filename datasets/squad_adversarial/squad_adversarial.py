@@ -21,8 +21,6 @@ import json
 import datalabs
 from datalabs.tasks import QuestionAnsweringExtractive
 
-
-
 _CITATION = """\
 @inproceedings{jia-liang-2017-adversarial,
     title = "Adversarial Examples for Evaluating Reading Comprehension Systems",
@@ -46,7 +44,9 @@ AddSent: Generates up to five candidate adversarial sentences that don't answer 
 AddOneSent: Similar to AddSent, but just picks one of the candidate sentences at random. This adversary is does not query the model in any way.
 """
 
-_HOMEPAGE = "https://worksheets.codalab.org/worksheets/0xc86d3ebe69a3427d91f9aaa63f7d1e7d/"
+_HOMEPAGE = (
+    "https://worksheets.codalab.org/worksheets/0xc86d3ebe69a3427d91f9aaa63f7d1e7d/"
+)
 _LICENSE = "MIT License"
 
 _URLS = {
@@ -60,8 +60,12 @@ class SquadAdversarial(datalabs.GeneratorBasedBuilder):
 
     VERSION = datalabs.Version("1.1.0")
     BUILDER_CONFIGS = [
-        datalabs.BuilderConfig(name="AddSent", version=VERSION, description=_DESCRIPTION),
-        datalabs.BuilderConfig(name="AddOneSent", version=VERSION, description=_DESCRIPTION),
+        datalabs.BuilderConfig(
+            name="AddSent", version=VERSION, description=_DESCRIPTION
+        ),
+        datalabs.BuilderConfig(
+            name="AddOneSent", version=VERSION, description=_DESCRIPTION
+        ),
     ]
 
     def _info(self):
@@ -88,7 +92,9 @@ class SquadAdversarial(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 QuestionAnsweringExtractive(
-                    question_column="question", context_column="context", answers_column="answers"
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                 )
             ],
         )
@@ -101,7 +107,8 @@ class SquadAdversarial(datalabs.GeneratorBasedBuilder):
 
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files[self.config.name]}
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"filepath": downloaded_files[self.config.name]},
             )
         ]
 
@@ -117,7 +124,9 @@ class SquadAdversarial(datalabs.GeneratorBasedBuilder):
                         question = qa["question"].strip()
                         id_ = qa["id"]
 
-                        answer_starts = [answer["answer_start"] for answer in qa["answers"]]
+                        answer_starts = [
+                            answer["answer_start"] for answer in qa["answers"]
+                        ]
                         answers = [answer["text"].strip() for answer in qa["answers"]]
 
                         yield id_, {

@@ -14,54 +14,50 @@
 # limitations under the License.
 
 
-from typing import Dict, List, Any, Optional
-from typing import Callable, Mapping
-from datalabs.operations.featurize.featurizing import Featurizing, featurizing
-from multiprocessing import Pool
 import json
-from tqdm import tqdm
-from nltk import word_tokenize
+from multiprocessing import Pool
+from typing import Any, Callable, Dict, List, Mapping, Optional
+
 from lxml import etree
+from nltk import word_tokenize
+from tqdm import tqdm
+
+from datalabs.operations.featurize.featurizing import Featurizing, featurizing
+
 
 class WikipediaFeaturizing(Featurizing):
-
-
-    def __init__(self, *args, _type = 'WikipediaFeaturizing', **kwargs
-                 ):
+    def __init__(self, *args, _type="WikipediaFeaturizing", **kwargs):
 
         super(WikipediaFeaturizing, self).__init__(*args, **kwargs)
-        self._type =  _type
+        self._type = _type
         self._data_type = "wikipedia"
 
 
-
 class wikipedia_featurizing(featurizing):
-    def __init__(self, *args, _type = 'WikipediaFeaturizing', **kwargs
-                 ):
-
+    def __init__(self, *args, _type="WikipediaFeaturizing", **kwargs):
 
         super(wikipedia_featurizing, self).__init__(*args, **kwargs)
         self._type = _type
 
-
     def __call__(self, *param_arg):
         if callable(self.name):
 
-            tf_class = WikipediaFeaturizing(name = self.name.__name__, func=self.name)
+            tf_class = WikipediaFeaturizing(name=self.name.__name__, func=self.name)
             return tf_class(*param_arg)
         else:
             f = param_arg[0]
 
             name = self.name or f.__name__
-            tf_cls = WikipediaFeaturizing(name=name, func = f,
-                                   resources = self.resources,
-                                   contributor = self.contributor,
-                                    task = self.task,
-                                    description=self.description,
-                                    _type = self._type,
-                                    )
+            tf_cls = WikipediaFeaturizing(
+                name=name,
+                func=f,
+                resources=self.resources,
+                contributor=self.contributor,
+                task=self.task,
+                description=self.description,
+                _type=self._type,
+            )
             return tf_cls
-
 
 
 """
@@ -93,45 +89,45 @@ def process_toc(filepath_):
 
 
 class WikiExtractor:
-    """ Extract information from Wikipedia webpage (HTML)
-        Extracted information including:
-        * Table of contents
-            {
-                "Creation": [
-                    "Development": [],
-                    "Design": []],
-                    "Personality": [
-                        "Childhood": []],
-                        "Adulthood": []]
-                    ]
+    """Extract information from Wikipedia webpage (HTML)
+    Extracted information including:
+    * Table of contents
+        {
+            "Creation": [
+                "Development": [],
+                "Design": []],
+                "Personality": [
+                    "Childhood": []],
+                    "Adulthood": []]
                 ]
-            }
-        * Relations
-            [
-                ('First appearance', 'Naruto chapter 3: Enter Sasuke! (1999)'),
-                ('Created by', 'Masashi Kishimoto')
             ]
-        * text
-            {
-                'Sasuke Uchiha':
-                    [
-                        {'text': '\n', 'entities': []},
-                        {'text': '\n', 'entities': []},
-                        {'text': 'Sasuke Uchiha (Japanese: うちは サスケ, Hepburn: Uchiha Sasuke) ...'
-                        'entities':
-                            [
-                                'fictional character',
-                                'manga',
-                                ...
-                            ]
-                    ],
-                'Creation': [],
-                ...
-            }
+        }
+    * Relations
+        [
+            ('First appearance', 'Naruto chapter 3: Enter Sasuke! (1999)'),
+            ('Created by', 'Masashi Kishimoto')
+        ]
+    * text
+        {
+            'Sasuke Uchiha':
+                [
+                    {'text': '\n', 'entities': []},
+                    {'text': '\n', 'entities': []},
+                    {'text': 'Sasuke Uchiha (Japanese: うちは サスケ, Hepburn: Uchiha Sasuke) ...'
+                    'entities':
+                        [
+                            'fictional character',
+                            'manga',
+                            ...
+                        ]
+                ],
+            'Creation': [],
+            ...
+        }
     """
 
     def get_iter_text(self, e):
-        """ Iteratively get texts from an element. """
+        """Iteratively get texts from an element."""
         txt = ""
         for x in e.itertext():
             txt += x
@@ -139,7 +135,7 @@ class WikiExtractor:
 
     def read_data(self, filepath=None):
         if filepath is not None:
-            with open(filepath, "r", errors='ignore') as f:
+            with open(filepath, "r", errors="ignore") as f:
                 data = f.read()
 
         str_html = etree.HTML(data)
@@ -152,7 +148,9 @@ class WikiExtractor:
 
             def extract_toc_text_from_li(li_):
                 toc_ = {}
-                curr_text_ = self.get_iter_text(li_.xpath("./a/span[@class='toctext']")[0])
+                curr_text_ = self.get_iter_text(
+                    li_.xpath("./a/span[@class='toctext']")[0]
+                )
                 lis_ = li_.xpath("./ul/li")
                 toc_[curr_text_] = []
                 if len(lis_) != 0:
@@ -211,7 +209,10 @@ class WikiExtractor:
                     txt_list = []
                     title = self.get_iter_text(x)
                 else:
-                    txt_with_ents = {"text": self.get_iter_text(x), "entities": get_entities_in_text(x)}
+                    txt_with_ents = {
+                        "text": self.get_iter_text(x),
+                        "entities": get_entities_in_text(x),
+                    }
                     txt_list.append(txt_with_ents)
             text[title] = txt_list
             return text
@@ -219,13 +220,14 @@ class WikiExtractor:
             return None
 
 
-
-@wikipedia_featurizing(name = "get_number_of_tokens", contributor= "datalab",
-                                 task="text-classification", description="this function is used to calculate the text length",
-                                 )
-def get_number_of_tokens(sample:dict):
-    return len(sample['text'])
-
+@wikipedia_featurizing(
+    name="get_number_of_tokens",
+    contributor="datalab",
+    task="text-classification",
+    description="this function is used to calculate the text length",
+)
+def get_number_of_tokens(sample: dict):
+    return len(sample["text"])
 
 
 def process_all_files(self, outpath, process):
@@ -234,7 +236,11 @@ def process_all_files(self, outpath, process):
     # path = f"{self.homedir}/.cache/wikipedia/en"
     path = "/data/pliu3/reST/code/sketch/en"
     for root, dirnames, filenames in os.walk(path):
-        filepaths = [os.path.join(root, filename) for filename in filenames if filename.endswith("html")]
+        filepaths = [
+            os.path.join(root, filename)
+            for filename in filenames
+            if filename.endswith("html")
+        ]
         count += len(filepaths)
         with Pool(self.max_cpu) as p:
             outs = p.map(process, filepaths)
@@ -246,23 +252,37 @@ def process_all_files(self, outpath, process):
     file.flush()
 
 
-@wikipedia_featurizing(name = "extract_relations", contributor= "datalab",
-                       _type="WikipediaFeaturizing", task="unsupervised data", description="this function is used for ")
+@wikipedia_featurizing(
+    name="extract_relations",
+    contributor="datalab",
+    _type="WikipediaFeaturizing",
+    task="unsupervised data",
+    description="this function is used for ",
+)
 def extract_relations(outpath):
     process_all_files(outpath, process_relations)
 
 
-@wikipedia_featurizing(name = "extract_text_entities", contributor= "datalab",
-                       _type="WikipediaFeaturizing",  task="unsupervised data", description="this function is used for ")
+@wikipedia_featurizing(
+    name="extract_text_entities",
+    contributor="datalab",
+    _type="WikipediaFeaturizing",
+    task="unsupervised data",
+    description="this function is used for ",
+)
 def extract_text_entities(outpath):
     process_all_files(outpath, process_text_entities)
 
 
-@wikipedia_featurizing(name = "extract_toc", contributor= "datalab",
-                       _type="WikipediaFeaturizing",   task="unsupervised data", description="this function is used for ")
+@wikipedia_featurizing(
+    name="extract_toc",
+    contributor="datalab",
+    _type="WikipediaFeaturizing",
+    task="unsupervised data",
+    description="this function is used for ",
+)
 def extract_toc(outpath):
     process_all_files(outpath, process_toc)
-
 
 
 def match_entities_sequentially(text, all_entities, max_entity_len):
@@ -274,7 +294,7 @@ def match_entities_sequentially(text, all_entities, max_entity_len):
     while start_idx < len(tokens):
         flag = False
         for span_len in range(1, max_entity_len + 1):
-            curr_span = tokens[start_idx: start_idx + span_len]
+            curr_span = tokens[start_idx : start_idx + span_len]
             curr_span = " ".join(curr_span)
             if curr_span in all_entities:
                 curr_entities.append(curr_span)
@@ -316,16 +336,22 @@ def get_labeled_entities(file, outpath):
                     if len(curr_text.split(" ")) < 10:
                         # Filter out too short sentences
                         continue
-                    curr_entities = match_entities_sequentially(curr_text, all_entities, max_entity_len)
+                    curr_entities = match_entities_sequentially(
+                        curr_text, all_entities, max_entity_len
+                    )
                     datum = {"text": curr_text, "entities": curr_entities}
                     print(datum, file=outfile)
 
 
-@wikipedia_featurizing(name = "get_labeled_entities", contributor= "datalab",
-                       _type="WikipediaLabeling",   task="unsupervised data", description="this function is used for ")
+@wikipedia_featurizing(
+    name="get_labeled_entities",
+    contributor="datalab",
+    _type="WikipediaLabeling",
+    task="unsupervised data",
+    description="this function is used for ",
+)
 def get_labeled_entities(outpath):
     process_all_files(outpath, process_toc)
-
 
 
 # @wikipedia_featurizing(name = "get_labeled_texts", contributor= "datalab", processed_fields= "text",

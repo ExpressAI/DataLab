@@ -17,31 +17,30 @@
 """ This class handle features definition in datalab and some utilities to display table type."""
 from __future__ import annotations
 
-import copy
-import re
-import sys
 from collections.abc import Iterable
+import copy
 from dataclasses import dataclass, field, fields
 from functools import reduce
 from operator import mul
+import re
+import sys
 from typing import Any, ClassVar, Optional
 from typing import Sequence as Sequence_
 from typing import Union
 
 import numpy as np
 import pandas as pd
-import pyarrow as pa
-import pyarrow.types
 from pandas.api.extensions import ExtensionArray as PandasExtensionArray
 from pandas.api.extensions import ExtensionDtype as PandasExtensionDtype
+import pyarrow as pa
 from pyarrow.lib import TimestampType
+import pyarrow.types
 from pyarrow.types import is_boolean, is_primitive
 
 from datalabs import config, utils
 from datalabs.features.audio import Audio
 from datalabs.features.translation import Translation, TranslationVariableLanguages
 from datalabs.utils.logging import get_logger
-
 
 logger = get_logger(__name__)
 

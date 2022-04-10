@@ -1,20 +1,26 @@
+import csv
 import json
 import os
-import csv
+
+# from featurize.general import get_features_sample_level
+from featurize.qa_multiple_choices import (
+    get_features_sample_level,
+    get_schema_of_sample_level_features,
+)
+
 import datalabs
 from datalabs.tasks import QuestionAnsweringMultipleChoices
-#from featurize.general import get_features_sample_level
-from featurize.qa_multiple_choices import get_features_sample_level, get_schema_of_sample_level_features
-from datalabs.utils.more_features import prefix_dict_key, get_feature_arguments
+from datalabs.utils.more_features import get_feature_arguments, prefix_dict_key
 
 
-def infer_schema_dataset_level(sample_level_schema:dict):
+def infer_schema_dataset_level(sample_level_schema: dict):
 
     dataset_level_schema = {}
     for feature_name, value in sample_level_schema.items():
         if isinstance(value, int) or isinstance(value, float):
             dataset_level_schema[feature_name] = value
     return dataset_level_schema
+
 
 _CITATION = """
 """
@@ -33,9 +39,6 @@ url_validation = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/mast
 url_test = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/master/data/filtered/test.csv"
 
 
-
-
-
 class MetaphorQAConfig(datalabs.BuilderConfig):
     """BuilderConfig for FB15K."""
 
@@ -48,8 +51,9 @@ class MetaphorQAConfig(datalabs.BuilderConfig):
 
 
 FIELD = "context"
-class MetaphorQA(datalabs.GeneratorBasedBuilder):
 
+
+class MetaphorQA(datalabs.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
         MetaphorQAConfig(
@@ -71,48 +75,37 @@ class MetaphorQA(datalabs.GeneratorBasedBuilder):
 
     DEFAULT_CONFIG_NAME = "medium"
 
-
-
     def _info(self):
-
-
 
         features_dataset = {}
         features_sample = datalabs.Features(
-                {
-                    "id": datalabs.Value("string"),
-                    "context": datalabs.Value("string"),  # context ->article
-                    "question": datalabs.Value("string"),
-                    "answers":  # answers -> label
-                        {
-                            "text": datalabs.Value("string"),
-                            "option_index": datalabs.Value("int32"),
-                        },
-                    "options": datalabs.features.Sequence(datalabs.Value("string"))
-                }
-
-
-            )
+            {
+                "id": datalabs.Value("string"),
+                "context": datalabs.Value("string"),  # context ->article
+                "question": datalabs.Value("string"),
+                "answers": {  # answers -> label
+                    "text": datalabs.Value("string"),
+                    "option_index": datalabs.Value("int32"),
+                },
+                "options": datalabs.features.Sequence(datalabs.Value("string")),
+            }
+        )
 
         if self.feature_expanding:
             sample_level_schema = get_schema_of_sample_level_features()
-            dict_feature_argument = get_feature_arguments(sample_level_schema, field="", feature_level="sample_level")
+            dict_feature_argument = get_feature_arguments(
+                sample_level_schema, field="", feature_level="sample_level"
+            )
             additional_features = datalabs.Features(dict_feature_argument)
             features_sample.update(additional_features)
 
             # print(features_sample)
 
-
             dataset_level_schema = infer_schema_dataset_level(sample_level_schema)
-            dict_feature_argument = get_feature_arguments(dataset_level_schema, field="avg", feature_level="dataset_level")
+            dict_feature_argument = get_feature_arguments(
+                dataset_level_schema, field="avg", feature_level="dataset_level"
+            )
             features_dataset.update(datalabs.Features(dict_feature_argument))
-
-
-
-
-
-
-
 
         return datalabs.DatasetInfo(
             # This is the description that will appear on the datasets page.
@@ -126,7 +119,9 @@ class MetaphorQA(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 QuestionAnsweringMultipleChoices(
-                    question_column="question", context_column="context", answers_column="answers",
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                     options_column="options",
                     task="question-answering-multiple-choices-with-context",
                 )
@@ -140,27 +135,24 @@ class MetaphorQA(datalabs.GeneratorBasedBuilder):
 
         if self.config.name == "small":
             train_path = dl_manager.download_and_extract(url_train_small)
-        elif  self.config.name == "medium":
+        elif self.config.name == "medium":
             train_path = dl_manager.download_and_extract(url_train_medium)
         elif self.config.name == "large":
             train_path = dl_manager.download_and_extract(url_train_large)
-
 
         validation_path = dl_manager.download_and_extract(url_validation)
         test_path = dl_manager.download_and_extract(url_test)
 
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN,
-                gen_kwargs={"filepath": train_path}
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
             ),
             # datalabs.SplitGenerator(
             #     name=datalabs.Split.VALIDATION,
             #     gen_kwargs={"filepath": validation_path}
             # ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST,
-                gen_kwargs={"filepath": test_path}
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
             ),
         ]
 
@@ -180,7 +172,7 @@ class MetaphorQA(datalabs.GeneratorBasedBuilder):
                 valid = data[4]
                 qid = data[5]
 
-                options = [option1,option2]
+                options = [option1, option2]
                 question = ""
 
                 raw_feature_info = {
@@ -189,16 +181,17 @@ class MetaphorQA(datalabs.GeneratorBasedBuilder):
                     "question": question,
                     "options": options,
                     "answers": {
-                                "option_index": option_index,
-                                "text": options[option_index],
-                            },
+                        "option_index": option_index,
+                        "text": options[option_index],
+                    },
                 }
 
                 if not self.feature_expanding:
                     yield id_, raw_feature_info
                 else:
-                    additional_feature_info = get_features_sample_level(raw_feature_info)
+                    additional_feature_info = get_features_sample_level(
+                        raw_feature_info
+                    )
                     raw_feature_info.update(additional_feature_info)
                     # print(additional_feature_info)
                     yield id_, raw_feature_info
-

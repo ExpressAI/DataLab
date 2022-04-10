@@ -3,8 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar
 
-from ..features import ClassLabel, Features, Sequence, Value
-from .base import TaskTemplate
+from ..features import ClassLabel, Features, Sequence, Value  # noqa
+from .base import TaskTemplate  # noqa
 
 
 @dataclass
@@ -253,10 +253,10 @@ class MultipleChoiceQA(TaskTemplate):
     @property
     def column_mapping(self) -> dict[str, str]:
         return {
-            context_column: "context",
-            question_column: "question",
-            choice_column: "choices",
-            answers_column: "answers",
+            self.context_column: "context",
+            self.question_column: "question",
+            self.choice_column: "choices",
+            self.answers_column: "answers",
         }
 
 

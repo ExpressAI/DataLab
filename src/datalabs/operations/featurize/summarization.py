@@ -1,25 +1,31 @@
 from __future__ import annotations
 
-from collections.abc import Callable
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 import os
 import sys
 
 # from ..operation import DatasetOperation, dataset_operation
 from typing import Any, Optional
 
-from .featurizing import Featurizing, featurizing
-from .plugins.summarization.extractive_methods import _compute_rouge, _ext_oracle, _lead_k
-from .plugins.summarization.sum_attribute import *
+from nltk import sent_tokenize
 
+from .featurizing import Featurizing, featurizing  # noqa
+from .plugins.summarization.extractive_methods import (  # noqa
+    _compute_rouge,
+    _ext_oracle,
+    _lead_k,
+)
+from .plugins.summarization.sum_attribute import SUMAttribute  # noqa
 
 # store all featurizing class
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from operation import DatasetOperation, dataset_operation
+from operation import dataset_operation, DatasetOperation  # noqa
 
-from .general import get_features_sample_level as get_features_sample_level_general
+from .general import (  # noqa
+    get_features_sample_level as get_features_sample_level_general,
+)
 
 
 class SummarizationFeaturizing(Featurizing, DatasetOperation):

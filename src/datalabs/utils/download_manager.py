@@ -17,18 +17,17 @@
 """Download manager interface."""
 from __future__ import annotations
 
-
+from datetime import datetime
 import enum
+from functools import partial
 import os
 import tarfile
-from datetime import datetime
-from functools import partial
 from typing import Optional, Union
 
 from .. import config
 from .file_utils import (
-    DownloadConfig,
     cached_path,
+    DownloadConfig,
     get_from_cache,
     hash_url_to_filename,
     is_relative_path,
@@ -36,8 +35,7 @@ from .file_utils import (
 )
 from .info_utils import get_size_checksum_dict
 from .logging import get_logger
-from .py_utils import NestedDataStructure, map_nested, size_str
-
+from .py_utils import map_nested, NestedDataStructure, size_str
 
 logger = get_logger(__name__)
 

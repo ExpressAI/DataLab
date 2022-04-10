@@ -11,15 +11,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from argparse import ArgumentParser
 import fnmatch
 import json
 import os
+from pathlib import Path
 import shutil
 import tempfile
-import xml.etree.ElementTree as ET
-from argparse import ArgumentParser
-from pathlib import Path
 from typing import Optional
+import xml.etree.ElementTree as ET
 
 from datalabs import config
 from datalabs.commands import BaseDatasetsCLICommand
@@ -29,7 +29,6 @@ from datalabs.utils.download_manager import DownloadManager
 from datalabs.utils.file_utils import DownloadConfig
 from datalabs.utils.logging import get_logger, set_verbosity_warning
 from datalabs.utils.py_utils import map_nested
-
 
 logger = get_logger(__name__)
 

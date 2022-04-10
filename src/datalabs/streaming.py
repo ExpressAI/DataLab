@@ -10,8 +10,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import importlib
 from functools import wraps
+import importlib
 from typing import Optional, Union
 from unittest.mock import patch
 
@@ -32,7 +32,6 @@ from .utils.streaming_download_manager import (
     xpathstem,
     xpathsuffix,
 )
-
 
 logger = get_logger(__name__)
 

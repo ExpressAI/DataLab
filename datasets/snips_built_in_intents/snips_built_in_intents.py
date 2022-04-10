@@ -22,7 +22,6 @@ import json
 import datalabs
 from datalabs.tasks import TextClassification
 
-
 _DESCRIPTION = """\
 Snips' built in intents dataset was initially used to compare different voice assistants and released as a public dataset hosted at
 https://github.com/sonos/nlu-benchmark 2016-12-built-in-intents. The dataset contains 328 utterances over 10 intent classes. The
@@ -58,9 +57,7 @@ _CITATION = """\
 }
 """
 
-_DOWNLOAD_URL = (
-    "https://raw.githubusercontent.com/sonos/nlu-benchmark/master/2016-12-built-in-intents/benchmark_data.json"
-)
+_DOWNLOAD_URL = "https://raw.githubusercontent.com/sonos/nlu-benchmark/master/2016-12-built-in-intents/benchmark_data.json"
 
 
 class SnipsBuiltInIntents(datalabs.GeneratorBasedBuilder):
@@ -92,7 +89,9 @@ class SnipsBuiltInIntents(datalabs.GeneratorBasedBuilder):
             ),
             homepage="https://github.com/sonos/nlu-benchmark/tree/master/2016-12-built-in-intents",
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[
+                TextClassification(text_column="text", label_column="label")
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -100,13 +99,13 @@ class SnipsBuiltInIntents(datalabs.GeneratorBasedBuilder):
         # ToDo: Consider splitting the data into train-test sets and re-hosting.
         samples_path = dl_manager.download_and_extract(_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": samples_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": samples_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
         """Snips built in intent examples."""
-
-
 
         name_key = [
             "ComparePlaces",
@@ -133,7 +132,7 @@ class SnipsBuiltInIntents(datalabs.GeneratorBasedBuilder):
             "Share ETA",
         ]
 
-        textualize_label = dict(zip(name_key,name_value))
+        textualize_label = dict(zip(name_key, name_value))
 
         num_examples = 0
 
@@ -151,5 +150,10 @@ class SnipsBuiltInIntents(datalabs.GeneratorBasedBuilder):
                     for query_dict in queries:
                         query_text = query_dict["text"]
 
-                        yield num_examples, {"text": query_text, "label": textualize_label[label]}
-                        num_examples += 1  # Explicitly keep track of the number of examples.
+                        yield num_examples, {
+                            "text": query_text,
+                            "label": textualize_label[label],
+                        }
+                        num_examples += (
+                            1  # Explicitly keep track of the number of examples.
+                        )

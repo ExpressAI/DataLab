@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and DataLab Authors.
 #
@@ -17,8 +18,8 @@ import contextlib
 import copy
 import json
 import os
-import re
 from pathlib import Path
+import re
 from typing import Any, Optional, Union
 
 import fsspec
@@ -37,7 +38,6 @@ from .tasks import TaskTemplate
 from .utils import logging
 from .utils.deprecation_utils import deprecated
 from .utils.typing import PathLike
-
 
 # from transformation.data import Data
 

@@ -15,7 +15,7 @@ import multiprocessing
 import os
 from typing import BinaryIO, Optional, Union
 
-from .. import Dataset, Features, NamedSplit, config, utils
+from .. import config, Dataset, Features, NamedSplit, utils
 from ..formatting import query_table
 from ..packaged_modules.json.json import Json
 from ..utils import logging

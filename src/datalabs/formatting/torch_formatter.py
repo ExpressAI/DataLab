@@ -22,7 +22,6 @@ import pyarrow as pa
 from ..utils.py_utils import map_nested
 from .formatting import Formatter
 
-
 if TYPE_CHECKING:
     import torch
 

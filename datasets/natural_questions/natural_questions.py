@@ -25,10 +25,7 @@ import re
 import apache_beam as beam
 
 import datalabs
-
 from datalabs.tasks import QuestionAnsweringAbstractiveNQ
-
-
 
 _CITATION = """
 @article{47761,
@@ -51,8 +48,12 @@ _URL = "https://ai.google.com/research/NaturalQuestions/dataset"
 
 _BASE_DOWNLOAD_URL = "https://storage.googleapis.com/natural_questions/v1.0"
 _DOWNLOAD_URLS = {
-    "train": ["%s/train/nq-train-%02d.jsonl.gz" % (_BASE_DOWNLOAD_URL, i) for i in range(50)],
-    "validation": ["%s/dev/nq-dev-%02d.jsonl.gz" % (_BASE_DOWNLOAD_URL, i) for i in range(5)],
+    "train": [
+        "%s/train/nq-train-%02d.jsonl.gz" % (_BASE_DOWNLOAD_URL, i) for i in range(50)
+    ],
+    "validation": [
+        "%s/dev/nq-dev-%02d.jsonl.gz" % (_BASE_DOWNLOAD_URL, i) for i in range(5)
+    ],
 }
 
 _VERSION = datalabs.Version("0.0.3")
@@ -63,7 +64,9 @@ class NaturalQuestions(datalabs.BeamBasedBuilder):
 
     BUILDER_CONFIGS = [
         datalabs.BuilderConfig(name="default", version=_VERSION),
-        datalabs.BuilderConfig(name="dev", version=_VERSION, description="Only dev split"),
+        datalabs.BuilderConfig(
+            name="dev", version=_VERSION, description="Only dev split"
+        ),
     ]
     DEFAULT_CONFIG_NAME = "default"
 
@@ -73,19 +76,22 @@ class NaturalQuestions(datalabs.BeamBasedBuilder):
             features=datalabs.Features(
                 {
                     "id": datalabs.Value("string"),
-                    "context": { # document -> context
+                    "context": {  # document -> context
                         "title": datalabs.Value("string"),
                         "url": datalabs.Value("string"),
                         "html": datalabs.Value("string"),
                         "tokens": datalabs.features.Sequence(
-                            {"token": datalabs.Value("string"), "is_html": datalabs.Value("bool")}
+                            {
+                                "token": datalabs.Value("string"),
+                                "is_html": datalabs.Value("bool"),
+                            }
                         ),
                     },
                     "question": {
                         "text": datalabs.Value("string"),
                         "tokens": datalabs.features.Sequence(datalabs.Value("string")),
                     },
-                    "answers": datalabs.features.Sequence( # annotations -> answers
+                    "answers": datalabs.features.Sequence(  # annotations -> answers
                         {
                             "id": datalabs.Value("string"),
                             "long_answer": {
@@ -115,7 +121,9 @@ class NaturalQuestions(datalabs.BeamBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 QuestionAnsweringAbstractiveNQ(
-                    question_column="question", context_column="context", answers_column="answers"
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                 )
             ],
         )
@@ -172,8 +180,14 @@ class NaturalQuestions(datalabs.BeamBasedBuilder):
                         "start_byte": an_json["long_answer"]["start_byte"],
                         "end_byte": an_json["long_answer"]["end_byte"],
                     },
-                    "short_answers": [_parse_short_answer(ans) for ans in an_json["short_answers"]],
-                    "yes_no_answer": (-1 if an_json["yes_no_answer"] == "NONE" else an_json["yes_no_answer"]),
+                    "short_answers": [
+                        _parse_short_answer(ans) for ans in an_json["short_answers"]
+                    ],
+                    "yes_no_answer": (
+                        -1
+                        if an_json["yes_no_answer"] == "NONE"
+                        else an_json["yes_no_answer"]
+                    ),
                 }
 
             beam.metrics.Metrics.counter("nq", "examples").inc()
@@ -188,17 +202,25 @@ class NaturalQuestions(datalabs.BeamBasedBuilder):
                         "url": ex_json["document_url"],
                         "html": ex_json["document_html"],
                         "tokens": [
-                            {"token": t["token"], "is_html": t["html_token"]} for t in ex_json["document_tokens"]
+                            {"token": t["token"], "is_html": t["html_token"]}
+                            for t in ex_json["document_tokens"]
                         ],
                     },
-                    "question": {"text": ex_json["question_text"], "tokens": ex_json["question_tokens"]},
-                    "answers": [_parse_annotation(an_json) for an_json in ex_json["annotations"]],
+                    "question": {
+                        "text": ex_json["question_text"],
+                        "tokens": ex_json["question_tokens"],
+                    },
+                    "answers": [
+                        _parse_annotation(an_json) for an_json in ex_json["annotations"]
+                    ],
                 },
             )
 
         return (
             pipeline
             | beam.Create(filepaths)
-            | beam.io.ReadAllFromText(compression_type=beam.io.textio.CompressionTypes.GZIP)
+            | beam.io.ReadAllFromText(
+                compression_type=beam.io.textio.CompressionTypes.GZIP
+            )
             | beam.Map(_parse_example)
         )

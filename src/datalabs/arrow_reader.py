@@ -17,14 +17,13 @@
 """ Arrow ArrowReader."""
 from __future__ import annotations
 
-
 import copy
+from dataclasses import dataclass
 import math
 import os
 import re
 import shutil
-from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional, Union
+from typing import Optional, TYPE_CHECKING, Union
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -32,9 +31,8 @@ import pyarrow.parquet as pq
 from datalabs.utils.file_utils import DownloadConfig
 
 from .naming import _split_re, filename_for_dataset_split
-from .table import InMemoryTable, MemoryMappedTable, Table, concat_tables
+from .table import concat_tables, InMemoryTable, MemoryMappedTable, Table
 from .utils import cached_path, logging
-
 
 if TYPE_CHECKING:
     from .info import DatasetInfo  # noqa: F401

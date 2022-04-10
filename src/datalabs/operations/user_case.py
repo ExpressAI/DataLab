@@ -1,6 +1,5 @@
 import os
 
-
 """
 
 data = load_data("wikipedia")

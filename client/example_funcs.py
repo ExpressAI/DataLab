@@ -1,8 +1,7 @@
-import datalabs
-from utils_funcs import basic_features, get_summary_features
 from featurize import nlp_featurizing
+from utils_funcs import basic_features, get_summary_features
 
-
+import datalabs
 
 """
 Note:
@@ -11,18 +10,14 @@ Note:
 """
 
 
-
-
-
 @nlp_featurizing(name="text_classification_func")
-def text_classification_func(sample:dict):
+def text_classification_func(sample: dict):
     """
     sample:{
         "text":str
         "label":int
     }
     """
-
 
     res_info_general = basic_features(sample["text"])
     """
@@ -38,19 +33,15 @@ def text_classification_func(sample:dict):
             }
     """
 
-
-
     res_info_general_all = {}
-    for k,v in res_info_general.items():
-        res_info_general_all["text" + "_" + k] =v
-
+    for k, v in res_info_general.items():
+        res_info_general_all["text" + "_" + k] = v
 
     return res_info_general_all
 
 
-
 @nlp_featurizing(name="text_matching_func")
-def text_matching_func(sample:dict):
+def text_matching_func(sample: dict):
     """
     sample:
     {
@@ -66,24 +57,22 @@ def text_matching_func(sample:dict):
     res_info_general_all = {}
 
     res_info_general = basic_features(text1)
-    for k,v in res_info_general.items():
-        res_info_general_all["text1" + "_" + k] =v
+    for k, v in res_info_general.items():
+        res_info_general_all["text1" + "_" + k] = v
 
     res_info_general = basic_features(text2)
-    for k,v in res_info_general.items():
-        res_info_general_all["text2" + "_" + k] =v
+    for k, v in res_info_general.items():
+        res_info_general_all["text2" + "_" + k] = v
 
     # get task-dependent features
     task_dependent_features = {
-        "text1_minus_text2":len(text1.split(" ")) - len(text2.split(" ")),
+        "text1_minus_text2": len(text1.split(" ")) - len(text2.split(" ")),
     }
 
     # update features
     res_info_general_all.update(task_dependent_features)
 
-
     return res_info_general_all
-
 
 
 """
@@ -92,6 +81,7 @@ from example_funcs import summarization_func
 dataset = load_dataset("govreport")
 dataset_processed = dataset["test"].apply(summarization_func, mode = "memory", num_proc=10)
 """
+
 
 @nlp_featurizing(name="summarization_func")
 def summarization_func(sample: dict):
@@ -102,24 +92,20 @@ def summarization_func(sample: dict):
     res_info_general_all = {}
 
     res_info_general = basic_features(text)
-    for k,v in res_info_general.items():
-        res_info_general_all["text" + "_" + k] =v
+    for k, v in res_info_general.items():
+        res_info_general_all["text" + "_" + k] = v
 
     res_info_general = basic_features(summary)
-    for k,v in res_info_general.items():
-        res_info_general_all["summary" + "_" + k] =v
+    for k, v in res_info_general.items():
+        res_info_general_all["summary" + "_" + k] = v
 
     # get task-dependent features
     task_dependent_features = get_summary_features(text, summary)
-
 
     # update the res_info_general_all
     res_info_general_all.update(task_dependent_features)
 
     return res_info_general_all
-
-
-
 
 
 """
@@ -131,9 +117,10 @@ dataset = load_dataset("metaphor_qa", "medium")
 dataset_processed = dataset["test"].apply(qa_multiple_choice_func, mode = "memory")
 
 """
-@nlp_featurizing(name ="qa_multiple_choice_func")
-def qa_multiple_choice_func(sample:dict):
 
+
+@nlp_featurizing(name="qa_multiple_choice_func")
+def qa_multiple_choice_func(sample: dict):
 
     context = sample["context"]
     options = sample["options"]
@@ -144,18 +131,18 @@ def qa_multiple_choice_func(sample:dict):
     option1_length = len(options[0].split(" "))
     option2_length = len(options[1].split(" "))
 
-
     res_info_general = basic_features(context)
     res_info_general_all = {}
-    for k,v in res_info_general.items():
-        res_info_general_all["context" + "_" + k] =v
+    for k, v in res_info_general.items():
+        res_info_general_all["context" + "_" + k] = v
 
-
-
-    res_info_general_all.update({"answer_length":answer_length,
-                             "option1_length":option1_length,
-                             "option2_length":option2_length,
-                              # "option_index":int(option_index),
-                                 })
+    res_info_general_all.update(
+        {
+            "answer_length": answer_length,
+            "option1_length": option1_length,
+            "option2_length": option2_length,
+            # "option_index":int(option_index),
+        }
+    )
 
     return res_info_general_all

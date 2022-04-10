@@ -17,10 +17,9 @@
 """Version utils."""
 
 import dataclasses
-import re
 from dataclasses import dataclass
+import re
 from typing import Optional, Union
-
 
 _VERSION_TMPL = r"^(?P<major>{v})" r"\.(?P<minor>{v})" r"\.(?P<patch>{v})$"
 _VERSION_WILDCARD_REG = re.compile(_VERSION_TMPL.format(v=r"\d+|\*"))

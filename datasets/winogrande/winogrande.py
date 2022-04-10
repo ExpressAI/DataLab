@@ -15,10 +15,7 @@ import json
 import os
 
 import datalabs
-
 from datalabs.tasks import QuestionAnsweringMultipleChoicesWithoutContext
-
-
 
 # TODO(winogrande): BibTeX citation
 _CITATION = """\
@@ -52,7 +49,9 @@ class WinograndeConfig(datalabs.BuilderConfig):
             data_size: the format of the training set we want to use (xs, s, m, l, xl, debiased)
             **kwargs: keyword arguments forwarded to super.
         """
-        super(WinograndeConfig, self).__init__(version=datalabs.Version("1.1.0", ""), **kwargs)
+        super(WinograndeConfig, self).__init__(
+            version=datalabs.Version("1.1.0", ""), **kwargs
+        )
         self.data_size = data_size
 
 
@@ -62,7 +61,11 @@ class Winogrande(datalabs.GeneratorBasedBuilder):
     # TODO(winogrande): Set up version.
     VERSION = datalabs.Version("1.1.0")
     BUILDER_CONFIGS = [
-        WinograndeConfig(name="winogrande_" + data_size, description="AI2 dataset", data_size=data_size)
+        WinograndeConfig(
+            name="winogrande_" + data_size,
+            description="AI2 dataset",
+            data_size=data_size,
+        )
         for data_size in _FORMATS
     ]
 
@@ -77,12 +80,10 @@ class Winogrande(datalabs.GeneratorBasedBuilder):
                     "id": datalabs.Value("string"),
                     "question": datalabs.Value("string"),  # question -> question_stem
                     "options": datalabs.features.Sequence(datalabs.Value("string")),
-                    "answers":  # answers -> answerKey
-                        {
-                            "text": datalabs.Value("string"),
-                            "option_index": datalabs.Value("int32"),
-                        },
-
+                    "answers": {  # answers -> answerKey
+                        "text": datalabs.Value("string"),
+                        "option_index": datalabs.Value("int32"),
+                    },
                     # "sentence": datalabs.Value("string"),
                     # "option1": datalabs.Value("string"),
                     # "option2": datalabs.Value("string"),
@@ -99,7 +100,8 @@ class Winogrande(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 QuestionAnsweringMultipleChoicesWithoutContext(
-                    question_column="question", answers_column="answers",
+                    question_column="question",
+                    answers_column="answers",
                     options_column="options",
                     task="question-answering-multiple-choices-without-context",
                 )
@@ -118,7 +120,9 @@ class Winogrande(datalabs.GeneratorBasedBuilder):
                 name=datalabs.Split.TRAIN,
                 # These kwargs will be passed to _generate_examples
                 gen_kwargs={
-                    "filepath": os.path.join(data_dir, f"train_{self.config.data_size}.jsonl"),
+                    "filepath": os.path.join(
+                        data_dir, f"train_{self.config.data_size}.jsonl"
+                    ),
                     # 'labelpath': os.path.join(data_dir, 'train_{}-labels.lst'.format(self.config.data_size)),
                     "split": "train",
                 },
@@ -126,7 +130,10 @@ class Winogrande(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 # These kwargs will be passed to _generate_examples
-                gen_kwargs={"filepath": os.path.join(data_dir, "test.jsonl"), "split": "test"},
+                gen_kwargs={
+                    "filepath": os.path.join(data_dir, "test.jsonl"),
+                    "split": "test",
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
@@ -142,7 +149,19 @@ class Winogrande(datalabs.GeneratorBasedBuilder):
     def _generate_examples(self, filepath, split):
         """Yields examples."""
         # TODO(winogrande): Yields (key, example) tuples from the dataset
-        dict_map = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6, "H": 7, "I": 8, "J": 9, "K": 10}
+        dict_map = {
+            "A": 0,
+            "B": 1,
+            "C": 2,
+            "D": 3,
+            "E": 4,
+            "F": 5,
+            "G": 6,
+            "H": 7,
+            "I": 8,
+            "J": 9,
+            "K": 10,
+        }
         id_sample = 0
         with open(filepath, encoding="utf-8") as f:
             for id_, row in enumerate(f):
@@ -151,22 +170,20 @@ class Winogrande(datalabs.GeneratorBasedBuilder):
                 options = [data["option1"], data["option2"]]
                 if split == "test":
                     option_index = -1
-                    answer_text = ''
+                    answer_text = ""
                 else:
-                    option_index = int(data["answer"].strip())-1
+                    option_index = int(data["answer"].strip()) - 1
                     answer_text = options[option_index]
 
                 yield id_, {
                     "id": str(id_sample - 1),
                     "question": data["sentence"],
                     "options": options,
-                    "answers":  # answers -> answerKey
-                        {
-                            "text": answer_text,
-                            "option_index": option_index,
-                        },
+                    "answers": {  # answers -> answerKey
+                        "text": answer_text,
+                        "option_index": option_index,
+                    },
                 }
-
 
                 # if split == "test":
                 #     yield id_, {

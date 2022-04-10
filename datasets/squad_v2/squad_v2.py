@@ -21,7 +21,6 @@ import json
 import datalabs
 from datalabs.tasks import QuestionAnsweringExtractive
 
-
 # TODO(squad_v2): BibTeX citation
 _CITATION = """\
 @article{2016arXiv160605250R,
@@ -67,7 +66,11 @@ class SquadV2(datalabs.GeneratorBasedBuilder):
 
     # TODO(squad_v2): Set up version.
     BUILDER_CONFIGS = [
-        SquadV2Config(name="squad_v2", version=datalabs.Version("2.0.0"), description="SQuAD plaint text version 2"),
+        SquadV2Config(
+            name="squad_v2",
+            version=datalabs.Version("2.0.0"),
+            description="SQuAD plaint text version 2",
+        ),
     ]
 
     def _info(self):
@@ -82,11 +85,12 @@ class SquadV2(datalabs.GeneratorBasedBuilder):
                     "title": datalabs.Value("string"),
                     "context": datalabs.Value("string"),
                     "question": datalabs.Value("string"),
-                    "answers":
-                        {
-                            "text": datalabs.features.Sequence(datalabs.Value("string")),
-                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
-                        }
+                    "answers": {
+                        "text": datalabs.features.Sequence(datalabs.Value("string")),
+                        "answer_start": datalabs.features.Sequence(
+                            datalabs.Value("int32")
+                        ),
+                    }
                     # These are the features of your dataset like images, labels ...
                 }
             ),
@@ -99,7 +103,9 @@ class SquadV2(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 QuestionAnsweringExtractive(
-                    question_column="question", context_column="context", answers_column="answers"
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                 )
             ],
         )
@@ -113,8 +119,14 @@ class SquadV2(datalabs.GeneratorBasedBuilder):
         downloaded_files = dl_manager.download_and_extract(urls_to_download)
 
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"filepath": downloaded_files["train"]},
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"filepath": downloaded_files["dev"]},
+            ),
         ]
 
     def _generate_examples(self, filepath):
@@ -125,12 +137,16 @@ class SquadV2(datalabs.GeneratorBasedBuilder):
             for example in squad["data"]:
                 title = example.get("title", "")
                 for paragraph in example["paragraphs"]:
-                    context = paragraph["context"]  # do not strip leading blank spaces GH-2585
+                    context = paragraph[
+                        "context"
+                    ]  # do not strip leading blank spaces GH-2585
                     for qa in paragraph["qas"]:
                         question = qa["question"]
                         id_ = qa["id"]
 
-                        answer_starts = [answer["answer_start"] for answer in qa["answers"]]
+                        answer_starts = [
+                            answer["answer_start"] for answer in qa["answers"]
+                        ]
                         answers = [answer["text"] for answer in qa["answers"]]
 
                         # Features currently used are "context", "question", and "answers".

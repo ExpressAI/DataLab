@@ -4,8 +4,8 @@ import os
 import shutil
 import struct
 import tarfile
-from zipfile import ZipFile
 from zipfile import is_zipfile as _is_zipfile
+from zipfile import ZipFile
 
 from datalabs import config
 from datalabs.utils.filelock import FileLock

@@ -11,16 +11,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from dataclasses import dataclass
 import importlib
 import os
-import platform
-from dataclasses import dataclass
 from pathlib import Path
+import platform
 
 from packaging import version
 
 from .utils.logging import get_logger
-
 
 logger = get_logger(__name__)
 

@@ -19,10 +19,16 @@
 
 from . import logging
 from .download_manager import DownloadManager, GenerateMode
-from .file_utils import DownloadConfig, cached_path, hf_bucket_url, is_remote_url, relative_to_absolute_path, temp_seed
+from .file_utils import (
+    cached_path,
+    DownloadConfig,
+    hf_bucket_url,
+    is_remote_url,
+    relative_to_absolute_path,
+    temp_seed,
+)
 from .mock_download_manager import MockDownloadManager
 from .py_utils import (
-    NonMutableDict,
     classproperty,
     copyfunc,
     dumps,
@@ -30,11 +36,17 @@ from .py_utils import (
     has_sufficient_disk_space,
     map_nested,
     memoize,
+    NonMutableDict,
     size_str,
     temporary_assignment,
     unique_values,
     zip_dict,
     zip_nested,
 )
-from .tqdm_utils import disable_progress_bar, is_progress_bar_enabled, set_progress_bar_enabled, tqdm
+from .tqdm_utils import (
+    disable_progress_bar,
+    is_progress_bar_enabled,
+    set_progress_bar_enabled,
+    tqdm,
+)
 from .version import Version

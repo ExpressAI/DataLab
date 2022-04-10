@@ -5,7 +5,6 @@ import os
 import sys
 from typing import Any, Callable, ClassVar, Dict, List, Mapping, Optional
 
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), ".")))
 from operation import OperationFunction, TextOperation
 

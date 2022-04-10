@@ -1,21 +1,17 @@
 import json
 import os
-import datalabs
-from datalabs.tasks import Summarization
-import tempfile
 import subprocess
+import tempfile
 
 # the following package are needed when more additional features are expected to be calculated
 from featurize.summarization import (
     get_features_sample_level,
     get_schema_of_sample_level_features,
-    )
-from datalabs.utils.more_features import (
-    get_feature_schemas,
 )
 
-
-
+import datalabs
+from datalabs.tasks import Summarization
+from datalabs.utils.more_features import get_feature_schemas
 
 _DESCRIPTION = """
  WikiHow is a new large-scale dataset using the online WikiHow (http://www.wikihow.com/) knowledge base.
@@ -42,21 +38,44 @@ _CITATION = """\
 _ABSTRACT = "summary"
 _ARTICLE = "text"
 
+
 def _gdrive_url(id):
     return f"https://drive.google.com/uc?id={id}&export=download"
 
+
 def custom_download(url, path):
     with tempfile.TemporaryDirectory() as tmpdir:
-        response = subprocess.check_output([
-            "wget", "--save-cookies", os.path.join(tmpdir, "cookies.txt"), 
-            f"{url}", "-O-"])
+        response = subprocess.check_output(
+            [
+                "wget",
+                "--save-cookies",
+                os.path.join(tmpdir, "cookies.txt"),
+                f"{url}",
+                "-O-",
+            ]
+        )
         with open(os.path.join(tmpdir, "response.txt"), "w") as f:
             f.write(response.decode("utf-8"))
-        response = subprocess.check_output(["sed", "-rn", 's/.*confirm=([0-9A-Za-z_]+).*/\\1/p', os.path.join(tmpdir, "response.txt")])
+        response = subprocess.check_output(
+            [
+                "sed",
+                "-rn",
+                "s/.*confirm=([0-9A-Za-z_]+).*/\\1/p",
+                os.path.join(tmpdir, "response.txt"),
+            ]
+        )
         response = response.decode("utf-8")
-        subprocess.check_output([
-            "wget", "--load-cookies", os.path.join(tmpdir, "cookies.txt"), "-O", path,
-            url+f"&confirm={response}"])
+        subprocess.check_output(
+            [
+                "wget",
+                "--load-cookies",
+                os.path.join(tmpdir, "cookies.txt"),
+                "-O",
+                path,
+                url + f"&confirm={response}",
+            ]
+        )
+
 
 class WikiHowConfig(datalabs.BuilderConfig):
     """BuilderConfig for WikiHow."""
@@ -71,6 +90,7 @@ class WikiHowConfig(datalabs.BuilderConfig):
 
 class WikiHowDataset(datalabs.GeneratorBasedBuilder):
     """WikiHow Dataset."""
+
     _FILE_ID = "1n6RQIZBGkCloxh6dSHAaDC8XsDBn2V_u"
     BUILDER_CONFIGS = [
         WikiHowConfig(
@@ -85,16 +105,16 @@ class WikiHowDataset(datalabs.GeneratorBasedBuilder):
 
         features_dataset = {}
         features_sample = datalabs.Features(
-                {
-                    _ARTICLE: datalabs.Value("string"),
-                    _ABSTRACT: datalabs.Value("string"),
-                    # "id": datalab.Value("string"),
-                }
-            )
+            {
+                _ARTICLE: datalabs.Value("string"),
+                _ABSTRACT: datalabs.Value("string"),
+                # "id": datalab.Value("string"),
+            }
+        )
         if self.feature_expanding:
-            features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                    get_schema_of_sample_level_features)
-
+            features_sample, features_dataset = get_feature_schemas(
+                features_sample, get_schema_of_sample_level_features
+            )
 
         # Should return a datalab.DatasetInfo object
         return datalabs.DatasetInfo(
@@ -104,9 +124,8 @@ class WikiHowDataset(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage=None,
             citation=_CITATION,
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
+            task_templates=[
+                Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT),
             ],
         )
 
@@ -117,7 +136,6 @@ class WikiHowDataset(datalabs.GeneratorBasedBuilder):
         train_path = os.path.join(f_path, "train.jsonl")
         test_path = os.path.join(f_path, "test.jsonl")
         val_path = os.path.join(f_path, "val.jsonl")
-        
 
         return [
             datalabs.SplitGenerator(
@@ -137,7 +155,6 @@ class WikiHowDataset(datalabs.GeneratorBasedBuilder):
             for (id_, line) in enumerate(f):
                 data = json.loads(line)
 
-
                 raw_feature_info = {
                     _ARTICLE: data["article"],
                     _ABSTRACT: data["summary"],
@@ -146,10 +163,9 @@ class WikiHowDataset(datalabs.GeneratorBasedBuilder):
                 if not self.feature_expanding:
                     yield id_, raw_feature_info
                 else:
-                    additional_feature_info = get_features_sample_level(raw_feature_info)
+                    additional_feature_info = get_features_sample_level(
+                        raw_feature_info
+                    )
                     raw_feature_info.update(additional_feature_info)
                     # print(additional_feature_info)
                     yield id_, raw_feature_info
-
-
-

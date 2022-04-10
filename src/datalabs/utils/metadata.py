@@ -1,14 +1,13 @@
 from __future__ import annotations
 
+from collections import Counter
 from collections.abc import Callable
+from dataclasses import asdict, dataclass, fields
 import json
 import logging
-import re
-from collections import Counter
-from dataclasses import asdict, dataclass, fields
 from pathlib import Path
+import re
 from typing import Any, Optional, Union
-
 
 # loading package files: https://stackoverflow.com/a/20885799
 try:
@@ -20,7 +19,6 @@ except ImportError:
 import yaml
 
 from . import resources
-
 
 BASE_REF_URL = "https://github.com/huggingface/datasets/tree/master/src/datasets/utils"
 this_url = f"{BASE_REF_URL}/{__file__}"

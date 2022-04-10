@@ -6,7 +6,6 @@ import sys
 import nltk
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 
-
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))
 )

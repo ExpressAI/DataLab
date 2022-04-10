@@ -1,6 +1,7 @@
 """CNewSum Chinese news summarization dataset."""
 import json
 import os
+
 import datalabs
 from datalabs.tasks import Summarization
 
@@ -44,14 +45,16 @@ class CNewSumConfig(datalabs.BuilderConfig):
 
 class CNewSumDataset(datalabs.GeneratorBasedBuilder):
     """CNewSum Dataset."""
+
     _FILE_ID = "1A_YcQ3cBAI7u9iVIoCeVLLgwU7UUzHHv"
     BUILDER_CONFIGS = [
         CNewSumConfig(
             name="document",
             version=datalabs.Version("2.0.0"),
             description="CNewSum, A Large-scale Chinese News Summarization Dataset",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[
+                Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT)
+            ],
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -70,9 +73,8 @@ class CNewSumDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=["zh"],
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
+            task_templates=[
+                Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT),
             ],
         )
 
@@ -83,17 +85,20 @@ class CNewSumDataset(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={
-                    "f_path": os.path.join(f_path, "final/train.simple.label.jsonl")}
+                    "f_path": os.path.join(f_path, "final/train.simple.label.jsonl")
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 gen_kwargs={
-                    "f_path": os.path.join(f_path, "final/dev.simple.label.jsonl")}
+                    "f_path": os.path.join(f_path, "final/dev.simple.label.jsonl")
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 gen_kwargs={
-                    "f_path": os.path.join(f_path, "final/test.simple.label.jsonl")}
+                    "f_path": os.path.join(f_path, "final/test.simple.label.jsonl")
+                },
             ),
         ]
 
@@ -105,13 +110,12 @@ class CNewSumDataset(datalabs.GeneratorBasedBuilder):
         datas = []
         for line in lines:
             data = json.loads(line)
-            article = " ".join([sentence.replace(" ", "") for sentence in data["article"]])
+            article = " ".join(
+                [sentence.replace(" ", "") for sentence in data["article"]]
+            )
             summary = data["summary"].replace(" ", "")
             datas.append((article, summary))
 
         for id_, (article, summary) in enumerate(datas):
-            raw_feature_info = {
-                _ARTICLE: article,
-                _ABSTRACT: summary
-            }
+            raw_feature_info = {_ARTICLE: article, _ABSTRACT: summary}
             yield id_, raw_feature_info

@@ -1,7 +1,7 @@
 import unittest
 
-import featurize.general
 from data import Data, TextData
+import featurize.general
 
 import datalabs
 

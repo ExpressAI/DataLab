@@ -14,12 +14,9 @@
 
 import json
 
-import datasets
-
 import datalabs
 from datalabs.tasks import QuestionAnsweringMultipleChoicesQASC
-
-
+import datasets
 
 # TODO(qasc): BibTeX citation
 _CITATION = """\
@@ -62,11 +59,10 @@ class Qasc(datalabs.GeneratorBasedBuilder):
                         "fact2": datalabs.Value("string"),
                         "combinedfact": datalabs.Value("string"),
                     },
-                    "answers":  # answers -> answer
-                        {
-                            "text": datalabs.Value("string"),
-                            "option_index": datalabs.Value("int32"),
-                        },
+                    "answers": {  # answers -> answer
+                        "text": datalabs.Value("string"),
+                        "option_index": datalabs.Value("int32"),
+                    },
                 }
             ),
             # If there's a common (input, target) tuple from the features,
@@ -78,7 +74,9 @@ class Qasc(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 QuestionAnsweringMultipleChoicesQASC(
-                    question_column="question", context_column="context", answers_column="answers",
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                     options_column="options",
                     task="question-answering-multiple-choices-with-context-qasc",
                 )
@@ -121,12 +119,24 @@ class Qasc(datalabs.GeneratorBasedBuilder):
     def _generate_examples(self, filepath, files):
         """Yields examples."""
         # TODO(qasc): Yields (key, example) tuples from the dataset
-        dict_map = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6, "H": 7, "I": 8, "J": 9, "K": 10}
+        dict_map = {
+            "A": 0,
+            "B": 1,
+            "C": 2,
+            "D": 3,
+            "E": 4,
+            "F": 5,
+            "G": 6,
+            "H": 7,
+            "I": 8,
+            "J": 9,
+            "K": 10,
+        }
         id_sample = 0
         for path, f in files:
             if path == filepath:
                 for row in f:
-                    id_sample +=1
+                    id_sample += 1
                     data = json.loads(row.decode("utf-8"))
                     answerkey = data.get("answerKey", "")
                     id_ = data["id"]
@@ -139,9 +149,9 @@ class Qasc(datalabs.GeneratorBasedBuilder):
                     combined_fact = data.get("combinedfact", "")
                     formatted_question = data.get("formatted_question", "")
 
-                    if answerkey=='':
-                        option_index=-1
-                        answer_text =''
+                    if answerkey == "":
+                        option_index = -1
+                        answer_text = ""
                     else:
                         option_index = dict_map[answerkey]
                         answer_text = text_choices[option_index]
@@ -156,10 +166,9 @@ class Qasc(datalabs.GeneratorBasedBuilder):
                             "fact2": fact2,
                             "combinedfact": combined_fact,
                         },
-                        "answers":
-                            {
-                                "text": answer_text,
-                                "option_index": option_index,
-                            },
+                        "answers": {
+                            "text": answer_text,
+                            "option_index": option_index,
+                        },
                     }
                 break

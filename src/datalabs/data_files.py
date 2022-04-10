@@ -1,6 +1,23 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from functools import partial
+import os
+from pathlib import Path, PurePath
+from typing import Optional, Union
+
+from fsspec.implementations.local import LocalFileSystem
+import huggingface_hub
+from tqdm.contrib.concurrent import thread_map
+
+from datalabs.filesystems.hffilesystem import HfFileSystem
+
+from .splits import Split
+from .utils import logging
+from .utils.file_utils import hf_hub_url, is_remote_url, request_etag
+from .utils.py_utils import string_to_dict
+from .utils.tqdm_utils import tqdm
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and DataLab Authors.
 #
@@ -13,23 +30,6 @@ from collections.abc import Callable
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import os
-from functools import partial
-from pathlib import Path, PurePath
-from typing import Optional, Union
-
-import huggingface_hub
-from fsspec.implementations.local import LocalFileSystem
-from tqdm.contrib.concurrent import thread_map
-
-from datalabs.filesystems.hffilesystem import HfFileSystem
-
-from .splits import Split
-from .utils import logging
-from .utils.file_utils import hf_hub_url, is_remote_url, request_etag
-from .utils.py_utils import string_to_dict
-from .utils.tqdm_utils import tqdm
 
 
 DEFAULT_SPLIT = str(Split.TRAIN)

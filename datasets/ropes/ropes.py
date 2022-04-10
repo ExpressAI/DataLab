@@ -56,7 +56,9 @@ class Ropes(datalabs.GeneratorBasedBuilder):
     VERSION = datalabs.Version("1.1.0")
 
     BUILDER_CONFIGS = [
-        datalabs.BuilderConfig(name="plain_text", description="Plain text", version=VERSION),
+        datalabs.BuilderConfig(
+            name="plain_text", description="Plain text", version=VERSION
+        ),
     ]
 
     def _info(self):
@@ -71,11 +73,12 @@ class Ropes(datalabs.GeneratorBasedBuilder):
                     "context": datalabs.Value("string"),
                     "situation": datalabs.Value("string"),
                     "question": datalabs.Value("string"),
-                    "answers":
-                        {
-                            "text": datalabs.features.Sequence(datalabs.Value("string")),
-                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
-                        }
+                    "answers": {
+                        "text": datalabs.features.Sequence(datalabs.Value("string")),
+                        "answer_start": datalabs.features.Sequence(
+                            datalabs.Value("int32")
+                        ),
+                    },
                 }
             ),
             supervised_keys=None,
@@ -84,7 +87,9 @@ class Ropes(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 QuestionAnsweringExtractive(
-                    question_column="question", context_column="context", answers_column="answers"
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                 )
             ],
         )
@@ -105,7 +110,9 @@ class Ropes(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 gen_kwargs={
-                    "filepath": "/".join(["ropes-test-questions-v1.0", "test-1.0.json"]),
+                    "filepath": "/".join(
+                        ["ropes-test-questions-v1.0", "test-1.0.json"]
+                    ),
                     "split": "test",
                     "files": dl_manager.iter_archive(archives["test"]),
                 },
@@ -132,7 +139,13 @@ class Ropes(datalabs.GeneratorBasedBuilder):
                         for qa in paragraph["qas"]:
                             question = qa["question"].strip()
                             id_ = qa["id"]
-                            answers = [] if split == "test" else [answer["text"].strip() for answer in qa["answers"]]
+                            answers = (
+                                []
+                                if split == "test"
+                                else [
+                                    answer["text"].strip() for answer in qa["answers"]
+                                ]
+                            )
                             yield id_, {
                                 "title": "title",
                                 "context": background,
@@ -140,7 +153,7 @@ class Ropes(datalabs.GeneratorBasedBuilder):
                                 "question": question,
                                 "id": id_,
                                 "answers": {
-                                    "answer_start": [-1]*len(answers),
+                                    "answer_start": [-1] * len(answers),
                                     "text": answers,
                                 },
                                 "url": "xxx",

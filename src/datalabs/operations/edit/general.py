@@ -2,16 +2,16 @@ from typing import Any, Callable, Dict, List, Mapping, Optional
 
 # checklist package for editing
 import checklist
+from checklist.editor import Editor
+from checklist.perturb import Perturb
 
 # nltk package for editing
 import nltk
 import numpy as np
+from operation import operation_function, OperationFunction
 
 # spacy package for editing
 import spacy
-from checklist.editor import Editor
-from checklist.perturb import Perturb
-from operation import OperationFunction, operation_function
 
 from .editing import *
 

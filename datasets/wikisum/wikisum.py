@@ -1,18 +1,15 @@
 import json
 import os
-import datalabs
-from datalabs.tasks import Summarization
 
 # the following package are needed when more additional features are expected to be calculated
 from featurize.summarization import (
     get_features_sample_level,
     get_schema_of_sample_level_features,
-    )
-from datalabs.utils.more_features import (
-    get_feature_schemas,
 )
 
-
+import datalabs
+from datalabs.tasks import Summarization
+from datalabs.utils.more_features import get_feature_schemas
 
 _DESCRIPTION = """
  The WikiSum dataset provides how-to articles from wikihow.com and their summaries, written as a coherent paragraph.
@@ -41,8 +38,10 @@ _CITATION = """\
 _ABSTRACT = "summary"
 _ARTICLE = "text"
 
+
 def _gdrive_url(id):
     return f"https://drive.google.com/uc?id={id}&export=download"
+
 
 class WikiSumConfig(datalabs.BuilderConfig):
     """BuilderConfig for WikiSum."""
@@ -57,6 +56,7 @@ class WikiSumConfig(datalabs.BuilderConfig):
 
 class WikiSumDataset(datalabs.GeneratorBasedBuilder):
     """WikiSum Dataset."""
+
     _FILE_URL = "https://wikisum.s3.amazonaws.com/WikiSumDataset.zip"
     BUILDER_CONFIGS = [
         WikiSumConfig(
@@ -71,16 +71,16 @@ class WikiSumDataset(datalabs.GeneratorBasedBuilder):
 
         features_dataset = {}
         features_sample = datalabs.Features(
-                {
-                    _ARTICLE: datalabs.Value("string"),
-                    _ABSTRACT: datalabs.Value("string"),
-                    # "id": datalab.Value("string"),
-                }
-            )
+            {
+                _ARTICLE: datalabs.Value("string"),
+                _ABSTRACT: datalabs.Value("string"),
+                # "id": datalab.Value("string"),
+            }
+        )
         if self.feature_expanding:
-            features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                    get_schema_of_sample_level_features)
-
+            features_sample, features_dataset = get_feature_schemas(
+                features_sample, get_schema_of_sample_level_features
+            )
 
         # Should return a datalab.DatasetInfo object
         return datalabs.DatasetInfo(
@@ -90,9 +90,8 @@ class WikiSumDataset(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage=None,
             citation=_CITATION,
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
+            task_templates=[
+                Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT),
             ],
         )
 
@@ -101,10 +100,12 @@ class WikiSumDataset(datalabs.GeneratorBasedBuilder):
         f_path = os.path.join(f_path, "./WikiSumDataset/WikiSumDataset.jsonl")
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"f_path": f_path, "split": "train"},
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"f_path": f_path, "split": "train"},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION, gen_kwargs={"f_path": f_path, "split": "dev"}
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"f_path": f_path, "split": "dev"},
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST, gen_kwargs={"f_path": f_path, "split": "test"}
@@ -128,7 +129,9 @@ class WikiSumDataset(datalabs.GeneratorBasedBuilder):
                     if not self.feature_expanding:
                         yield cnt, raw_feature_info
                     else:
-                        additional_feature_info = get_features_sample_level(raw_feature_info)
+                        additional_feature_info = get_features_sample_level(
+                            raw_feature_info
+                        )
                         raw_feature_info.update(additional_feature_info)
                         # print(additional_feature_info)
                         yield cnt, raw_feature_info

@@ -6,7 +6,6 @@ from typing import Any
 
 import yaml
 
-
 # loading package files: https://stackoverflow.com/a/20885799
 try:
     import importlib.resources as pkg_resources
@@ -15,7 +14,6 @@ except ImportError:
     import importlib_resources as pkg_resources
 
 from . import resources
-
 
 BASE_REF_URL = "https://github.com/huggingface/datasets/tree/master/src/datasets/utils"
 this_url = f"{BASE_REF_URL}/{__file__}"

@@ -4,7 +4,6 @@ import re
 import sys
 from typing import List
 
-
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))
 )

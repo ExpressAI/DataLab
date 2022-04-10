@@ -14,8 +14,8 @@
 import csv
 
 import datalabs
-from datalabs.tasks import TextClassification
 from datalabs import Dataset
+from datalabs.tasks import TextClassification
 
 _DESCRIPTION = """\
 The QC question classification dataset involves six different question types.
@@ -44,14 +44,28 @@ class QC(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["abbreviation", "entity", "description",
-                                                                 "human", "location", "numeric value"]),
+                    "label": datalabs.features.ClassLabel(
+                        names=[
+                            "abbreviation",
+                            "entity",
+                            "description",
+                            "human",
+                            "location",
+                            "numeric value",
+                        ]
+                    ),
                 }
             ),
             homepage="https://aclanthology.org/C02-1150.pdf",
             citation=_CITATION,
             languages=["en"],
-            task_templates=[TextClassification(text_column="text", label_column="label", task="question-classification")],
+            task_templates=[
+                TextClassification(
+                    text_column="text",
+                    label_column="label",
+                    task="question-classification",
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -59,8 +73,12 @@ class QC(datalabs.GeneratorBasedBuilder):
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         print(f"train_path: \t{train_path}")
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
@@ -68,15 +86,16 @@ class QC(datalabs.GeneratorBasedBuilder):
 
         # map the label into textual string
         textualize_label = {
-            'ABBR': 'abbreviation',
-            'DESC': 'description',
-            'ENTY': 'entity',
-            'HUM': 'human',
-            'LOC': 'location',
-            'NUM': 'numeric value'}
+            "ABBR": "abbreviation",
+            "DESC": "description",
+            "ENTY": "entity",
+            "HUM": "human",
+            "LOC": "location",
+            "NUM": "numeric value",
+        }
 
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter='\t')
+            csv_reader = csv.reader(csv_file, delimiter="\t")
             for id_, row in enumerate(csv_reader):
                 label = row[-1]
                 text = " ".join(row[:-1])

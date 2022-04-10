@@ -21,7 +21,6 @@ import os
 import datalabs
 from datalabs.tasks import TextClassification
 
-
 _CITATION = """\
 @inproceedings{zhang2015character,
   title={Character-level convolutional networks for text classification},
@@ -67,7 +66,9 @@ class YelpReviewFull(datalabs.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
         YelpReviewFullConfig(
-            name="yelp_review_full", version=VERSION, description="Yelp Review Full Star Dataset 2015"
+            name="yelp_review_full",
+            version=VERSION,
+            description="Yelp Review Full Star Dataset 2015",
         ),
     ]
 
@@ -93,7 +94,9 @@ class YelpReviewFull(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             license=_LICENSE,
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[
+                TextClassification(text_column="text", label_column="label")
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -104,20 +107,25 @@ class YelpReviewFull(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={
-                    "filepath": os.path.join(data_dir, "yelp_review_full_csv", "train.csv"),
+                    "filepath": os.path.join(
+                        data_dir, "yelp_review_full_csv", "train.csv"
+                    ),
                     "split": "train",
                 },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
-                gen_kwargs={"filepath": os.path.join(data_dir, "yelp_review_full_csv", "test.csv"), "split": "test"},
+                gen_kwargs={
+                    "filepath": os.path.join(
+                        data_dir, "yelp_review_full_csv", "test.csv"
+                    ),
+                    "split": "test",
+                },
             ),
         ]
 
     def _generate_examples(self, filepath, split):
         """Yields examples."""
-
-
 
         with open(filepath, encoding="utf-8") as f:
             data = csv.reader(f, delimiter=",", quoting=csv.QUOTE_NONNUMERIC)

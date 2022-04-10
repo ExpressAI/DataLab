@@ -1,18 +1,18 @@
 from __future__ import annotations
 
+from asyncio import TimeoutError
 import glob
+from itertools import chain
 import os
+from pathlib import Path, PurePosixPath
 import posixpath
 import re
 import tarfile
 import time
-from asyncio import TimeoutError
-from itertools import chain
-from pathlib import Path, PurePosixPath
 from typing import Optional, Union
 
-import fsspec
 from aiohttp.client_exceptions import ClientError
+import fsspec
 
 from .. import config
 from ..filesystems import COMPRESSION_FILESYSTEMS
@@ -26,7 +26,6 @@ from .file_utils import (
     url_or_path_join,
 )
 from .logging import get_logger
-
 
 logger = get_logger(__name__)
 

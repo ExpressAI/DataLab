@@ -13,12 +13,11 @@
 
 
 import json
-import textwrap
 import os
+import textwrap
 
 import datalabs
 from datalabs.tasks import QuestionAnsweringExtractive
-
 
 # TODO(tydiqa): BibTeX citation
 _CITATION = """\
@@ -51,6 +50,8 @@ LANG_URLS = {
     "sw": "https://drive.google.com/uc?export=download&id=1Yab535N9Sbp9doaoSpZwGNYo4UDiPAZr",
     "te": "https://drive.google.com/uc?export=download&id=10ccDq-3JZqD-TbnUk7lAKuxMlb4fzs4m",
 }
+
+
 class TydiqaConfig(datalabs.BuilderConfig):
 
     """BuilderConfig for Tydiqa"""
@@ -60,7 +61,9 @@ class TydiqaConfig(datalabs.BuilderConfig):
         Args:
             **kwargs: keyword arguments forwarded to super.
         """
-        super(TydiqaConfig, self).__init__(version=datalabs.Version("2.0.0", ""), **kwargs)
+        super(TydiqaConfig, self).__init__(
+            version=datalabs.Version("2.0.0", ""), **kwargs
+        )
 
 
 class Tydiqa(datalabs.GeneratorBasedBuilder):
@@ -70,8 +73,7 @@ class Tydiqa(datalabs.GeneratorBasedBuilder):
     VERSION = datalabs.Version("2.0.0")
     BUILDER_CONFIGS = [
         datalabs.BuilderConfig(
-            name="{}".format(lang),
-            version=datalabs.Version("2.0.0")
+            name="{}".format(lang), version=datalabs.Version("2.0.0")
         )
         for lang in list(LANG_URLS.keys())
     ]
@@ -85,11 +87,12 @@ class Tydiqa(datalabs.GeneratorBasedBuilder):
                     "title": datalabs.Value("string"),
                     "context": datalabs.Value("string"),
                     "question": datalabs.Value("string"),
-                    "answers":
-                    {
+                    "answers": {
                         "text": datalabs.features.Sequence(datalabs.Value("string")),
-                        "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
-                    }
+                        "answer_start": datalabs.features.Sequence(
+                            datalabs.Value("int32")
+                        ),
+                    },
                 }
             ),
             # No default supervised_keys (as we have to pass both question
@@ -99,7 +102,9 @@ class Tydiqa(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 QuestionAnsweringExtractive(
-                    question_column="question", context_column="context", answers_column="answers"
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                 )
             ],
         )
@@ -107,27 +112,31 @@ class Tydiqa(datalabs.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         lang = str(self.config.name)
-        url =LANG_URLS[lang]
+        url = LANG_URLS[lang]
         # url = _URL.format(lang, self.VERSION.version_str[:-2])
         data_dir = dl_manager.download_and_extract(url)
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={
-                    "filepath": os.path.join(data_dir,lang+ "/train-" + lang + ".json"),
+                    "filepath": os.path.join(
+                        data_dir, lang + "/train-" + lang + ".json"
+                    ),
                     # "filepath": os.path.join(data_dir,  "train-en.json" + lang + "_train.jsonl"),
                 },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 gen_kwargs={
-                    "filepath": os.path.join(data_dir, lang+ "/test-" + lang + ".json"),
+                    "filepath": os.path.join(
+                        data_dir, lang + "/test-" + lang + ".json"
+                    ),
                 },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 gen_kwargs={
-                    "filepath": os.path.join(data_dir, lang+ "/dev-" + lang + ".json"),
+                    "filepath": os.path.join(data_dir, lang + "/dev-" + lang + ".json"),
                 },
             ),
         ]
@@ -145,7 +154,9 @@ class Tydiqa(datalabs.GeneratorBasedBuilder):
                         question = qa["question"].strip()
                         id_ = qa["id"]
 
-                        answer_starts = [answer["answer_start"] for answer in qa["answers"]]
+                        answer_starts = [
+                            answer["answer_start"] for answer in qa["answers"]
+                        ]
                         answers = [answer["text"].strip() for answer in qa["answers"]]
 
                         yield key, {

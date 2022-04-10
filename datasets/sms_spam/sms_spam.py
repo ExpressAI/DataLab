@@ -22,7 +22,6 @@ import os
 import datalabs
 from datalabs.tasks import TextClassification
 
-
 _CITATION = """\
 @inproceedings{Almeida2011SpamFiltering,
   title={Contributions to the Study of SMS Spam Filtering: New Collection and Results},
@@ -62,14 +61,17 @@ class SmsSpam(datalabs.GeneratorBasedBuilder):
             ),
             homepage="http://archive.ics.uci.edu/ml/datalab/SMS+Spam+Collection",
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[
+                TextClassification(text_column="text", label_column="label")
+            ],
         )
 
     def _split_generators(self, dl_manager):
         dl_dir = dl_manager.download_and_extract(_DATA_URL)
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": os.path.join(dl_dir, "SMSSpamCollection")}
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"filepath": os.path.join(dl_dir, "SMSSpamCollection")},
             ),
         ]
 

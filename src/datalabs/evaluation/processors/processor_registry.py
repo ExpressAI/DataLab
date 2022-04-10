@@ -6,7 +6,6 @@ from datalabs.tasks.task_info import TaskType
 
 from .processor import Processor
 
-
 _processor_registry: dict = {}
 
 

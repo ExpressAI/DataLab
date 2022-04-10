@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from hashlib import sha256
 import inspect
 import re
-from hashlib import sha256
 
 from .csv import csv
 from .json import json

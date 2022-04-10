@@ -16,9 +16,7 @@ import json
 import os
 
 import datalabs
-
 from datalabs.tasks import QuestionAnsweringMultipleChoicesWithoutContext
-
 
 # TODO(ai2_arc): BibTeX citation
 _CITATION = """\
@@ -50,7 +48,9 @@ class Ai2ArcConfig(datalabs.BuilderConfig):
         Args:
           **kwargs: keyword arguments forwarded to super.
         """
-        super(Ai2ArcConfig, self).__init__(version=datalabs.Version("1.0.0", ""), **kwargs)
+        super(Ai2ArcConfig, self).__init__(
+            version=datalabs.Version("1.0.0", ""), **kwargs
+        )
 
 
 class Ai2Arc(datalabs.GeneratorBasedBuilder):
@@ -84,16 +84,13 @@ class Ai2Arc(datalabs.GeneratorBasedBuilder):
                     "id": datalabs.Value("string"),
                     "question": datalabs.Value("string"),
                     "options": datalabs.features.Sequence(datalabs.Value("string")),
-                    "answers":  # answers -> answerKey
-                        {
-                            "text": datalabs.Value("string"),
-                            "option_index": datalabs.Value("int32"),
-                        },
-
+                    "answers": {  # answers -> answerKey
+                        "text": datalabs.Value("string"),
+                        "option_index": datalabs.Value("int32"),
+                    },
                     # These are the features of your dataset like images, labels ...
                 }
             ),
-
             # If there's a common (input, target) tuple from the features,
             # specify them here. They'll be used if as_supervised=True in
             # builder.as_dataset.
@@ -103,7 +100,8 @@ class Ai2Arc(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 QuestionAnsweringMultipleChoicesWithoutContext(
-                    question_column="question", answers_column="answers",
+                    question_column="question",
+                    answers_column="answers",
                     options_column="options",
                     task="question-answering-multiple-choices-without-context",
                 )
@@ -121,28 +119,52 @@ class Ai2Arc(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 # These kwargs will be passed to _generate_examples
-                gen_kwargs={"filepath": os.path.join(data_dir, self.config.name, self.config.name + "-Train.jsonl")},
+                gen_kwargs={
+                    "filepath": os.path.join(
+                        data_dir, self.config.name, self.config.name + "-Train.jsonl"
+                    )
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 # These kwargs will be passed to _generate_examples
-                gen_kwargs={"filepath": os.path.join(data_dir, self.config.name, self.config.name + "-Test.jsonl")},
+                gen_kwargs={
+                    "filepath": os.path.join(
+                        data_dir, self.config.name, self.config.name + "-Test.jsonl"
+                    )
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 # These kwargs will be passed to _generate_examples
-                gen_kwargs={"filepath": os.path.join(data_dir, self.config.name, self.config.name + "-Dev.jsonl")},
+                gen_kwargs={
+                    "filepath": os.path.join(
+                        data_dir, self.config.name, self.config.name + "-Dev.jsonl"
+                    )
+                },
             ),
         ]
 
     def _generate_examples(self, filepath):
         """Yields examples."""
         # TODO(ai2_arc): Yields (key, example) tuples from the dataset
-        dict_map = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6, "H": 7, "I": 8, "J": 9, "K": 10}
+        dict_map = {
+            "A": 0,
+            "B": 1,
+            "C": 2,
+            "D": 3,
+            "E": 4,
+            "F": 5,
+            "G": 6,
+            "H": 7,
+            "I": 8,
+            "J": 9,
+            "K": 10,
+        }
         id_sample = 0
         with open(filepath, encoding="utf-8") as f:
             for row in f:
-                id_sample+=1
+                id_sample += 1
                 data = json.loads(row)
                 answerkey = data["answerKey"]
                 id_ = data["id"]
@@ -155,11 +177,10 @@ class Ai2Arc(datalabs.GeneratorBasedBuilder):
                     "id": str(id_sample - 1),
                     "question": question,
                     "options": text_choices,
-                    "answers":  # answers -> answerKey
-                        {
-                            "text": text_choices[option_index],
-                            "option_index": option_index,
-                        },
+                    "answers": {  # answers -> answerKey
+                        "text": text_choices[option_index],
+                        "option_index": option_index,
+                    },
                     # "answerKey": answerkey,
                     # "choices": {"text": text_choices, "label": label_choices},
                 }

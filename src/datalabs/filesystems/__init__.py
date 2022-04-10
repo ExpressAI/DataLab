@@ -1,5 +1,12 @@
 from __future__ import annotations
 
+import importlib
+
+import fsspec
+
+from . import compression
+from .hffilesystem import HfFileSystem
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and the DataLab Datasets Authors.
 #
@@ -12,13 +19,6 @@ from __future__ import annotations
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import importlib
-
-import fsspec
-
-from . import compression
-from .hffilesystem import HfFileSystem
 
 
 _has_s3fs = importlib.util.find_spec("s3fs") is not None

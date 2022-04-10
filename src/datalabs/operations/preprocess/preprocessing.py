@@ -2,7 +2,7 @@ from typing import Any, Callable, Dict, List, Mapping, Optional
 
 # nltk package for preprocessing
 import nltk
-from operation import TextOperation, text_operation
+from operation import text_operation, TextOperation
 
 
 class Preprocessing(TextOperation):

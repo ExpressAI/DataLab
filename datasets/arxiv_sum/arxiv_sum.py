@@ -1,5 +1,6 @@
 import json
 import os
+
 import datalabs
 from datalabs.tasks import Summarization
 
@@ -49,9 +50,15 @@ class ArxivSumConfig(datalabs.BuilderConfig):
 class ArxivSumDataset(datalabs.GeneratorBasedBuilder):
     """ArxivSummarization Dataset."""
 
-    _TRAIN_FILE = "https://huggingface.co/datalab/ccdv/arxiv-summarization/resolve/main/train.zip"
-    _VAL_FILE = "https://huggingface.co/datalab/ccdv/arxiv-summarization/resolve/main/val.zip"
-    _TEST_FILE = "https://huggingface.co/datalab/ccdv/arxiv-summarization/resolve/main/test.zip"
+    _TRAIN_FILE = (
+        "https://huggingface.co/datalab/ccdv/arxiv-summarization/resolve/main/train.zip"
+    )
+    _VAL_FILE = (
+        "https://huggingface.co/datalab/ccdv/arxiv-summarization/resolve/main/val.zip"
+    )
+    _TEST_FILE = (
+        "https://huggingface.co/datalab/ccdv/arxiv-summarization/resolve/main/test.zip"
+    )
     BUILDER_CONFIGS = [
         ArxivSumConfig(
             name="section",
@@ -80,9 +87,8 @@ class ArxivSumDataset(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://github.com/armancohan/long-summarization",
             citation=_CITATION,
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
+            task_templates=[
+                Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT),
             ],
         )
 
@@ -118,6 +124,8 @@ class ArxivSumDataset(datalabs.GeneratorBasedBuilder):
                 if self.config.name == "document":
                     article = data["article_text"]
                 else:
-                    article = [item.strip() for sublist in data["sections"] for item in sublist]
+                    article = [
+                        item.strip() for sublist in data["sections"] for item in sublist
+                    ]
                 abstract = data["abstract_text"]
-                yield id_, {"text": ' '.join(article), "summary": ' '.join(abstract)}
+                yield id_, {"text": " ".join(article), "summary": " ".join(abstract)}

@@ -19,18 +19,17 @@
 """
 from __future__ import annotations
 
-
 import contextlib
 import functools
+from io import BytesIO as StringIO
 import itertools
+from multiprocessing import Pool, RLock
 import os
 import pickle
 import re
+from shutil import disk_usage
 import sys
 import types
-from io import BytesIO as StringIO
-from multiprocessing import Pool, RLock
-from shutil import disk_usage
 from types import CodeType, FunctionType
 from typing import Callable, ClassVar, Generic, Optional, Tuple, Union
 
@@ -38,9 +37,8 @@ import dill
 import numpy as np
 from tqdm.auto import tqdm
 
-from .. import utils
 from . import logging
-
+from .. import utils
 
 try:  # pragma: no branch
     import typing_extensions as _typing_extensions

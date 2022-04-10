@@ -1,5 +1,17 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
+import glob
+import os
+from typing import Optional, Union
+
+from packaging import version
+import pandas as pd
+import pyarrow as pa
+from typing_extensions import Literal
+
+import datalabs
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors.
 #
@@ -12,18 +24,6 @@ from __future__ import annotations
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import glob
-import os
-from dataclasses import dataclass
-from typing import Optional, Union
-
-import pandas as pd
-import pyarrow as pa
-from packaging import version
-from typing_extensions import Literal
-
-import datalabs
 
 
 logger = datalabs.utils.logging.get_logger(__name__)

@@ -3,7 +3,6 @@ from featurize import *
 
 from datalabs import load_dataset, operations
 
-
 # dataset = load_dataset("cnn_dailymail","3.0.0")
 # res = dataset["test"].apply(get_oracle_summary)
 # print(next(res))

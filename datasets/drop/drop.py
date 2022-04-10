@@ -18,7 +18,6 @@ import os
 import datalabs
 from datalabs.tasks import QuestionAnsweringAbstractive
 
-
 _CITATION = """\
 @inproceedings{Dua2019DROP,
   author={Dheeru Dua and Yizhong Wang and Pradeep Dasigi and Gabriel Stanovsky and Sameer Singh and Matt Gardner},
@@ -88,20 +87,18 @@ class Drop(datalabs.GeneratorBasedBuilder):
                     "id": datalabs.Value("string"),
                     "section_id": datalabs.Value("string"),
                     "query_id": datalabs.Value("string"),
-                    "context": datalabs.Value("string"), # context->passage
+                    "context": datalabs.Value("string"),  # context->passage
                     "question": datalabs.Value("string"),
-                    "answers":
-                        {
-                            "text": datalabs.features.Sequence(datalabs.Value("string")),
-                            "types": datalabs.features.Sequence(datalabs.Value("string"))
-                        },
+                    "answers": {
+                        "text": datalabs.features.Sequence(datalabs.Value("string")),
+                        "types": datalabs.features.Sequence(datalabs.Value("string")),
+                    },
                     # "answers_spans": datalabs.features.Sequence(
                     #     {"spans": datalabs.Value("string"), "types": datalabs.Value("string")}
                     # )
                     # These are the features of your dataset like images, labels ...
                 }
             ),
-
             # If there's a common (input, target) tuple from the features,
             # specify them here. They'll be used if as_supervised=True in
             # builder.as_dataset.
@@ -111,7 +108,9 @@ class Drop(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 QuestionAnsweringAbstractive(
-                    question_column="question", context_column="context", answers_column="answers"
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                 )
             ],
         )
@@ -127,12 +126,18 @@ class Drop(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 # These kwargs will be passed to _generate_examples
-                gen_kwargs={"filepath": os.path.join(data_dir, "drop_dataset_train.json"), "split": "train"},
+                gen_kwargs={
+                    "filepath": os.path.join(data_dir, "drop_dataset_train.json"),
+                    "split": "train",
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 # These kwargs will be passed to _generate_examples
-                gen_kwargs={"filepath": os.path.join(data_dir, "drop_dataset_dev.json"), "split": "validation"},
+                gen_kwargs={
+                    "filepath": os.path.join(data_dir, "drop_dataset_dev.json"),
+                    "split": "validation",
+                },
             ),
         ]
 
@@ -146,7 +151,7 @@ class Drop(datalabs.GeneratorBasedBuilder):
                 for j, qa in enumerate(section["qa_pairs"]):
 
                     example = {
-                        "id":str(id_),
+                        "id": str(id_),
                         "section_id": section_id,
                         "query_id": qa["query_id"],
                         "context": section["passage"],
@@ -160,13 +165,12 @@ class Drop(datalabs.GeneratorBasedBuilder):
 
                     try:
                         qa_answers = self.build_answers(answers)
-                        answer_texts = [answer.strip() for answer in qa_answers["spans"]]
+                        answer_texts = [
+                            answer.strip() for answer in qa_answers["spans"]
+                        ]
                         answer_type = [type1.strip() for type1 in qa_answers["types"]]
 
-                        answers= {
-                            "text": answer_texts,
-                            "types": answer_type
-                        }
+                        answers = {"text": answer_texts, "types": answer_type}
                         example["answers"] = answers
 
                         yield id_, example

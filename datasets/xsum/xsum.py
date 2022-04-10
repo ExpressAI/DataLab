@@ -44,10 +44,10 @@ There are three features:
 """
 
 # From https://github.com/EdinburghNLP/XSum/issues/12
-_URL_DATA = "http://bollin.inf.ed.ac.uk/public/direct/XSUM-EMNLP18-Summary-Data-Original.tar.gz"
-_URL_SPLITS = (
-    "https://raw.githubusercontent.com/EdinburghNLP/XSum/master/XSum-Dataset/XSum-TRAINING-DEV-TEST-SPLIT-90-5-5.json"
+_URL_DATA = (
+    "http://bollin.inf.ed.ac.uk/public/direct/XSUM-EMNLP18-Summary-Data-Original.tar.gz"
 )
+_URL_SPLITS = "https://raw.githubusercontent.com/EdinburghNLP/XSum/master/XSum-Dataset/XSum-TRAINING-DEV-TEST-SPLIT-90-5-5.json"
 
 _DOCUMENT = "text"
 _SUMMARY = "summary"
@@ -89,9 +89,8 @@ class Xsum(datalabs.GeneratorBasedBuilder):
             supervised_keys=(_DOCUMENT, _SUMMARY),
             homepage="https://github.com/EdinburghNLP/XSum/tree/master/XSum-Dataset",
             citation=_CITATION,
-            task_templates=[Summarization(
-                text_column=_DOCUMENT,
-                summary_column=_SUMMARY),
+            task_templates=[
+                Summarization(text_column=_DOCUMENT, summary_column=_SUMMARY),
             ],
         )
 
@@ -149,7 +148,8 @@ class Xsum(datalabs.GeneratorBasedBuilder):
                         [
                             line.decode("utf-8")
                             for line in f.readlines()
-                            if line.decode("utf-8") not in _REMOVE_LINES and line.strip()
+                            if line.decode("utf-8") not in _REMOVE_LINES
+                            and line.strip()
                         ]
                     )
                     # Each file follows below format:
@@ -171,4 +171,8 @@ class Xsum(datalabs.GeneratorBasedBuilder):
                     # is the reference summary and TITLE is unused:
                     # https://github.com/EdinburghNLP/XSum/issues/22
                     segs = text.split("[SN]")
-                    yield i, {_DOCUMENT: segs[8].strip(), _SUMMARY: segs[6].strip(), _ID: i}
+                    yield i, {
+                        _DOCUMENT: segs[8].strip(),
+                        _SUMMARY: segs[6].strip(),
+                        _ID: i,
+                    }

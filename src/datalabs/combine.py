@@ -1,5 +1,12 @@
 from __future__ import annotations
 
+from typing import Any, Optional, TYPE_CHECKING, TypeVar
+
+import numpy as np
+
+from .info import DatasetInfo
+from .utils import logging
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and the TensorFlow Datasets Authors, DataLab Authors.
 #
@@ -12,13 +19,6 @@ from __future__ import annotations
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from typing import TYPE_CHECKING, Any, Optional, TypeVar
-
-import numpy as np
-
-from .info import DatasetInfo
-from .utils import logging
 
 
 logger = logging.get_logger(__name__)
@@ -211,9 +211,9 @@ def _interleave_iterable_datasets(
     """
     from .iterable_dataset import (
         CyclingMultiSourcesExamplesIterable,
+        iterable_dataset,
         MappedExamplesIterable,
         RandomlyCyclingMultiSourcesExamplesIterable,
-        iterable_dataset,
     )
 
     # Keep individual features formatting

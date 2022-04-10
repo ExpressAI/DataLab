@@ -3,12 +3,9 @@ using compare_mt https://github.com/neulab/compare-mt for ROUGE
 """
 from __future__ import annotations
 
-
-
-import numpy as np
 from compare_mt.rouge.rouge_scorer import RougeScorer
 from nltk import sent_tokenize
-
+import numpy as np
 
 scorer = RougeScorer(["rouge1", "rouge2"], use_stemmer=True)
 _scorer = RougeScorer(["rouge1"], use_stemmer=True)

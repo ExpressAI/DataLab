@@ -1,16 +1,16 @@
+import csv
+
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
+import importlib
 import json
 import os
 import sys
-import datalabs
-import csv
-from datalabs.tasks import KGLinkPrediction
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
-import importlib
 from typing import Iterator
 
+import datalabs
+from datalabs.tasks import KGLinkPrediction
+
 # from .aggregate import fb15k_237_aggregating
-
-
 
 
 _DESCRIPTION = """
@@ -34,7 +34,6 @@ dataset = load_dataset("fb15k_237",'readable')
 statistics = next(dataset['train'].apply(get_statistics))
 
 """
-
 
 
 class FB15k237Config(datalabs.BuilderConfig):
@@ -80,11 +79,12 @@ class FB15k237Dataset(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://paperswithcode.com/dataset/fb15k",
             citation=_CITATION,
-            task_templates=[KGLinkPrediction(
-                head_column = "head",
-                link_column = "link",
-                tail_column = "tail",
-            ),
+            task_templates=[
+                KGLinkPrediction(
+                    head_column="head",
+                    link_column="link",
+                    tail_column="tail",
+                ),
             ],
         )
 
@@ -93,11 +93,17 @@ class FB15k237Dataset(datalabs.GeneratorBasedBuilder):
         if self.config.name == "origin":
             train_path = dl_manager.download_and_extract(self._base_url + "train.txt")
             val_path = dl_manager.download_and_extract(self._base_url + "valid.txt")
-            test_path = dl_manager.download_and_extract(self._base_url  + "test.txt")
+            test_path = dl_manager.download_and_extract(self._base_url + "test.txt")
         else:
-            train_path = dl_manager.download_and_extract(self._base_url + "train.readable.txt")
-            val_path = dl_manager.download_and_extract(self._base_url + "valid.readable.txt")
-            test_path = dl_manager.download_and_extract(self._base_url + "test.readable.txt")
+            train_path = dl_manager.download_and_extract(
+                self._base_url + "train.readable.txt"
+            )
+            val_path = dl_manager.download_and_extract(
+                self._base_url + "valid.readable.txt"
+            )
+            test_path = dl_manager.download_and_extract(
+                self._base_url + "test.readable.txt"
+            )
 
         return [
             datalabs.SplitGenerator(
@@ -114,7 +120,7 @@ class FB15k237Dataset(datalabs.GeneratorBasedBuilder):
     def _generate_examples(self, filepath):
         """Generate  examples."""
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter='\t')
+            csv_reader = csv.reader(csv_file, delimiter="\t")
             for id_, row in enumerate(csv_reader):
                 head, link, tail = row
-                yield id_, {"head": head, "link": link, "tail":tail}
+                yield id_, {"head": head, "link": link, "tail": tail}

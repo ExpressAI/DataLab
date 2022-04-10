@@ -2,14 +2,12 @@ import importlib
 import os
 import sys
 
-
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "./plugins/general/"))
 )
 # from .plugins import general
 # from .plugins.general import *
 from .general import *
-
 
 general_dir = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
@@ -42,7 +40,6 @@ from .plugins.general.simple_cipher.transformation import *
 
 # function from modified xl-augmenter
 from .plugins.general.slangificator.transformation import *
-
 
 # def import_from(module, name):
 #     module = __import__(module, fromlist=[name])

@@ -2,7 +2,7 @@ import os
 import sys
 from typing import Any, Callable, Dict, List, Mapping, Optional
 
-from operation import TextOperation, text_operation
+from operation import text_operation, TextOperation
 
 
 class Prompting(TextOperation):

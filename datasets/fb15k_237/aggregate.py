@@ -14,47 +14,43 @@
 # limitations under the License.
 
 
-from typing import Dict, List, Any, Optional
-from typing import Callable, Mapping, Iterator
+from typing import Any, Callable, Dict, Iterator, List, Mapping, Optional
+
 from tqdm import tqdm
+
 from datalabs.operations.aggregate import Aggregating, aggregating
 
 
 class FB15k237Aggregating(Aggregating):
-
-
-    def __init__(self, *args, **kwargs
-                 ):
+    def __init__(self, *args, **kwargs):
 
         super(FB15k237Aggregating, self).__init__(*args, **kwargs)
         self._data_type = "ag_news"
 
 
-
 class fb15k_237_aggregating(aggregating):
-    def __init__(self, *args, **kwargs
-                 ):
-
+    def __init__(self, *args, **kwargs):
 
         super(fb15k_237_aggregating, self).__init__(*args, **kwargs)
         # print(self.__dict__)
 
-
     def __call__(self, *param_arg):
         if callable(self.name):
 
-            tf_class = FB15k237Aggregating(name = self.name.__name__, func=self.name)
+            tf_class = FB15k237Aggregating(name=self.name.__name__, func=self.name)
             return tf_class(*param_arg)
         else:
             f = param_arg[0]
             name = self.name or f.__name__
-            tf_cls = FB15k237Aggregating(name=name, func = f,
-                                   resources = self.resources,
-                                   contributor = self.contributor,
-                                   task = self.task,
-                                   description= self.description,)
+            tf_cls = FB15k237Aggregating(
+                name=name,
+                func=f,
+                resources=self.resources,
+                contributor=self.contributor,
+                task=self.task,
+                description=self.description,
+            )
             return tf_cls
-
 
 
 """
@@ -67,10 +63,12 @@ print(next(res))
 """
 
 
-
-@fb15k_237_aggregating(name = "get_statistics", contributor= "datalab",
-                                 task="kg-link-prediction", description="aggregation function",
-                                 )
+@fb15k_237_aggregating(
+    name="get_statistics",
+    contributor="datalab",
+    task="kg-link-prediction",
+    description="aggregation function",
+)
 def get_statistics(samples: Iterator):
     dict_head = {}
     dict_link = {}
@@ -78,27 +76,23 @@ def get_statistics(samples: Iterator):
 
     for sample in tqdm(samples):
 
-        if sample['tail'] not in dict_tail.keys():
-            dict_tail[sample['tail']] = 1
+        if sample["tail"] not in dict_tail.keys():
+            dict_tail[sample["tail"]] = 1
         else:
-            dict_tail[sample['tail']] += 1
+            dict_tail[sample["tail"]] += 1
 
-
-        if sample['head'] not in dict_head.keys():
-            dict_head[sample['head']] = 1
+        if sample["head"] not in dict_head.keys():
+            dict_head[sample["head"]] = 1
         else:
-            dict_head[sample['head']] += 1
+            dict_head[sample["head"]] += 1
 
-        if sample['link'] not in dict_link.keys():
-            dict_link[sample['link']] = 1
+        if sample["link"] not in dict_link.keys():
+            dict_link[sample["link"]] = 1
         else:
-            dict_link[sample['link']] += 1
-
-
+            dict_link[sample["link"]] += 1
 
     return {
-        "head_fre":dict_head,
-        "link_fre":dict_link,
-        "tail_fre":dict_tail,
+        "head_fre": dict_head,
+        "link_fre": dict_link,
+        "tail_fre": dict_tail,
     }
-

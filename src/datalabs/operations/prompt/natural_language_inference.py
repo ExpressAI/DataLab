@@ -1,14 +1,12 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 import os
 import sys  # contradiction, entailment, neutral
 from typing import Any, Optional
 
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from operation import DatasetOperation, dataset_operation
+from operation import dataset_operation, DatasetOperation
 from prompt.prompting import *
 
 

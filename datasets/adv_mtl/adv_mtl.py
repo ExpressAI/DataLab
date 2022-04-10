@@ -14,6 +14,7 @@
 # limitations under the License.
 import datalabs
 from datalabs.tasks import TextClassification
+
 # Find for instance the citation on arxiv or on the dataset repo/website
 _CITATION = """\
 @article{liu2017adversarial,
@@ -37,6 +38,7 @@ _LICENSE = "N/A"
 # The HuggingFace dataset library don't host the datalab but only point to the original files
 # This can be an arbitrary nested dict/list of URLs (see below in `_split_generators` method)
 _URLs = "https://raw.githubusercontent.com/ShiinaHiiragi/multi-task-dataset/master/{}.task.{}"
+
 
 class AdvMtl(datalabs.GeneratorBasedBuilder):
     VERSION = datalabs.Version("1.0.0")
@@ -63,7 +65,9 @@ class AdvMtl(datalabs.GeneratorBasedBuilder):
             license=_LICENSE,
             # Citation for the dataset
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[
+                TextClassification(text_column="text", label_column="label")
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -92,29 +96,33 @@ class AdvMtl(datalabs.GeneratorBasedBuilder):
             "software",
             "sports_outdoors",
             "toys_games",
-            "video"
+            "video",
         ]
 
         for data_field in fields:
             for data_type in data_types:
                 split_name = data_field + "_" + data_type
-                result.append(datalabs.SplitGenerator(
-                    name=split_name,
-                    # These kwargs will be passed to _generate_examples
-                    gen_kwargs={
-                        "filepath": dl_manager.download_and_extract(
-                            _URLs.format(data_field, data_type)
-                        ),
-                        "split": data_type,
-                    },
-                ))
+                result.append(
+                    datalabs.SplitGenerator(
+                        name=split_name,
+                        # These kwargs will be passed to _generate_examples
+                        gen_kwargs={
+                            "filepath": dl_manager.download_and_extract(
+                                _URLs.format(data_field, data_type)
+                            ),
+                            "split": data_type,
+                        },
+                    )
+                )
 
         return result
 
     def _generate_examples(
-        self, filepath, split  # method parameters are unpacked from `gen_kwargs` as given in `_split_generators`
+        self,
+        filepath,
+        split,  # method parameters are unpacked from `gen_kwargs` as given in `_split_generators`
     ):
-        """ Yields examples as (key, example) tuples. """
+        """Yields examples as (key, example) tuples."""
         # This method handles input defined in _split_generators to yield (key, example) tuples from the dataset.
         # The `key` is here for legacy reason (tfds) and is not important in itself.
         with open(filepath, "rb") as f:

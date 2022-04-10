@@ -23,10 +23,14 @@ from .relation_extraction import RelationExtraction
 from .semantic_parsing import SemanticParsing
 from .sequence_labeling import SequenceLabeling
 from .span_text_classification import SpanTextClassification
-from .summarization import DialogSummarization, MultiDocSummarization, QuerySummarization, Summarization
+from .summarization import (
+    DialogSummarization,
+    MultiDocSummarization,
+    QuerySummarization,
+    Summarization,
+)
 from .text_classification import TextClassification, TopicClassification
 from .text_matching import TextMatching
-
 
 __all__ = [
     "TaskTemplate",

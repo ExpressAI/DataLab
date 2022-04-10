@@ -17,12 +17,10 @@
 """Splits related API."""
 from __future__ import annotations
 
-
-
 import abc
 import collections
-import re
 from dataclasses import dataclass, field
+import re
 from typing import Optional, Union
 
 from .arrow_reader import FileInstructions, make_file_instructions

@@ -18,17 +18,15 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-
 import os
-import re
-import urllib.parse
 from pathlib import Path
+import re
 from typing import Optional, Union
+import urllib.parse
 
 from .file_utils import cached_path, hf_github_url
 from .logging import get_logger
 from .version import Version
-
 
 logger = get_logger(__name__)
 

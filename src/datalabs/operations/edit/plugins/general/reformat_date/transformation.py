@@ -10,7 +10,6 @@ import dateparser
 import numpy as np
 import spacy
 
-
 try:
     from babel.dates import format_date
 except ImportError:

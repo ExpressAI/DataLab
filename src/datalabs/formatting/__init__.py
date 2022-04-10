@@ -1,5 +1,20 @@
 from __future__ import annotations
 
+from typing import Optional
+
+from .. import config
+from ..utils.logging import get_logger
+from .formatting import (
+    ArrowFormatter,
+    CustomFormatter,
+    format_table,
+    Formatter,
+    NumpyFormatter,
+    PandasFormatter,
+    PythonFormatter,
+    query_table,
+)
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and the TensorFlow Datasets Authors, DataLab Authors.
 #
@@ -17,21 +32,6 @@ from __future__ import annotations
 
 # flake8: noqa
 # Lint as: python3
-
-from typing import Optional
-
-from .. import config
-from ..utils.logging import get_logger
-from .formatting import (
-    ArrowFormatter,
-    CustomFormatter,
-    Formatter,
-    NumpyFormatter,
-    PandasFormatter,
-    PythonFormatter,
-    format_table,
-    query_table,
-)
 
 
 logger = get_logger(__name__)

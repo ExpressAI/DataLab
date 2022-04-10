@@ -1,18 +1,15 @@
 import json
 import os
-import datalabs
-from datalabs.tasks import Summarization, DialogSummarization
 
 # the following package are needed when more additional features are expected to be calculated
 from featurize.summarization import (
     get_features_sample_level,
     get_schema_of_sample_level_features,
-    )
-from datalabs.utils.more_features import (
-    get_feature_schemas,
 )
 
-
+import datalabs
+from datalabs.tasks import DialogSummarization, Summarization
+from datalabs.utils.more_features import get_feature_schemas
 
 _DESCRIPTION = """
  DialogSum contains face-to-face spoken dialogues that cover a wide range of daily-life topics, including schooling, work, medication, shopping, leisure, travel.
@@ -54,6 +51,7 @@ class DialogSumConfig(datalabs.BuilderConfig):
 
 class DialogSumDataset(datalabs.GeneratorBasedBuilder):
     """DialogSum Dataset."""
+
     _TRAIN_URL = "https://raw.githubusercontent.com/cylnlp/dialogsum/main/DialogSum_Data/dialogsum.train.jsonl"
     _VAL_URL = "https://raw.githubusercontent.com/cylnlp/dialogsum/main/DialogSum_Data/dialogsum.dev.jsonl"
     _TEST_URL = "https://raw.githubusercontent.com/cylnlp/dialogsum/main/DialogSum_Data/dialogsum.test.jsonl"
@@ -62,15 +60,17 @@ class DialogSumDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="DialogSum dataset for summarization, single document summarization version",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[
+                Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT)
+            ],
         ),
         DialogSumConfig(
             name="dialogue",
             version=datalabs.Version("1.0.0"),
             description="DialogSum dataset for summarization, dialogue summarization version",
-            task_templates=[DialogSummarization(
-                text_column="dialogue", summary_column=_ABSTRACT)]
+            task_templates=[
+                DialogSummarization(text_column="dialogue", summary_column=_ABSTRACT)
+            ],
         ),
     ]
     DEFAULT_CONFIG_NAME = "dialogue"
@@ -80,7 +80,6 @@ class DialogSumDataset(datalabs.GeneratorBasedBuilder):
         # Should return a datalab.DatasetInfo object
         if "document" in self.config.name:
 
-
             features_sample = datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
@@ -88,18 +87,24 @@ class DialogSumDataset(datalabs.GeneratorBasedBuilder):
                 }
             )
             if self.feature_expanding:
-                features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                        get_schema_of_sample_level_features)
-
+                features_sample, features_dataset = get_feature_schemas(
+                    features_sample, get_schema_of_sample_level_features
+                )
 
         else:
-            features_sample = datalabs.Features({
-                "dialogue": datalabs.Sequence(datalabs.Features({
-                        "speaker": datalabs.Value("string"),
-                        "text": datalabs.Value("string")
-                        })),
-                _ABSTRACT: datalabs.Sequence(datalabs.Value("string")),
-            })
+            features_sample = datalabs.Features(
+                {
+                    "dialogue": datalabs.Sequence(
+                        datalabs.Features(
+                            {
+                                "speaker": datalabs.Value("string"),
+                                "text": datalabs.Value("string"),
+                            }
+                        )
+                    ),
+                    _ABSTRACT: datalabs.Sequence(datalabs.Value("string")),
+                }
+            )
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features_sample,
@@ -116,13 +121,16 @@ class DialogSumDataset(datalabs.GeneratorBasedBuilder):
         test_path = dl_manager.download(self._TEST_URL)
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"f_path": train_path, "split": "train"},
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"f_path": train_path, "split": "train"},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION, gen_kwargs={"f_path": val_path, "split": "val"},
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"f_path": val_path, "split": "val"},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST, gen_kwargs={"f_path": test_path, "split": "test"},
+                name=datalabs.Split.TEST,
+                gen_kwargs={"f_path": test_path, "split": "test"},
             ),
         ]
 
@@ -133,7 +141,7 @@ class DialogSumDataset(datalabs.GeneratorBasedBuilder):
                 x = json.loads(x)
                 if split == "test":
                     if "document" in self.config.name:
-                        summary = x["summary1"] # only keep the first summary
+                        summary = x["summary1"]  # only keep the first summary
                     else:
                         summary = [x[f"summary{i}"] for i in range(1, 4)]
                 else:
@@ -152,11 +160,12 @@ class DialogSumDataset(datalabs.GeneratorBasedBuilder):
                     if not self.feature_expanding:
                         yield id_, raw_feature_info
                     else:
-                        additional_feature_info = get_features_sample_level(raw_feature_info)
+                        additional_feature_info = get_features_sample_level(
+                            raw_feature_info
+                        )
                         raw_feature_info.update(additional_feature_info)
                         # print(additional_feature_info)
                         yield id_, raw_feature_info
-
 
                 else:
                     dialogue = []

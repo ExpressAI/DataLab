@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-import os
-import sys
-from typing import Any, Callable, Dict, Mapping, Optional
+# pip install lexicalrichness
+from lexicalrichness import LexicalRichness
 
 # nltk package for featurizing
 import nltk
@@ -10,20 +9,8 @@ import nltk
 # spacy package for featurizing
 import spacy
 
-# pre_model_basic_words = load_pre_model(os.path.join(os.path.dirname(__file__),
-#                                                     './pre_models/basic_words.pkl'))
-# pip install lexicalrichness
-from lexicalrichness import LexicalRichness
-
-from .featurizing import *
-
-# pretrained models
-from .utils.util_model import *
-
-
-# from hatesonar import Sonar
-# sonar = Sonar()
-# print(pre_model_basic_words)
+from .featurizing import featurizing  # noqa
+from .utils.util_model import BASIC_WORDS, load_gender_bias_data  # noqa
 
 
 @featurizing(

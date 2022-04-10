@@ -2,10 +2,9 @@ import os
 import random
 import sys
 
+from checklist.editor import Editor
 import numpy as np
 import spacy
-from checklist.editor import Editor
-
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))

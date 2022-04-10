@@ -1,6 +1,5 @@
 # flake8: noqa
 from .audio import Audio
-from .features import *
 from .features import (
     _ArrayXD,
     _ArrayXDExtensionType,
@@ -8,4 +7,5 @@ from .features import (
     _cast_to_python_objects,
     _is_zero_copy_only,
 )
+from .features import *
 from .translation import Translation, TranslationVariableLanguages

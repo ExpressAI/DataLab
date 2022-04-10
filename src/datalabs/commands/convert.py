@@ -11,14 +11,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from argparse import ArgumentParser, Namespace
 import os
 import re
 import shutil
-from argparse import ArgumentParser, Namespace
 
 from datalabs.commands import BaseDatasetsCLICommand
 from datalabs.utils.logging import get_logger
-
 
 HIGHLIGHT_MESSAGE_PRE = (
     """<<<<<<< This should probably be modified because it mentions: """

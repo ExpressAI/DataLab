@@ -5,35 +5,33 @@ Copyright by the AllenNLP authors.
 """
 from __future__ import annotations
 
-
+from contextlib import closing, contextmanager
 import copy
+from dataclasses import dataclass
+from functools import partial
+from hashlib import sha256
 import io
 import json
 import os
+from pathlib import Path
 import posixpath
 import re
 import shutil
 import sys
 import tempfile
 import time
-import urllib
-import warnings
-from contextlib import closing, contextmanager
-from dataclasses import dataclass
-from functools import partial
-from hashlib import sha256
-from pathlib import Path
 from typing import Optional, TypeVar, Union
+import urllib
 from urllib.parse import urljoin, urlparse
+import warnings
 
 import numpy as np
 import requests
 
-from .. import __version__, config, utils
 from . import logging
+from .. import __version__, config, utils
 from .extract import ExtractManager
 from .filelock import FileLock
-
 
 logger = logging.get_logger(__name__)  # pylint: disable=invalid-name
 

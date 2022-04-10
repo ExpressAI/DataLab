@@ -4,13 +4,12 @@ main functions: ext_oracle(), lead_k()
 """
 from __future__ import annotations
 
-
-import json
 from functools import partial
+import json
 from multiprocessing import Pool
 
-import numpy as np
 from nltk import sent_tokenize, word_tokenize
+import numpy as np
 
 
 def _ext_oracle(

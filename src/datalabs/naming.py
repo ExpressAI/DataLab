@@ -20,7 +20,6 @@ import itertools
 import os
 import re
 
-
 _uppercase_uppercase_re = re.compile(r"([A-Z]+)([A-Z][a-z])")
 _lowercase_uppercase_re = re.compile(r"([a-z\d])([A-Z])")
 

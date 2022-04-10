@@ -1,21 +1,17 @@
+import gzip
 import json
 import os
-import datalabs
-from datalabs.tasks import Summarization, MultiDocSummarization
-from datalabs.tasks.summarization import _MDS_TEXT_COLUMN
-import gzip
 
 # the following package are needed when more additional features are expected to be calculated
 from featurize.summarization import (
     get_features_sample_level,
     get_schema_of_sample_level_features,
-    )
-from datalabs.utils.more_features import (
-    get_feature_schemas,
 )
 
-
-
+import datalabs
+from datalabs.tasks import MultiDocSummarization, Summarization
+from datalabs.tasks.summarization import _MDS_TEXT_COLUMN
+from datalabs.utils.more_features import get_feature_schemas
 
 _DESCRIPTION = """
  Multi-XScience, a large-scale multi-document summarization dataset created from scientific articles. Multi-XScience introduces a challenging multi-document summarization task: writing therelated-work section of a paper based on itsabstract and the articles it references.
@@ -44,8 +40,10 @@ _ABSTRACT = "summary"
 _ARTICLE = "text"
 _MDS_SEP = "|||||"
 
+
 def _gdrive_url(id):
     return f"https://drive.google.com/uc?id={id}&export=download"
+
 
 class MultiXScienceConfig(datalabs.BuilderConfig):
     """BuilderConfig for MultiXScience."""
@@ -61,21 +59,30 @@ class MultiXScienceConfig(datalabs.BuilderConfig):
 
 class MultiXScienceDataset(datalabs.GeneratorBasedBuilder):
     """MultiXScience Dataset."""
+
     _TRAIN_URL = "https://raw.githubusercontent.com/yaolu/Multi-XScience/master/data/train.json.gz"
-    _VAL_URL = "https://raw.githubusercontent.com/yaolu/Multi-XScience/master/data/val.json.gz"
+    _VAL_URL = (
+        "https://raw.githubusercontent.com/yaolu/Multi-XScience/master/data/val.json.gz"
+    )
     _TEST_URL = "https://raw.githubusercontent.com/yaolu/Multi-XScience/master/data/test.json.gz"
     BUILDER_CONFIGS = [
         MultiXScienceConfig(
             name="single-document",
             version=datalabs.Version("1.0.0"),
             description="MultiXScience dataset for summarization, single document summarization version",
-            task_templates=[Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[
+                Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT)
+            ],
         ),
         MultiXScienceConfig(
             name="multi-document",
             version=datalabs.Version("1.0.0"),
             description="MultiXScience dataset for summarization, multi-document summarization version",
-            task_templates=[MultiDocSummarization(text_column=_MDS_TEXT_COLUMN, summary_column=_ABSTRACT)]
+            task_templates=[
+                MultiDocSummarization(
+                    text_column=_MDS_TEXT_COLUMN, summary_column=_ABSTRACT
+                )
+            ],
         ),
     ]
     DEFAULT_CONFIG_NAME = "multi-document"
@@ -85,7 +92,6 @@ class MultiXScienceDataset(datalabs.GeneratorBasedBuilder):
         features_dataset = {}
         if "single" in self.config.name:
 
-
             features_sample = datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
@@ -93,11 +99,9 @@ class MultiXScienceDataset(datalabs.GeneratorBasedBuilder):
                 }
             )
             if self.feature_expanding:
-                features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                        get_schema_of_sample_level_features)
-
-
-
+                features_sample, features_dataset = get_feature_schemas(
+                    features_sample, get_schema_of_sample_level_features
+                )
 
         else:
             features_sample = datalabs.Features(
@@ -155,11 +159,12 @@ class MultiXScienceDataset(datalabs.GeneratorBasedBuilder):
                 if not self.feature_expanding:
                     yield id_, raw_feature_info
                 else:
-                    additional_feature_info = get_features_sample_level(raw_feature_info)
+                    additional_feature_info = get_features_sample_level(
+                        raw_feature_info
+                    )
                     raw_feature_info.update(additional_feature_info)
                     # print(additional_feature_info)
                     yield id_, raw_feature_info
-
 
             else:
                 yield id_, {

@@ -1,10 +1,9 @@
 import os
 import sys
 
+from checklist.perturb import Perturb
 import numpy as np
 import spacy
-from checklist.perturb import Perturb
-
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))

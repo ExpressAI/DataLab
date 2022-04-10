@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Callable
-from collections.abc import Iterator
-from collections.abc import Mapping
+from collections.abc import Callable, Iterator, Mapping
 import os
 import sys
 from typing import Any, Dict, Optional
@@ -12,13 +10,12 @@ from tqdm import tqdm
 
 from .aggregating import Aggregating, aggregating
 
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from collections import Counter
 
 from data import TextData
 from featurize import *
-from operation import DatasetOperation, dataset_operation
+from operation import dataset_operation, DatasetOperation
 
 
 class SequenceLabelingAggregating(Aggregating, DatasetOperation):

@@ -15,11 +15,12 @@
 """The Trivia datalab"""
 
 
-import datalabs
 # from datalabs.tasks import TextClassification
 import glob
 import json
 import os
+
+import datalabs
 
 logger = datalabs.logging.get_logger(__name__)
 
@@ -84,7 +85,11 @@ def _qa_files(file_paths, sources, split, unfiltered):
     }
     suffix = suffix_mapping[split]
 
-    filenames = [f"unfiltered-web-{suffix}"] if unfiltered else [f"{source}-{suffix}" for source in sources]
+    filenames = (
+        [f"unfiltered-web-{suffix}"]
+        if unfiltered
+        else [f"{source}-{suffix}" for source in sources]
+    )
 
     filenames = [os.path.join(qa_dir, filename) for filename in filenames]
 
@@ -121,7 +126,10 @@ class TriviaQaConfig(datalabs.BuilderConfig):
         if not exclude_context:
             description += _CONTEXT_ADDENDUM
         super(TriviaQaConfig, self).__init__(
-            name=name, description=description, version=datalabs.Version("1.0.0"), **kwargs
+            name=name,
+            description=description,
+            version=datalabs.Version("1.0.0"),
+            **kwargs,
         )
 
         self.sources = ["web", "wikipedia"] if source == "all" else [source]
@@ -136,15 +144,29 @@ class TriviaQa(datalabs.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
         TriviaQaConfig(source="all", unfiltered=False, exclude_context=False),  # rc
-        TriviaQaConfig(source="all", unfiltered=False, exclude_context=True),  # rc.nocontext
-        TriviaQaConfig(source="all", unfiltered=True, exclude_context=False),  # unfiltered
-        TriviaQaConfig(source="all", unfiltered=True, exclude_context=True),  # unfilered.nocontext
+        TriviaQaConfig(
+            source="all", unfiltered=False, exclude_context=True
+        ),  # rc.nocontext
+        TriviaQaConfig(
+            source="all", unfiltered=True, exclude_context=False
+        ),  # unfiltered
+        TriviaQaConfig(
+            source="all", unfiltered=True, exclude_context=True
+        ),  # unfilered.nocontext
         TriviaQaConfig(source="web", unfiltered=False, exclude_context=False),  # rc
-        TriviaQaConfig(source="web", unfiltered=False, exclude_context=True),  # rc.nocontext
-        TriviaQaConfig(source="wikipedia", unfiltered=False, exclude_context=False),  # rc
-        TriviaQaConfig(source="wikipedia", unfiltered=False, exclude_context=True),  # rc.nocontext
+        TriviaQaConfig(
+            source="web", unfiltered=False, exclude_context=True
+        ),  # rc.nocontext
+        TriviaQaConfig(
+            source="wikipedia", unfiltered=False, exclude_context=False
+        ),  # rc
+        TriviaQaConfig(
+            source="wikipedia", unfiltered=False, exclude_context=True
+        ),  # rc.nocontext
     ]
-    DEFAULT_WRITER_BATCH_SIZE = 1000  # examples are quite big, so set this value to save some RAM
+    DEFAULT_WRITER_BATCH_SIZE = (
+        1000  # examples are quite big, so set this value to save some RAM
+    )
 
     def _info(self):
         return datalabs.DatasetInfo(
@@ -174,10 +196,16 @@ class TriviaQa(datalabs.GeneratorBasedBuilder):
                     ),
                     "answer": dict(
                         {
-                            "aliases": datalabs.features.Sequence(datalabs.Value("string")),
-                            "normalized_aliases": datalabs.features.Sequence(datalabs.Value("string")),
+                            "aliases": datalabs.features.Sequence(
+                                datalabs.Value("string")
+                            ),
+                            "normalized_aliases": datalabs.features.Sequence(
+                                datalabs.Value("string")
+                            ),
                             "matched_wiki_entity_name": datalabs.Value("string"),
-                            "normalized_matched_wiki_entity_name": datalabs.Value("string"),
+                            "normalized_matched_wiki_entity_name": datalabs.Value(
+                                "string"
+                            ),
                             "normalized_value": datalabs.Value("string"),
                             "type": datalabs.Value("string"),
                             "value": datalabs.Value("string"),
@@ -216,7 +244,11 @@ class TriviaQa(datalabs.GeneratorBasedBuilder):
                     "wiki_dir": wiki_evidence_dir,
                 },
             )
-            for name in [datalabs.Split.TRAIN, datalabs.Split.VALIDATION, datalabs.Split.TEST]
+            for name in [
+                datalabs.Split.TRAIN,
+                datalabs.Split.VALIDATION,
+                datalabs.Split.TEST,
+            ]
         ]
 
     def _generate_examples(self, files, web_dir, wiki_dir):
@@ -233,8 +265,12 @@ class TriviaQa(datalabs.GeneratorBasedBuilder):
                 answer_dict = {
                     "aliases": _strip(answer["Aliases"]),
                     "normalized_aliases": _strip(answer["NormalizedAliases"]),
-                    "matched_wiki_entity_name": answer.get("MatchedWikiEntryName", "").strip(),
-                    "normalized_matched_wiki_entity_name": answer.get("NormalizedMatchedWikiEntryName", "").strip(),
+                    "matched_wiki_entity_name": answer.get(
+                        "MatchedWikiEntryName", ""
+                    ).strip(),
+                    "normalized_matched_wiki_entity_name": answer.get(
+                        "NormalizedMatchedWikiEntryName", ""
+                    ).strip(),
                     "normalized_value": answer["NormalizedValue"].strip(),
                     "type": answer["Type"].strip(),
                     "value": answer["Value"].strip(),
@@ -278,12 +314,16 @@ class TriviaQa(datalabs.GeneratorBasedBuilder):
 
             def _transpose_and_strip_dicts(dicts, field_names):
                 return {
-                    datalabs.naming.camelcase_to_snakecase(k): [_strip_if_str(d[k]) for d in dicts]
+                    datalabs.naming.camelcase_to_snakecase(k): [
+                        _strip_if_str(d[k]) for d in dicts
+                    ]
                     for k in field_names
                 }
 
             search_results = _transpose_and_strip_dicts(
-                _add_context(article.get("SearchResults", []), "SearchContext", web_dir),
+                _add_context(
+                    article.get("SearchResults", []), "SearchContext", web_dir
+                ),
                 ["Description", "Filename", "Rank", "Title", "Url", "SearchContext"],
             )
 

@@ -15,8 +15,8 @@
 import csv
 
 import datalabs
-from datalabs.tasks import TextClassification
 from datalabs import Dataset
+from datalabs.tasks import TextClassification
 
 _DESCRIPTION = """\
 The Stanford Sentiment Treebank is a corpus with fully labeled parse trees that allows 
@@ -60,19 +60,27 @@ class SST5(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=[
-                        "very positive",
-                        "positive",
-                        "neutral",
-                        "negative",
-                        "very negative"
-                    ]),
+                    "label": datalabs.features.ClassLabel(
+                        names=[
+                            "very positive",
+                            "positive",
+                            "neutral",
+                            "negative",
+                            "very negative",
+                        ]
+                    ),
                 }
             ),
             homepage="https://nlp.stanford.edu/sentiment/",
             citation=_CITATION,
             languages=["en"],
-            task_templates=[TextClassification(text_column="text", label_column="label", task="sentiment-classification")],
+            task_templates=[
+                TextClassification(
+                    text_column="text",
+                    label_column="label",
+                    task="sentiment-classification",
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -81,8 +89,12 @@ class SST5(datalabs.GeneratorBasedBuilder):
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         print(f"test_path: \t{test_path}")
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
@@ -94,11 +106,11 @@ class SST5(datalabs.GeneratorBasedBuilder):
             "1": "negative",
             "2": "neutral",
             "3": "positive",
-            "4": "very positive"
+            "4": "very positive",
         }
 
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter='\t')
+            csv_reader = csv.reader(csv_file, delimiter="\t")
             for id_, row in enumerate(csv_reader):
                 text, label = row
                 label = textualize_label[label]

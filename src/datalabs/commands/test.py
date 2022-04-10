@@ -1,6 +1,19 @@
 from __future__ import annotations
 
+from argparse import ArgumentParser
 from collections.abc import Generator
+import os
+from pathlib import Path
+from shutil import copyfile, rmtree
+
+from datalabs.builder import DatasetBuilder
+from datalabs.commands import BaseDatasetsCLICommand
+import datalabs.config
+from datalabs.load import dataset_module_factory, import_main_class
+from datalabs.utils.download_manager import GenerateMode
+from datalabs.utils.filelock import logger as fl_logger
+from datalabs.utils.logging import ERROR, get_logger
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and the DataLab Datasets Authors.
 #
@@ -13,19 +26,6 @@ from collections.abc import Generator
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import os
-from argparse import ArgumentParser
-from pathlib import Path
-from shutil import copyfile, rmtree
-
-import datalabs.config
-from datalabs.builder import DatasetBuilder
-from datalabs.commands import BaseDatasetsCLICommand
-from datalabs.load import dataset_module_factory, import_main_class
-from datalabs.utils.download_manager import GenerateMode
-from datalabs.utils.filelock import logger as fl_logger
-from datalabs.utils.logging import ERROR, get_logger
 
 
 logger = get_logger(__name__)

@@ -2,14 +2,13 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 import csv
-import json
-import typing as t
 from enum import Enum
 from io import StringIO
+import json
+import typing as t
 
 from datalabs.constants import FileType, Source
 from datalabs.tasks.task_info import TaskType
-
 
 JSON = t.Union[str, int, float, bool, None, t.Mapping[str, "JSON"], t.List["JSON"]]  # type: ignore
 

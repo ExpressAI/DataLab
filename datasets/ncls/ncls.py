@@ -1,5 +1,6 @@
 """NCLS cross-lingual abstractive summarization dataset."""
 import os
+
 import datalabs
 from datalabs.tasks import Summarization
 
@@ -49,14 +50,16 @@ class NCLSConfig(datalabs.BuilderConfig):
 
 class NCLSDataset(datalabs.GeneratorBasedBuilder):
     """NCLS Dataset."""
+
     _FILE_ID = "1GZpKkHnTH_1Wxiti0BrrxPm18y9rTQRL"
     BUILDER_CONFIGS = [
         NCLSConfig(
             name="en2zh",
             version=datalabs.Version("1.0.0"),
             description="NCLS Dataset for cross-lingual summarization, English-->Chinese version",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[
+                Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT)
+            ],
         )
     ]
     DEFAULT_CONFIG_NAME = "en2zh"
@@ -76,9 +79,8 @@ class NCLSDataset(datalabs.GeneratorBasedBuilder):
             license=_LICENSE,
             version=self.VERSION,
             languages=["en", "zh"],
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
+            task_templates=[
+                Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT),
             ],
         )
 
@@ -89,23 +91,32 @@ class NCLSDataset(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={
-                    "f_path": os.path.join(f_path, "NCLS-Data/{}SUM".format(str(self.config.name).upper()),
-                                           "{}SUM".format(
-                                               str(self.config.name).upper()) + "_train.txt")}
+                    "f_path": os.path.join(
+                        f_path,
+                        "NCLS-Data/{}SUM".format(str(self.config.name).upper()),
+                        "{}SUM".format(str(self.config.name).upper()) + "_train.txt",
+                    )
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 gen_kwargs={
-                    "f_path": os.path.join(f_path, "NCLS-Data/{}SUM".format(str(self.config.name).upper()),
-                                           "{}SUM".format(
-                                               str(self.config.name).upper()) + "_valid.txt")}
+                    "f_path": os.path.join(
+                        f_path,
+                        "NCLS-Data/{}SUM".format(str(self.config.name).upper()),
+                        "{}SUM".format(str(self.config.name).upper()) + "_valid.txt",
+                    )
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 gen_kwargs={
-                    "f_path": os.path.join(f_path, "NCLS-Data/{}SUM".format(str(self.config.name).upper()),
-                                           "{}SUM".format(
-                                               str(self.config.name).upper()) + "_test.txt")}
+                    "f_path": os.path.join(
+                        f_path,
+                        "NCLS-Data/{}SUM".format(str(self.config.name).upper()),
+                        "{}SUM".format(str(self.config.name).upper()) + "_test.txt",
+                    )
+                },
             ),
         ]
 
@@ -138,8 +149,5 @@ class NCLSDataset(datalabs.GeneratorBasedBuilder):
                     summaries = []
 
         for id_, (article, summary) in enumerate(datas):
-            raw_feature_info = {
-                _ARTICLE: article,
-                _ABSTRACT: summary
-            }
+            raw_feature_info = {_ARTICLE: article, _ABSTRACT: summary}
             yield id_, raw_feature_info

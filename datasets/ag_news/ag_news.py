@@ -16,14 +16,14 @@
 
 import csv
 import os
-import datalabs
-from datalabs.tasks import TextClassification, TopicClassification
-from datalabs import Dataset, Prompts
 from pathlib import Path
 
 from featurize.general import get_features_sample_level
 
-from datalabs.utils.more_features import prefix_dict_key, get_feature_arguments
+import datalabs
+from datalabs import Dataset, Prompts
+from datalabs.tasks import TextClassification, TopicClassification
+from datalabs.utils.more_features import get_feature_arguments, prefix_dict_key
 
 _DESCRIPTION = """\
 AG is a collection of more than 1 million news articles. News articles have been
@@ -63,15 +63,22 @@ _PROMPT_URL = "https://raw.githubusercontent.com/ExpressAI/DataLab/main/datasets
 
 def instantiate_task_prompt(category_names):
     # instantiate task prompts into dataset prompts
-    textual_choices_with_or = ", ".join(category_names[:-1]) + " or " + category_names[-1]
+    textual_choices_with_or = (
+        ", ".join(category_names[:-1]) + " or " + category_names[-1]
+    )
     textual_choices_without_or = ", ".join(category_names)
-    category_to_answers = dict(zip(category_names, [[category] for category in category_names]))
+    category_to_answers = dict(
+        zip(category_names, [[category] for category in category_names])
+    )
     task_prompts = TopicClassification.get_prompts()
 
     for prompt_id in task_prompts:
         task_prompts[prompt_id].answers = category_to_answers
-        task_prompts[prompt_id].template = task_prompts[prompt_id].template.replace("{{textual_choices_with_or}}", textual_choices_with_or) \
+        task_prompts[prompt_id].template = (
+            task_prompts[prompt_id]
+            .template.replace("{{textual_choices_with_or}}", textual_choices_with_or)
             .replace("{{textual_choices_without_or}}", textual_choices_without_or)
+        )
     return task_prompts
 
 
@@ -88,31 +95,35 @@ FIELD = "text"
 
 
 class AGNews(datalabs.GeneratorBasedBuilder):
-
     def _info(self):
 
         category_names = ["World", "Sports", "Business", "Science and Technology"]
         # Task prompts
-        prompts = instantiate_task_prompt(category_names)  # instantiate task prompt based on the current dataset
+        prompts = instantiate_task_prompt(
+            category_names
+        )  # instantiate task prompt based on the current dataset
         features_dataset = {}
         features_sample = datalabs.Features(
             {
                 FIELD: datalabs.Value("string"),
-                "label": datalabs.features.ClassLabel(
-                    names=category_names),
-
-            })
+                "label": datalabs.features.ClassLabel(names=category_names),
+            }
+        )
 
         if self.feature_expanding:
             sample_level_schema = get_features_sample_level("This is a test sample")
-            dict_feature_argument = get_feature_arguments(sample_level_schema, field=FIELD,
-                                                          feature_level="sample_level")
+            dict_feature_argument = get_feature_arguments(
+                sample_level_schema, field=FIELD, feature_level="sample_level"
+            )
             additional_features = datalabs.Features(dict_feature_argument)
             features_sample.update(additional_features)
 
             dataset_level_schema = infer_schema_dataset_level(sample_level_schema)
-            dict_feature_argument = get_feature_arguments(dataset_level_schema, field="avg" + "_" + FIELD,
-                                                          feature_level="dataset_level")
+            dict_feature_argument = get_feature_arguments(
+                dataset_level_schema,
+                field="avg" + "_" + FIELD,
+                feature_level="dataset_level",
+            )
             features_dataset = datalabs.Features(dict_feature_argument)
 
         # Add PromptSource prompts
@@ -125,8 +136,10 @@ class AGNews(datalabs.GeneratorBasedBuilder):
             homepage="http://groups.di.unipi.it/~gulli/AG_corpus_of_news_articles.html",
             citation=_CITATION,
             languages=["en"],
-            task_templates=[TopicClassification(text_column="text", label_column="label")],
-            prompts=prompts
+            task_templates=[
+                TopicClassification(text_column="text", label_column="label")
+            ],
+            prompts=prompts,
         )
 
     def _split_generators(self, dl_manager):
@@ -134,22 +147,33 @@ class AGNews(datalabs.GeneratorBasedBuilder):
         print(f"train_path: \t{train_path}")
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
         """Generate AG News examples."""
 
         # map the label into textual string
-        textualize_label = {"1": "World",
-                            "2": "Sports",
-                            "3": "Business",
-                            "4": "Science and Technology"}
+        textualize_label = {
+            "1": "World",
+            "2": "Sports",
+            "3": "Business",
+            "4": "Science and Technology",
+        }
 
         with open(filepath, encoding="utf-8") as csv_file:
             csv_reader = csv.reader(
-                csv_file, quotechar='"', delimiter=",", quoting=csv.QUOTE_ALL, skipinitialspace=True)
+                csv_file,
+                quotechar='"',
+                delimiter=",",
+                quoting=csv.QUOTE_ALL,
+                skipinitialspace=True,
+            )
             # using this for tsv: csv_reader = csv.reader(csv_file, delimiter='\t')
             for id_, row in enumerate(csv_reader):
                 label, title, description = row
@@ -162,6 +186,8 @@ class AGNews(datalabs.GeneratorBasedBuilder):
                 if not self.feature_expanding:
                     yield id_, raw_feature_info
                 else:
-                    additional_feature_info = prefix_dict_key(get_features_sample_level(text), FIELD)
+                    additional_feature_info = prefix_dict_key(
+                        get_features_sample_level(text), FIELD
+                    )
                     raw_feature_info.update(additional_feature_info)
                     yield id_, raw_feature_info

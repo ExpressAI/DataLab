@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-import warnings
 from functools import wraps
 from typing import Optional
+import warnings
 
 from .logging import get_logger
-
 
 _emitted_deprecation_warnings = set()
 logger = get_logger(__name__)

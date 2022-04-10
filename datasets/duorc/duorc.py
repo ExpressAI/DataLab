@@ -21,7 +21,6 @@ import json
 import datalabs
 from datalabs.tasks import QuestionAnsweringExtractive
 
-
 _CITATION = """\
 @inproceedings{DuoRC,
 author = { Amrita Saha and Rahul Aralikatte and Mitesh M. Khapra and Karthik Sankaranarayanan},\
@@ -72,7 +71,9 @@ class Duorc(datalabs.GeneratorBasedBuilder):
     VERSION = datalabs.Version("1.0.0")
     BUILDER_CONFIGS = [
         DuorcConfig(name="SelfRC", version=VERSION, description="SelfRC dataset"),
-        DuorcConfig(name="ParaphraseRC", version=VERSION, description="ParaphraseRC dataset"),
+        DuorcConfig(
+            name="ParaphraseRC", version=VERSION, description="ParaphraseRC dataset"
+        ),
     ]
 
     def _info(self):
@@ -83,16 +84,17 @@ class Duorc(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "plot_id": datalabs.Value("string"),
-                    "context": datalabs.Value("string"), # context-->plot
+                    "context": datalabs.Value("string"),  # context-->plot
                     "title": datalabs.Value("string"),
                     "question_id": datalabs.Value("string"),
                     "question": datalabs.Value("string"),
                     # "answers": datasets.features.Sequence(datasets.Value("string")),
-                    "answers":
-                        {
-                            "text": datalabs.features.Sequence(datalabs.Value("string")),
-                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
-                        },
+                    "answers": {
+                        "text": datalabs.features.Sequence(datalabs.Value("string")),
+                        "answer_start": datalabs.features.Sequence(
+                            datalabs.Value("int32")
+                        ),
+                    },
                     "no_answer": datalabs.Value("bool"),
                 }
             ),
@@ -102,7 +104,9 @@ class Duorc(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 QuestionAnsweringExtractive(
-                    question_column="question", context_column="context", answers_column="answers"
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                 )
             ],
         )
@@ -148,13 +152,13 @@ class Duorc(datalabs.GeneratorBasedBuilder):
 
                     yield question_id, {
                         "title": title,
-                        "context": plot, #contxt ->plot
+                        "context": plot,  # contxt ->plot
                         "question": question,
                         "plot_id": plot_id,
                         "question_id": question_id,
                         # "answers": answers,
                         "answers": {
-                            "answer_start": [-1]*len(answers),
+                            "answer_start": [-1] * len(answers),
                             "text": answers,
                         },
                         "no_answer": no_answer,

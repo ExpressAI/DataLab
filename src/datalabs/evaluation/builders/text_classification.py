@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from collections.abc import Iterable
-from collections.abc import Iterator
-from typing import Dict, List, Optional
+from collections.abc import Iterable, Iterator
+from typing import Optional
 
 from tqdm import tqdm
 
@@ -10,11 +9,14 @@ from datalabs import load_dataset
 from datalabs.info import BucketPerformance, Performance, SysOutputInfo, Table
 from datalabs.metric import Accuracy  # noqa
 from datalabs.metric import F1score  # noqa
-from datalabs.operations.aggregate.text_classification import text_classification_aggregating
+from datalabs.operations.aggregate.text_classification import (
+    text_classification_aggregating,
+)
 from datalabs.utils import analysis
 from datalabs.utils.analysis import *  # noqa
 from datalabs.utils.eval_bucket import *  # noqa
 from datalabs.utils.feature_funcs import *  # noqa
+from datalabs.utils.py_utils import eprint
 from datalabs.utils.spacy_loader import spacy_loader
 
 
@@ -37,7 +39,7 @@ def get_statistics(samples: Iterator):
     vocab = {}
     length_fre = {}
     for sample in tqdm(samples):
-        text, label = sample["text"], sample["label"]
+        text = sample["text"]
         length = len(text.split(" "))
 
         if length in length_fre.keys():
@@ -90,19 +92,20 @@ class TCExplainaboardBuilder:
 
         # Calculate statistics of training set
         self.statistics = None
-        if None != self._info.dataset_name:
+        if self._info.dataset_name is not None:
             try:
                 dataset = load_dataset(
                     self._info.dataset_name, self._info.sub_dataset_name
                 )
                 if (
-                    len(dataset["train"]._stat) == 0 or self._info.reload_stat == False
+                    len(dataset["train"]._stat) == 0 or self._info.reload_stat is False
                 ):  # calculate the statistics (_stat) when _stat is {} or `reload_stat` is False
                     new_train = dataset["train"].apply(get_statistics, mode="local")
                     self.statistics = new_train._stat
                 else:
                     self.statistics = dataset["train"]._stat
             except FileNotFoundError as err:
+                print(err)
                 eprint(
                     "The dataset hasn't been supported by DataLab so no training set dependent features will be supported by ExplainaBoard."
                     "You can add the dataset by: https://github.com/ExpressAI/DataLab/blob/main/docs/SDK/add_new_datasets_into_sdk.md"
@@ -188,7 +191,7 @@ class TCExplainaboardBuilder:
                 # then skip bucketing along this feature
                 if (
                     self._info.features[bucket_feature].require_training_set
-                    and self.statistics == None
+                    and self.statistics is None
                 ):
                     del self._info.features[bucket_feature]
                     continue

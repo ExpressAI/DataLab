@@ -12,7 +12,6 @@
 # limitations under the License.
 
 
-
 import json
 
 import datalabs
@@ -42,12 +41,20 @@ class Race(datalabs.GeneratorBasedBuilder):
     VERSION = datalabs.Version("0.1.0")
 
     BUILDER_CONFIGS = [
-        datalabs.BuilderConfig(name="high", description="Exams designed for high school students", version=VERSION),
         datalabs.BuilderConfig(
-            name="middle", description="Exams designed for middle school students", version=VERSION
+            name="high",
+            description="Exams designed for high school students",
+            version=VERSION,
         ),
         datalabs.BuilderConfig(
-            name="all", description="Exams designed for both high school and middle school students", version=VERSION
+            name="middle",
+            description="Exams designed for middle school students",
+            version=VERSION,
+        ),
+        datalabs.BuilderConfig(
+            name="all",
+            description="Exams designed for both high school and middle school students",
+            version=VERSION,
         ),
     ]
 
@@ -60,13 +67,12 @@ class Race(datalabs.GeneratorBasedBuilder):
                 {
                     "id": datalabs.Value("string"),
                     "document_id": datalabs.Value("string"),
-                    "context": datalabs.Value("string"), # context ->article
+                    "context": datalabs.Value("string"),  # context ->article
                     "question": datalabs.Value("string"),
-                    "answers": # answers -> answer
-                        {
-                            "text": datalabs.Value("string"),
-                            "option_index": datalabs.Value("int32"),
-                        },
+                    "answers": {  # answers -> answer
+                        "text": datalabs.Value("string"),
+                        "option_index": datalabs.Value("int32"),
+                    },
                     "options": datalabs.features.Sequence(datalabs.Value("string"))
                     # These are the features of your dataset like images, labels ...
                 }
@@ -80,7 +86,10 @@ class Race(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 QuestionAnsweringMultipleChoices(
-                    question_column="question", context_column="context", answers_column="answers", options_column="options",
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
+                    options_column="options",
                     task="question-answering-multiple-choices-with-context",
                 )
             ],
@@ -98,23 +107,32 @@ class Race(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 # These kwargs will be passed to _generate_examples
-                gen_kwargs={"train_test_or_eval": f"RACE/test/{case}", "files": dl_manager.iter_archive(archive)},
+                gen_kwargs={
+                    "train_test_or_eval": f"RACE/test/{case}",
+                    "files": dl_manager.iter_archive(archive),
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 # These kwargs will be passed to _generate_examples
-                gen_kwargs={"train_test_or_eval": f"RACE/train/{case}", "files": dl_manager.iter_archive(archive)},
+                gen_kwargs={
+                    "train_test_or_eval": f"RACE/train/{case}",
+                    "files": dl_manager.iter_archive(archive),
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 # These kwargs will be passed to _generate_examples
-                gen_kwargs={"train_test_or_eval": f"RACE/dev/{case}", "files": dl_manager.iter_archive(archive)},
+                gen_kwargs={
+                    "train_test_or_eval": f"RACE/dev/{case}",
+                    "files": dl_manager.iter_archive(archive),
+                },
             ),
         ]
 
     def _generate_examples(self, train_test_or_eval, files):
         """Yields examples."""
-        dict_map = {"A":0, "B":1, "C":2, "D":3, "E":4}
+        dict_map = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4}
         id_sample = 0
         for file_idx, (path, f) in enumerate(files):
             if path.startswith(train_test_or_eval) and path.endswith(".txt"):
@@ -129,13 +147,12 @@ class Race(datalabs.GeneratorBasedBuilder):
                     option_index = dict_map[answer]
                     id_sample += 1
                     yield f"{file_idx}_{i}", {
-
-                        "id": str(id_sample-1),
+                        "id": str(id_sample - 1),
                         "document_id": data["id"],
                         "context": data["article"],
                         "question": question,
                         "answers": {
-                            "option_index": option_index, # convert A->0, B->1, C->2, D->3
+                            "option_index": option_index,  # convert A->0, B->1, C->2, D->3
                             "text": option[option_index],
                         },
                         # "answers": answer,

@@ -17,26 +17,25 @@
 """Access datalab."""
 from __future__ import annotations
 
-from collections.abc import Sequence
-from collections.abc import Mapping
+from collections import Counter
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 import filecmp
 import importlib
 import inspect
 import json
 import os
+from pathlib import Path
 import re
 import shutil
 import time
-import warnings
-from collections import Counter
-from dataclasses import dataclass
-from pathlib import Path
 from typing import Optional, Union
 from urllib.parse import urlparse
+import warnings
 
 import fsspec
-import requests
 from huggingface_hub import HfApi, HfFolder
+import requests
 
 from . import config
 from .arrow_dataset import Dataset
@@ -54,22 +53,26 @@ from .filesystems import extract_path_from_uri, is_remote_filesystem
 from .iterable_dataset import IterableDataset
 from .metric import Metric
 from .operations.data import *
-from .packaged_modules import _EXTENSION_TO_MODULE, _PACKAGED_DATASETS_MODULES, hash_python_lines
+from .packaged_modules import (
+    _EXTENSION_TO_MODULE,
+    _PACKAGED_DATASETS_MODULES,
+    hash_python_lines,
+)
 from .splits import Split
 from .streaming import extend_module_for_streaming
 from .tasks import TaskTemplate
 from .utils.deprecation_utils import deprecated
 from .utils.download_manager import GenerateMode
 from .utils.file_utils import (
-    DownloadConfig,
-    OfflineModeIsEnabled,
     _raise_if_offline_mode_is_enabled,
     cached_path,
+    DownloadConfig,
     head_hf_s3,
     hf_github_url,
     hf_hub_url,
     init_hf_modules,
     is_relative_path,
+    OfflineModeIsEnabled,
     relative_to_absolute_path,
     url_or_path_join,
 )
@@ -78,7 +81,6 @@ from .utils.info_utils import is_small_dataset
 from .utils.logging import get_logger
 from .utils.streaming_download_manager import StreamingDownloadManager, xglob, xjoin
 from .utils.version import Version
-
 
 logger = get_logger(__name__)
 

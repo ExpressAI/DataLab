@@ -1,10 +1,9 @@
-import os
 from hashlib import sha256
+import os
 from typing import Optional
 
 from .. import config
 from .logging import get_logger
-
 
 logger = get_logger(__name__)
 

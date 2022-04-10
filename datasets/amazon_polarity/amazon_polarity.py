@@ -64,7 +64,9 @@ class AmazonPolarity(datalabs.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
         AmazonPolarityConfig(
-            name="amazon_polarity", version=VERSION, description="Amazon Polarity Classification Dataset."
+            name="amazon_polarity",
+            version=VERSION,
+            description="Amazon Polarity Classification Dataset.",
         ),
     ]
 
@@ -114,8 +116,7 @@ class AmazonPolarity(datalabs.GeneratorBasedBuilder):
     def _generate_examples(self, filepath, files):
         """Yields examples."""
 
-        textualize_label = {"1":"negative",
-                                 "2":"positive"}
+        textualize_label = {"1": "negative", "2": "positive"}
 
         for path, f in files:
             if path == filepath:
@@ -125,6 +126,6 @@ class AmazonPolarity(datalabs.GeneratorBasedBuilder):
                     yield id_, {
                         "title": row[1],
                         "text": row[2],
-                        "label": textualize_label[row[0]]
+                        "label": textualize_label[row[0]],
                     }
                 break

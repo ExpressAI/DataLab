@@ -15,7 +15,6 @@
 """ Logging utilities. """
 
 import logging
-import os
 from logging import CRITICAL  # NOQA
 from logging import DEBUG  # NOQA
 from logging import ERROR  # NOQA
@@ -24,8 +23,8 @@ from logging import INFO  # NOQA
 from logging import NOTSET  # NOQA
 from logging import WARN  # NOQA
 from logging import WARNING  # NOQA
+import os
 from typing import Optional
-
 
 log_levels = {
     "debug": logging.DEBUG,

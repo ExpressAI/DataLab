@@ -1,17 +1,16 @@
 """CSDS: Chinese Dataset for Customer Service Dialogue Summarization."""
-import os
 import json
-import datalabs
-from datalabs.tasks import Summarization, DialogSummarization
+import os
 
 # the following package are needed when more additional features are expected to be calculated
 from featurize.summarization import (
     get_features_sample_level,
     get_schema_of_sample_level_features,
 )
-from datalabs.utils.more_features import (
-    get_feature_schemas,
-)
+
+import datalabs
+from datalabs.tasks import DialogSummarization, Summarization
+from datalabs.utils.more_features import get_feature_schemas
 
 _CITATION = """\
 @inproceedings{lin-etal-2021-csds,
@@ -65,36 +64,50 @@ class CSDSConfig(datalabs.BuilderConfig):
 
 class CSDSDataset(datalabs.GeneratorBasedBuilder):
     """CSDS Dataset."""
-    _FILE_ID = {"train": "1-xwmTxDAZXlt3YhPBgQWETzw_yM5Xui2", "valid": "1JLW5iRUjdFz1BUGypyGHAm6vEkMI20sS",
-                "test": "1xpHJWJd5kLnq9tKqzqE-928FgYEryka1"}
+
+    _FILE_ID = {
+        "train": "1-xwmTxDAZXlt3YhPBgQWETzw_yM5Xui2",
+        "valid": "1JLW5iRUjdFz1BUGypyGHAm6vEkMI20sS",
+        "test": "1xpHJWJd5kLnq9tKqzqE-928FgYEryka1",
+    }
     BUILDER_CONFIGS = [
         CSDSConfig(
             name="document",
             version=datalabs.Version("1.0.0"),
             description="CSDS dataset for Chinese customer service summarization, single document version",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[
+                Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT)
+            ],
         ),
         CSDSConfig(
             name="usersumm",
             version=datalabs.Version("1.0.0"),
             description="CSDS dataset for Chinese customer service summarization, dialogue summarization version, target is the user summary.",
-            task_templates=[DialogSummarization(
-                text_column="dialogue", summary_column="user_summary")]
+            task_templates=[
+                DialogSummarization(
+                    text_column="dialogue", summary_column="user_summary"
+                )
+            ],
         ),
         CSDSConfig(
             name="agentsumm",
             version=datalabs.Version("1.0.0"),
             description="CSDS dataset for Chinese customer service summarization, dialogue summarization version, target is the agent summary.",
-            task_templates=[DialogSummarization(
-                text_column="dialogue", summary_column="agent_summary")]
+            task_templates=[
+                DialogSummarization(
+                    text_column="dialogue", summary_column="agent_summary"
+                )
+            ],
         ),
         CSDSConfig(
             name="finalsumm",
             version=datalabs.Version("1.0.0"),
             description="CSDS dataset for Chinese customer service summarization, dialogue summarization version, target is the final summary.",
-            task_templates=[DialogSummarization(
-                text_column="dialogue", summary_column="final_summary")]
+            task_templates=[
+                DialogSummarization(
+                    text_column="dialogue", summary_column="final_summary"
+                )
+            ],
         ),
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -111,32 +124,51 @@ class CSDSDataset(datalabs.GeneratorBasedBuilder):
                 }
             )
             if self.feature_expanding:
-                features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                        get_schema_of_sample_level_features)
+                features_sample, features_dataset = get_feature_schemas(
+                    features_sample, get_schema_of_sample_level_features
+                )
         elif self.config.name == "usersumm":
-            features_sample = datalabs.Features({
-                "dialogue": datalabs.Sequence(datalabs.Features({
-                    "speaker": datalabs.Value("string"),
-                    "text": datalabs.Value("string")
-                })),
-                _ABSTRACT: datalabs.Sequence(datalabs.Value("string")),
-            })
+            features_sample = datalabs.Features(
+                {
+                    "dialogue": datalabs.Sequence(
+                        datalabs.Features(
+                            {
+                                "speaker": datalabs.Value("string"),
+                                "text": datalabs.Value("string"),
+                            }
+                        )
+                    ),
+                    _ABSTRACT: datalabs.Sequence(datalabs.Value("string")),
+                }
+            )
         elif self.config.name == "agentsumm":
-            features_sample = datalabs.Features({
-                "dialogue": datalabs.Sequence(datalabs.Features({
-                    "speaker": datalabs.Value("string"),
-                    "text": datalabs.Value("string")
-                })),
-                _ABSTRACT: datalabs.Sequence(datalabs.Value("string")),
-            })
+            features_sample = datalabs.Features(
+                {
+                    "dialogue": datalabs.Sequence(
+                        datalabs.Features(
+                            {
+                                "speaker": datalabs.Value("string"),
+                                "text": datalabs.Value("string"),
+                            }
+                        )
+                    ),
+                    _ABSTRACT: datalabs.Sequence(datalabs.Value("string")),
+                }
+            )
         elif self.config.name == "finalsumm":
-            features_sample = datalabs.Features({
-                "dialogue": datalabs.Sequence(datalabs.Features({
-                    "speaker": datalabs.Value("string"),
-                    "text": datalabs.Value("string")
-                })),
-                _ABSTRACT: datalabs.Sequence(datalabs.Value("string")),
-            })
+            features_sample = datalabs.Features(
+                {
+                    "dialogue": datalabs.Sequence(
+                        datalabs.Features(
+                            {
+                                "speaker": datalabs.Value("string"),
+                                "text": datalabs.Value("string"),
+                            }
+                        )
+                    ),
+                    _ABSTRACT: datalabs.Sequence(datalabs.Value("string")),
+                }
+            )
 
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
@@ -156,16 +188,13 @@ class CSDSDataset(datalabs.GeneratorBasedBuilder):
 
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN,
-                gen_kwargs={"f_path": train_f_path}
+                name=datalabs.Split.TRAIN, gen_kwargs={"f_path": train_f_path}
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION,
-                gen_kwargs={"f_path": valid_f_path}
+                name=datalabs.Split.VALIDATION, gen_kwargs={"f_path": valid_f_path}
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST,
-                gen_kwargs={"f_path": test_f_path}
+                name=datalabs.Split.TEST, gen_kwargs={"f_path": test_f_path}
             ),
         ]
 
@@ -180,24 +209,32 @@ class CSDSDataset(datalabs.GeneratorBasedBuilder):
             if self.config.name == "document":
 
                 article = " ".join(
-                    [item["speaker"] + ":" + item["utterance"].replace(" ", "") for item in data["Dialogue"]])
+                    [
+                        item["speaker"] + ":" + item["utterance"].replace(" ", "")
+                        for item in data["Dialogue"]
+                    ]
+                )
                 summary = " ".join(data["FinalSumm"])
 
-                raw_feature_info = {
-                    _ARTICLE: article,
-                    _ABSTRACT: summary
-                }
+                raw_feature_info = {_ARTICLE: article, _ABSTRACT: summary}
 
                 if not self.feature_expanding:
                     yield id_, raw_feature_info
                 else:
-                    additional_feature_info = get_features_sample_level(raw_feature_info)
+                    additional_feature_info = get_features_sample_level(
+                        raw_feature_info
+                    )
                     raw_feature_info.update(additional_feature_info)
                     yield id_, raw_feature_info
             else:
                 dialogue = []
                 for item in data["Dialogue"]:
-                    dialogue.append({"speaker": item["speaker"], "text": item["utterance"].replace(" ", "")})
+                    dialogue.append(
+                        {
+                            "speaker": item["speaker"],
+                            "text": item["utterance"].replace(" ", ""),
+                        }
+                    )
 
                 if self.config.name == "usersumm":
                     summary = data["UserSumm"]

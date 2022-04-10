@@ -35,7 +35,6 @@ import os
 import threading
 import time
 
-
 try:
     import warnings
 except ImportError:

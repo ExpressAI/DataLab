@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 import hashlib  # for mdb ids of prompts
 import json
-from dataclasses import dataclass, field
 from typing import ClassVar, Dict, Optional, Tuple
 
 import requests

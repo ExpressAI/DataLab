@@ -1,5 +1,19 @@
 from __future__ import annotations
 
+import copy
+from functools import wraps
+from itertools import groupby
+import os
+import tempfile
+from typing import Optional, Tuple, TypeVar, Union
+
+import numpy as np
+import pyarrow as pa
+import pyarrow.compute as pc
+
+from . import config
+from .utils.logging import get_logger
+
 # coding=utf-8
 # Copyright 2020 The HuggingFace Datasets Authors and DataLab Authors.
 #
@@ -12,20 +26,6 @@ from __future__ import annotations
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import copy
-import os
-import tempfile
-from functools import wraps
-from itertools import groupby
-from typing import Optional, Tuple, TypeVar, Union
-
-import numpy as np
-import pyarrow as pa
-import pyarrow.compute as pc
-
-from . import config
-from .utils.logging import get_logger
 
 
 logger = get_logger(__name__)

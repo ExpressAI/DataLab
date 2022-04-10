@@ -46,7 +46,9 @@ features for us bills. ca bills does not have.
   - sum_len: number of chars in summary.
 """
 
-_URL = "https://drive.google.com/uc?export=download&id=1g89WgFHMRbr4QrvA0ngh26PY081Nv3lx"
+_URL = (
+    "https://drive.google.com/uc?export=download&id=1g89WgFHMRbr4QrvA0ngh26PY081Nv3lx"
+)
 
 _DOCUMENT = "text"
 _SUMMARY = "summary"
@@ -73,9 +75,8 @@ class Billsum(datalabs.GeneratorBasedBuilder):
             supervised_keys=(_DOCUMENT, _SUMMARY),
             homepage="https://github.com/FiscalNote/BillSum",
             citation=_CITATION,
-            task_templates=[Summarization(
-                text_column=_DOCUMENT,
-                summary_column=_SUMMARY),
+            task_templates=[
+                Summarization(text_column=_DOCUMENT, summary_column=_SUMMARY),
             ],
         )
 
@@ -85,15 +86,24 @@ class Billsum(datalabs.GeneratorBasedBuilder):
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
-                gen_kwargs={"path": os.path.join(dl_path, "us_train_data_final_OFFICIAL.jsonl"), "key": "bill_id"},
+                gen_kwargs={
+                    "path": os.path.join(dl_path, "us_train_data_final_OFFICIAL.jsonl"),
+                    "key": "bill_id",
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
-                gen_kwargs={"path": os.path.join(dl_path, "us_test_data_final_OFFICIAL.jsonl"), "key": "bill_id"},
+                gen_kwargs={
+                    "path": os.path.join(dl_path, "us_test_data_final_OFFICIAL.jsonl"),
+                    "key": "bill_id",
+                },
             ),
             datalabs.SplitGenerator(
                 name="ca_test",
-                gen_kwargs={"path": os.path.join(dl_path, "ca_test_data_final_OFFICIAL.jsonl"), "key": "external_id"},
+                gen_kwargs={
+                    "path": os.path.join(dl_path, "ca_test_data_final_OFFICIAL.jsonl"),
+                    "key": "external_id",
+                },
             ),
         ]
 

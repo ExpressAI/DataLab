@@ -205,13 +205,18 @@ class TweetEval(datalabs.GeneratorBasedBuilder):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=datalabs.Features(
-                {"text": datalabs.Value("string"), "label": datalabs.features.ClassLabel(names=names)}
+                {
+                    "text": datalabs.Value("string"),
+                    "label": datalabs.features.ClassLabel(names=names),
+                }
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
             license=_LICENSE,
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[
+                TextClassification(text_column="text", label_column="label")
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -225,17 +230,26 @@ class TweetEval(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 # These kwargs will be passed to _generate_examples
-                gen_kwargs={"text_path": data_dir["train_text"], "labels_path": data_dir["train_labels"]},
+                gen_kwargs={
+                    "text_path": data_dir["train_text"],
+                    "labels_path": data_dir["train_labels"],
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 # These kwargs will be passed to _generate_examples
-                gen_kwargs={"text_path": data_dir["test_text"], "labels_path": data_dir["test_labels"]},
+                gen_kwargs={
+                    "text_path": data_dir["test_text"],
+                    "labels_path": data_dir["test_labels"],
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 # These kwargs will be passed to _generate_examples
-                gen_kwargs={"text_path": data_dir["val_text"], "labels_path": data_dir["val_labels"]},
+                gen_kwargs={
+                    "text_path": data_dir["val_text"],
+                    "labels_path": data_dir["val_labels"],
+                },
             ),
         ]
 

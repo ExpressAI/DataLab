@@ -1,5 +1,13 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
+from typing import ClassVar, Optional
+
+from ..enums import Metrics, PLMType, PromptShape, SignalType
+from ..features import ClassLabel, Features, Value
+from ..prompt import Prompt, PromptResult
+from .base import TaskTemplate
+
 # coding=utf-8
 # Copyright 2022 The HuggingFace Datasets, DataLab Authors.
 #
@@ -12,14 +20,6 @@ from __future__ import annotations
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from dataclasses import dataclass
-from typing import ClassVar, Optional
-
-from ..enums import Metrics, PLMType, PromptShape, SignalType
-from ..features import ClassLabel, Features, Value
-from ..prompt import Prompt, PromptResult
-from .base import TaskTemplate
 
 
 @dataclass

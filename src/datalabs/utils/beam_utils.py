@@ -1,16 +1,15 @@
 import os
 
-import pyarrow as pa
-import pyarrow.parquet as pq
 from apache_beam.io import filebasedsink
 from apache_beam.io.filesystem import CompressionTypes
 from apache_beam.io.filesystems import FileSystems
 from apache_beam.io.iobase import Write
 from apache_beam.pipeline import Pipeline
 from apache_beam.transforms import PTransform
+import pyarrow as pa
+import pyarrow.parquet as pq
 
 from .logging import get_logger
-
 
 CHUNK_SIZE = 2 << 20  # 2mb
 logger = get_logger(__name__)

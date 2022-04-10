@@ -17,21 +17,20 @@
 """DatasetBuilder base class."""
 from __future__ import annotations
 
-from collections.abc import Mapping
-
 import abc
+from collections.abc import Mapping
 import contextlib
 import copy
+from dataclasses import dataclass
+from functools import partial
 import inspect
 import os
 import shutil
 import sys
 import textwrap
-import urllib
-from dataclasses import dataclass
-from functools import partial
 from time import time
 from typing import Optional, Union
+import urllib
 
 from multiprocess import Pool
 from p_tqdm import p_map
@@ -42,9 +41,9 @@ from datalabs.utils.mock_download_manager import MockDownloadManager
 from . import config, utils
 from .arrow_dataset import Dataset
 from .arrow_reader import (
-    HF_GCP_BASE_URL,
     ArrowReader,
     DatasetNotOnHfGcsError,
+    HF_GCP_BASE_URL,
     MissingFilesOnHfGcsError,
     ReadInstruction,
 )
@@ -53,9 +52,16 @@ from .data_files import DataFilesDict, sanitize_patterns
 from .dataset_dict import DatasetDict, IterableDatasetDict
 from .fingerprint import Hasher
 from .info import DatasetInfo, DatasetInfosDict, PostProcessedInfo
-from .iterable_dataset import ExamplesIterable, IterableDataset, _generate_examples_from_tables_wrapper
+from .iterable_dataset import (
+    _generate_examples_from_tables_wrapper,
+    ExamplesIterable,
+    IterableDataset,
+)
 from .naming import camelcase_to_snakecase, filename_prefix_for_split
-from .operations.featurize.text_matching import get_features_sample_level, get_schema_of_sample_level_features
+from .operations.featurize.text_matching import (
+    get_features_sample_level,
+    get_schema_of_sample_level_features,
+)
 from .splits import Split, SplitDict, SplitGenerator
 from .utils import logging
 from .utils.download_manager import DownloadManager, GenerateMode

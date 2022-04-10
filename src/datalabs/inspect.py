@@ -17,21 +17,23 @@
 """ List and inspect datalab and metrics."""
 from __future__ import annotations
 
-from collections.abc import Sequence
-from collections.abc import Mapping
-
+from collections.abc import Mapping, Sequence
 from typing import Optional, Union
 
 import huggingface_hub
 
 from .features import Features
-from .load import dataset_module_factory, import_main_class, load_dataset_builder, metric_module_factory
+from .load import (
+    dataset_module_factory,
+    import_main_class,
+    load_dataset_builder,
+    metric_module_factory,
+)
 from .utils import DownloadConfig
 from .utils.download_manager import GenerateMode
 from .utils.logging import get_logger
 from .utils.streaming_download_manager import StreamingDownloadManager
 from .utils.version import Version
-
 
 logger = get_logger(__name__)
 

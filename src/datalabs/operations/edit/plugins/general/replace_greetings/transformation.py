@@ -4,12 +4,10 @@ import random
 import re
 import sys
 
-
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))
 )
 from edit.editing import *
-
 
 # Setting up a tuple of possible replaceable greetings and farewells
 GREETINGS = (

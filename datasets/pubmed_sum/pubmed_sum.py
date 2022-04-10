@@ -14,7 +14,7 @@
 # limitations under the License.
 
 import json
-import os
+
 import datalabs
 from datalabs.tasks import Summarization
 
@@ -25,6 +25,7 @@ _DESCRIPTION = """
  See: https://aclanthology.org/N18-2097.pdf 
  See: https://github.com/armancohan/long-summarization
 """
+
 _CITATION = """\
     @inproceedings{cohan-etal-2018-discourse,
     title = "A Discourse-Aware Attention Model for Abstractive Summarization of Long Documents",
@@ -65,8 +66,12 @@ class PubmedSumDataset(datalabs.GeneratorBasedBuilder):
     """PubmedSum Dataset."""
 
     _TRAIN_FILE = "https://huggingface.co/datalab/ccdv/pubmed-summarization/resolve/main/train.zip"
-    _VAL_FILE = "https://huggingface.co/datalab/ccdv/pubmed-summarization/resolve/main/val.zip"
-    _TEST_FILE = "https://huggingface.co/datalab/ccdv/pubmed-summarization/resolve/main/test.zip"
+    _VAL_FILE = (
+        "https://huggingface.co/datalab/ccdv/pubmed-summarization/resolve/main/val.zip"
+    )
+    _TEST_FILE = (
+        "https://huggingface.co/datalab/ccdv/pubmed-summarization/resolve/main/test.zip"
+    )
     BUILDER_CONFIGS = [
         PubmedSumConfig(
             name="section",
@@ -95,9 +100,8 @@ class PubmedSumDataset(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://github.com/armancohan/long-summarization",
             citation=_CITATION,
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
+            task_templates=[
+                Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT),
             ],
         )
 
@@ -133,6 +137,8 @@ class PubmedSumDataset(datalabs.GeneratorBasedBuilder):
                 if self.config.name == "document":
                     article = data["article_text"]
                 else:
-                    article = [item.strip() for sublist in data["sections"] for item in sublist]
+                    article = [
+                        item.strip() for sublist in data["sections"] for item in sublist
+                    ]
                 abstract = data["abstract_text"]
-                yield id_, {"text": ' '.join(article), "summary": ' '.join(abstract)}
+                yield id_, {"text": " ".join(article), "summary": " ".join(abstract)}
