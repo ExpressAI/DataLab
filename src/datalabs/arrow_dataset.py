@@ -824,9 +824,10 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                         return [func(self._getitem(index, decoded=False), labels_to_answers) for index in range_limit]
                     else:
                         return [func(self._getitem(index, decoded=False)) for index in range_limit]
+
                 with Pool(processes=num_proc) as pool:
                     attr_columns = []
-                    temp_columns = pool.map(process_batch, range(num_proc))
+                    temp_columns = pool.map(process_batch, range(num_proc)) # TODO(Pengfei): this is a little strange
                     for items in temp_columns:
                         attr_columns += items
 

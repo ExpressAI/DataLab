@@ -52,6 +52,7 @@ REQUIRED_PKGS = [
     "hatesonar",
     "dateparser",
     "seqeval",
+    "p_tqdm",
     "torch", # too larger
     # "explainaboard",
 ]
