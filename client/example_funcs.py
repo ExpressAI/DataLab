@@ -65,11 +65,11 @@ def text_matching_func(sample:dict):
 
     res_info_general_all = {}
 
-    res_info_general = get_features_sample_level_general.func(text1)
+    res_info_general = basic_features(text1)
     for k,v in res_info_general.items():
         res_info_general_all["text1" + "_" + k] =v
 
-    res_info_general = get_features_sample_level_general.func(text2)
+    res_info_general = basic_features(text2)
     for k,v in res_info_general.items():
         res_info_general_all["text2" + "_" + k] =v
 
@@ -86,7 +86,12 @@ def text_matching_func(sample:dict):
 
 
 
-
+"""
+from datalabs import load_dataset
+from example_funcs import summarization_func
+dataset = load_dataset("govreport")
+dataset_processed = dataset["test"].apply(summarization_func, mode = "memory", num_proc=10)
+"""
 
 @nlp_featurizing(name="summarization_func")
 def summarization_func(sample: dict):
@@ -96,11 +101,11 @@ def summarization_func(sample: dict):
 
     res_info_general_all = {}
 
-    res_info_general = get_features_sample_level_general.func(text)
+    res_info_general = basic_features(text)
     for k,v in res_info_general.items():
         res_info_general_all["text" + "_" + k] =v
 
-    res_info_general = get_features_sample_level_general.func(summary)
+    res_info_general = basic_features(summary)
     for k,v in res_info_general.items():
         res_info_general_all["summary" + "_" + k] =v
 
@@ -123,7 +128,7 @@ you can test this operation by:
 from datalabs import load_dataset
 from example_funcs import qa_multiple_choice_func
 dataset = load_dataset("metaphor_qa", "medium")
-dataset_processed = dataset.apply(qa_multiple_choice_func, mode = "memory")
+dataset_processed = dataset["test"].apply(qa_multiple_choice_func, mode = "memory")
 
 """
 @nlp_featurizing(name ="qa_multiple_choice_func")
@@ -140,7 +145,7 @@ def qa_multiple_choice_func(sample:dict):
     option2_length = len(options[1].split(" "))
 
 
-    res_info_general = get_features_sample_level_general.func(context)
+    res_info_general = basic_features(context)
     res_info_general_all = {}
     for k,v in res_info_general.items():
         res_info_general_all["context" + "_" + k] =v
