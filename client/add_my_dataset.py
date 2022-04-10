@@ -1,9 +1,8 @@
-from client import Client
-
-from example_funcs import (
+from example_funcs import (  # it depends on your task; you could also customized the function
     text_classification_func,
-)  # it depends on your task; you could also customized the function
+)
 
+from client import Client
 
 # client = Client(user_name="xxx", # the user name of your account: https://datalab.nlpedia.ai/user
 #                 password="yyy",  # the password of your account: https://datalab.nlpedia.ai/user
