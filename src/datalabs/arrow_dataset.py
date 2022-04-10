@@ -83,7 +83,8 @@ from .utils.typing import PathLike
 from .operations.data import  Data, TextData
 from .operations.operation import OperationFunction, DatasetOperation
 
-from p_tqdm import p_map
+import tqdm
+# from p_tqdm import p_map
 
 # from .operations.prompt.text_classification import *
 if TYPE_CHECKING:
@@ -773,11 +774,11 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
     def apply_memory(self, func, prefix = "", num_proc=1):
         result = self
         attr_columns = []
-
         if func._type.find("Inference") != -1:
             attr_columns = next(self.apply_basic(func))
 
         else:
+
             if num_proc == 1:
                 attr_columns = [item for item in self.apply_basic(func)]
             elif num_proc > 1:
@@ -792,9 +793,25 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                     else:
                         return func(sample)
 
+                with Pool(processes=num_proc) as pool:
+                    attr_columns = pool.map(process_each, range(self.num_rows))
+
+
+
+                #attr_columns = p_map(process_each, range(self.num_rows), num_cpus=num_proc)
                 # with Pool(processes=num_proc) as pool:
-                #     attr_columns = pool.map(process_each, range(self.num_rows))
-                attr_columns = p_map(process_each, range(self.num_rows), num_cpus=num_proc)
+                #     progress_bar = tqdm(total=self.num_rows)
+                #     attr_columns = tqdm(pool.imap(process_each, range(self.num_rows)))
+                # import multiprocessing
+                # with multiprocessing.Pool() as p:
+                #     attr_columns = list(tqdm.tqdm(p.imap(process_each, range(self.num_rows)), total=self.num_rows))
+                #     pool.close()
+                #     pool.join()
+                # for v in attr_columns:
+                #     print(v)
+
+                # from tqdm.contrib.concurrent import process_map  # or thread_map
+                # attr_columns = process_map(process_each, range(self.num_rows), max_workers=num_proc)
 
 
         attr_names = attr_columns[0].keys()
