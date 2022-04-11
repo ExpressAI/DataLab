@@ -12,10 +12,8 @@
 # limitations under the License.
 
 import csv
-
 import datalabs
 from datalabs.tasks import TextClassification
-from datalabs import Dataset
 
 _DESCRIPTION = """\
 CR is a customer review data set and each sample is labelled as positive or negative.
