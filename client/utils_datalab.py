@@ -1,5 +1,8 @@
+import json
+
 from datalabs import load_dataset
 from dataclasses import asdict, dataclass, field
+from datalabs.tasks import *
 import multiprocessing
 # this is task-dependent
 from aggregate.text_classification import get_features_dataset_level as get_features_dataset_level_text_classification
@@ -100,7 +103,37 @@ def get_info(dataset_name:str, sub_dataset_name_sdk:str, calculate_features = Fa
 
 
     # load dataset
-    dataset = load_dataset(dataset_name) if sub_dataset_name_sdk == None else load_dataset(dataset_name, sub_dataset_name_sdk)
+    if isinstance(dataset_name, str):
+        if sub_dataset_name_sdk is None:
+            dataset = load_dataset(dataset_name)
+        else:
+            dataset = load_dataset(dataset_name, sub_dataset_name_sdk)
+    else:
+        assert isinstance(dataset_name, dict), \
+            "Please set a dictionary indicating the json file for different split. " \
+            "E.g., data_files = {\"metadata\": \"metadata.json\", \"train\": \"train.json\"}"
+        assert "metadata" in dataset_name, "You have not provided a metadata.json file"
+
+        for v in dataset_name.values():
+            assert v.endswith(".json"), "We only support custom json files."
+
+        metadata_file = dataset_name.pop("metadata")
+        dataset = load_dataset("json", data_files=dataset_name)
+
+    # Update information of the dataset based on metadata.json
+    with open(metadata_file, "r") as f:
+        custom_metadata = json.load(f)
+
+    task_templates = []
+    for task in custom_metadata:
+        if task == "text_classification":
+            text_column = custom_metadata[task]["text_column"]
+            label_column = custom_metadata[task]["label_column"]
+            labels = custom_metadata[task]["labels"]
+            task_templates.append(TextClassification(text_column=text_column, label_column=label_column, labels=labels))
+        else:
+            raise NotImplementedError
+    dataset["train"]._info.task_templates = task_templates
 
     # get split
     all_splits = list(dataset['train']._info.splits.keys())

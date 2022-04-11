@@ -1,0 +1,7 @@
+{
+  "text_classification": {
+    "text_column": "text",
+    "label_column": "label",
+    "labels": [0, 1]
+  }
+}
