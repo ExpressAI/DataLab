@@ -76,6 +76,7 @@ csds | `document` | Summarization | ``` load_dataset("csds", "document") ``` | C
 csds | `usersumm` | DialogSummarization | ``` load_dataset("csds", "usersumm") ``` | Current definition: dialogue: `{"speaker": List[str], "text": List[str]}`, summary: `List[str]`  |
 csds | `agentsumm` | DialogSummarization | ``` load_dataset("csds", "agentsumm") ``` | Current definition: dialogue: `{"speaker": List[str], "text": List[str]}`, summary: `List[str]` |
 csds | `finalsumm` | DialogSummarization | ``` load_dataset("csds", "finalsumm") ``` | Current definition: dialogue: `{"speaker": List[str], "text": List[str]}`, summary: `List[str]` |
+nctb | `document` | Summarization | ``` load_dataset("nctb") ``` | Current definition: text, summary |
 
 ## Examples
 
