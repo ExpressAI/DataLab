@@ -1,9 +1,8 @@
 import unittest
 
-from data import Data, TextData
-import featurize.general
-
-import datalabs
+from datalabs import load_dataset
+from datalabs.operations.data import TextData
+from datalabs.operations.featurize import general
 
 
 class MyTestCase(unittest.TestCase):
@@ -16,15 +15,15 @@ class MyTestCase(unittest.TestCase):
         ]
         A = TextData(a)
 
-        B = A.apply(featurize.general.get_gender_bias)
+        B = A.apply(general.get_gender_bias)
         for b in B:
             print(b)
 
-        B = A.apply(featurize.general.get_lexical_richness)
+        B = A.apply(general.get_lexical_richness)
         for b in B:
             print(b)
 
-        B = A.apply(featurize.general.get_basic_words)
+        B = A.apply(general.get_basic_words)
         for b in B:
             print(b)
 

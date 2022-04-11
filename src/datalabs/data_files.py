@@ -4,7 +4,7 @@ from collections.abc import Callable
 from functools import partial
 import os
 from pathlib import Path, PurePath
-from typing import Optional, Union
+from typing import Dict, List, Optional, Union
 
 from fsspec.implementations.local import LocalFileSystem
 import huggingface_hub

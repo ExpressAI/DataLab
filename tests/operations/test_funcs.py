@@ -1,10 +1,9 @@
 import unittest
 
-from data import Data, TextData
+from data import TextData
 from featurize import *
-from operation import operation_function, OperationFunction
 
-import datalabs
+from datalabs import load_dataset
 
 """
 from datalab.operations.edit.core import add_typos_checklist

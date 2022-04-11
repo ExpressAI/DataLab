@@ -1,10 +1,9 @@
 import math
 import unittest
 
-from aggregate import *
-from featurize import *
-
 from datalabs import load_dataset
+from datalabs.operations.aggregate import get_average_length
+from datalabs.operations.featurize import get_length
 
 
 class MyTestCase(unittest.TestCase):

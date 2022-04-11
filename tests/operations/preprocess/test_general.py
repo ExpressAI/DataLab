@@ -1,8 +1,7 @@
 import unittest
 
-from preprocess import *
-
-from datalabs import load_dataset, operations
+from datalabs import load_dataset
+from datalabs.operations.preprocess import tokenize_nltk
 
 
 class MyTestCase(unittest.TestCase):

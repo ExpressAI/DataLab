@@ -5,7 +5,7 @@ from functools import wraps
 from itertools import groupby
 import os
 import tempfile
-from typing import Optional, Tuple, TypeVar, Union
+from typing import List, Optional, Tuple, TypeVar, Union
 
 import numpy as np
 import pyarrow as pa

@@ -1,8 +1,7 @@
 import unittest
 
-from featurize import *
-
 from datalabs import load_dataset
+from datalabs.operations.featurize import get_length
 
 
 class MyTestCase(unittest.TestCase):

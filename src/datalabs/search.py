@@ -4,7 +4,7 @@ import importlib.util
 import os
 from pathlib import PurePath
 import tempfile
-from typing import NamedTuple, Optional, TYPE_CHECKING, Union
+from typing import List, NamedTuple, Optional, TYPE_CHECKING, Union
 
 import numpy as np
 

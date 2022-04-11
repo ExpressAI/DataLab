@@ -1,8 +1,7 @@
 import unittest
 
-from data import Data, TextData
-
-import datalabs
+from datalabs import load_dataset
+from datalabs.operations.data import Data, TextData
 
 """
 from datalab.operations.edit.core import add_typos_checklist

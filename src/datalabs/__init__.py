@@ -50,10 +50,6 @@ from .combine import interleave_datasets
 from .constants import *
 from .dataset_dict import DatasetDict, IterableDatasetDict
 from .enums import PLMType, PromptShape, SettingType, SignalType
-from .evaluation.loaders import get_loader
-from .evaluation.processors import get_processor
-from .evaluation.processors.processor import Processor
-from .evaluation.processors.processor_registry import register_processor
 from .features import (
     Array2D,
     Array3D,
