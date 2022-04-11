@@ -4,7 +4,6 @@ from example_funcs import (  # it depends on your task; you could also customize
 
 from client import Client
 
-
 client = Client(
     user_name="xxx",  # the user name of your account: https://datalab.nlpedia.ai/user
     password="yyy",  # the password of your account: https://datalab.nlpedia.ai/user
