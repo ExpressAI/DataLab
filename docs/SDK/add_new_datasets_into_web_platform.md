@@ -1,84 +1,57 @@
 # Add New Datasets into the DataLab Web Platform
 
-DataLab provides an API which users can use to upload their own datasets into the DataLab web platform.
-There are following specific situations:
-
-
-## 1. Quickly add metadata information of a new dataset
-This is useful when you just want to quickly add a new record of your new dataset into the database without uploading any 
-data samples.
-
-```python
-
-client = Client(dataset_name_db="test_dataset")
-client.add_dataset_metadata()
-```
-where `dataset_name_db` denotes the name of dataset to be stored in the database.
-You can specify more metadata information by:
-
-```python
-
-client = Client(dataset_name_db="test_dataset",
-                 version = "origin",
-                 languages = ['en'],
-                 tasks = ['text-classification'],
-                 task_categories = ['text-classification'],)
-client.add_dataset_metadata()
-```
-
-
-## 2. Add new datasets based on implemented data loader scripts of the SDK without calculating additional features
-This is useful when:
-* you have already implemented a data loader scripts of the new dataset [here](https://github.com/ExpressAI/DataLab/tree/main/datasets).
-* you just want to add both the metadata and sample information into the database
-* you don't aim to calculate the additional features
-
-
-Note: so far, we only upload the first 20,000 samples into the web database.
-
-This involves two steps:
-
-#### (1) write a data loader script for your new dataset. You can refer to [`how to add new datasets into sdk`](https://github.com/ExpressAI/DataLab/blob/main/docs/add_new_datasets.md)
-
-#### (2) call the client function to add your dataset
-
-```python
-client = Client(dataset_name_db="test_dataset2", dataset_name_sdk="qc")
-client.add_dataset_from_sdk()
-```
-where
-* `dataset_name_db`: denotes the name of dataset to be stored in the database.
-* `dataset_name_sdk`: denotes the data loader script's name of your dataset.
-
-
-
-
-## 3. Add new datasets based on implemented data loader scripts of the SDK with calculated additional features
-This is useful when:
-* you have already implemented a data loader scripts of the new dataset [here](https://github.com/ExpressAI/DataLab/tree/main/datasets).
-* you just want to add both the metadata and sample information into the database
-* you plan to calculate the additional features
-
-Note: so far, we only upload the first 20,000 samples into the web database.
+DataLab provides an API which users can use to upload their own datasets into the DataLab web platform (privately or
+publicly) so that:
+* more deep analysis (bias, artifacts) could be made on the dataset in an interactive way
+* you can compare your dataset with existing similar ones to understand their own characteristics
+* more researcher will know your datasets
 
 
 
 This involves two steps:
 
-#### (1) write a data loader script for your new dataset. You can refer to [`how to add new datasets into sdk`](https://github.com/ExpressAI/DataLab/blob/main/docs/add_new_datasets.md)
+#### (1) Write a data loader script for your new dataset. You can refer to [`how to add new datasets into sdk`](https://github.com/ExpressAI/DataLab/blob/main/docs/add_new_datasets.md)
 
-#### (2) call the client function to add your dataset
+#### (2) Create an account at DataLab [web platform](https://datalab.nlpedia.ai/user).
+
+
+#### (3) Call the client function to add your dataset
 
 ```python
-client = Client(dataset_name_db="test_mr", dataset_name_sdk="mr", \
-                calculate_features = True, 
-                field = "text",
-                data_typology = 'textdataset')
-client.add_dataset_from_sdk()
+ # suppose that python script is located at DataLab/client/
+from client import Client
+
+"""
+this depends on your task; you could also customized the function by modifying 
+the script DataLab/client/example_funcs.py
+"""
+from example_funcs import text_classification_func 
+
+
+client = Client(
+                user_name="xxx", # the user name of your account: https://datalab.nlpedia.ai/user
+                password="yyy",  # the password of your account: https://datalab.nlpedia.ai/user
+                dataset_name_db="zzz", # you can specify any name based on your preference
+                dataset_name_sdk="../datasets/ttt", # this should be the name of your data loader script, 
+                sub_dataset_name_sdk="default",
+                feature_func = text_classification_func, # we provide some example functions (example_funcs.py) but you could customize them as well
+)
+client.add_dataset_from_sdk() # if you could successfully run this, you can find the dataset here: https://datalab.nlpedia.ai/datasets_explore/user_dataset
 ```
 where
-* `dataset_name_db`: denotes the name of dataset to be stored in the database.
-* `dataset_name_sdk`: denotes the data loader script's name of your dataset.
-* `calculate_features = True`: refers to additional features will be calculated (e.g., `text length`)
-* `field`: a field that features (e.g., `text length`) will be extracted from. It is usually task (or even dataset) dependent. We will give more docs about how to set it.
-* `data_typology`: the typology name of the dataset (We will give more explanation about this.)
+* `dataset_name_db`: denotes the name of the dataset to be stored in the database. You can specify any name based on your preference
+* `dataset_name_sdk`: denotes your dataset's data loader script path.
+* `feature_func`: is used to calculate sample-level (e.g., text length) and dataset-level features (e.g., the average of text length), which are usually
+ task-dependent. 
+    * DataLab provide [some templates](https://github.com/ExpressAI/DataLab/blob/main/client/example_funcs.py) for four types of task. You can either use them directly or develop new ones based on them.
+    * Usually, the process of feature calculation will take some time.
+    * We also provide a [template script](https://github.com/ExpressAI/DataLab/blob/main/client/add_my_dataset.py) for adding your dataset into web platform, feel free to instantiate it based on your needs.
+    * If your dataset is too large (>200M), please contact us.
+    
+    
+#### (4) View your dataset in DataLab web platform
+Once you successfully finished the above steps,  you can find the dataset 
+in your [private space]((https://datalab.nlpedia.ai/datasets_explore/user_dataset)) of DataLab web.
+
+
+#### (5) Make your dataset Public (Optional)

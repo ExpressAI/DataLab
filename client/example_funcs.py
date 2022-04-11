@@ -7,7 +7,12 @@ from featurize import nlp_featurizing
 """
 Note:
 (1) Here are just some example functions, feel free to custmoized them based on your tasks and needs
-(2) For all functions, the input and output are dictionaries
+(2) For all functions, the input and output are dictionaries. Specifically, input is one sample:dict whose structure is consistent with
+your definition in SDK. For example, in text classification task, one sample can be:
+
+from datalabs import load_dataset
+dataset = load_dataset("mr")
+sample = dataset["train"][0] # {"text":"I love this movie", "label":1}
 """
 
 
@@ -22,7 +27,6 @@ def text_classification_func(sample:dict):
         "label":int
     }
     """
-
 
     res_info_general = basic_features(sample["text"])
     """
