@@ -77,6 +77,8 @@ csds | `usersumm` | DialogSummarization | ``` load_dataset("csds", "usersumm") `
 csds | `agentsumm` | DialogSummarization | ``` load_dataset("csds", "agentsumm") ``` | Current definition: dialogue: `{"speaker": List[str], "text": List[str]}`, summary: `List[str]` |
 csds | `finalsumm` | DialogSummarization | ``` load_dataset("csds", "finalsumm") ``` | Current definition: dialogue: `{"speaker": List[str], "text": List[str]}`, summary: `List[str]` |
 nctb | `document` | Summarization | ``` load_dataset("nctb") ``` | Current definition: text, summary |
+gamewikisum | `document` | Summarization | ``` load_dataset("gamewikisum") ``` | Current definition: text, summary |
+gamewikisum | `multidoc` | MultiDocSummarization | ``` load_dataset("gamewikisum", "multidoc") ``` | Current definition: texts: `List[str]`, summary: `str` |
 
 ## Examples
 
