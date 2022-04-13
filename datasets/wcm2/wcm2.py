@@ -62,7 +62,7 @@ _LANGUAGES = ["zh","yue","bo","mn","ug","kk","ko"]
 
 class WCM2Config(datalabs.BuilderConfig):
     def __init__(self, data_url, **kwargs):
-        """BuilderConfig for MLQA
+        """BuilderConfig for wcm2
         Args:
           data_url: `string`, url to the dataset
           **kwargs: keyword arguments forwarded to super.
@@ -72,7 +72,7 @@ class WCM2Config(datalabs.BuilderConfig):
             Args:
                 **kwargs: keyword arguments forwarded to super.
             """
-            super(wcmConfig, self).__init__(version=datalabs.Version("2.0.0", ""), **kwargs)
+            super(WCM2Config, self).__init__(version=datalabs.Version("2.0.0", ""), **kwargs)
 
 class WCM2(datalabs.GeneratorBasedBuilder):
     VERSION = datalabs.Version("2.0.0")
