@@ -84,7 +84,7 @@ from .operations.data import  Data, TextData
 from .operations.operation import OperationFunction, DatasetOperation
 
 # import tqdm
-from p_tqdm import p_map
+from datalabs.utils.p_tqdm import p_map
 
 # from .operations.prompt.text_classification import *
 if TYPE_CHECKING:

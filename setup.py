@@ -29,6 +29,7 @@ REQUIRED_PKGS = [
     "xxhash",
     # for better multiprocessing
     "multiprocess",
+    "pathos"
     # to get metadata of optional dependencies such as torch or tensorflow for Python versions that don't have it
     "importlib_metadata;python_version<'3.8'",
     # to save datalabs locally or on any filesystem
@@ -52,7 +53,6 @@ REQUIRED_PKGS = [
     "hatesonar",
     "dateparser",
     "seqeval",
-    "p_tqdm",
     "torch", # too larger
     # "explainaboard",
 ]
@@ -180,7 +180,7 @@ EXTRAS_REQUIRE = {
 
 setup(
     name="datalabs",
-    version="0.3.8",
+    version="0.3.9",
     description="Datalabs",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
