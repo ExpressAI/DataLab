@@ -24,13 +24,19 @@ import datalabs
 from datalabs.tasks import Summarization
 
 _CITATION = """
-@misc{kornilova2019billsum,
-    title={BillSum: A Corpus for Automatic Summarization of US Legislation},
-    author={Anastassia Kornilova and Vlad Eidelman},
-    year={2019},
-    eprint={1910.00523},
-    archivePrefix={arXiv},
-    primaryClass={cs.CL}
+@inproceedings{kornilova-eidelman-2019-billsum,
+    title = "{B}ill{S}um: A Corpus for Automatic Summarization of {US} Legislation",
+    author = "Kornilova, Anastassia  and
+      Eidelman, Vladimir",
+    booktitle = "Proceedings of the 2nd Workshop on New Frontiers in Summarization",
+    month = nov,
+    year = "2019",
+    address = "Hong Kong, China",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/D19-5406",
+    doi = "10.18653/v1/D19-5406",
+    pages = "48--56",
+    abstract = "Automatic summarization methods have been studied on a variety of domains, including news and scientific articles. Yet, legislation has not previously been considered for this task, despite US Congress and state governments releasing tens of thousands of bills every year. In this paper, we introduce BillSum, the first dataset for summarization of US Congressional and California state bills. We explain the properties of the dataset that make it more challenging to process than other domains. Then, we benchmark extractive methods that consider neural sentence representations and traditional contextual features. Finally, we demonstrate that models built on Congressional bills can be used to summarize California billa, thus, showing that methods developed on this dataset can transfer to states without human-written summaries.",
 }
 """
 

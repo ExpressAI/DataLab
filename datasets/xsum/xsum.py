@@ -24,12 +24,20 @@ import datalabs
 from datalabs.tasks import Summarization
 
 _CITATION = """
-@article{Narayan2018DontGM,
-  title={Don't Give Me the Details, Just the Summary! Topic-Aware Convolutional Neural Networks for Extreme Summarization},
-  author={Shashi Narayan and Shay B. Cohen and Mirella Lapata},
-  journal={ArXiv},
-  year={2018},
-  volume={abs/1808.08745}
+@inproceedings{narayan-etal-2018-dont,
+    title = "Don{'}t Give Me the Details, Just the Summary! Topic-Aware Convolutional Neural Networks for Extreme Summarization",
+    author = "Narayan, Shashi  and
+      Cohen, Shay B.  and
+      Lapata, Mirella",
+    booktitle = "Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing",
+    month = oct # "-" # nov,
+    year = "2018",
+    address = "Brussels, Belgium",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/D18-1206",
+    doi = "10.18653/v1/D18-1206",
+    pages = "1797--1807",
+    abstract = "We introduce {``}extreme summarization{''}, a new single-document summarization task which does not favor extractive strategies and calls for an abstractive modeling approach. The idea is to create a short, one-sentence news summary answering the question {``}What is the article about?{''}. We collect a real-world, large-scale dataset for this task by harvesting online articles from the British Broadcasting Corporation (BBC). We propose a novel abstractive model which is conditioned on the article{'}s topics and based entirely on convolutional neural networks. We demonstrate experimentally that this architecture captures long-range dependencies in a document and recognizes pertinent content, outperforming an oracle extractive system and state-of-the-art abstractive approaches when evaluated automatically and by humans.",
 }
 """
 
