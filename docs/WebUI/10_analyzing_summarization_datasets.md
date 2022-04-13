@@ -70,6 +70,15 @@ samsum | `document`  | Summarization | ``` load_dataset("samsum", "document") ``
 samsum | `dialogue`  | DialogSummarization | ``` load_dataset("samsum", "dialogue") ``` | Current definition: dialogue: `{"speaker": List[str], "text": List[str]}`, summary: `List[str]` |
 qmsum | `document`  | Summarization | ``` load_dataset("qmsum", "document") ``` | Current definition: text, summary |
 qmsum | `query-based`  | QuerySummarization | ``` load_dataset("qmsum", "query-based") ``` | Current definition: text, summary, query |
+nlcs | `en2zh` | Summarization | ``` load_dataset("nlcs", "en2zh") ``` | Current definition: text, summary |
+cnewsum | `document` | Summarization | ``` load_dataset("cnewsum") ``` | Current definition: text, summary |
+csds | `document` | Summarization | ``` load_dataset("csds", "document") ``` | Current definition: text, summary |
+csds | `usersumm` | DialogSummarization | ``` load_dataset("csds", "usersumm") ``` | Current definition: dialogue: `{"speaker": List[str], "text": List[str]}`, summary: `List[str]`  |
+csds | `agentsumm` | DialogSummarization | ``` load_dataset("csds", "agentsumm") ``` | Current definition: dialogue: `{"speaker": List[str], "text": List[str]}`, summary: `List[str]` |
+csds | `finalsumm` | DialogSummarization | ``` load_dataset("csds", "finalsumm") ``` | Current definition: dialogue: `{"speaker": List[str], "text": List[str]}`, summary: `List[str]` |
+nctb | `document` | Summarization | ``` load_dataset("nctb") ``` | Current definition: text, summary |
+gamewikisum | `document` | Summarization | ``` load_dataset("gamewikisum") ``` | Current definition: text, summary |
+gamewikisum | `multidoc` | MultiDocSummarization | ``` load_dataset("gamewikisum", "multidoc") ``` | Current definition: texts: `List[str]`, summary: `str` |
 
 ## Examples
 
