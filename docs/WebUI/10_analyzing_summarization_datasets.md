@@ -79,6 +79,10 @@ csds | `finalsumm` | DialogSummarization | ``` load_dataset("csds", "finalsumm")
 nctb | `document` | Summarization | ``` load_dataset("nctb") ``` | Current definition: text, summary |
 gamewikisum | `document` | Summarization | ``` load_dataset("gamewikisum") ``` | Current definition: text, summary |
 gamewikisum | `multidoc` | MultiDocSummarization | ``` load_dataset("gamewikisum", "multidoc") ``` | Current definition: texts: `List[str]`, summary: `str` |
+ssn | `transductive-document` | Summarization | ``` load_dataset("ssn", "transductive-document") ``` | Current definition: text, summary |
+ssn | `inductive-document` | Summarization | ``` load_dataset("ssn", "inductive-document") ``` | Current definition: text, summary |
+ssn | `transductive-multidoc` | MultiDocSummarization | ``` load_dataset("ssn", "transductive-multidoc") ``` | Current definition: texts: `{"introduction": str, "references": List[str]}`, summary: `str` |
+ssn | `inductive-multidoc` | MultiDocSummarization | ``` load_dataset("ssn", "inductive-multidoc") ``` | Current definition: texts: `{"introduction": str, "references": List[str]}`, summary: `str` |
 
 ## Examples
 
