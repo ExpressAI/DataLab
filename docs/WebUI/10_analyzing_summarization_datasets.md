@@ -83,6 +83,10 @@ ssn | `transductive-document` | Summarization | ``` load_dataset("ssn", "transdu
 ssn | `inductive-document` | Summarization | ``` load_dataset("ssn", "inductive-document") ``` | Current definition: text, summary |
 ssn | `transductive-multidoc` | MultiDocSummarization | ``` load_dataset("ssn", "transductive-multidoc") ``` | Current definition: texts: `{"introduction": str, "references": List[str]}`, summary: `str` |
 ssn | `inductive-multidoc` | MultiDocSummarization | ``` load_dataset("ssn", "inductive-multidoc") ``` | Current definition: texts: `{"introduction": str, "references": List[str]}`, summary: `str` |
+pn_summary | `document` | Summarization | ``` load_dataset("pn_summary") ``` | Current definition: text, summary |
+scitldr | `tldr-auth` | Summarization | ``` load_dataset("scitldr", "tldr-auth") ``` | Current definition: text: `str`, summary: `str` |
+scitldr | `tldr-pr` | Summarization | ``` load_dataset("scitldr", "tldr-pr") ``` | Current definition: text: `str`, summary: `List[str]` |
+gazeta | `document` |  Summarization | ``` load_dataset("gazeta") ``` | Current definition: text, summary |
 
 ## Examples
 
