@@ -30,7 +30,7 @@ url_train_small = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/mas
 url_train_medium = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/master/data/filtered/train.csv"
 url_train_large = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/master/data/filtered/train_xl.csv"
 url_validation = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/master/data/filtered/dev.csv"
-url_test = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/master/data/filtered/test.csv"
+url_test = "DATALAB_PRIVATE_LOC/metaphor_qa/test.csv"
 
 
 
@@ -154,10 +154,10 @@ class MetaphorQA(datalabs.GeneratorBasedBuilder):
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={"filepath": train_path}
             ),
-            # datalabs.SplitGenerator(
-            #     name=datalabs.Split.VALIDATION,
-            #     gen_kwargs={"filepath": validation_path}
-            # ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"filepath": validation_path}
+            ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 gen_kwargs={"filepath": test_path}
