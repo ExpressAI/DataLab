@@ -43,7 +43,7 @@ _CITATION = """\
 }
 """
 
-_BASE_URL = "https://allennlp.s3-us-west-2.amazonaws.com/dont_stop_pretraining/data/"
+_BASE_URL = "https://allennlp.s3-us-west-2.amazonaws.com/dont_stop_pretraining/data"
 
 class DontStopPretrainingConfig(datalabs.BuilderConfig):
     """BuilderConfig for Conll2003"""
@@ -190,6 +190,5 @@ class DontStopPretraining(datalabs.GeneratorBasedBuilder):
 
         with open(filepath, encoding="utf-8") as jsonl_file:
             for id_, line in enumerate(jsonl_file):
-                print(line)
                 data = json.loads(line)
                 yield id_, {"text": data["text"], "label": data["label"]}
