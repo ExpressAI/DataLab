@@ -16,45 +16,44 @@ import datalabs
 from datalabs.tasks import TextClassification
 
 _DESCRIPTION = """\
-ChemProt is a publicly available compilation of chemical-protein-disease annotation
-resources that enables the study of systems pharmacology for a small molecule across
-multiple layers of complexity from molecular to clinical levels.
-https://pubmed.ncbi.nlm.nih.gov/26876982/
+ACL-ARC is a dataset of nearly 2,000 citations annotated for their function.
+https://aclanthology.org/Q18-1028/
 
 It was curated into a format for text classification by https://arxiv.org/abs/2004.10964
 """
 
 _CITATION = """\
-@article{kringelum2016chemprot,
-  title={ChemProt-3.0: a global chemical biology diseases mapping},
-  author={Kringelum, Jens and Kjaerulff, Sonny Kim and Brunak, S{\o}ren and Lund, Ole and Oprea, Tudor I and Taboureau, Olivier},
-  journal={Database},
-  volume={2016},
-  year={2016},
-  publisher={Oxford Academic}
+@article{jurgens-etal-2018-measuring,
+    title = "Measuring the Evolution of a Scientific Field through Citation Frames",
+    author = "Jurgens, David  and
+      Kumar, Srijan  and
+      Hoover, Raine  and
+      McFarland, Dan  and
+      Jurafsky, Dan",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "6",
+    year = "2018",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/Q18-1028",
+    doi = "10.1162/tacl_a_00028",
+    pages = "391--406",
 }
 """
 
-_TRAIN_DOWNLOAD_URL = "https://allennlp.s3-us-west-2.amazonaws.com/dont_stop_pretraining/data/chemprot/train.jsonl"
-_DEV_DOWNLOAD_URL = "https://allennlp.s3-us-west-2.amazonaws.com/dont_stop_pretraining/data/chemprot/dev.jsonl"
-_TEST_DOWNLOAD_URL = "https://allennlp.s3-us-west-2.amazonaws.com/dont_stop_pretraining/data/chemprot/test.jsonl"
+_TRAIN_DOWNLOAD_URL = "https://allennlp.s3-us-west-2.amazonaws.com/dont_stop_pretraining/data/citation_intent/train.jsonl"
+_DEV_DOWNLOAD_URL = "https://allennlp.s3-us-west-2.amazonaws.com/dont_stop_pretraining/data/citation_intent/dev.jsonl"
+_TEST_DOWNLOAD_URL = "https://allennlp.s3-us-west-2.amazonaws.com/dont_stop_pretraining/data/citation_intent/test.jsonl"
 _CLASS_LABELS = [
-    "ACTIVATOR",
-    "AGONIST",
-    "AGONIST-ACTIVATOR",
-    "AGONIST-INHIBITOR",
-    "ANTAGONIST",
-    "DOWNREGULATOR",
-    "INDIRECT-DOWNREGULATOR",
-    "INDIRECT-UPREGULATOR",
-    "INHIBITOR",
-    "PRODUCT-OF",
-    "SUBSTRATE",
-    "SUBSTRATE_PRODUCT-OF",
-    "UPREGULATOR"
+    "Background",
+    "CompareOrContrast",
+    "Extends",
+    "Future",
+    "Motivation",
+    "Uses",
 ]
 
-class ChemProt(datalabs.GeneratorBasedBuilder):
+class CitationIntent(datalabs.GeneratorBasedBuilder):
     def _info(self):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
@@ -64,7 +63,7 @@ class ChemProt(datalabs.GeneratorBasedBuilder):
                     "label": datalabs.features.ClassLabel(names=_CLASS_LABELS),
                 }
             ),
-            homepage="https://pubmed.ncbi.nlm.nih.gov/26876982/",
+            homepage="",
             citation=_CITATION,
             languages=["en"],
             task_templates=[TextClassification(text_column="text", label_column="label")],

@@ -16,45 +16,50 @@ import datalabs
 from datalabs.tasks import TextClassification
 
 _DESCRIPTION = """\
-ChemProt is a publicly available compilation of chemical-protein-disease annotation
-resources that enables the study of systems pharmacology for a small molecule across
-multiple layers of complexity from molecular to clinical levels.
-https://pubmed.ncbi.nlm.nih.gov/26876982/
+Hyperpartisan news is news that takes an extreme left-wing or right-wing standpoint. If
+one is able to reliably compute this meta information, news articles may be
+automatically tagged, this way encouraging or discouraging readers to consume the text.
+It is an open question how successfully hyperpartisan news detection can be automated,
+and the goal of this SemEval task was to shed light on the state of the art. The SemEval
+2019 shared task developed new resources for this purpose, including a manually labeled
+dataset with 1,273 articles, and a second dataset with 754,000 articles, labeled via
+distant supervision.
+https://aclanthology.org/S19-2145/
 
 It was curated into a format for text classification by https://arxiv.org/abs/2004.10964
 """
 
 _CITATION = """\
-@article{kringelum2016chemprot,
-  title={ChemProt-3.0: a global chemical biology diseases mapping},
-  author={Kringelum, Jens and Kjaerulff, Sonny Kim and Brunak, S{\o}ren and Lund, Ole and Oprea, Tudor I and Taboureau, Olivier},
-  journal={Database},
-  volume={2016},
-  year={2016},
-  publisher={Oxford Academic}
+@inproceedings{kiesel-etal-2019-semeval,
+    title = "{S}em{E}val-2019 Task 4: Hyperpartisan News Detection",
+    author = "Kiesel, Johannes  and
+      Mestre, Maria  and
+      Shukla, Rishabh  and
+      Vincent, Emmanuel  and
+      Adineh, Payam  and
+      Corney, David  and
+      Stein, Benno  and
+      Potthast, Martin",
+    booktitle = "Proceedings of the 13th International Workshop on Semantic Evaluation",
+    month = jun,
+    year = "2019",
+    address = "Minneapolis, Minnesota, USA",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/S19-2145",
+    doi = "10.18653/v1/S19-2145",
+    pages = "829--839",
 }
 """
 
-_TRAIN_DOWNLOAD_URL = "https://allennlp.s3-us-west-2.amazonaws.com/dont_stop_pretraining/data/chemprot/train.jsonl"
-_DEV_DOWNLOAD_URL = "https://allennlp.s3-us-west-2.amazonaws.com/dont_stop_pretraining/data/chemprot/dev.jsonl"
-_TEST_DOWNLOAD_URL = "https://allennlp.s3-us-west-2.amazonaws.com/dont_stop_pretraining/data/chemprot/test.jsonl"
+_TRAIN_DOWNLOAD_URL = "https://allennlp.s3-us-west-2.amazonaws.com/dont_stop_pretraining/data/hyperpartisan_news/train.jsonl"
+_DEV_DOWNLOAD_URL = "https://allennlp.s3-us-west-2.amazonaws.com/dont_stop_pretraining/data/hyperpartisan_news/dev.jsonl"
+_TEST_DOWNLOAD_URL = "https://allennlp.s3-us-west-2.amazonaws.com/dont_stop_pretraining/data/hyperpartisan_news/test.jsonl"
 _CLASS_LABELS = [
-    "ACTIVATOR",
-    "AGONIST",
-    "AGONIST-ACTIVATOR",
-    "AGONIST-INHIBITOR",
-    "ANTAGONIST",
-    "DOWNREGULATOR",
-    "INDIRECT-DOWNREGULATOR",
-    "INDIRECT-UPREGULATOR",
-    "INHIBITOR",
-    "PRODUCT-OF",
-    "SUBSTRATE",
-    "SUBSTRATE_PRODUCT-OF",
-    "UPREGULATOR"
+    "false",
+    "true",
 ]
 
-class ChemProt(datalabs.GeneratorBasedBuilder):
+class CitationIntent(datalabs.GeneratorBasedBuilder):
     def _info(self):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
@@ -64,7 +69,7 @@ class ChemProt(datalabs.GeneratorBasedBuilder):
                     "label": datalabs.features.ClassLabel(names=_CLASS_LABELS),
                 }
             ),
-            homepage="https://pubmed.ncbi.nlm.nih.gov/26876982/",
+            homepage="",
             citation=_CITATION,
             languages=["en"],
             task_templates=[TextClassification(text_column="text", label_column="label")],
@@ -88,5 +93,8 @@ class ChemProt(datalabs.GeneratorBasedBuilder):
 
         with open(filepath, encoding="utf-8") as jsonl_file:
             for id_, line in enumerate(jsonl_file):
+                # Necessary to fix poorly formatted file:
+                # datas = json.loads('['+line.replace('}{','},{')+']')
+                # for data in datas:
                 data = json.loads(line)
-                yield id_, {"text": data["text"], "label": data["label"]}
+                yield data["id"], {"text": data["text"], "label": data["label"]}
