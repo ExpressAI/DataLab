@@ -1,12 +1,13 @@
-import json
-import os
 import csv
 import datalabs
 from datalabs.tasks import QuestionAnsweringMultipleChoices
-#from featurize.general import get_features_sample_level
-from featurize.qa_multiple_choices import get_features_sample_level, get_schema_of_sample_level_features
-from datalabs.utils.more_features import prefix_dict_key, get_feature_arguments
+from datalabs.operations.featurize.qa_multiple_choices import get_features_sample_level, get_schema_of_sample_level_features
 
+from datalabs.utils import private_utils
+from datalabs.utils.logging import get_logger
+from datalabs.utils.more_features import get_feature_arguments
+
+logger = get_logger(__name__)
 
 def infer_schema_dataset_level(sample_level_schema:dict):
 
@@ -30,10 +31,7 @@ url_train_small = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/mas
 url_train_medium = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/master/data/filtered/train.csv"
 url_train_large = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/master/data/filtered/train_xl.csv"
 url_validation = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/master/data/filtered/dev.csv"
-url_test = "DATALAB_PRIVATE_LOC/metaphor_qa/test.csv"
-
-
-
+url_test = f"{private_utils.PRIVATE_LOC}/metaphor_qa/test.csv"
 
 
 class MetaphorQAConfig(datalabs.BuilderConfig):
@@ -47,9 +45,7 @@ class MetaphorQAConfig(datalabs.BuilderConfig):
         super(MetaphorQAConfig, self).__init__(**kwargs)
 
 
-FIELD = "context"
 class MetaphorQA(datalabs.GeneratorBasedBuilder):
-
 
     BUILDER_CONFIGS = [
         MetaphorQAConfig(
@@ -71,13 +67,8 @@ class MetaphorQA(datalabs.GeneratorBasedBuilder):
 
     DEFAULT_CONFIG_NAME = "medium"
 
-
-
     def _info(self):
-
-
-
-        features_dataset = {}
+        features_dataset = datalabs.Features()
         features_sample = datalabs.Features(
                 {
                     "id": datalabs.Value("string"),
@@ -100,19 +91,9 @@ class MetaphorQA(datalabs.GeneratorBasedBuilder):
             additional_features = datalabs.Features(dict_feature_argument)
             features_sample.update(additional_features)
 
-            # print(features_sample)
-
-
             dataset_level_schema = infer_schema_dataset_level(sample_level_schema)
             dict_feature_argument = get_feature_arguments(dataset_level_schema, field="avg", feature_level="dataset_level")
             features_dataset.update(datalabs.Features(dict_feature_argument))
-
-
-
-
-
-
-
 
         return datalabs.DatasetInfo(
             # This is the description that will appear on the datasets page.
@@ -145,11 +126,9 @@ class MetaphorQA(datalabs.GeneratorBasedBuilder):
         elif self.config.name == "large":
             train_path = dl_manager.download_and_extract(url_train_large)
 
-
         validation_path = dl_manager.download_and_extract(url_validation)
-        test_path = dl_manager.download_and_extract(url_test)
 
-        return [
+        split_gens = [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={"filepath": train_path}
@@ -158,11 +137,19 @@ class MetaphorQA(datalabs.GeneratorBasedBuilder):
                 name=datalabs.Split.VALIDATION,
                 gen_kwargs={"filepath": validation_path}
             ),
-            datalabs.SplitGenerator(
-                name=datalabs.Split.TEST,
-                gen_kwargs={"filepath": test_path}
-            ),
         ]
+        if private_utils.has_private_loc():
+            test_path = dl_manager.download_and_extract(url_test)
+            split_gens += [
+                datalabs.SplitGenerator(
+                    name=datalabs.Split.TEST,
+                    gen_kwargs={"filepath": test_path}
+                )
+            ]
+        else:
+            logger.warning('Skipping metaphor_qa test set because '
+                           f'{private_utils.PRIVATE_LOC} is not set')
+        return split_gens
 
     def _generate_examples(self, filepath):
         """Yields examples."""
