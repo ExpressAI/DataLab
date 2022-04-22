@@ -25,8 +25,9 @@ class Client:
                  calculate_features=False,
                  feature_func=None,
                  data_typology="textdataset",
+                 end_point_add_dataset = "https://datalab.nlpedia.ai/api/upload_new_dataset",
                  ):
-        self._end_point_add_dataset = "https://datalab.nlpedia.ai/api/upload_new_dataset"
+        self._end_point_add_dataset = end_point_add_dataset
 
         self.user_name = user_name
         self.password = password
