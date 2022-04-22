@@ -35,8 +35,8 @@ Suppose the dataset name to be added is `cr`, we need to:
 ```
 
 ## 4. Set up a pull request (Optional)
-Once you successfully finished the above steps, if you would like to make your dataset public, you can set up 
-a pull request.
+Once you successfully finished the above steps, if you would like to make your dataset
+public, you can set up a pull request.
 
 ## 5. Update your updated information of your dataset (Recommened)
 Once you successfully add a new dataset, it would be nice if you could update 
@@ -72,7 +72,18 @@ For example,
    * if you want to upload your dataset into DataLab web platform (which provides a bunch of data visualization and analysis), you can follow
    this [doc](https://github.com/ExpressAI/DataLab/blob/main/docs/SDK/add_new_datasets_into_web_platform.md).
 
-
-
 NOTE:
 * Usually, using the lower case string for the script name (arxiv_sum.py) while camel case for the class name (`ArxivSum`).
+   
+#### what if there is private data that I want to use?
+
+DataLab has a special environmental variable `DATALAB_PRIVATE_LOC` that you can use to
+store private datasets. It can be a web location or a location on your filesystem.
+Insert this exact string `DATALAB_PRIVATE_LOC` into your dataset location, and then
+set an environmental variable:
+
+    export DATALAB_PRIVATE_LOC=/path/to/private/root
+
+and the environmental variable will be substituted into your dataset path. You can
+seen an example of how this is done in the
+[metaphor_qa dataloader](https://github.com/ExpressAI/DataLab/blob/main/datasets/metaphor_qa/metaphor_qa.py).
