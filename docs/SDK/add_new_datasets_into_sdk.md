@@ -84,4 +84,6 @@ set an environmental variable:
 
     export DATALAB_PRIVATE_LOC=/path/to/private/root
 
-and the environmental variable will be substituted into your dataset path.
+and the environmental variable will be substituted into your dataset path. You can
+seen an example of how this is done in the
+[metaphor_qa dataloader](https://github.com/ExpressAI/DataLab/blob/main/datasets/metaphor_qa/metaphor_qa.py).
