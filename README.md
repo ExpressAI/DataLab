@@ -45,11 +45,13 @@ pip install .
 python -m nltk.downloader omw-1.4 # to support more feature calculation
 ```
 
-## Getting started (Documentation)
-Here we give several examples to showcase the usage of DataLab. For more information, please refer to the corresponding sections in our [**documentation**](https://expressai.github.io/DataLab/).
+## Using DataLab
+Below we give several simple examples to showcase the usage of DataLab:
 
-
-
+You can also view documentation:
+* [**Online Tutorial**](https://expressai.github.io/DataLab/)
+* [**Adding Datasets to the SDK**](docs/SDK/add_new_datasets_into_sdk.md)
+* [**Adding a new Task to the SDK**](docs/SDK/add_new_task_schema.md)
 
 
 ```python
