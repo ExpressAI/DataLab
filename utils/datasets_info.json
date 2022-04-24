@@ -1,0 +1,1467 @@
+[
+    {
+        "script_name": "adv_mtl",
+        "dataset_class_name": "AdvMtl",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "ag_news",
+        "dataset_class_name": "AGNews",
+        "sub_datasets": [],
+        "lanaguages": [
+            "en"
+        ],
+        "task_templates": [
+            "topic-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "app_reviews",
+        "dataset_class_name": "AppReviews",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "amazon_polarity",
+        "dataset_class_name": "AmazonPolarity",
+        "sub_datasets": [
+            "amazon_polarity"
+        ],
+        "lanaguages": [],
+        "task_templates": null,
+        "splits": null
+    },
+    {
+        "script_name": "tweets_hate_speech_detection",
+        "dataset_class_name": "TweetsHateSpeechDetection",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "dbpedia_14",
+        "dataset_class_name": "DBpedia14",
+        "sub_datasets": [
+            "dbpedia_14"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "hate_speech_offensive",
+        "dataset_class_name": "HateSpeechOffensive",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "hate_speech18",
+        "dataset_class_name": "HateSpeech18",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "tweet_eval",
+        "dataset_class_name": "TweetEval",
+        "sub_datasets": [
+            "emoji",
+            "emotion",
+            "hate",
+            "irony",
+            "offensive",
+            "sentiment",
+            "stance_abortion",
+            "stance_atheism",
+            "stance_climate",
+            "stance_feminist",
+            "stance_hillary"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "amazon_reviews_multi",
+        "dataset_class_name": "AmazonReviewsMulti",
+        "sub_datasets": [
+            "all_languages",
+            "de",
+            "en",
+            "es",
+            "fr",
+            "ja",
+            "zh"
+        ],
+        "lanaguages": [],
+        "task_templates": null,
+        "splits": null
+    },
+    {
+        "script_name": "banking77",
+        "dataset_class_name": "Banking77",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "yahoo_answers_topics",
+        "dataset_class_name": "YahooAnswersTopics",
+        "sub_datasets": [
+            "yahoo_answers_topics"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "poem_sentiment",
+        "dataset_class_name": "PoemSentiment",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "snips_built_in_intents",
+        "dataset_class_name": "SnipsBuiltInIntents",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "sms_spam",
+        "dataset_class_name": "SmsSpam",
+        "sub_datasets": [
+            "plain_text"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "snli",
+        "dataset_class_name": "Snli",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "natural-language-inference"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "multi_nli",
+        "dataset_class_name": "MultiNli",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "natural-language-inference"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "financial_phrasebank",
+        "dataset_class_name": "FinancialPhrasebank",
+        "sub_datasets": [
+            "sentences_allagree",
+            "sentences_75agree",
+            "sentences_66agree",
+            "sentences_50agree"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "sick",
+        "dataset_class_name": "SICK",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "natural-language-inference"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "glue",
+        "dataset_class_name": "Glue",
+        "sub_datasets": [
+            "cola",
+            "sst2",
+            "mrpc",
+            "qqp",
+            "stsb",
+            "mnli",
+            "mnli_mismatched",
+            "mnli_matched",
+            "qnli",
+            "rte",
+            "wnli",
+            "ax"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "cnn_dailymail",
+        "dataset_class_name": "CnnDailymail",
+        "sub_datasets": [
+            "3.0.0",
+            "1.0.0",
+            "2.0.0"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "xsum",
+        "dataset_class_name": "Xsum",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "arxiv_sum",
+        "dataset_class_name": "ArxivSumDataset",
+        "sub_datasets": [
+            "section",
+            "document"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "pubmed_sum",
+        "dataset_class_name": "PubmedSumDataset",
+        "sub_datasets": [
+            "section",
+            "document"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "xlsum",
+        "dataset_class_name": "Xlsum",
+        "sub_datasets": [
+            "oromo",
+            "french",
+            "amharic",
+            "arabic",
+            "azerbaijani",
+            "bengali",
+            "burmese",
+            "chinese_simplified",
+            "chinese_traditional",
+            "welsh",
+            "english",
+            "kirundi",
+            "gujarati",
+            "hausa",
+            "hindi",
+            "igbo",
+            "indonesian",
+            "japanese",
+            "korean",
+            "kyrgyz",
+            "marathi",
+            "spanish",
+            "scottish_gaelic",
+            "nepali",
+            "pashto",
+            "persian",
+            "pidgin",
+            "portuguese",
+            "punjabi",
+            "russian",
+            "serbian_cyrillic",
+            "serbian_latin",
+            "sinhala",
+            "somali",
+            "swahili",
+            "tamil",
+            "telugu",
+            "thai",
+            "tigrinya",
+            "turkish",
+            "ukrainian",
+            "urdu",
+            "uzbek",
+            "vietnamese",
+            "yoruba"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "billsum",
+        "dataset_class_name": "Billsum",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "squad",
+        "dataset_class_name": "Squad",
+        "sub_datasets": [
+            "plain_text"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-extractive"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "squad_v2",
+        "dataset_class_name": "SquadV2",
+        "sub_datasets": [
+            "squad_v2"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-extractive"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "wnut_17",
+        "dataset_class_name": "WNUT_17",
+        "sub_datasets": [
+            "wnut_17"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "named-entity-recognition"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "conll2003",
+        "dataset_class_name": "Conll2003",
+        "sub_datasets": [
+            "pos",
+            "ner",
+            "chunking"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "part-of-speech"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "emotion",
+        "dataset_class_name": "Emotion",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "super_glue",
+        "dataset_class_name": "SuperGlue",
+        "sub_datasets": [
+            "boolq",
+            "cb",
+            "copa",
+            "multirc",
+            "record",
+            "rte",
+            "wic",
+            "wsc",
+            "wsc.fixed",
+            "axb",
+            "axg"
+        ],
+        "lanaguages": [],
+        "task_templates": null,
+        "splits": null
+    },
+    {
+        "script_name": "yelp_review_full",
+        "dataset_class_name": "YelpReviewFull",
+        "sub_datasets": [
+            "yelp_review_full"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "mr",
+        "dataset_class_name": "MR",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "sentiment-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "ontonotes_ner",
+        "dataset_class_name": "OntonotesNER",
+        "sub_datasets": [
+            "notebc",
+            "notebn",
+            "notemz",
+            "notenw",
+            "notetc",
+            "notewb"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "named-entity-recognition"
+        ],
+        "splits": null
+    },
+    {},
+    {
+        "script_name": "trivia_qa",
+        "dataset_class_name": "TriviaQa",
+        "sub_datasets": [
+            "rc",
+            "rc.nocontext",
+            "unfiltered",
+            "unfiltered.nocontext",
+            "rc.web",
+            "rc.web.nocontext",
+            "rc.wikipedia",
+            "rc.wikipedia.nocontext"
+        ],
+        "lanaguages": [],
+        "task_templates": null,
+        "splits": null
+    },
+    {
+        "script_name": "quoref",
+        "dataset_class_name": "Quoref",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-extractive"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "ropes",
+        "dataset_class_name": "Ropes",
+        "sub_datasets": [
+            "plain_text"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-extractive"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "govreport",
+        "dataset_class_name": "GovReportDataset",
+        "sub_datasets": [
+            "document"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "race",
+        "dataset_class_name": "Race",
+        "sub_datasets": [
+            "high",
+            "middle",
+            "all"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-multiple-choices-with-context"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "drop",
+        "dataset_class_name": "Drop",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-abstractive"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "squad_adversarial",
+        "dataset_class_name": "SquadAdversarial",
+        "sub_datasets": [
+            "AddSent",
+            "AddOneSent"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-extractive"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "fb15k_237",
+        "dataset_class_name": "FB15k237Dataset",
+        "sub_datasets": [
+            "origin",
+            "readable"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "kg-link-prediction"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "metaphor_qa",
+        "dataset_class_name": "MetaphorQA",
+        "sub_datasets": [
+            "small",
+            "medium",
+            "large"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-multiple-choices-with-context"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "afqmc",
+        "dataset_class_name": "AFQMC",
+        "sub_datasets": [],
+        "lanaguages": [
+            "zh"
+        ],
+        "task_templates": [
+            "natural-language-inference"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "atis",
+        "dataset_class_name": "ATIS",
+        "sub_datasets": [],
+        "lanaguages": [
+            "en"
+        ],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "bigpatent",
+        "dataset_class_name": "BigPatentDataset",
+        "sub_datasets": [
+            "document"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "commonsense_qa",
+        "dataset_class_name": "CommonsenseQa",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-multiple-choices-without-context"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "cr",
+        "dataset_class_name": "CR",
+        "sub_datasets": [],
+        "lanaguages": [
+            "en"
+        ],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "dialogsum",
+        "dataset_class_name": "DialogSumDataset",
+        "sub_datasets": [
+            "document",
+            "dialogue"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "dialog_summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "duorc",
+        "dataset_class_name": "Duorc",
+        "sub_datasets": [
+            "SelfRC",
+            "ParaphraseRC"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-extractive"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "hotpot_qa",
+        "dataset_class_name": "HotpotQA",
+        "sub_datasets": [
+            "distractor",
+            "fullwiki"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-hotpot"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "laptop14",
+        "dataset_class_name": "Laptop14",
+        "sub_datasets": [],
+        "lanaguages": [
+            "en"
+        ],
+        "task_templates": [
+            "aspect-based-sentiment-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "multinews",
+        "dataset_class_name": "MultiNewsDataset",
+        "sub_datasets": [
+            "raw-single",
+            "raw-cleaned-single",
+            "preprocessed-single",
+            "truncated-single",
+            "raw-multi",
+            "raw-cleaned-multi",
+            "preprocessed-multi",
+            "truncated-multi"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "multi_doc_summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "multi_xscience",
+        "dataset_class_name": "MultiXScienceDataset",
+        "sub_datasets": [
+            "single-document",
+            "multi-document"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "multi_doc_summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "openbookqa",
+        "dataset_class_name": "Openbookqa",
+        "sub_datasets": [
+            "main",
+            "additional"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-multiple-choices-without-context"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "qc",
+        "dataset_class_name": "QC",
+        "sub_datasets": [],
+        "lanaguages": [
+            "en"
+        ],
+        "task_templates": [
+            "question-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "qmsum",
+        "dataset_class_name": "QMSumDataset",
+        "sub_datasets": [
+            "document",
+            "query-based"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "query_summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "reddit_tifu",
+        "dataset_class_name": "RedditTIFUDataset",
+        "sub_datasets": [
+            "short",
+            "long"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "restaurant14",
+        "dataset_class_name": "Restaurant14",
+        "sub_datasets": [],
+        "lanaguages": [
+            "en"
+        ],
+        "task_templates": [
+            "aspect-based-sentiment-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "restaurant16",
+        "dataset_class_name": "Restaurant16",
+        "sub_datasets": [],
+        "lanaguages": [
+            "en"
+        ],
+        "task_templates": [
+            "aspect-based-sentiment-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "samsum",
+        "dataset_class_name": "SAMSumDataset",
+        "sub_datasets": [
+            "document",
+            "dialogue"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "spider",
+        "dataset_class_name": "Spider",
+        "sub_datasets": [
+            "spider"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "text-to-sql"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "sst2",
+        "dataset_class_name": "SST2",
+        "sub_datasets": [],
+        "lanaguages": [
+            "en"
+        ],
+        "task_templates": [
+            "sentiment-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "sst5",
+        "dataset_class_name": "SST5",
+        "sub_datasets": [],
+        "lanaguages": [
+            "en"
+        ],
+        "task_templates": [
+            "sentiment-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "subj",
+        "dataset_class_name": "SUBJ",
+        "sub_datasets": [],
+        "lanaguages": [
+            "en"
+        ],
+        "task_templates": [
+            "sentiment-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "twitter",
+        "dataset_class_name": "Twitter",
+        "sub_datasets": [],
+        "lanaguages": [
+            "en"
+        ],
+        "task_templates": [
+            "aspect-based-sentiment-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "wikihow",
+        "dataset_class_name": "WikiHowDataset",
+        "sub_datasets": [
+            "document"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "wikisum",
+        "dataset_class_name": "WikiSumDataset",
+        "sub_datasets": [
+            "document"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "wiki_hop",
+        "dataset_class_name": "WikiHop",
+        "sub_datasets": [
+            "original",
+            "masked"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-extractive"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "winogrande",
+        "dataset_class_name": "Winogrande",
+        "sub_datasets": [
+            "winogrande_xs",
+            "winogrande_s",
+            "winogrande_m",
+            "winogrande_l",
+            "winogrande_xl",
+            "winogrande_debiased"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-multiple-choices-without-context"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "ai2_arc",
+        "dataset_class_name": "Ai2Arc",
+        "sub_datasets": [
+            "ARC-Challenge",
+            "ARC-Easy"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-multiple-choices-without-context"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "codah",
+        "dataset_class_name": "Codah",
+        "sub_datasets": [
+            "codah",
+            "fold_0",
+            "fold_1",
+            "fold_2",
+            "fold_3",
+            "fold_4"
+        ],
+        "lanaguages": [],
+        "task_templates": null,
+        "splits": null
+    },
+    {
+        "script_name": "piqa",
+        "dataset_class_name": "Piqa",
+        "sub_datasets": [
+            "plain_text"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-multiple-choices-without-context"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "social_i_qa",
+        "dataset_class_name": "SocialIQa",
+        "sub_datasets": [],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-multiple-choices-with-context"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "asap_review",
+        "dataset_class_name": "ASAPReviewDataset",
+        "sub_datasets": [],
+        "lanaguages": [
+            "en"
+        ],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "scinli",
+        "dataset_class_name": "MultiNli",
+        "sub_datasets": [],
+        "lanaguages": [
+            "en"
+        ],
+        "task_templates": [
+            "natural-language-inference"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "cnewsum",
+        "dataset_class_name": "CNewSumDataset",
+        "sub_datasets": [
+            "document"
+        ],
+        "lanaguages": [
+            "zh"
+        ],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "csds",
+        "dataset_class_name": "CSDSDataset",
+        "sub_datasets": [
+            "document",
+            "usersumm",
+            "agentsumm",
+            "finalsumm"
+        ],
+        "lanaguages": [
+            "zh"
+        ],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "dcqa",
+        "dataset_class_name": "Dcqa",
+        "sub_datasets": [
+            "plain_text"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-dcqa"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "mlqa",
+        "dataset_class_name": "Mlqa",
+        "sub_datasets": [
+            "ar",
+            "de",
+            "en",
+            "es",
+            "hi",
+            "vi",
+            "zh"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-extractive"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "ncls",
+        "dataset_class_name": "NCLSDataset",
+        "sub_datasets": [
+            "en2zh"
+        ],
+        "lanaguages": [
+            "en",
+            "zh"
+        ],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "tydiqa",
+        "dataset_class_name": "Tydiqa",
+        "sub_datasets": [
+            "ar",
+            "bn",
+            "en",
+            "fi",
+            "id",
+            "ko",
+            "ru",
+            "sw",
+            "te"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-extractive"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "wmt20_metrics",
+        "dataset_class_name": "Wmt20Metrics",
+        "sub_datasets": [
+            "cs-en",
+            "de-en",
+            "iu-en",
+            "ja-en",
+            "km-en",
+            "pl-en",
+            "ps-en",
+            "ru-en",
+            "ta-en",
+            "zh-en",
+            "en-cs",
+            "en-de",
+            "en-iu",
+            "en-ja",
+            "en-pl",
+            "en-ru",
+            "en-ta",
+            "en-zh"
+        ],
+        "lanaguages": [],
+        "task_templates": null,
+        "splits": null
+    },
+    {
+        "script_name": "xquad",
+        "dataset_class_name": "Xquad",
+        "sub_datasets": [
+            "ar",
+            "de",
+            "zh",
+            "vi",
+            "en",
+            "es",
+            "hi",
+            "el",
+            "th",
+            "tr",
+            "ru",
+            "ro"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "question-answering-extractive"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "wmt19",
+        "dataset_class_name": "Wmt19",
+        "sub_datasets": [
+            "cs-en",
+            "de-en",
+            "fi-en",
+            "gu-en",
+            "kk-en",
+            "lt-en",
+            "ru-en",
+            "zh-en",
+            "fr-de"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "machine-translation"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "wmt16",
+        "dataset_class_name": "Wmt16",
+        "sub_datasets": [
+            "cs-en",
+            "de-en",
+            "fi-en",
+            "ro-en",
+            "ru-en",
+            "tr-en"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "machine-translation"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "wmt14",
+        "dataset_class_name": "Wmt14",
+        "sub_datasets": [
+            "cs-en",
+            "de-en",
+            "fr-en",
+            "hi-en",
+            "ru-en"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "machine-translation"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "wmt15",
+        "dataset_class_name": "Wmt15",
+        "sub_datasets": [
+            "cs-en",
+            "de-en",
+            "fi-en",
+            "fr-en",
+            "ru-en"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "machine-translation"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "wmt17",
+        "dataset_class_name": "Wmt17",
+        "sub_datasets": [
+            "cs-en",
+            "de-en",
+            "fi-en",
+            "lv-en",
+            "ru-en",
+            "tr-en",
+            "zh-en"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "machine-translation"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "wmt18",
+        "dataset_class_name": "Wmt18",
+        "sub_datasets": [
+            "cs-en",
+            "de-en",
+            "et-en",
+            "fi-en",
+            "kk-en",
+            "ru-en",
+            "tr-en",
+            "zh-en"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "machine-translation"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "gamewikisum",
+        "dataset_class_name": "GameWikiSumDataset",
+        "sub_datasets": [
+            "document",
+            "multidoc"
+        ],
+        "lanaguages": [
+            "en"
+        ],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "nctb",
+        "dataset_class_name": "NCTBDataset",
+        "sub_datasets": [
+            "document"
+        ],
+        "lanaguages": [
+            "bn"
+        ],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "wcm2",
+        "dataset_class_name": "WCM2",
+        "sub_datasets": [
+            "zh",
+            "yue",
+            "bo",
+            "mn",
+            "ug",
+            "kk",
+            "ko"
+        ],
+        "lanaguages": [],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "poly_prompt",
+        "dataset_class_name": "PolyPrompt",
+        "sub_datasets": [
+            "xquad.en",
+            "xquad.es",
+            "xquad.de",
+            "xquad.el",
+            "xquad.ru",
+            "xquad.tr",
+            "xquad.ar",
+            "xquad.vi",
+            "xquad.th",
+            "xquad.zh",
+            "xquad.hi",
+            "tydiqa.en",
+            "tydiqa.ar",
+            "tydiqa.bn",
+            "tydiqa.fi",
+            "tydiqa.id",
+            "tydiqa.ko",
+            "tydiqa.ru",
+            "tydiqa.sw",
+            "tydiqa.te",
+            "mlqa.en",
+            "mlqa.es",
+            "mlqa.de",
+            "mlqa.ar",
+            "mlqa.hi",
+            "mlqa.vi",
+            "mlqa.zh",
+            "marc.en",
+            "marc.de",
+            "marc.es",
+            "marc.fr",
+            "marc.ja",
+            "marc.zh",
+            "mldoc.en",
+            "mldoc.de",
+            "mldoc.es",
+            "mldoc.fr",
+            "mldoc.ja",
+            "mldoc.zh",
+            "mldoc.it",
+            "mldoc.ru",
+            "pawsx.de",
+            "pawsx.en",
+            "pawsx.es",
+            "pawsx.fr",
+            "pawsx.ja",
+            "pawsx.ko",
+            "pawsx.zh",
+            "xnli.ar",
+            "xnli.bg",
+            "xnli.de",
+            "xnli.el",
+            "xnli.en",
+            "xnli.es",
+            "xnli.fr",
+            "xnli.hi",
+            "xnli.ru",
+            "xnli.sw",
+            "xnli.th",
+            "xnli.tr",
+            "xnli.ur",
+            "xnli.vi",
+            "xnli.zh"
+        ],
+        "lanaguages": [],
+        "task_templates": null,
+        "splits": null
+    },
+    {
+        "script_name": "dont_stop_pretraining",
+        "dataset_class_name": "DontStopPretraining",
+        "sub_datasets": [
+            "chemprot",
+            "rct-20k",
+            "rct-sample",
+            "citation_intent",
+            "sciie",
+            "ag",
+            "hyperpartisan_news",
+            "imdb",
+            "amazon"
+        ],
+        "lanaguages": [
+            "en"
+        ],
+        "task_templates": [
+            "text-classification"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "gazeta",
+        "dataset_class_name": "GazetaDataset",
+        "sub_datasets": [
+            "document"
+        ],
+        "lanaguages": [
+            "ru"
+        ],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "pn_summary",
+        "dataset_class_name": "PnSummaryDataset",
+        "sub_datasets": [
+            "document"
+        ],
+        "lanaguages": [
+            "fa"
+        ],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "scitldr",
+        "dataset_class_name": "SciTldrDataset",
+        "sub_datasets": [
+            "tldr-auth",
+            "tldr-pr"
+        ],
+        "lanaguages": [
+            "en"
+        ],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    },
+    {
+        "script_name": "ssn",
+        "dataset_class_name": "SSNDataset",
+        "sub_datasets": [
+            "transductive-document",
+            "transductive-multidoc",
+            "inductive-document",
+            "inductive-multidoc"
+        ],
+        "lanaguages": [
+            "en"
+        ],
+        "task_templates": [
+            "summarization"
+        ],
+        "splits": null
+    }
+]
