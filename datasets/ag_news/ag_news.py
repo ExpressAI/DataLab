@@ -68,10 +68,10 @@ def instantiate_task_prompt(category_names):
     category_to_answers = dict(zip(category_names, [[category] for category in category_names]))
     task_prompts = TopicClassification.get_prompts()
 
-    for prompt_id in task_prompts:
-        task_prompts[prompt_id].answers = category_to_answers
-        task_prompts[prompt_id].template = task_prompts[prompt_id].template.replace("{{textual_choices_with_or}}", textual_choices_with_or) \
-            .replace("{{textual_choices_without_or}}", textual_choices_without_or)
+    # for prompt_id in task_prompts:
+    #     task_prompts[prompt_id].answers = category_to_answers
+    #     task_prompts[prompt_id].template = task_prompts[prompt_id].template.replace("{{textual_choices_with_or}}", textual_choices_with_or) \
+    #         .replace("{{textual_choices_without_or}}", textual_choices_without_or)
     return task_prompts
 
 

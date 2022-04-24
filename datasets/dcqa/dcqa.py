@@ -104,7 +104,7 @@ class Dcqa(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 QuestionAnsweringDCQA(
-                    question_column="question", context_column="context", answers_column="answer"
+                    task= "question-answering-dcqa"
                 )
             ],
         )

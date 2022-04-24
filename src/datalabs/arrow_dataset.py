@@ -793,12 +793,15 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                     else:
                         return func(sample)
 
-                # with Pool(processes=num_proc) as pool:
-                #     attr_columns = pool.map(process_each, range(self.num_rows))
+
+                print("Calculating features ... ")
+                with Pool(processes=num_proc) as pool:
+                    attr_columns = pool.map(process_each, range(self.num_rows))
 
 
 
-                attr_columns = p_map(process_each, range(self.num_rows), num_cpus=num_proc)
+                # attr_columns = p_map(process_each, range(self.num_rows), num_cpus=num_proc)
+
                 # with Pool(processes=num_proc) as pool:
                 #     progress_bar = tqdm(total=self.num_rows)
                 #     attr_columns = tqdm(pool.imap(process_each, range(self.num_rows)))

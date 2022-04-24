@@ -173,6 +173,9 @@ class QuestionAnsweringHotpot(TaskTemplate):
 class QuestionAnsweringDCQA(TaskTemplate):
     # adapt datasets: dcqa
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
+    question_column: str = "question"
+    context_column: str = "context"
+    answers_column: str = "answer"
     task_category: str = "question-answering-dcqa"
     task: str = "question-answering-dcqa"
     input_schema: ClassVar[Features] = Features({"question": Value("string"),
@@ -191,9 +194,7 @@ class QuestionAnsweringDCQA(TaskTemplate):
             )
         }
     )
-    question_column: str = "question"
-    context_column: str = "context"
-    answers_column: str = "answer"
+
 
     @property
     def column_mapping(self) -> Dict[str, str]:

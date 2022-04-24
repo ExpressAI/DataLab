@@ -305,7 +305,7 @@ class DatasetBuilder:
             os.makedirs(self._cache_dir_root, exist_ok=True)
         lock_path = os.path.join(self._cache_dir_root, self._cache_dir.replace(os.sep, "_") + ".lock")
         with FileLock(lock_path):
-            if os.path.exists(self._cache_dir):  # check if data exist
+            if os.path.exists(self._cache_dir) and os.path.exists("dataset_info.json"):  # check if data exist
                 if len(os.listdir(self._cache_dir)) > 0:
                     logger.info("Overwrite dataset info from restored data version.")
                     self.info = DatasetInfo.from_directory(self._cache_dir)
@@ -353,13 +353,13 @@ class DatasetBuilder:
                 builder_config = self.builder_configs.get(self.DEFAULT_CONFIG_NAME)
                 logger.warning(f"No config specified, defaulting to: {self.name}/{builder_config.name}")
             else:
-                if len(self.BUILDER_CONFIGS) > 1:
-                    example_of_usage = f"load_dataset('{self.name}', '{self.BUILDER_CONFIGS[0].name}')"
-                    raise ValueError(
-                        "Config name is missing."
-                        f"\nPlease pick one among the available configs: {list(self.builder_configs.keys())}"
-                        + f"\nExample of usage:\n\t`{example_of_usage}`"
-                    )
+                # if len(self.BUILDER_CONFIGS) > 1:
+                #     example_of_usage = f"load_dataset('{self.name}', '{self.BUILDER_CONFIGS[0].name}')"
+                #     raise ValueError(
+                #         "Config name is missing."
+                #         f"\nPlease pick one among the available configs: {list(self.builder_configs.keys())}"
+                #         + f"\nExample of usage:\n\t`{example_of_usage}`"
+                #     )
                 builder_config = self.BUILDER_CONFIGS[0]
                 logger.info(f"No config specified, defaulting to first: {self.name}/{builder_config.name}")
 
