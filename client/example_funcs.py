@@ -131,7 +131,7 @@ you can test this operation by:
 
 from datalabs import load_dataset
 from example_funcs import qa_multiple_choice_func
-dataset = load_dataset("metaphor_qa", "medium")
+dataset = load_dataset("fig_qa", "medium")
 dataset_processed = dataset["test"].apply(qa_multiple_choice_func, mode = "memory")
 
 """

@@ -91,4 +91,4 @@ set an environmental variable:
 
 and the environmental variable will be substituted into your dataset path. You can
 seen an example of how this is done in the
-[metaphor_qa dataloader](https://github.com/ExpressAI/DataLab/blob/main/datasets/metaphor_qa/metaphor_qa.py).
+[fig_qa dataloader](https://github.com/ExpressAI/DataLab/blob/main/datasets/fig_qa/fig_qa.py).
