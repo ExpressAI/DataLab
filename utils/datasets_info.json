@@ -581,8 +581,8 @@
         "splits": null
     },
     {
-        "script_name": "metaphor_qa",
-        "dataset_class_name": "MetaphorQA",
+        "script_name": "fig_qa",
+        "dataset_class_name": "FigQA",
         "sub_datasets": [
             "small",
             "medium",

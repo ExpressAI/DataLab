@@ -34,31 +34,31 @@ url_validation = "https://raw.githubusercontent.com/nightingal3/fig-qa/master/da
 url_test = f"{private_utils.PRIVATE_LOC}/fig_qa/test.csv"
 
 
-class MetaphorQAConfig(datalabs.BuilderConfig):
+class FigQAConfig(datalabs.BuilderConfig):
     """BuilderConfig for FB15K."""
 
     def __init__(self, **kwargs):
-        """BuilderConfig for MetaphorQA.
+        """BuilderConfig for FigQA.
         Args:
           **kwargs: keyword arguments forwarded to super.
         """
-        super(MetaphorQAConfig, self).__init__(**kwargs)
+        super(FigQAConfig, self).__init__(**kwargs)
 
 
-class MetaphorQA(datalabs.GeneratorBasedBuilder):
+class FigQA(datalabs.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
-        MetaphorQAConfig(
+        FigQAConfig(
             name="small",
             version=datalabs.Version("1.0.0"),
             description="small training set",
         ),
-        MetaphorQAConfig(
+        FigQAConfig(
             name="medium",
             version=datalabs.Version("1.0.0"),
             description="medium training set",
         ),
-        MetaphorQAConfig(
+        FigQAConfig(
             name="large",
             version=datalabs.Version("1.0.0"),
             description="large training set",
