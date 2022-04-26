@@ -72,6 +72,8 @@ For example,
        * different languages: [xlsum](https://github.com/ExpressAI/DataLab/blob/main/datasets/xlsum/xlsum.py), [mlqa](https://github.com/ExpressAI/DataLab/blob/main/datasets/mlqa/mlqa.py)
        * different subtasks: [glue](https://github.com/ExpressAI/DataLab/blob/main/datasets/glue/glue.py)
 
+   * if your datasets have been packaged into a zip file, you can refer to this [example](https://github.com/ExpressAI/DataLab/blob/main/datasets/snli/snli.py)
+
    * if you want to upload your dataset into DataLab web platform (which provides a bunch of data visualization and analysis), you can follow
    this [doc](https://github.com/ExpressAI/DataLab/blob/main/docs/SDK/add_new_datasets_into_web_platform.md).
 
