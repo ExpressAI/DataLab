@@ -14,7 +14,6 @@
 # limitations under the License.
 
 import csv
-
 import datalabs
 from datalabs.tasks import TextClassification
 from datalabs import Dataset
@@ -58,7 +57,7 @@ class WAIMAI(datalabs.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         # dl_manager is a datalab.download.DownloadManager that can be used to download and extract URLs
-        train_path = dl_manager.download_and_extract("/home/zihanzhu/DataLab/datasets/waimai/waimai_10k.csv")
+        train_path = dl_manager.download_and_extract(_URL)
         # 本地文件路径"/home/zihanzhu/DataLab/datasets/waimai/waimai_10k.csv"
         print(f"train_path: \t{train_path}")
         return [
