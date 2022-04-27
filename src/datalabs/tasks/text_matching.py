@@ -49,7 +49,7 @@ class TextMatching(TaskTemplate):
     @property
     def column_mapping(self) -> Dict[str, str]:
         return {
-            self.text_column1: "text1",
-            self.text_column2: "text2",
+            self.text1_column: "text1",
+            self.text2_column: "text2",
             self.label_column: "label",
         }

@@ -1,7 +1,14 @@
 # %%
+import nltk
 from nltk import word_tokenize, sent_tokenize
 from collections import namedtuple, Counter
 from nltk.util import ngrams
+
+
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
 
 
 class SUMAttribute:
@@ -28,7 +35,25 @@ class SUMAttribute:
             out.append(self.cal_attributes_each(text, summary))
         return out
 
+
+    def get_schema(self):
+        return {
+                "attr_density": 0.0,
+                "attr_coverage": 0.0,
+                "attr_compression": 0.0,
+                "attr_repetition": 0.0,
+                "attr_novelty": 0.0,
+                "attr_copy_len": 0.0,
+                "attr_source_len": 0.0,
+                "attr_hypothesis_len": 0.0,
+                }
+
+
+
     def cal_attributes_each(self, text, summary):
+
+
+
         # Normalize text
         tokenized_text = word_tokenize(text)
         tokenized_summary = word_tokenize(summary)
@@ -146,11 +171,11 @@ class SUMAttribute:
         return matches
 
 
-if __name__ == "__main__":
-    sum_class = SUMAttribute()
-    summary = [
-        "Follow the path and impact of flooding along the Mississippi River . Find out why officials are shutting down another Japanese nuclear plant . Visit a university in Illinois where students study the circus arts . Use the Daily Discussion to help students understand today's featured news stories .",
-        "80,000 hard partiers jam streets of Cape Town, South Africa on January 2 . 12 Icelandic bonfires dot Reykjavík and bars open a little AFTER midnight . Rio de Janeiro, Brazil, offers all-night whirlwind of beach dancing, live concerts . Vegas has Tribute-Palooza: bands imitate U2, Kiss, Elton John and others ."
-    ]
-    results = sum_class(summary, summary)
-    print(results)
+# if __name__ == "__main__":
+#     sum_class = SUMAttribute()
+#     summary = [
+#         "Follow the path and impact of flooding along the Mississippi River . Find out why officials are shutting down another Japanese nuclear plant . Visit a university in Illinois where students study the circus arts . Use the Daily Discussion to help students understand today's featured news stories .",
+#         "80,000 hard partiers jam streets of Cape Town, South Africa on January 2 . 12 Icelandic bonfires dot Reykjavík and bars open a little AFTER midnight . Rio de Janeiro, Brazil, offers all-night whirlwind of beach dancing, live concerts . Vegas has Tribute-Palooza: bands imitate U2, Kiss, Elton John and others ."
+#     ]
+#     results = sum_class(summary, summary)
+#     print(results)

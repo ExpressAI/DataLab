@@ -83,9 +83,9 @@ class Conll2003(datalabs.GeneratorBasedBuilder):
     """Conll2003 dataset."""
 
 
-    def __init__(self,*args, **kwargs):
-        super(Conll2003, self).__init__(*args, **kwargs)
-        self.dataset_class = SequenceLabelingDataset
+    # def __init__(self,*args, **kwargs):
+    #     super(Conll2003, self).__init__(*args, **kwargs)
+    #     self.dataset_class = SequenceLabelingDataset
 
 
     BUILDER_CONFIGS = [
@@ -237,7 +237,7 @@ class Conll2003(datalabs.GeneratorBasedBuilder):
         ]
 
     def _generate_examples(self, filepath):
-        logger.info("⏳ Generating examples from = %s", filepath)
+        logger.info("⏳ Generating examples from = %s\n", filepath)
         with open(filepath, encoding="utf-8") as f:
             guid = 0
             tokens = []
@@ -266,8 +266,9 @@ class Conll2003(datalabs.GeneratorBasedBuilder):
                         tags.append(splits[3].rstrip())
 
             # last example
-            yield guid, {
-                "id": str(guid),
-                "tokens": tokens,
-                "tags": tags,
-            }
+            if len(tokens) != 0:
+                yield guid, {
+                    "id": str(guid),
+                    "tokens": tokens,
+                    "tags": tags,
+                }

@@ -48,9 +48,9 @@ _CITATION = """\
 }
 """
 
-_TRAIN_DOWNLOAD_URL = "https://drive.google.com/u/0/uc?id=15OBrIXbzXo0ZpGt_5sretefO80-pVVmz&export=download"
-_VALIDATION_DOWNLOAD_URL = "https://drive.google.com/u/0/uc?id=1yw3rYnE2wycgzowM_7kGbBYT_5tKqb3Z&export=download"
-_TEST_DOWNLOAD_URL = "https://drive.google.com/u/0/uc?id=1hcsXapnDkKhu8OZsJIXGUGnM9YYIEMlb&export=download"
+_TRAIN_DOWNLOAD_URL = "https://datalab-hub.s3.amazonaws.com/sst2/train-SST2.tsv"
+_VALIDATION_DOWNLOAD_URL = "https://datalab-hub.s3.amazonaws.com/sst2/valid-SST2.tsv"
+_TEST_DOWNLOAD_URL = "https://datalab-hub.s3.amazonaws.com/sst2/test-SST2.tsv"
 
 
 class SST2(datalabs.GeneratorBasedBuilder):

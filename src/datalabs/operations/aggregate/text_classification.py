@@ -7,7 +7,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from operation import DatasetOperation, dataset_operation
-from featurize import *
+from featurize.general import *
 from data import TextData
 
 class TextClassificationAggregating(Aggregating, DatasetOperation):
@@ -70,6 +70,36 @@ class text_classification_aggregating(aggregating, dataset_operation):
             return tf_cls
 
 
+@text_classification_aggregating(name="get_features_dataset_level", contributor="datalab",
+             task="text-classification",
+             description="Get the average length of a list of texts")
+def get_features_dataset_level(samples:Iterator):
+    """
+    Package: python
+    Input:
+        texts: Iterator
+    Output:
+        int
+    """
+
+    res_info = {}
+    for sample in samples:
+        for feature_name, value in sample.items():
+            if feature_name == "label":
+                continue
+            if isinstance(value, int) or isinstance(value, float):
+                if feature_name not in res_info.keys():
+                    res_info[feature_name] = value
+                else:
+                    res_info[feature_name] += value
+
+
+    for feature_name, value in res_info.items():
+        res_info[feature_name] /= len(samples)
+
+    return res_info
+
+
 
 @text_classification_aggregating(name = "get_label_distribution", contributor= "datalab", processed_fields= "text",
                                  task="text-classification", description="Calculate the label distribution of a given text classification dataset")
@@ -122,10 +152,11 @@ def get_statistics(samples: Iterator):
     you can test it with following code:
 
 from datalabs import load_dataset
-from aggregate import *
-dataset = load_dataset('mr')
+from aggregate.text_classification import *
+dataset = load_dataset('./datasets/mr')
 res = dataset['test'].apply(get_statistics)
-print(next(res))
+print(res._stat)
+
 
     """
     # Grammar checker
@@ -147,8 +178,8 @@ print(next(res))
 
 
     # for hate speech
-    from hatesonar import Sonar
-    sonar = Sonar()
+    # from hatesonar import Sonar
+    # sonar = Sonar()
 
 
 
@@ -179,17 +210,17 @@ print(next(res))
 
 
         # hataspeech
-        results = sonar.ping(text=text)
-        class_ = results['top_class']
-        confidence = 0
-        for value in results['classes']:
-            if value['class_name'] == class_:
-                confidence = value['confidence']
-                break
-
-        hatespeech[class_]["ratio"] += 1
-        if class_ != "neither":
-            hatespeech[class_]["texts"].append(text)
+        # results = sonar.ping(text=text)
+        # class_ = results['top_class']
+        # confidence = 0
+        # for value in results['classes']:
+        #     if value['class_name'] == class_:
+        #         confidence = value['confidence']
+        #         break
+        #
+        # hatespeech[class_]["ratio"] += 1
+        # if class_ != "neither":
+        #     hatespeech[class_]["texts"].append(text)
 
 
 
@@ -220,11 +251,11 @@ print(next(res))
         }
         """
         gender_result = get_gender_bias.func(text)
-        gender_results.append(gender_result)
+        gender_results.append(gender_result["gender_bias_info"])
 
 
         # average length
-        text_length = get_length.func(text)
+        text_length = len(text.split(" "))
         lengths.append(text_length)
 
         # label imbalance
@@ -239,7 +270,7 @@ print(next(res))
             "label":label,
             "text_length": text_length,
             "gender":gender_result,
-            "hate_speech_class":class_,
+            # "hate_speech_class":class_,
         }
 
         if len(sample_infos) < 10000:
@@ -282,8 +313,8 @@ print(next(res))
     vocab_sorted = dict(sorted(vocab.items(), key=lambda item: item[1], reverse=True))
 
     # get ratio of hate_speech:offensive_language:neither
-    for k,v in hatespeech.items():
-        hatespeech[k]["ratio"] /= len(samples)
+    # for k,v in hatespeech.items():
+    #     hatespeech[k]["ratio"] /= len(samples)
 
     #print(hatespeech)
     res = {
@@ -301,7 +332,7 @@ print(next(res))
                 "vocabulary_info":vocab_sorted,
                 "number_of_samples":len(samples),
                 "number_of_tokens":number_of_tokens,
-                "hatespeech_info":hatespeech,
+                # "hatespeech_info":hatespeech,
                 "spelling_errors":len(spelling_errors),
             },
         "sample-level":sample_infos

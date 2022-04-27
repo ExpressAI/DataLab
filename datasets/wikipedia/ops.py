@@ -58,7 +58,6 @@ class wikipedia_featurizing(featurizing):
                                    contributor = self.contributor,
                                     task = self.task,
                                     description=self.description,
-                                    processed_fields=self.processed_fields,
                                     _type = self._type,
                                     )
             return tf_cls
@@ -221,7 +220,7 @@ class WikiExtractor:
 
 
 
-@wikipedia_featurizing(name = "get_number_of_tokens", contributor= "datalab", processed_fields= "text",
+@wikipedia_featurizing(name = "get_number_of_tokens", contributor= "datalab",
                                  task="text-classification", description="this function is used to calculate the text length",
                                  )
 def get_number_of_tokens(sample:dict):
@@ -247,19 +246,19 @@ def process_all_files(self, outpath, process):
     file.flush()
 
 
-@wikipedia_featurizing(name = "extract_relations", contributor= "datalab", processed_fields= "text",
+@wikipedia_featurizing(name = "extract_relations", contributor= "datalab",
                        _type="WikipediaFeaturizing", task="unsupervised data", description="this function is used for ")
 def extract_relations(outpath):
     process_all_files(outpath, process_relations)
 
 
-@wikipedia_featurizing(name = "extract_text_entities", contributor= "datalab", processed_fields= "text",
+@wikipedia_featurizing(name = "extract_text_entities", contributor= "datalab",
                        _type="WikipediaFeaturizing",  task="unsupervised data", description="this function is used for ")
 def extract_text_entities(outpath):
     process_all_files(outpath, process_text_entities)
 
 
-@wikipedia_featurizing(name = "extract_toc", contributor= "datalab", processed_fields= "text",
+@wikipedia_featurizing(name = "extract_toc", contributor= "datalab",
                        _type="WikipediaFeaturizing",   task="unsupervised data", description="this function is used for ")
 def extract_toc(outpath):
     process_all_files(outpath, process_toc)
@@ -322,7 +321,7 @@ def get_labeled_entities(file, outpath):
                     print(datum, file=outfile)
 
 
-@wikipedia_featurizing(name = "get_labeled_entities", contributor= "datalab", processed_fields= "text",
+@wikipedia_featurizing(name = "get_labeled_entities", contributor= "datalab",
                        _type="WikipediaLabeling",   task="unsupervised data", description="this function is used for ")
 def get_labeled_entities(outpath):
     process_all_files(outpath, process_toc)

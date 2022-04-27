@@ -29,6 +29,7 @@ REQUIRED_PKGS = [
     "xxhash",
     # for better multiprocessing
     "multiprocess",
+    "pathos",
     # to get metadata of optional dependencies such as torch or tensorflow for Python versions that don't have it
     "importlib_metadata;python_version<'3.8'",
     # to save datalabs locally or on any filesystem
@@ -46,12 +47,14 @@ REQUIRED_PKGS = [
     "lexicalrichness",
     "sacrebleu",
     "compare_mt",
-    "scikit-learn",
+    "scikit-learn", # restricted by hatesonar pkg ==0.23.2
     "py7zr",
     # for hate speech
     "hatesonar",
     "dateparser",
-    "torch",
+    "seqeval",
+    "torch", # too larger
+    # "explainaboard",
 ]
 
 AUDIO_REQUIRE = [
@@ -177,7 +180,7 @@ EXTRAS_REQUIRE = {
 
 setup(
     name="datalabs",
-    version="0.1.6.dev",
+    version="0.3.11",
     description="Datalabs",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
@@ -215,4 +218,7 @@ setup(
 )
 
 os.system("python -m spacy download en_core_web_sm")
+
+
+
 

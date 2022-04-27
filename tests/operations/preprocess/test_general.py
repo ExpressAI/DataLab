@@ -10,7 +10,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_general(self):
 
-        dataset = load_dataset("ag_news")
+        dataset = load_dataset("qc")
 
         res = dataset["test"].apply(tokenize_nltk)
         print(next(res))

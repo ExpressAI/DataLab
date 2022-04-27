@@ -97,8 +97,8 @@ print(next(res))
     """
 
     # for hate speech
-    from hatesonar import Sonar
-    sonar = Sonar()
+    # from hatesonar import Sonar
+    # sonar = Sonar()
 
 
     sample_infos = []

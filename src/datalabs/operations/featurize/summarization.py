@@ -14,6 +14,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from operation import DatasetOperation, dataset_operation
+from .general import get_features_sample_level as get_features_sample_level_general
 
 
 class SummarizationFeaturizing(Featurizing, DatasetOperation):
@@ -170,3 +171,150 @@ def get_lead_k_summary(sample:dict) -> Dict:
     summary = sample['summary']
     lead_k_info = _lead_k(document, summary, _compute_rouge, k = 3)
     return lead_k_info
+
+
+
+def get_schema_of_sample_level_features():
+    return {
+            "text_length":1,
+            "text_lexical_richness":0.2,
+            "text_basic_words":0.2,
+            "text_gender_bias_word_male":1,
+            "text_gender_bias_word_female":2,
+            "text_gender_bias_single_name_male":1,
+            "text_gender_bias_single_name_female":1,
+            "summary_length": 1,
+            "summary_lexical_richness": 0.2,
+            "summary_basic_words": 0.2,
+            "summary_gender_bias_word_male": 1,
+            "summary_gender_bias_word_female": 2,
+            "summary_gender_bias_single_name_male": 1,
+            "summary_gender_bias_single_name_female": 1,
+            "density": 0.1,
+            "coverage": 0.1,
+            "compression": 0.1,
+            "repetition": 0.1,
+            "novelty": 0.1,
+            "copy_len": 0.1,
+            }
+
+
+
+@summarization_featurizing(name = "get_features_sample_level", contributor= "datalab", processed_fields= "text",
+                                 task="summarization", description="This function is used to calculate the text length")
+def get_features_sample_level(sample:dict):
+
+
+    text = sample["text"]
+    summary = sample["summary"]
+
+
+
+    res_info_general = get_features_sample_level_general.func(text)
+    res_info_general_new = {}
+    for k,v in res_info_general.items():
+        res_info_general_new["text" + "_" + k] =v
+
+    res_info_general = get_features_sample_level_general.func(summary)
+    for k,v in res_info_general.items():
+        res_info_general_new["summary" + "_" + k] =v
+
+    # get task-dependent features
+    summary_features = get_all_features.func(sample)
+
+
+    # update the res_info_general_new
+    res_info_general_new.update(summary_features)
+
+    # res_info_general_new.update({"answer_length":answer_length,
+    #                          "option1_length":option1_length,
+    #                          "option2_length":option2_length,
+    #                           # "option_index":int(option_index),
+    #                              })
+
+    return res_info_general_new
+
+
+
+
+def get_schema_of_sample_level_features_asap():
+    return {
+            "text_length":1,
+            # "text_lexical_richness":0.2,
+            # "text_basic_words":0.2,
+            # "text_gender_bias_word_male":1,
+            # "text_gender_bias_word_female":2,
+            # "text_gender_bias_single_name_male":1,
+            # "text_gender_bias_single_name_female":1,
+            "summary_length": 1,
+            "summary_lexical_richness": 0.2,
+            "summary_basic_words": 0.2,
+            "summary_gender_bias_word_male": 1,
+            "summary_gender_bias_word_female": 2,
+            "summary_gender_bias_single_name_male": 1,
+            "summary_gender_bias_single_name_female": 1,
+            # "density": 0.1,
+            # "coverage": 0.1,
+            # "compression": 0.1,
+            # "repetition": 0.1,
+            # "novelty": 0.1,
+            # "copy_len": 0.1,
+            "n_aspects":0.0,
+            }
+
+
+
+
+@summarization_featurizing(name = "get_features_sample_level_asap", contributor= "datalab", processed_fields= "text",
+                                 task="summarization", description="This function is used to calculate the text length")
+def get_features_sample_level_asap(sample:dict):
+
+
+    text = sample["text"]
+    summary = sample["review"]
+    aspects = sample["aspects"]
+
+
+
+
+    # res_info_general = get_features_sample_level_general.func(text)
+    res_info_general_new = {}
+    # for k,v in res_info_general.items():
+    #     res_info_general_new["text" + "_" + k] =v
+
+
+    res_info_general_new["text" + "_" + "length"] = len(text.split(" "))
+
+    res_info_general = get_features_sample_level_general.func(summary)
+    for k,v in res_info_general.items():
+        res_info_general_new["summary" + "_" + k] =v
+
+    # get task-dependent features
+    # summary_attribute = SUMAttribute()
+    # attribute_info = summary_attribute.cal_attributes_each(sample['text'], sample['review'])
+    # summary_features =  {
+    #     "density":attribute_info["attr_density"],
+    #     "coverage":attribute_info["attr_coverage"],
+    #     "compression": attribute_info["attr_compression"],
+    #     "repetition": attribute_info["attr_repetition"],
+    #     "novelty": attribute_info["attr_novelty"],
+    #     "copy_len": attribute_info["attr_copy_len"],
+    # }
+    # res_info_general_new.update(summary_features)
+
+    # print(aspects)
+    # exit()
+    n_aspects = len(aspects)
+
+    res_info_general_new.update({"n_aspects":n_aspects})
+
+    # update the res_info_general_new
+
+
+    # res_info_general_new.update({"answer_length":answer_length,
+    #                          "option1_length":option1_length,
+    #                          "option2_length":option2_length,
+    #                           # "option_index":int(option_index),
+    #                              })
+
+    return res_info_general_new

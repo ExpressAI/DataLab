@@ -92,9 +92,9 @@ class WNUT_17(datalabs.GeneratorBasedBuilder):
 
 
 
-    def __init__(self,*args, **kwargs):
-        super(WNUT_17, self).__init__(*args, **kwargs)
-        self.dataset_class = SequenceLabelingDataset
+    # def __init__(self,*args, **kwargs):
+    #     super(WNUT_17, self).__init__(*args, **kwargs)
+    #     self.dataset_class = SequenceLabelingDataset
 
 
 

@@ -31,6 +31,10 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+envs/
+local_cache/
+dev/
+demo.py
 
 # pyenv
 .python-version
@@ -38,6 +42,7 @@ venv.bak/
 # Tests
 .pytest_cache/
 /local.py
+/test.py
 
 # Other
 *.DS_Store
@@ -67,3 +72,18 @@ docs/source/_build/
 report.json
 report.md
 test_get_options.py
+my-website
+sketch.py
+
+client/calculate_feature_ag_news.py
+client/calculate_feature_mr.py
+client/test_*.py
+
+docs/design
+docs/examples
+
+
+get_operations_test.py
+client/api_key.py
+client/add_my_dataset.py
+src/datalabs/.coverage

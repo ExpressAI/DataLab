@@ -11,6 +11,28 @@ from .aggregating import Aggregating, aggregating
 
 
 
+@aggregating(name="get_features_dataset_level", contributor="datalab",
+               task="Any",
+             description="Get the average length of a list of texts")
+def get_features_dataset_level(texts:Iterator) -> int:
+    """
+    Package: python
+    Input:
+        texts: Iterator
+    Output:
+        int
+    """
+    lengths = []
+    for text in texts:
+        lengths.append(len(text.split(" ")))
+
+
+    return {"avg_length":np.average(lengths)}
+
+
+
+
+
 @aggregating(name="get_average_length", contributor="datalab",
                task="Any",
              description="Get the average length of a list of texts")
@@ -24,7 +46,7 @@ def get_average_length(texts:Iterator) -> int:
     """
     lengths = []
     for text in texts:
-        lengths.append(len(text.split(" ")))
+        lengths.append(len(text["text"].split(" ")))
     return {"average_length":np.average(lengths)}
 
 
@@ -42,7 +64,7 @@ def get_vocabulary(texts:Iterator) -> Dict:
     """
     vocab = {}
     for text in texts:
-        for w in text.split(" "):
+        for w in text["text"].split(" "):
             if w in vocab.keys():
                 vocab[w] += 1
             else:

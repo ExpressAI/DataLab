@@ -19,6 +19,10 @@ import csv
 
 import datalabs
 from datalabs.tasks import TextClassification
+from featurize.general import get_features_sample_level
+from aggregate.text_classification import get_features_dataset_level
+from datalabs.utils.more_features import prefix_dict_key, get_feature_arguments
+from datalabs import PLMType, SettingType, SignalType
 
 _DESCRIPTION = """\
  Movie-review data for use in sentiment-analysis experiments. Available are collections 
@@ -55,44 +59,71 @@ https://drive.google.com/file/d/1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb/view?usp=shari
 
 """
 _TRAIN_DOWNLOAD_URL = "https://drive.google.com/uc?id=1FCqdCBYNahOmoMOW7L29EZGanJKksgwT&export=download"
-_TEST_DOWNLOAD_URL = "https://drive.google.com/uc?id=1t-2aRCGru5yJzpJ-o4uB6UmHbNRzNfIb&export=download"
+_TEST_DOWNLOAD_URL = "https://drive.google.com/uc?id=15NYovF4uOv8whePrcpKcLRxs2Nfns29T&export=download"
 
 
-# class MRDataset(datalabs.Dataset):
-#     def apply(self, func):
-#         if func._type == 'Aggregating':
-#             texts = [" ".join(tokens) for tokens in self["tokens"]] # [tokens] -> texts
-#             yield func(texts)
-#         elif func._type == "SequenceLabelingAggregating":
-#             yield func(self)
-#         elif func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
-#             for sample in self.__iter__():
-#                 yield func(" ".join(sample[func.processed_fields[0]])) # convert tokens -> a text
-#         else:
-#             for sample in self.__iter__():
-#                 yield func(sample)
 
+def infer_schema_dataset_level(sample_level_schema:dict):
+
+    dataset_level_schema = {}
+    for feature_name, value in sample_level_schema.items():
+        if isinstance(value, int) or isinstance(value, float):
+            dataset_level_schema[feature_name] = value
+    return dataset_level_schema
+
+
+
+
+
+EXPAND = False
+FIELD = "text"
 
 class MR(datalabs.GeneratorBasedBuilder):
-    """AG News topic classification dataset."""
-
-    # def __init__(self,*args, **kwargs):
-    #     super(MR, self).__init__(*args, **kwargs)
-    #     self.dataset_class = MRDataset
+    """Movie Review Dataset."""
 
     def _info(self):
-        return datalabs.DatasetInfo(
-            description=_DESCRIPTION,
-            features=datalabs.Features(
+
+        features_dataset = {}
+        features_sample = datalabs.Features(
                 {
-                    "text": datalabs.Value("string"),
+                     FIELD: datalabs.Value("string"),
                     "label": datalabs.features.ClassLabel(names=["positive", "negative"]),
                 }
-            ),
+            )
+
+        if EXPAND:
+            sample_level_schema = get_features_sample_level("This is a test sample")
+            dict_feature_argument = get_feature_arguments(sample_level_schema, field=FIELD, feature_level="sample_level")
+            additional_features = datalabs.Features(dict_feature_argument)
+            features_sample.update(additional_features)
+
+
+            dataset_level_schema = infer_schema_dataset_level(sample_level_schema)
+            dict_feature_argument = get_feature_arguments(dataset_level_schema, field="avg" + "_" + FIELD, feature_level="dataset_level")
+            features_dataset = datalabs.Features(dict_feature_argument)
+
+
+
+        return datalabs.DatasetInfo(
+            description=_DESCRIPTION,
+            features=features_sample,
+            features_dataset=features_dataset, # dont' forget this
             homepage="http://www.cs.cornell.edu/people/pabo/movie-review-data/",
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[TextClassification(text_column=FIELD, label_column="label", task="sentiment-classification")],
+            prompts=[datalabs.Prompt(template="{text}, Overall it is a [mask] movie.",
+                                     answers={"0":"positive","1":"negative"},
+                                     supported_plm_types=["masked-language-model"], # PLMType.masked_language_model.value == "masked-language-model"
+                                     signal_type=[SignalType.text_summarization.value]),
+                     datalabs.Prompt(template="{text}, Overall it is a [mask] movie.",
+                                     answers={"0": "positive", "1": "negative"},
+                                     supported_plm_types=[PLMType.masked_language_model.value],
+                                     signal_type=[SignalType.text_summarization.value],),
+                     ]
         )
+
+
+
 
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
@@ -116,4 +147,13 @@ class MR(datalabs.GeneratorBasedBuilder):
 
                 label = textualize_label[label]
                 text = text
-                yield id_, {"text": text, "label": label}
+
+                raw_feature_info = {FIELD: text, "label": label}
+
+                if not EXPAND:
+                    yield id_, raw_feature_info
+                else:
+                    additional_feature_info = prefix_dict_key(get_features_sample_level(text), FIELD)
+                    raw_feature_info.update(additional_feature_info)
+                    yield id_, raw_feature_info
+

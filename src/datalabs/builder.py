@@ -27,7 +27,7 @@ import urllib
 from dataclasses import dataclass
 from functools import partial
 from typing import Dict, Mapping, Optional, Tuple, Union
-
+from time import time
 from datalabs.features import Features
 from datalabs.utils.mock_download_manager import MockDownloadManager
 
@@ -54,7 +54,17 @@ from .utils.file_utils import DownloadConfig, is_remote_url
 from .utils.filelock import FileLock
 from .utils.info_utils import get_size_checksum_dict, verify_checksums, verify_splits
 from .utils.streaming_download_manager import StreamingDownloadManager
+from multiprocess import Pool
+from datalabs.utils.p_tqdm import p_map
+from .operations.featurize.text_matching import (
+    get_features_sample_level,
+    get_schema_of_sample_level_features,
+    )
 
+import sys
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
 
 
@@ -93,6 +103,7 @@ class BuilderConfig:
     data_dir: Optional[str] = None
     data_files: Optional[DataFilesDict] = None
     description: Optional[str] = None
+    feature_expanding: bool = False
 
     def __post_init__(self):
         # The config name is used to name the cache directory.
@@ -212,6 +223,8 @@ class DatasetBuilder:
         data_files: Optional[Union[str, list, dict, DataFilesDict]] = None,
         data_dir: Optional[str] = None,
         dataset_class = Dataset,
+        feature_expanding:bool = False,
+        num_proc: int = 1,
         **config_kwargs,
     ):
         """Constructs a DatasetBuilder.
@@ -247,6 +260,8 @@ class DatasetBuilder:
         self.use_auth_token = use_auth_token
         self.namespace = namespace
         self.dataset_class = dataset_class
+        self.feature_expanding = feature_expanding
+        self.num_proc = num_proc
 
         if data_files is not None and not isinstance(data_files, DataFilesDict):
             data_files = DataFilesDict.from_local_or_remote(
@@ -260,6 +275,8 @@ class DatasetBuilder:
             config_kwargs["data_files"] = data_files
         if data_dir is not None:
             config_kwargs["data_dir"] = data_dir
+        # if feature_expanding is not None:
+        #     config_kwargs["data_dir"] = data_dir
         self.config, self.config_id = self._create_builder_config(
             name,
             custom_features=features,
@@ -288,7 +305,7 @@ class DatasetBuilder:
             os.makedirs(self._cache_dir_root, exist_ok=True)
         lock_path = os.path.join(self._cache_dir_root, self._cache_dir.replace(os.sep, "_") + ".lock")
         with FileLock(lock_path):
-            if os.path.exists(self._cache_dir):  # check if data exist
+            if os.path.exists(self._cache_dir) and os.path.exists("dataset_info.json"):  # check if data exist
                 if len(os.listdir(self._cache_dir)) > 0:
                     logger.info("Overwrite dataset info from restored data version.")
                     self.info = DatasetInfo.from_directory(self._cache_dir)
@@ -336,13 +353,13 @@ class DatasetBuilder:
                 builder_config = self.builder_configs.get(self.DEFAULT_CONFIG_NAME)
                 logger.warning(f"No config specified, defaulting to: {self.name}/{builder_config.name}")
             else:
-                if len(self.BUILDER_CONFIGS) > 1:
-                    example_of_usage = f"load_dataset('{self.name}', '{self.BUILDER_CONFIGS[0].name}')"
-                    raise ValueError(
-                        "Config name is missing."
-                        f"\nPlease pick one among the available configs: {list(self.builder_configs.keys())}"
-                        + f"\nExample of usage:\n\t`{example_of_usage}`"
-                    )
+                # if len(self.BUILDER_CONFIGS) > 1:
+                #     example_of_usage = f"load_dataset('{self.name}', '{self.BUILDER_CONFIGS[0].name}')"
+                #     raise ValueError(
+                #         "Config name is missing."
+                #         f"\nPlease pick one among the available configs: {list(self.builder_configs.keys())}"
+                #         + f"\nExample of usage:\n\t`{example_of_usage}`"
+                #     )
                 builder_config = self.BUILDER_CONFIGS[0]
                 logger.info(f"No config specified, defaulting to first: {self.name}/{builder_config.name}")
 
@@ -566,14 +583,14 @@ class DatasetBuilder:
             # information needed to cancel download/preparation if needed.
             # This comes right before the progress bar.
             if self.info.size_in_bytes:
-                print(
+                eprint(
                     f"Downloading and preparing dataset {self.info.builder_name}/{self.info.config_name} "
                     f"(download: {utils.size_str(self.info.download_size)}, generated: {utils.size_str(self.info.dataset_size)}, "
                     f"post-processed: {utils.size_str(self.info.post_processing_size)}, "
                     f"total: {utils.size_str(self.info.size_in_bytes)}) to {self._cache_dir}..."
                 )
             else:
-                print(
+                eprint(
                     f"Downloading and preparing dataset {self.info.builder_name}/{self.info.config_name} to {self._cache_dir}..."
                 )
 
@@ -599,8 +616,8 @@ class DatasetBuilder:
                             dl_manager=dl_manager, verify_infos=verify_infos, **download_and_prepare_kwargs
                         )
                     # Sync info
-                    print(f"self.info.dataset_size: {self.info.dataset_size}")
-                    print(f"self.info.download_size: {self.info.download_size}")
+                    eprint(f"self.info.dataset_size: {self.info.dataset_size}")
+                    eprint(f"self.info.download_size: {self.info.download_size}")
 
 
                     self.info.dataset_size = sum(split.num_bytes for split in self.info.splits.values())
@@ -613,7 +630,7 @@ class DatasetBuilder:
             # Download post processing resources
             self.download_post_processing_resources(dl_manager)
 
-            print(
+            eprint(
                 f"Dataset {self.name} downloaded and prepared to {self._cache_dir}. "
                 f"Subsequent calls will reuse this data."
             )
@@ -1067,6 +1084,10 @@ class GeneratorBasedBuilder(DatasetBuilder):
                 ready to be encoded and written to disk. The example will be
                 encoded with `self.info.features.encode_example({...})`.
         """
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def _sample_feature_expanding(self, sample):
         raise NotImplementedError()
 
     def _prepare_split(self, split_generator):

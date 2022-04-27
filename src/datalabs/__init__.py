@@ -24,7 +24,6 @@ import pyarrow
 from packaging import version as _version
 from pyarrow import total_allocated_bytes
 
-
 from .operations import operation
 from .operations.data import *
 
@@ -44,6 +43,7 @@ from .builder import ArrowBasedBuilder, BeamBasedBuilder, BuilderConfig, Dataset
 from .combine import interleave_datasets
 from .dataset_dict import DatasetDict, IterableDatasetDict
 from .features import (
+    features,
     Array2D,
     Array3D,
     Array4D,
@@ -58,6 +58,7 @@ from .features import (
 )
 from .fingerprint import is_caching_enabled, set_caching_enabled
 from .info import DatasetInfo, MetricInfo, MongoDBClient
+from .prompt import Prompt, Prompts, PromptResult
 from .inspect import (
     get_dataset_config_names,
     get_dataset_infos,
@@ -83,6 +84,19 @@ from .splits import (
     percent,
 )
 from .utils import *
+from .enums import (
+    PLMType,
+    SettingType,
+    SignalType,
+    PromptShape
+)
 
+from .evaluation.processors import get_processor
+from .evaluation.processors.processor_registry import register_processor
+from .evaluation.processors.processor import Processor
+from .evaluation.loaders import get_loader
+from .constants import *
+from .tasks.task_info import Task, TaskCategory, TaskType, get_task_categories
+from .operations.aggregate import aggregating
 
 SCRIPTS_VERSION = "master" if _version.parse(__version__).is_devrelease else __version__

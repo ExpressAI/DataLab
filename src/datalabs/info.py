@@ -34,13 +34,18 @@ import dataclasses
 import json
 import os
 import re
+import requests
 import pymongo
 from dataclasses import asdict, dataclass, field
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Any
 
 from datalabs.tasks.text_classification import TextClassification
+from datalabs.tasks.text_classification import TopicClassification
 from datalabs.tasks.sequence_labeling import SequenceLabeling
 from datalabs.tasks.text_matching import TextMatching
+from datalabs.tasks.span_text_classification import SpanTextClassification
+from datalabs.prompt import Prompt
+import hashlib  # for mdb ids of prompts
 
 from . import config
 from .features import Features, Value, ClassLabel
@@ -52,6 +57,13 @@ from .utils.py_utils import unique_values
 
 
 logger = get_logger(__name__)
+
+
+
+
+
+
+
 
 
 @dataclass
@@ -136,12 +148,77 @@ class Popularity:
     number_of_visits: Optional[int] = None
 
 
+# @dataclass
+# class PromptResult:
+#     setting = "zero-shot"
+#     value: float = 0.0
+#     plm: str = None
+#     metric: str = None
+
+
+"""Example
+{
+      "language": "en",
+      "template": "{Text}, Overall it is a {Answer} movie.",
+      "answer": {
+        "positive": ["fantastic", "interesting"],
+        "negative": ["boring"]
+      },
+      "supported_plm_types": ["masked_lm", "left_to_right", "encoder_decoder"],
+      "results": [
+        {
+          "plm": "BERT",
+          "metric": "accuracy",
+          "setting": "zero-shot",
+          "value": "87"
+        },
+        {
+          "plm": "BART",
+          "metric": "accuracy",
+          "setting": "zero-shot",
+          "value": "80"
+        }
+
+      ]
+    }
+"""
+
+
+# @dataclass
+# class Prompt:
+#     id: str = "null"  # this will be automatically assigned
+#     language: str = "en"
+#     description: str = "prompt description"
+#     template: str = None
+#     answers: dict = None
+#     supported_plm_types: List[str] = None
+#     signal_type: List[str] = None
+#     results: List[PromptResult] = None
+#     # features:Optional[Features] = None # {"length":Value("int64"), "shape":Value("string"), "skeleton": Value("string")}
+#     features: Optional[dict] = None  # {"length":5, "shape":"prefix", "skeleton": "what_about"}
+#     reference: str = None
+#     contributor: str = "Datalab"
+#
+#     def __post_init__(self):
+#         # Convert back to the correct classes when we reload from dict
+#         if self.template is not None and self.answers is not None:
+#             if isinstance(self.answers, dict):
+#                 self.id = hashlib.md5((self.template + json.dumps(self.answers)).encode()).hexdigest()
+#             if isinstance(self.answers, str):
+#                 self.id = hashlib.md5((self.template + self.answers).encode()).hexdigest()
+#             else:
+#                 self.id = hashlib.md5(self.template.encode()).hexdigest()
+
+
+
+
+
 class MongoDBClientCore:
     def __init__(self, cluster: str):
-        assert(re.match(r'cluster[01]', cluster))
+        assert (re.match(r'cluster[01]', cluster))
 
         self.cluster = cluster
-        self.url = "mongodb+srv://Pengfei:ZT22yRPyskR44*q@%s.yg1db.mongodb.net/" % self.cluster
+        self.url = ""
         self.client = pymongo.MongoClient(self.url)
 
 
@@ -213,6 +290,7 @@ class DatasetInfo:
     homepage: str = field(default_factory=str)
     license: str = field(default_factory=str)
     features: Optional[Features] = None
+    features_dataset: Optional[Features] = None
     post_processed: Optional[PostProcessedInfo] = None
     supervised_keys: Optional[SupervisedKeysData] = None
     task_templates: Optional[List[TaskTemplate]] = None
@@ -229,6 +307,9 @@ class DatasetInfo:
     # post_processing_size: Optional[int] = None
     # dataset_size: Optional[int] = None
     # size_in_bytes: Optional[int] = None
+
+    # Newly Added
+    prompts: List[Prompt] = None
 
     # Needed by MongoDB
     # string
@@ -305,6 +386,17 @@ class DatasetInfo:
                             task=template.task,
                             labels=labels
                         )
+                    if isinstance(template, TopicClassification):
+                        labels = None
+                        if isinstance(self.features[template.label_column], ClassLabel):
+                            labels = self.features[template.label_column].names
+                        self.task_templates[idx] = TopicClassification(
+                            text_column=template.text_column,
+                            label_column=template.label_column,
+                            task=template.task,
+                            labels=labels,
+                            prompts=template.prompts,
+                        )
                     if isinstance(template, TextMatching):
                         labels = None
                         if isinstance(self.features[template.label_column], ClassLabel):
@@ -312,6 +404,17 @@ class DatasetInfo:
                         self.task_templates[idx] = TextMatching(
                             text1_column=template.text1_column,
                             text2_column=template.text2_column,
+                            label_column=template.label_column,
+                            task=template.task,
+                            labels=labels
+                        )
+                    if isinstance(template, SpanTextClassification):
+                        labels = None
+                        if isinstance(self.features[template.label_column], ClassLabel):
+                            labels = self.features[template.label_column].names
+                        self.task_templates[idx] = SpanTextClassification(
+                            span_column=template.span_column,
+                            text_column=template.text_column,
                             label_column=template.label_column,
                             task=template.task,
                             labels=labels
@@ -566,3 +669,159 @@ class MetricInfo:
     def from_dict(cls, metric_info_dict: dict) -> "MetricInfo":
         field_names = set(f.name for f in dataclasses.fields(cls))
         return cls(**{k: v for k, v in metric_info_dict.items() if k in field_names})
+
+
+
+"""
+The following is introduced for explainaboard
+"""
+
+@dataclass
+class Table:
+    # def __init__(self,
+    #              table_iterator):
+    #     self.table = []
+    #     for _id, dict_features in table_iterator:
+    #         self.table.append(dict_features)
+    table: dict = None
+
+    # def __post_init__(self):
+
+
+@dataclass
+class PaperInfo:
+    """
+    "year": "xx",
+    "venue": "xx",
+    "title": "xx",
+    "author": "xx",
+    "url": "xx",
+    "bib": "xx"
+    """
+
+    year: Optional[str] = None
+    venue: Optional[str] = None
+    title: Optional[str] = None
+    author: Optional[str] = None
+    url: Optional[str] = None
+    bib: Optional[str] = None
+
+
+@dataclass
+class Performance:
+    metric_name: float = None
+    value: float = None
+    confidence_score_low: float = None
+    confidence_score_up: float = None
+
+
+@dataclass
+class BucketPerformance(Performance):
+    bucket_name: str = None
+    n_samples: float = None
+    bucket_samples: Any = None
+
+
+@dataclass
+class Result:
+    overall: Any = None
+    calibration: List[Performance] = None
+    fine_grained: Any = None
+    is_print_case: bool = True
+    is_print_confidence_interval: bool = True
+
+
+@dataclass
+class SysOutputInfo:
+    """Information about a system output
+
+    Attributes:
+        model_name (str): the name of the system .
+        dataset_name (str): the dataset used of the system.
+        language (str): the language of the dataset.
+        code (str): the url of the code.
+        download_link (str): the url of the system output.
+        paper (Paper, optional): the published paper of the system.
+        features (Features, optional): the features used to describe system output's
+                                        column type.
+    """
+
+    # set in the system_output scripts
+    task_name: str
+    model_name: Optional[str] = None
+    dataset_name: Optional[str] = None
+    sub_dataset_name: Optional[str] = None
+    metric_names: Optional[List[str]] = None
+    reload_stat: bool = True
+    # language : str = "English"
+
+    # set later
+    # code: str = None
+    # download_link: str = None
+    # paper_info: PaperInfo = PaperInfo()
+    features: Features = None
+    results: Result = field(default_factory=lambda: Result())
+
+    def write_to_directory(self, dataset_info_dir):
+        """Write `SysOutputInfo` as JSON to `dataset_info_dir`."""
+        with open(
+            os.path.join(dataset_info_dir, config.SYS_OUTPUT_INFO_FILENAME), "wb"
+        ) as f:
+            self._dump_info(f)
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+    def print_as_json(self):
+        print(json.dumps(self.to_dict(), indent=4))
+
+    def _dump_info(self, file):
+        """SystemOutputInfo => JSON"""
+        file.write(json.dumps(self.to_dict(), indent=4).encode("utf-8"))
+
+    @classmethod
+    def from_directory(cls, sys_output_info_dir: str) -> "SysOutputInfo":
+        """Create SysOutputInfo from the JSON file in `sys_output_info_dir`.
+        Args:
+            sys_output_info_dir (`str`): The directory containing the metadata file. This
+                should be the root directory of a specific dataset version.
+        """
+        logger.info("Loading Dataset info from %s", sys_output_info_dir)
+        if not sys_output_info_dir:
+            raise ValueError(
+                "Calling DatasetInfo.from_directory() with undefined dataset_info_dir."
+            )
+
+        with open(
+            os.path.join(sys_output_info_dir, config.SYS_OUTPUT_INFO_FILENAME),
+            "r",
+            encoding="utf-8",
+        ) as f:
+            sys_output_info_dict = json.load(f)
+        return cls.from_dict(sys_output_info_dict)
+
+    # @classmethod
+    # def from_dict(cls, task_name: str, sys_output_info_dict: dict) -> "SysOutputInfo":
+    #     field_names = set(f.name for f in dataclasses.fields(cls))
+    #     return cls(task_name, **{k: v for k, v in sys_output_info_dict.items() if k in field_names})
+
+    @classmethod
+    def from_dict(cls, sys_output_info_dict: dict) -> "SysOutputInfo":
+        field_names = set(f.name for f in dataclasses.fields(cls))
+        return cls(
+            **{k: v for k, v in sys_output_info_dict.items() if k in field_names}
+        )
+
+    def update(self, other_sys_output_info: "SysOutputInfo", ignore_none=True):
+        self_dict = self.__dict__
+        self_dict.update(
+            **{
+                k: copy.deepcopy(v)
+                for k, v in other_sys_output_info.__dict__.items()
+                if (v is not None or not ignore_none)
+            }
+        )
+
+    def copy(self) -> "SysOutputInfo":
+        return self.__class__(**{k: copy.deepcopy(v) for k, v in self.__dict__.items()})
+
