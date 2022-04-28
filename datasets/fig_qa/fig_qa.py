@@ -27,38 +27,38 @@ paired sentences that have opposite meanings. E.g. "Shopping for groceries is (f
 with a list created by a lunatic). The dataset can be used to test common-sense understanding in a non-literal way.
 """
 
-url_train_small = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/master/data/filtered/train_s.csv"
-url_train_medium = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/master/data/filtered/train.csv"
-url_train_large = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/master/data/filtered/train_xl.csv"
-url_validation = "https://raw.githubusercontent.com/nightingal3/metaphor-qa/master/data/filtered/dev.csv"
-url_test = f"{private_utils.PRIVATE_LOC}/metaphor_qa/test.csv"
+url_train_small = "https://raw.githubusercontent.com/nightingal3/fig-qa/master/data/filtered/train_s.csv"
+url_train_medium = "https://raw.githubusercontent.com/nightingal3/fig-qa/master/data/filtered/train.csv"
+url_train_large = "https://raw.githubusercontent.com/nightingal3/fig-qa/master/data/filtered/train_xl.csv"
+url_validation = "https://raw.githubusercontent.com/nightingal3/fig-qa/master/data/filtered/dev.csv"
+url_test = f"{private_utils.PRIVATE_LOC}/fig_qa/test.csv"
 
 
-class MetaphorQAConfig(datalabs.BuilderConfig):
+class FigQAConfig(datalabs.BuilderConfig):
     """BuilderConfig for FB15K."""
 
     def __init__(self, **kwargs):
-        """BuilderConfig for MetaphorQA.
+        """BuilderConfig for FigQA.
         Args:
           **kwargs: keyword arguments forwarded to super.
         """
-        super(MetaphorQAConfig, self).__init__(**kwargs)
+        super(FigQAConfig, self).__init__(**kwargs)
 
 
-class MetaphorQA(datalabs.GeneratorBasedBuilder):
+class FigQA(datalabs.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
-        MetaphorQAConfig(
+        FigQAConfig(
             name="small",
             version=datalabs.Version("1.0.0"),
             description="small training set",
         ),
-        MetaphorQAConfig(
+        FigQAConfig(
             name="medium",
             version=datalabs.Version("1.0.0"),
             description="medium training set",
         ),
-        MetaphorQAConfig(
+        FigQAConfig(
             name="large",
             version=datalabs.Version("1.0.0"),
             description="large training set",
@@ -103,7 +103,7 @@ class MetaphorQA(datalabs.GeneratorBasedBuilder):
             features_dataset=features_dataset,
             supervised_keys=None,
             # Homepage of the dataset for documentation
-            homepage="https://github.com/nightingal3/metaphor-qa",
+            homepage="https://github.com/nightingal3/fig-qa",
             citation=_CITATION,
             task_templates=[
                 QuestionAnsweringMultipleChoices(
@@ -147,7 +147,7 @@ class MetaphorQA(datalabs.GeneratorBasedBuilder):
                 )
             ]
         else:
-            logger.warning('Skipping metaphor_qa test set because '
+            logger.warning('Skipping fig_qa test set because '
                            f'{private_utils.PRIVATE_LOC} is not set')
         return split_gens
 
