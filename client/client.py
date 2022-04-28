@@ -13,6 +13,7 @@ class Client:
                  user_name,
                  password,
                  role='user',
+                 status='private',
                  dataset_name_db=None,
                  dataset_name_sdk=None,
                  sub_dataset_name_sdk=None,
@@ -25,12 +26,14 @@ class Client:
                  calculate_features=False,
                  feature_func=None,
                  data_typology="textdataset",
+                 end_point_add_dataset="https://datalab.nlpedia.ai/api/upload_new_dataset"
                  ):
-        self._end_point_add_dataset = "https://datalab.nlpedia.ai/api/upload_new_dataset"
+        self._end_point_add_dataset = end_point_add_dataset
 
         self.user_name = user_name
         self.password = password
         self.role = role
+        self.status=status
 
         self.dataset_name_sdk: str = dataset_name_sdk
         self.dataset_name_db: str = dataset_name_db
@@ -73,7 +76,8 @@ class Client:
             'samples': samples,
             'user_name': self.user_name,
             'password': self.password,
-            'role': self.role
+            'role': self.rol,
+            'status':self.status,
 
         }
 
@@ -122,10 +126,13 @@ class Client:
             'samples': samples_db,
             'user_name': self.user_name,
             'password': self.password,
-            'role': self.role
+            'role': self.role,
+            'status': self.status,
         }
 
         response = requests.post(self._end_point_add_dataset, json=data_json)
+        dic = json.loads(response.content)
+        print(dic)
         if response.status_code != 200:
             raise ConnectionError("connection error")
 
