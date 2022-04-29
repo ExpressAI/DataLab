@@ -36,7 +36,7 @@ _LICENSE = "N/A"
 
 _HOMEPAGE = "https://github.com/SophonPlus/ChineseNlpCorpus"
 
-_URL = "https://raw.githubusercontent.com/SophonPlus/ChineseNlpCorpus/master/datasets/waimai_10k/waimai_10k.csv"
+_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/waimai/waimai_10k.csv"
 
 class WAIMAI(datalabs.GeneratorBasedBuilder):
     def _info(self):
