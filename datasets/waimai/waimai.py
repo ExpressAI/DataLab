@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import csv
+from email import header
 import datalabs
 from datalabs.tasks import TextClassification
 from datalabs import Dataset
@@ -58,7 +59,6 @@ class WAIMAI(datalabs.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         # dl_manager is a datalab.download.DownloadManager that can be used to download and extract URLs
         train_path = dl_manager.download_and_extract(_URL)
-        # 本地文件路径"/home/zihanzhu/DataLab/datasets/waimai/waimai_10k.csv"
         print(f"train_path: \t{train_path}")
         return [
             datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path})
@@ -77,5 +77,6 @@ class WAIMAI(datalabs.GeneratorBasedBuilder):
             csv_reader = csv.reader(csv_file, delimiter=',')
             for id_, row in enumerate(csv_reader):
                 label, text = row
-                label = textualize_label.get(label)
-                yield id_, {"text": text, "label": label}
+                if label == "0" or label == "1":
+                    label = textualize_label.get(label)
+                    yield id_, {"text": text, "label": label}
