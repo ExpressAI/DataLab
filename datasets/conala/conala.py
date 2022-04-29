@@ -49,7 +49,7 @@ class Conala(datalabs.GeneratorBasedBuilder):
     FIELD_MAP = {
         'intent': 'orig_source',
         'rewritten_intent': 'source',
-        'snippet': 'references',
+        'snippet': 'reference',
         'question_id': 'question_id',
     }
 
@@ -60,7 +60,7 @@ class Conala(datalabs.GeneratorBasedBuilder):
                 "question_id": datalabs.Value("int32"),
                 "orig_source": datalabs.Value("string"),
                 "source": datalabs.Value("string"),
-                "references": datalabs.Value("string"),
+                "reference": datalabs.Value("string"),
             }
         )
 
