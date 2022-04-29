@@ -18,6 +18,15 @@ def infer_schema_dataset_level(sample_level_schema:dict):
     return dataset_level_schema
 
 _CITATION = """
+@inproceedings{liu2022figqa,
+  doi = {10.48550/ARXIV.2204.12632},
+  url = {https://arxiv.org/abs/2204.12632},
+  author = {Liu, Emmy and Cui, Chen and Zheng, Kenneth and Neubig, Graham},
+  title = {Testing the Ability of Language Models to Interpret Figurative Language},
+  booktitle = {Meeting of the North American Chapter of the Association for Computational Linguistics (NAACL)},
+  year = {2022},
+  copyright = {Creative Commons Attribution Share Alike 4.0 International}
+}
 """
 
 
@@ -35,7 +44,7 @@ url_test = f"{private_utils.PRIVATE_LOC}/fig_qa/test.csv"
 
 
 class FigQAConfig(datalabs.BuilderConfig):
-    """BuilderConfig for FB15K."""
+    """BuilderConfig for FigQA."""
 
     def __init__(self, **kwargs):
         """BuilderConfig for FigQA.
