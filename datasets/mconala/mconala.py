@@ -9,7 +9,7 @@ logger = get_logger(__name__)
 _CITATION = """
 @article{wang2022mconala,
   title={MCoNaLa: A Benchmark for Code Generation from Multiple Natural Languages},
-  author={Zhiruo Wang, Grace Cuenca, Shuyan Zhou, Frank F. Xu, Graham Neubig},
+  author={Zhiruo Wang and Grace Cuenca and Shuyan Zhou and Frank F. Xu and Graham Neubig},
   journal={arXiv preprint arXiv:2203.08388},
   year={2022}
 }
