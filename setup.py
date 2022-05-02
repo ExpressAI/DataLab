@@ -54,6 +54,7 @@ REQUIRED_PKGS = [
     "dateparser",
     "seqeval",
     "torch", # too larger
+    "apache-beam",
     # "explainaboard",
 ]
 
