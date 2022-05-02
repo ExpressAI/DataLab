@@ -34,7 +34,6 @@ def get_splits(dataset: str, sub_dataset: str | None, prev_data: dict) -> list[s
         loaded = load_dataset(dataset, sub_dataset)
         return list(loaded.keys())
 
-
 def main():
 
     parser = argparse.ArgumentParser(description='Get dataset info and write it as json', allow_abbrev=False)
@@ -56,16 +55,27 @@ def main():
     )
     sys.path.append(dir_datasets)
 
+    # This is for parent classes that are used across different datasets
+    abstract_members = {'Wmt'}
+
+    # Datasets to skip because they're too time-consuming to download the data.
+    # We can download these manually?
+    skip_datasets = {'wmt14', 'wmt15', 'wmt16', 'wmt17', 'wmt18', 'wmt19'}
+
     out_stream = sys.stdout if args.output_jsonl is None else open(args.output_jsonl, 'w')
     for file_name in sorted(os.listdir(dir_datasets)):
+        print(f'---- {file_name} ----', file=sys.stderr)
         if not file_name.endswith(".py") and not file_name.endswith(".md") and not file_name.endswith(".pkl") and file_name!="__pycache__":
             try:
-                if file_name.startswith("wmt"):
-                    raise ValueError(f'skipping WMT dataset {file_name} due to large size')
                 my_module = importlib.import_module(f"{file_name}.{file_name}")
 
                 metadata = {}
                 for name, obj in inspect.getmembers(my_module):
+                    if file_name in skip_datasets:
+                        metadata = 'SKIPPED'
+                        break
+                    elif name in abstract_members:
+                        continue
 
                     if inspect.isclass(obj) and issubclass(obj, GeneratorBasedBuilder):
 
