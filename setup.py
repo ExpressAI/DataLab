@@ -55,6 +55,7 @@ REQUIRED_PKGS = [
     "seqeval",
     "jieba",
     "torch", # too larger
+    "apache-beam",
     # "explainaboard",
 ]
 
