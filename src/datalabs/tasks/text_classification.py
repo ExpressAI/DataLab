@@ -29,7 +29,7 @@ class TextClassification(TaskTemplate):
     # TODO(lewtun): Find a more elegant approach without descriptors.
     label_schema: ClassVar[Features] = Features({"labels": ClassLabel})
     text_column: str = "text"
-    label_column: str = "labels"
+    label_column: str = "label"
     labels: Optional[Tuple[str]] = None
 
     def __post_init__(self):
