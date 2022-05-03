@@ -734,7 +734,13 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         elif func._type.find("Inference") != -1:
             yield func(self)
 
-        elif func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
+        elif func._type == "Preprocessing":
+            task = self._info.task_templates[0].task
+            language = self._info.languages[0]
+            func.resources = {"task_type": task, "language": language}
+            for sample in self.__iter__():
+                yield func(sample[func.processed_fields[0]])
+        elif func._type in ["Editing", "Featurizing","OperationFunction"]:
             for sample in self.__iter__():
                 yield func(sample[func.processed_fields[0]])
         elif func._type in ["TopicClassificationPrompting", "SentimentClassificationPrompting", "NLIPrompting"]:
@@ -784,7 +790,12 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             elif num_proc > 1:
                 def process_each(index):
                     sample = self._getitem(index, decoded=False)
-                    if func._type in ["Editing", "Preprocessing", "Featurizing", "OperationFunction"]:
+                    if func._type in ["Editing", "Featurizing", "OperationFunction"]:
+                        return func(sample[func.processed_fields[0]])
+                    elif func._type == "Preprocessing":
+                        task = self._info.task_templates[0].task
+                        language = self._info.languages[0]
+                        func.resources = {"task_type":task, "language":language}
                         return func(sample[func.processed_fields[0]])
                     elif func._type in ["TopicClassificationPrompting", "SentimentClassificationPrompting", "NLIPrompting"]:
                         labels = self._info.task_templates[0].labels
@@ -839,7 +850,13 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                 batch_count = ceil(self.num_rows / num_proc)
                 def process_batch(index):
                     range_limit = range(index * batch_count, min((index + 1) * batch_count, self.num_rows))
-                    if func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
+
+                    if func._type in ["Editing", "Featurizing","OperationFunction"]:
+                        return [func(self._getitem(index, decoded=False)[func.processed_fields[0]]) for index in range_limit]
+                    elif func._type == "Preprocessing":
+                        task = self._info.task_templates[0].task
+                        language = self._info.languages[0]
+                        func.resources = {"task_type": task, "language": language}
                         return [func(self._getitem(index, decoded=False)[func.processed_fields[0]]) for index in range_limit]
                     elif func._type in ["TopicClassificationPrompting", "SentimentClassificationPrompting", "NLIPrompting"]:
                         labels = self._info.task_templates[0].labels
