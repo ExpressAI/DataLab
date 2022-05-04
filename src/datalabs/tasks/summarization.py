@@ -21,6 +21,7 @@ from .base import TaskTemplate
 
 _MDS_TEXT_COLUMN = "texts"
 
+
 @dataclass
 class Summarization(TaskTemplate):
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
@@ -71,7 +72,8 @@ class DialogSummarization(TaskTemplate):
     # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
     task_category: str = "dialog_summarization"
     task: str = "dialog_summarization"
-    input_schema: ClassVar[Features] = Features({"dialogue": Sequence(Features({"speaker": Value("string"), "text": Value("string")}))})
+    input_schema: ClassVar[Features] = Features(
+        {"dialogue": Sequence(Features({"speaker": Value("string"), "text": Value("string")}))})
     label_schema: ClassVar[Features] = Features({"summary": Sequence(Value("string"))})
     text_column: str = "dialogue"
     summary_column: str = "summary"
@@ -103,4 +105,23 @@ class QuerySummarization(TaskTemplate):
     def column_mapping(self) -> Dict[str, str]:
         return {self.text_column: "text", self.summary_column: "summary", self.query_column: "query"}
 
-        
+
+@dataclass
+class MultiRefSummarization(TaskTemplate):
+    """Multi-reference summarization task.
+    data format: {
+        "text": str,
+        "summaries": List[str], # list of summaries
+        }
+    """
+    # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
+    task_category: str = "multi_ref_summarization"
+    task: str = "multi_ref_summarization"
+    input_schema: ClassVar[Features] = Features({"text": Value("string")})
+    label_schema: ClassVar[Features] = Features({"summaries": Sequence(Value("string"))})
+    text_column: str = "text"
+    summary_column: str = "summaries"
+
+    @property
+    def column_mapping(self) -> Dict[str, str]:
+        return {self.text_column: "text", self.summary_column: "summaries"}
