@@ -87,3 +87,5 @@ get_operations_test.py
 client/api_key.py
 client/add_my_dataset.py
 src/datalabs/.coverage
+client/add_my_dataset.py
+train.json

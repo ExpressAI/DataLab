@@ -51,7 +51,7 @@ class FB15k237Config(datalabs.BuilderConfig):
 class FB15k237Dataset(datalabs.GeneratorBasedBuilder):
     """FB15k237 Dataset."""
 
-    _base_url = "https://raw.githubusercontent.com/neulab/ExplainaBoard/main/data/datasets/fb15k_237/"
+    _base_url = "https://datalab-hub.s3.amazonaws.com/kg/fb15k_237/"
     BUILDER_CONFIGS = [
         FB15k237Config(
             name="origin",
