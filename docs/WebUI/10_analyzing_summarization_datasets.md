@@ -96,6 +96,11 @@ summscreen | `non-anonymized-ForeverDreaming`  | Summarization | ``` load_datase
 summscreen | `anonymized-ForeverDreaming`  | Summarization | ``` load_dataset("summscreen", "anonymized-ForeverDreaming") ``` | Current definition: `text`, `summary`, ForeverDreaming split, anonymized version, tokenized |
 summscreen | `non-anonymized-TVMegaSite`  | Summarization | ``` load_dataset("summscreen", "non-anonymized-TVMegaSite") ``` | Current definition: `text`, `summary`, TVMegaSite split, non-anonymized version, tokenized |
 summscreen | `anonymized-TVMegaSite`  | Summarization | ``` load_dataset("summscreen", "anonymized-TVMegaSite") ``` | Current definition: `text`, `summary`, TVMegaSite split, anonymized version, tokenized |
+aeslc | `document` | Summarization | ```load_dataset("aeslc")``` | Current definition: text, summary |
+k_sportssum | `document` | Summarization | ```load_dataset("k_sportssum")``` | Current definition: text: `{"commentary": List[str], "score": List[str]}`, summary: `str` |
+peersum | `document` | Summarization | ```load_dataset("peersum")``` | Current definition: text, summary |
+peersum | `dialogue` | DialogSummarization | ``` load_dataset("peersum", "dialogue") ``` | Current definition: dialogue: `{"speaker": List[str], "text": List[str]}`, summary: `List[str]`  |
+pts | `document` | Summarization | ```load_dataset("pts")``` | Current definition: text, summary |
 
 ## Examples
 
