@@ -8,7 +8,7 @@ import importlib
 import inspect
 
 import json
-from datalabs import GeneratorBasedBuilder, load_dataset
+from datalabs import GeneratorBasedBuilder, load_dataset, DatasetDict
 
 """
 This script writes out information regarding all datasets supported by the datalab
@@ -17,7 +17,7 @@ SDK in jsonl format, in general one dataset per line.
 
 # TODO(gneubig): there is probably an easier way of doing this without downloading
 #                datasets, but it's non-trivial, so we'll stick with this for now
-def get_splits(dataset: str, sub_dataset: str | None, prev_data: dict) -> list[str]:
+def get_splits(dataset: str, sub_dataset: str | None, prev_data: dict) -> dict[str,int]:
     """
     Get the splits for each dataset and sub_dataset.
     :param dataset: the name of the dataset
@@ -32,7 +32,7 @@ def get_splits(dataset: str, sub_dataset: str | None, prev_data: dict) -> list[s
     else:
         print(f'loading splits from datalab for {dataset}, {sub_dataset}', file=sys.stderr)
         loaded = load_dataset(dataset, sub_dataset)
-        return list(loaded.keys())
+        return {k: v.num_rows for k,v in loaded.items()}
 
 def main():
 
