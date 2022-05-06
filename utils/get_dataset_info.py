@@ -84,7 +84,8 @@ def main():
                         dataset_info = dataset._info()
                         metadata["dataset_class_name"] = name
                         metadata["languages"] = dataset_info.languages
-                        metadata["task_templates"] = None if dataset_info.task_templates is None else [x.task for x in dataset_info.task_templates]
+                        metadata["task_categories"] = None if dataset_info.task_templates is None else [x.task_category for x in dataset_info.task_templates]
+                        metadata["tasks"] = None if dataset_info.task_templates is None else [x.task for x in dataset_info.task_templates]
                         sub_datasets = {}
                         if len(dataset.builder_configs) > 0:
                             for k, v in dataset.builder_configs.items():
