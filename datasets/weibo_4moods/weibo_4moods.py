@@ -21,14 +21,14 @@ from datalabs import Dataset
 
 # Find for instance the citation on arxiv or on the dataset repo/website
 _CITATION = """\
-For more information, please refer to "https://github.com/SophonPlus/ChineseNlpCorpus/blob/master/datasets/waimai_10k/intro.ipynb".   
+For more information, please refer to "https://github.com/SophonPlus/ChineseNlpCorpus/blob/master/datasets/simplifyweibo_4_moods/intro.ipynb".   
 """
 
 # You can copy an official description
 _DESCRIPTION = """\
-This reviews dataset contains more than 10,000 user reviews from a Chinese food delivery platform,
-with about 4000 positive reviews and about 8000 negative ones. 
-For more information, please refer to "https://github.com/SophonPlus/ChineseNlpCorpus/blob/master/datasets/waimai_10k/intro.ipynb". 
+The data set contains more than 360,000 posts on Sina Weibo, China's twitter-like microblogging service. 
+These posts are classified into four emotions, including about 200,000 pieces of joy and 50,000 pieces of anger, disgust and depression respectively.
+For more information, please refer to "https://github.com/SophonPlus/ChineseNlpCorpus/blob/master/datasets/simplifyweibo_4_moods/intro.ipynb". 
 """
 
 # TODO: Add the licence for the dataset here if you can find it
@@ -36,18 +36,19 @@ _LICENSE = "N/A"
 
 _HOMEPAGE = "https://github.com/SophonPlus/ChineseNlpCorpus"
 
-_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/waimai/waimai_10k.csv"
+_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/weibo_4moods/weibo_4moods.csv"
 
-class WAIMAI(datalabs.GeneratorBasedBuilder):
+class Weibo4Moods(datalabs.GeneratorBasedBuilder):
     def _info(self):
+        
         return datalabs.DatasetInfo(
-            # This is the description that will appear on the datalab page.
+
             description=_DESCRIPTION,
-            # This defines the different columns of the dataset and their types
+
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["positive", "negative"]),
+                    "label": datalabs.features.ClassLabel(names=["joy", "anger","disgust","depression"]),
                 }
             ),
             homepage=_HOMEPAGE,
@@ -57,7 +58,6 @@ class WAIMAI(datalabs.GeneratorBasedBuilder):
         )
 
     def _split_generators(self, dl_manager):
-        # dl_manager is a datalab.download.DownloadManager that can be used to download and extract URLs
         train_path = dl_manager.download_and_extract(_URL)
         print(f"train_path: \t{train_path}")
         return [
@@ -65,18 +65,18 @@ class WAIMAI(datalabs.GeneratorBasedBuilder):
         ]
 
     def _generate_examples(self, filepath):
-        """Generate WAIMAI examples."""
-
-        # map the label into textual string
+        
         textualize_label = {
-            "1": "positive",
-            "0": "negative"
+            "0": "joy",
+            "1": "anger",
+            "2": "disgust",
+            "3": "depression"
         }
 
         with open(filepath, encoding="utf-8") as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for id_, row in enumerate(csv_reader):
                 label, text = row
-                if label == "0" or label == "1":
+                if label == ("0" or "1" or "2" or "3") :
                     label = textualize_label.get(label)
                     yield id_, {"text": text, "label": label}
