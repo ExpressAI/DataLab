@@ -52,7 +52,7 @@ keywords = {benchmark,tensorflow,nlu,glue,corpus,transformers,Chinese,pretrained
 
 _TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/train.json"
 _VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/dev.json"
-_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/test1.0.json"
+# _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/test1.0.json"
 
 
 class TNEWS(datalabs.GeneratorBasedBuilder):
@@ -93,20 +93,18 @@ class TNEWS(datalabs.GeneratorBasedBuilder):
         
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         
         return [
             datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
             datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
         
 
 
     def _generate_examples(self, filepath):
-        """Generate TNEWS examples."""
 
-        # map the label into textual string
         textualize_label = {
             "100": "story",
             "101": "culture",
@@ -138,10 +136,7 @@ class TNEWS(datalabs.GeneratorBasedBuilder):
                     "text": res_info['sentence'],
                     "keywords": res_info['keywords'],
                     "label": label
-                    }
-                else:
-                    break
-                    
+                    } 
                 row_count += 1
 
                 
