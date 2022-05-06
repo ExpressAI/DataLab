@@ -114,6 +114,7 @@ class FigQA(datalabs.GeneratorBasedBuilder):
             # Homepage of the dataset for documentation
             homepage="https://github.com/nightingal3/fig-qa",
             citation=_CITATION,
+            languages=['en'],
             task_templates=[
                 QuestionAnsweringMultipleChoices(
                     question_column="question", context_column="context", answers_column="answers",

@@ -4,6 +4,7 @@ import json
 import datalabs
 
 from datalabs.utils.logging import get_logger
+from datalabs.tasks import MachineTranslation
 
 logger = get_logger(__name__)
 
@@ -74,6 +75,12 @@ class Conala(datalabs.GeneratorBasedBuilder):
             # Homepage of the dataset for documentation
             homepage="https://conala-corpus.github.io/",
             citation=_CITATION,
+            languages=['en', 'python'],
+            task_templates=[
+                MachineTranslation(
+                    task="code-generation",
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):

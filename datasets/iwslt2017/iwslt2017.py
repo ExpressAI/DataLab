@@ -18,7 +18,7 @@
 import os
 
 import datalabs
-
+from datalabs.tasks import MachineTranslation
 
 _CITATION = """\
 @inproceedings{cettoloEtAl:EAMT2012,
@@ -105,6 +105,11 @@ class IWSLT217(datalabs.GeneratorBasedBuilder):
             # Homepage of the dataset for documentation
             homepage="https://sites.google.com/site/iwsltevaluation2017/TED-tasks",
             citation=_CITATION,
+            task_templates=[
+                MachineTranslation(
+                    task="machine-translation",
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):

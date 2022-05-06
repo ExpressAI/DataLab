@@ -1,5 +1,6 @@
 import json
 import datalabs
+from datalabs.tasks import MachineTranslation
 
 from datalabs.utils.logging import get_logger
 
@@ -82,6 +83,12 @@ class MConala(datalabs.GeneratorBasedBuilder):
             features=features_sample,
             features_dataset=features_dataset,
             supervised_keys=None,
+            languages=['fr','ja','ru','python'],
+            task_templates=[
+                MachineTranslation(
+                    task="machine-translation",
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
