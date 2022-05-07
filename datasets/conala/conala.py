@@ -4,6 +4,7 @@ import json
 import datalabs
 
 from datalabs.utils.logging import get_logger
+from datalabs.tasks import MachineTranslation
 
 logger = get_logger(__name__)
 
@@ -46,21 +47,16 @@ class ConalaConfig(datalabs.BuilderConfig):
 
 class Conala(datalabs.GeneratorBasedBuilder):
 
-    FIELD_MAP = {
-        'intent': 'orig_source',
-        'rewritten_intent': 'source',
-        'snippet': 'reference',
-        'question_id': 'question_id',
-    }
-
     def _info(self):
         features_dataset = datalabs.Features()
         features_sample = datalabs.Features(
             {
                 "question_id": datalabs.Value("int32"),
-                "orig_source": datalabs.Value("string"),
-                "source": datalabs.Value("string"),
-                "reference": datalabs.Value("string"),
+                "orig_en": datalabs.Value("string"),
+                "translation": {
+                    "en": datalabs.Value("string"),
+                    "python": datalabs.Value("string"),
+                }
             }
         )
 
@@ -74,6 +70,14 @@ class Conala(datalabs.GeneratorBasedBuilder):
             # Homepage of the dataset for documentation
             homepage="https://conala-corpus.github.io/",
             citation=_CITATION,
+            languages=['en', 'python'],
+            task_templates=[
+                MachineTranslation(
+                    task="code-generation",
+                    translation_column="translation",
+                    lang_sub_columns=["en", "python"],
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -98,6 +102,16 @@ class Conala(datalabs.GeneratorBasedBuilder):
         ]
         return split_gens
 
+    def _convert_data(self, data):
+        return {
+            "question_id": data['question_id'],
+            "orig_en": data['intent'],
+            "translation": {
+                "en": data['rewritten_intent'],
+                "python": data['snippet'],
+            }
+        }
+
     def _generate_examples(self, filepath):
         """Yields examples."""
         id_sample = 0
@@ -106,8 +120,8 @@ class Conala(datalabs.GeneratorBasedBuilder):
                 for _id, line in enumerate(fin):
                     data = json.loads(line)
                     data['rewritten_intent'] = ''
-                    yield _id, {self.FIELD_MAP[k]: v for k,v in data.items() if k in self.FIELD_MAP}
+                    yield _id, self._convert_data(data)
         else:
             with open(filepath, encoding="utf-8") as fin:
                 for _id, data in enumerate(json.load(fin)):
-                    yield _id, {self.FIELD_MAP[k]: v for k,v in data.items() if k in self.FIELD_MAP}
+                    yield _id, self._convert_data(data)

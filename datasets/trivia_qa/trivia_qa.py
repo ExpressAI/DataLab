@@ -21,6 +21,8 @@ import glob
 import json
 import os
 
+from datalabs.tasks import QuestionAnsweringExtractive
+
 logger = datalabs.logging.get_logger(__name__)
 
 _CITATION = """
