@@ -105,9 +105,12 @@ class IWSLT217(datalabs.GeneratorBasedBuilder):
             # Homepage of the dataset for documentation
             homepage="https://sites.google.com/site/iwsltevaluation2017/TED-tasks",
             citation=_CITATION,
+            languages=self.config.pair.split('-'),
             task_templates=[
                 MachineTranslation(
                     task="machine-translation",
+                    translation_column="translation",
+                    lang_sub_columns=self.config.pair.split('-'),
                 )
             ],
         )

@@ -48,16 +48,9 @@ class MConalaConfig(datalabs.BuilderConfig):
 
 class MConala(datalabs.GeneratorBasedBuilder):
 
-    FIELD_MAP = {
-        'intent': 'orig_source',
-        'rewritten_intent': 'source',
-        'snippet': 'reference',
-        'question_id': 'question_id',
-    }
-
     BUILDER_CONFIGS = [
         datalabs.BuilderConfig(
-            name="{}".format(lang),
+            name=lang,
         )
         for lang in list(LANG_URLS.keys())
     ]
@@ -67,9 +60,11 @@ class MConala(datalabs.GeneratorBasedBuilder):
         features_sample = datalabs.Features(
             {
                 "question_id": datalabs.Value("int32"),
-                "orig_source": datalabs.Value("string"),
-                "source": datalabs.Value("string"),
-                "reference": datalabs.Value("string"),
+                f"orig_{self.config.name}": datalabs.Value("string"),
+                "translation": {
+                    self.config.name: datalabs.Value("string"),
+                    "python": datalabs.Value("string"),
+                }
             }
         )
 
@@ -83,10 +78,12 @@ class MConala(datalabs.GeneratorBasedBuilder):
             features=features_sample,
             features_dataset=features_dataset,
             supervised_keys=None,
-            languages=['fr','ja','ru','python'],
+            languages=[self.config.name,'python'],
             task_templates=[
                 MachineTranslation(
-                    task="machine-translation",
+                    task="code-generation",
+                    translation_column="translation",
+                    lang_sub_columns=[self.config.name,'python'],
                 )
             ],
         )
@@ -104,8 +101,18 @@ class MConala(datalabs.GeneratorBasedBuilder):
             ), 
         ]
 
+    def _convert_data(self, data):
+        return {
+            "question_id": data['question_id'],
+            f"orig_{self.config.name}": data['intent'],
+            "translation": {
+                self.config.name: data['rewritten_intent'],
+                "python": data['snippet'],
+            }
+        }
+
     def _generate_examples(self, filepath):
         """Yields examples."""
         with open(filepath, 'r') as fin: 
             for _id, data in enumerate(json.load(fin)): 
-                yield _id, {self.FIELD_MAP[k]: v for k,v in data.items() if k in self.FIELD_MAP}
+                yield _id, self._convert_data(data)
