@@ -19,35 +19,35 @@ import datalabs
 from datalabs.tasks import TextClassification
 from datalabs import Dataset
 
-# Find for instance the citation on arxiv or on the dataset repo/website
+
 _CITATION = """\
-For more information, please refer to "https://github.com/SophonPlus/ChineseNlpCorpus/blob/master/datasets/waimai_10k/intro.ipynb".   
+For more information, please refer to "http://tcci.ccf.org.cn/conference/2014/pages/page04_sam.html".   
 """
 
-# You can copy an official description
 _DESCRIPTION = """\
-This reviews dataset contains more than 10,000 user reviews from a Chinese food delivery platform,
-with about 4000 positive reviews and about 8000 negative ones. 
-For more information, please refer to "https://github.com/SophonPlus/ChineseNlpCorpus/blob/master/datasets/waimai_10k/intro.ipynb". 
+This dataset is from NLPCC 2014 Sentiment Classification Task, which aims to evaluate the effect of deep learning methods on sentiment classification tasks. 
+The dataset covers multiple fields (eg. books, DVD, electronic products, etc.), including positive and negative labels. 
+For more information, please refer to "https://www.luge.ai/#/luge/dataDetail?id=20". 
 """
 
-# TODO: Add the licence for the dataset here if you can find it
-_LICENSE = "N/A"
+_LICENSE = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/NLPCC14-SC/License.pdf"
 
-_HOMEPAGE = "https://github.com/SophonPlus/ChineseNlpCorpus"
+_HOMEPAGE = "http://tcci.ccf.org.cn/conference/2014/pages/page04_sam.html"
 
-_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/waimai/waimai_10k.csv"
+_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/NLPCC14-SC/train.tsv"
+# _TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/NLPCC14-SC/test.tsv"
 
-class WAIMAI(datalabs.GeneratorBasedBuilder):
+class NLPCC14SC(datalabs.GeneratorBasedBuilder):
     def _info(self):
+        
         return datalabs.DatasetInfo(
-            # This is the description that will appear on the datalab page.
+
             description=_DESCRIPTION,
-            # This defines the different columns of the dataset and their types
+
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["positive", "negative"]),
+                    "label": datalabs.features.ClassLabel(names=["positive", "negative"])
                 }
             ),
             homepage=_HOMEPAGE,
@@ -57,26 +57,23 @@ class WAIMAI(datalabs.GeneratorBasedBuilder):
         )
 
     def _split_generators(self, dl_manager):
-        # dl_manager is a datalab.download.DownloadManager that can be used to download and extract URLs
-        train_path = dl_manager.download_and_extract(_URL)
+        train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         print(f"train_path: \t{train_path}")
         return [
             datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path})
         ]
 
     def _generate_examples(self, filepath):
-        """Generate WAIMAI examples."""
-
-        # map the label into textual string
+        
         textualize_label = {
             "1": "positive",
             "0": "negative"
         }
 
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',')
+            csv_reader = csv.reader(csv_file, delimiter = '\t')
             for id_, row in enumerate(csv_reader):
                 label, text = row
-                if label == "0" or label == "1":
-                    label = textualize_label.get(label)
+                if label == ("0" or "1"):
+                    label = textualize_label[label]
                     yield id_, {"text": text, "label": label}
