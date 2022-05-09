@@ -78,7 +78,7 @@ For example,
    this [doc](https://github.com/ExpressAI/DataLab/blob/main/docs/SDK/add_new_datasets_into_web_platform.md).
 
 NOTE:
-* Usually, using the lower case string for the script name (arxiv_sum.py) while camel case for the class name (`ArxivSum`).
+* Usually, using the **Lower** case string with `_` instead of `-` for the script name (`arxiv_sum.py`) while camel case for the class name (`ArxivSum`).
    
 #### what if there is private data that I want to use?
 
