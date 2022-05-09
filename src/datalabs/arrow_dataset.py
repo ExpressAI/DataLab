@@ -84,7 +84,7 @@ from .operations.data import  Data, TextData
 from .operations.operation import OperationFunction, DatasetOperation
 
 # import tqdm
-from datalabs.utils.p_tqdm import p_map
+# from datalabs.utils.p_tqdm import p_map
 
 # from .operations.prompt.text_classification import *
 if TYPE_CHECKING:
@@ -896,12 +896,18 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
 
 
     def __table_path(self):
-        return self.cache_files[0]["filename"]
+        return None if len(self.cache_files)==0 else self.cache_files[0]["filename"]
 
     def __load_stat(self):
-        dirname = os.path.dirname(self.__table_path())
-        path = os.path.join(dirname, "stat.json")
-        self._stat = self.__load_json(path)
+        table_path_name = self.__table_path()
+        if table_path_name is None:
+            self._stat = {}
+        else:
+            dirname = os.path.dirname(table_path_name)
+            path = os.path.join(dirname, "stat.json")
+            self._stat = self.__load_json(path)
+
+
 
     def __write_stat(self):
         dirname = os.path.dirname(self.__table_path())

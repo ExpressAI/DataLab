@@ -1,5 +1,6 @@
 import requests
 import json
+import os
 from datalabs import load_dataset
 from datalabs.operations.preprocess.general import tokenize
 import multiprocessing
@@ -15,10 +16,9 @@ pip install --upgrade pip
 pip install datalabs
 python -m nltk.downloader omw-1.4 # to support more feature calculation
 """
-def get_info(split_name, language, task, dataset_name):
+def get_info(split_name, path_dataset, language, task):
 
-
-    dataset = load_dataset("json", data_files=dataset_name)
+    dataset = load_dataset("json", data_files=path_dataset)
     dataset[split_name]._info.task_templates = [TextClassification(task)]
     dataset[split_name]._info.languages = [language]
 
@@ -72,12 +72,20 @@ def get_info(split_name, language, task, dataset_name):
 
 
 # ----------- Example -----------------
-dataset_name = "train.json" # jsonl format
-split_name = "train"
-language = "en"
-task = "text-classification"
-metadata, dataset = get_info(split_name, language, task, dataset_name)
+# directory_of_files: the path of user-uploaded data
+directory_of_files = "./"
 
-print(metadata["features"])
-print(dataset)
+for file_name in sorted(os.listdir(directory_of_files)):
+    print(file_name)
+    if file_name not in ["train.json", "validation.json", "test.json"]:
+        continue
+    else:
+        split_name = file_name.split(".json")[0]
+
+        language = "en"
+        task = "text-classification"
+        metadata, dataset = get_info(split_name, directory_of_files+"/" + file_name ,language, task)
+
+        # print(metadata["features"])
+        # print(dataset)
 
