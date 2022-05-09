@@ -19,8 +19,8 @@ import csv
 
 import datalabs
 
-from datalabs.tasks import QuestionAnsweringMultipleChoicesWithoutContext
-
+from datalabs.tasks import QuestionAnsweringMultipleChoicesWithoutContext, \
+    QuestionAnsweringMultipleChoices
 
 _CITATION = """\
 @inproceedings{chen2019codah,
@@ -96,7 +96,7 @@ class Codah(datalabs.GeneratorBasedBuilder):
                 {
                     "id": datalabs.Value("string"),
                     "question_category": datalabs.Value("string"),
-                    "question": datalabs.Value("string"), # question_propmt->question
+                    "question": datalabs.Value("string"), # question_prompt->question
                     "options": datalabs.features.Sequence(datalabs.Value("string")), # candidate_answers -> options
                     "answers":  # answers -> answerKey
                         {
@@ -108,6 +108,14 @@ class Codah(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://github.com/Websail-NU/CODAH",
             citation=_CITATION,
+            task_templates=[
+                QuestionAnsweringMultipleChoices(
+                    question_column="question",
+                    answers_column="answers",
+                    options_column="options",
+                    task="question-answering-multiple-choices",
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):

@@ -19,7 +19,7 @@
 import json
 
 import datalabs
-
+from datalabs.tasks import TextClassification
 
 _CITATION = """\
 @inproceedings{marc_reviews,
@@ -109,6 +109,12 @@ class AmazonReviewsMulti(datalabs.GeneratorBasedBuilder):
             license=_LICENSE,
             homepage=_HOMEPAGE_URL,
             citation=_CITATION,
+            task_templates=[
+                TextClassification(text_column="text", label_column="label",
+                                   task="sentiment-classification"),
+                TextClassification(text_column="text", label_column="product_category",
+                                   task="topic-classification"),
+            ],
         )
 
     def _split_generators(self, dl_manager):

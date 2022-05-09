@@ -1,5 +1,6 @@
 from datalabs import load_dataset
 from dataclasses import asdict, dataclass, field
+from datalabs.operations.preprocess.general import tokenize
 import multiprocessing
 # this is task-dependent
 from aggregate.text_classification import get_features_dataset_level as get_features_dataset_level_text_classification
@@ -122,12 +123,20 @@ def get_info(dataset_name:str, sub_dataset_name_sdk:str, calculate_features = Fa
         #     continue
 
         # get sample-level advanced features
+        dataset[split_name] = dataset[split_name].apply(tokenize, num_proc=multiprocessing.cpu_count(),
+                                                        mode="memory")
+
         dataset[split_name] = dataset[split_name].apply(feature_func, num_proc=multiprocessing.cpu_count(), mode="memory")
         all_features = asdict(dataset[split_name]._info)["features"]
 
         # turn on advanced fields
         for feature_name, feature_info in all_features.items():
-            if feature_name not in raw_features.keys():
+            # this is defined for the case when feature is `text_tokenized`
+            if feature_name.find("tokenize") != -1 and \
+                    all_features[feature_name]["dtype"] == "string":
+                feature_info["raw_feature"] = True
+                feature_info["is_bucket"] = False
+            elif feature_name not in raw_features.keys():
                 feature_info["raw_feature"] = False
                 feature_info["is_bucket"] = True
 
@@ -261,6 +270,7 @@ def generate_db_metadata_from_sdk(metadata,
     summary = metadata['description']
     homepage = metadata['homepage']
     license = metadata['license']
+    languages = metadata['languages']
     subset_name = metadata['config_name']
     repository = metadata['repository']
     leaderboard = metadata['leaderboard']
