@@ -1,6 +1,5 @@
 # Lint as: python3
 
-
 import datetime
 import itertools
 import os
@@ -59,125 +58,21 @@ REQUIRED_PKGS = [
     # "explainaboard",
 ]
 
-AUDIO_REQUIRE = [
-    "librosa",
-]
+AUDIO_REQUIRE = []
 
-BENCHMARKS_REQUIRE = [
-    "numpy==1.18.5",
-    "tensorflow==2.3.0",
-    "torch==1.6.0",
-    "transformers==3.0.2",
-]
+BENCHMARKS_REQUIRE = []
 
-TESTS_REQUIRE = [
-    # test dependencies
-    "absl-py",
-    "pytest",
-    "pytest-datadir",
-    "pytest-xdist",
-    # optional dependencies
-    "apache-beam>=2.26.0",
-    "elasticsearch",
-    "aiobotocore",
-    "boto3",
-    "botocore",
-    "faiss-cpu>=1.6.4",
-    "fsspec[s3]",
-    "moto[s3,server]==2.0.4",
-    "rarfile>=4.0",
-    "s3fs==2021.08.1",
-    "tensorflow>=2.3,!=2.6.0,!=2.6.1",
-    "torch",
-    "torchaudio",
-    "transformers",
-    # datalabs dependencies
-    "bs4",
-    "conllu",
-    "langdetect",
-    "lxml",
-    "mwparserfromhell",
-    "nltk",
-    "openpyxl",
-    "py7zr",
-    "tldextract",
-    "zstandard",
-    # metrics dependencies
-    "bert_score>=0.3.6",
-    "rouge_score",
-    "sacrebleu",
-    "scipy",
-    "seqeval",
-    "scikit-learn",
-    "jiwer",
-    "sentencepiece",  # for bleurt
-    # to speed up pip backtracking
-    "toml>=0.10.1",
-    "requests_file>=1.5.1",
-    "tldextract>=3.1.0",
-    "texttable>=1.6.3",
-    "Werkzeug>=1.0.1",
-    "six~=1.15.0",
-    # metadata validation
-    "importlib_resources;python_version<'3.7'",
-    # new dependencies needed by datalabs
-    "pymongo[srv]",
-    "spacy",
-    "checklist",
-    "lexicalrichness",
-    "sacrebleu",
-    "compare_mt",
-    "py7zr",
-]
+TESTS_REQUIRE = []
 
-if os.name != "nt":
-    # dependencies of unbabel-comet
-    # only test if not on windows since there're issues installing fairseq on windows
-    TESTS_REQUIRE.extend(
-        [
-            "wget>=3.2",
-            "pytorch-nlp==0.5.0",
-            "pytorch_lightning",
-            "fastBPE==0.1.0",
-            "fairseq",
-        ]
-    )
+
 
 QUALITY_REQUIRE = ["black==21.4b0", "flake8==3.7.9", "isort>=5.0.0", "pyyaml>=5.3.1"]
 
 
 EXTRAS_REQUIRE = {
-    "audio": AUDIO_REQUIRE,
-    "apache-beam": ["apache-beam>=2.26.0"],
-    "tensorflow": ["tensorflow>=2.2.0,!=2.6.0,!=2.6.1"],
-    "tensorflow_gpu": ["tensorflow-gpu>=2.2.0,!=2.6.0,!=2.6.1"],
-    "torch": ["torch"],
-    "s3": [
-        "fsspec",
-        "boto3",
-        "botocore",
-        "s3fs",
-    ],
-    "streaming": [],  # for backward compatibility
     "dev": TESTS_REQUIRE + QUALITY_REQUIRE,
     "tests": TESTS_REQUIRE,
     "quality": QUALITY_REQUIRE,
-    "benchmarks": BENCHMARKS_REQUIRE,
-    "docs": [
-        "docutils==0.16.0",
-        "recommonmark",
-        "sphinx==3.1.2",
-        "sphinx-markdown-tables",
-        "sphinx-rtd-theme==0.4.3",
-        "sphinxext-opengraph==0.4.1",
-        "sphinx-copybutton",
-        "fsspec<2021.9.0",
-        "s3fs",
-        "sphinx-panels",
-        "sphinx-inline-tabs",
-        "myst-parser",
-        "Markdown!=3.3.5",
-    ],
 }
 
 setup(
@@ -191,8 +86,7 @@ setup(
     url="https://github.com/expressai/datalabs",
     download_url="https://github.com/expressai/datalabs/tags",
     license="Apache 2.0",
-    package_dir={"": "src"},
-    packages=find_packages("src"),
+    packages=find_packages(),
     package_data={"datalabs": ["py.typed", "scripts/templates/*"],
                   "datalabs.utils.resources": ["*.json", "*.yaml"],
                   "datalabs.operations.featurize.pre_models":["*.pkl","*.json"],
