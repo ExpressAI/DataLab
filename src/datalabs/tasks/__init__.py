@@ -5,7 +5,7 @@ from .automatic_speech_recognition import AutomaticSpeechRecognition
 from .base import TaskTemplate
 from .image_classification import ImageClassification
 
-from .summarization import Summarization, MultiDocSummarization, DialogSummarization, QuerySummarization
+from .summarization import Summarization, MultiDocSummarization, DialogSummarization, QuerySummarization, OpinionSummarization
 
 from .question_answering import MultipleChoiceQA
 from .question_answering import QuestionAnsweringExtractive
@@ -61,6 +61,7 @@ __all__ = [
     "KGLinkPrediction",
     "TopicClassification",
     "CoreferenceResolution",
+    "OpinionSummarization,"
 ]
 
 logger = get_logger(__name__)
@@ -92,6 +93,7 @@ NAME2TEMPLATE = {
     RelationExtraction.task_category: RelationExtraction,
     SpanTextClassification.task_category: SpanTextClassification,
     KGLinkPrediction.task_category: KGLinkPrediction,
+    OpinionSummarization.task_category: OpinionSummarization,
 }
 
 

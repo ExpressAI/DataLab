@@ -125,3 +125,26 @@ class MultiRefSummarization(TaskTemplate):
     @property
     def column_mapping(self) -> Dict[str, str]:
         return {self.text_column: "text", self.summary_column: "summaries"}
+
+
+@dataclass
+class OpinionSummarization(TaskTemplate):
+    """ Opinion summarization task.
+    data format: {
+        "texts": List[str], # list of reviews 
+        "aspect": str, # aspect of the summary, optional
+        "summaries": List[str], # list of summaries, optional
+        }
+    """
+    # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
+    task_category: str = "opinion_summarization"
+    task: str = "opinion_summarization"
+    input_schema: ClassVar[Features] = Features({"texts": Sequence(Value("string")), "query": Value("string")})
+    label_schema: ClassVar[Features] = Features({"summaries": Sequence(Value("string"))})
+    text_column: str = "texts"
+    summary_column: str = "summaries"
+    aspect_column: str = "aspect"
+
+    @property
+    def column_mapping(self) -> Dict[str, str]:
+        return {self.text_column: "texts", self.summary_column: "summaries", self.aspect_column: "aspect"}
