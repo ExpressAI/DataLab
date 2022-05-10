@@ -13,17 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import csv
 import json
-import os
 import datalabs
-import zipfile
 from pydantic import FilePath
-import requests
-from datalabs.tasks import TextClassification, TopicClassification
-from datalabs import Dataset, Prompts
+from datalabs.tasks import TopicClassification
 
-from datalabs.utils.more_features import prefix_dict_key, get_feature_arguments
 
 _DESCRIPTION = """\
 TNEWS is a short news text data set from Toutiao and each text is labelled with one of 15 categories of news. 
