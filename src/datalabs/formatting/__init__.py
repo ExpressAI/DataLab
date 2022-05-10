@@ -77,13 +77,13 @@ _register_formatter(NumpyFormatter, "numpy", aliases=["np"])
 _register_formatter(PandasFormatter, "pandas", aliases=["pd"])
 _register_formatter(CustomFormatter, "custom")
 
-if config.TORCH_AVAILABLE:
-    from .torch_formatter import TorchFormatter
-
-    _register_formatter(TorchFormatter, "torch", aliases=["pt", "pytorch"])
-else:
-    _torch_error = ValueError("PyTorch needs to be installed to be able to return PyTorch tensors.")
-    _register_unavailable_formatter(_torch_error, "torch", aliases=["pt", "pytorch"])
+# if config.TORCH_AVAILABLE:
+#     from .torch_formatter import TorchFormatter
+#
+#     _register_formatter(TorchFormatter, "torch", aliases=["pt", "pytorch"])
+# else:
+#     _torch_error = ValueError("PyTorch needs to be installed to be able to return PyTorch tensors.")
+#     _register_unavailable_formatter(_torch_error, "torch", aliases=["pt", "pytorch"])
 
 if config.TF_AVAILABLE:
     from .tf_formatter import TFFormatter

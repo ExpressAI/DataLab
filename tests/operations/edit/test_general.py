@@ -58,8 +58,8 @@ class MyTestCase(unittest.TestCase):
         res = dataset["test"].apply(insert_abbreviation, mode = "realtime")
         print(next(res))
 
-        res = dataset["test"].apply(reformat_date, mode = "realtime")
-        print(next(res))
+        # res = dataset["test"].apply(reformat_date, mode = "realtime")
+        # print(next(res))
 
         res = dataset["test"].apply(replace_acronyms, mode = "realtime")
         print(next(res))
