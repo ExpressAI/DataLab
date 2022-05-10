@@ -55,7 +55,6 @@ from .utils.filelock import FileLock
 from .utils.info_utils import get_size_checksum_dict, verify_checksums, verify_splits
 from .utils.streaming_download_manager import StreamingDownloadManager
 from multiprocess import Pool
-from datalabs.utils.p_tqdm import p_map
 from .operations.featurize.text_matching import (
     get_features_sample_level,
     get_schema_of_sample_level_features,
