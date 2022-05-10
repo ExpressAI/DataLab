@@ -47,7 +47,7 @@ class IFLYTEK(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label_des": datalabs.features.ClassLabel(names=[
+                    "label": datalabs.features.ClassLabel(names=[
                         "打车",
                         "地图导航",
                         "免费WIFI",
