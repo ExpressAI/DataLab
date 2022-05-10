@@ -48,13 +48,13 @@ REQUIRED_PKGS = [
     "sacrebleu",
     "compare_mt",
     "scikit-learn", # restricted by hatesonar pkg ==0.23.2
-    "py7zr",
+    # "py7zr", # for wikipedia dataset
     # for hate speech
-    "hatesonar",
-    "dateparser",
+    # "hatesonar", # for calculating hatespeech bias
+    # "dateparser", # for the edit-reformat_date operation
     "seqeval",
     "jieba",
-    "torch", # too larger
+    # "torch", # too larger
     "apache-beam",
     # "explainaboard",
 ]
