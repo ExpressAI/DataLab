@@ -84,7 +84,7 @@ from .operations.data import  Data, TextData
 from .operations.operation import OperationFunction, DatasetOperation
 
 # import tqdm
-from datalabs.utils.p_tqdm import p_map
+# from datalabs.utils.p_tqdm import p_map
 
 # from .operations.prompt.text_classification import *
 if TYPE_CHECKING:
@@ -734,7 +734,13 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         elif func._type.find("Inference") != -1:
             yield func(self)
 
-        elif func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
+        elif func._type == "Preprocessing":
+            task = self._info.task_templates[0].task
+            language = self._info.languages[0]
+            func.resources = {"task_type": task, "language": language}
+            for sample in self.__iter__():
+                yield func(sample[func.processed_fields[0]])
+        elif func._type in ["Editing", "Featurizing","OperationFunction"]:
             for sample in self.__iter__():
                 yield func(sample[func.processed_fields[0]])
         elif func._type in ["TopicClassificationPrompting", "SentimentClassificationPrompting", "NLIPrompting"]:
@@ -784,7 +790,12 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             elif num_proc > 1:
                 def process_each(index):
                     sample = self._getitem(index, decoded=False)
-                    if func._type in ["Editing", "Preprocessing", "Featurizing", "OperationFunction"]:
+                    if func._type in ["Editing", "Featurizing", "OperationFunction"]:
+                        return func(sample[func.processed_fields[0]])
+                    elif func._type == "Preprocessing":
+                        task = self._info.task_templates[0].task
+                        language = self._info.languages[0]
+                        func.resources = {"task_type":task, "language":language}
                         return func(sample[func.processed_fields[0]])
                     elif func._type in ["TopicClassificationPrompting", "SentimentClassificationPrompting", "NLIPrompting"]:
                         labels = self._info.task_templates[0].labels
@@ -839,7 +850,13 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                 batch_count = ceil(self.num_rows / num_proc)
                 def process_batch(index):
                     range_limit = range(index * batch_count, min((index + 1) * batch_count, self.num_rows))
-                    if func._type in ["Editing","Preprocessing", "Featurizing","OperationFunction"]:
+
+                    if func._type in ["Editing", "Featurizing","OperationFunction"]:
+                        return [func(self._getitem(index, decoded=False)[func.processed_fields[0]]) for index in range_limit]
+                    elif func._type == "Preprocessing":
+                        task = self._info.task_templates[0].task
+                        language = self._info.languages[0]
+                        func.resources = {"task_type": task, "language": language}
                         return [func(self._getitem(index, decoded=False)[func.processed_fields[0]]) for index in range_limit]
                     elif func._type in ["TopicClassificationPrompting", "SentimentClassificationPrompting", "NLIPrompting"]:
                         labels = self._info.task_templates[0].labels
@@ -879,12 +896,18 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
 
 
     def __table_path(self):
-        return self.cache_files[0]["filename"]
+        return None if len(self.cache_files)==0 else self.cache_files[0]["filename"]
 
     def __load_stat(self):
-        dirname = os.path.dirname(self.__table_path())
-        path = os.path.join(dirname, "stat.json")
-        self._stat = self.__load_json(path)
+        table_path_name = self.__table_path()
+        if table_path_name is None:
+            self._stat = {}
+        else:
+            dirname = os.path.dirname(table_path_name)
+            path = os.path.join(dirname, "stat.json")
+            self._stat = self.__load_json(path)
+
+
 
     def __write_stat(self):
         dirname = os.path.dirname(self.__table_path())

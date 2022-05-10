@@ -1,10 +1,91 @@
+import requests
+import json
+import os
 from datalabs import load_dataset
-from dataclasses import asdict, dataclass, field
 from datalabs.operations.preprocess.general import tokenize
 import multiprocessing
-# this is task-dependent
 from aggregate.text_classification import get_features_dataset_level as get_features_dataset_level_text_classification
 from datalabs.utils.more_features import prefix_dict_key, get_features_dataset
+from datalabs.tasks.text_classification import TextClassification
+from dataclasses import asdict
+from example_funcs import text_classification_func # it depends on your task; you could also customized the function
+
+
+"""
+pip install --upgrade pip
+pip install datalabs
+python -m nltk.downloader omw-1.4 # to support more feature calculation
+"""
+def get_info(directory_of_files, language, task):
+
+    # add sample-level features
+    features_mongodb = {}
+    dataset = {}
+
+    for file_name in sorted(os.listdir(directory_of_files)):
+
+        if file_name not in ["train.json", "validation.json", "test.json"]:
+            continue
+        else:
+            split_name = file_name.split(".json")[0]
+
+            # language = "en"
+            # task = "text-classification"
+            path_dataset = directory_of_files + "/" + file_name
+
+
+
+            dataset_tmp = load_dataset("json", data_files=path_dataset)
+            dataset[split_name] = dataset_tmp["train"]
+            dataset[split_name]._info.task_templates = [TextClassification(task)]
+            dataset[split_name]._info.languages = [language]
+
+
+
+            raw_features = asdict(dataset[split_name]._info)["features"]
+            dataset[split_name] = dataset[split_name].apply(tokenize,
+                                                            num_proc=multiprocessing.cpu_count(),
+                                                            mode="memory")
+            dataset[split_name] = dataset[split_name].apply(text_classification_func,
+                                                            num_proc=multiprocessing.cpu_count(),
+                                                            mode="memory")
+
+            all_features = asdict(dataset[split_name]._info)["features"]
+
+            # turn on advanced fields
+            for feature_name, feature_info in all_features.items():
+                # this is defined for the case when feature is `text_tokenized`
+                if feature_name.find("tokenize") != -1 and \
+                        all_features[feature_name]["dtype"] == "string":
+                    feature_info["raw_feature"] = True
+                    feature_info["is_bucket"] = False
+                elif feature_name not in raw_features.keys():
+                    feature_info["raw_feature"] = False
+                    feature_info["is_bucket"] = True
+
+
+            features_mongodb.update(all_features)
+            # calculate dataset-level features
+            dataset[split_name] = dataset[split_name].apply(get_features_dataset_level_text_classification,
+                                                            mode="memory",
+                                                            prefix="avg")
+
+            features_dataset = get_features_dataset(dataset[split_name]._stat)
+            for attr, feat_info in features_dataset.items():
+                feat_info = asdict(feat_info)
+                value = dataset[split_name]._stat[attr]
+                feat_info["value"] = value
+                features_dataset[attr] = feat_info
+            features_dataset_new = prefix_dict_key(features_dataset, prefix=split_name)
+
+            # add dataset-level features
+            features_mongodb.update(features_dataset_new)
+            metadata = asdict(dataset[split_name]._info)
+            metadata["features"] = features_mongodb
+
+    return asdict(dataset['train']._info), metadata, dataset
+
+
 
 
 def get_paper_template(year=None, venue=None, title=None,
@@ -87,100 +168,6 @@ def get_transformation_template(type):
     }
 
 
-
-def get_info(dataset_name:str, sub_dataset_name_sdk:str, calculate_features = False, feature_func = None):
-    """
-    Input:
-    dataset_name: the dataset name of dataloader script, for example, mr
-    field: the field to be featurized
-    Output:
-    asdict(dataset['train']._info): metadata information
-    features_mongodb: features of metadata information
-    dataset: detailed sample of all dataset splits
-    """
-
-
-    # load dataset
-    dataset = load_dataset(dataset_name) if sub_dataset_name_sdk == None else load_dataset(dataset_name, sub_dataset_name_sdk)
-
-    # get split
-    all_splits = list(dataset['train']._info.splits.keys())
-
-
-    # task
-    task_category  = dataset['train']._info.task_templates[0].task_category # this should be more general
-
-    # get raw features
-    raw_features = asdict(dataset[all_splits[0]]._info)["features"]
-
-    features_mongodb = {}
-
-
-    #from featurize.text_matching import get_features_sample_level
-
-    for split_name in all_splits:
-        # if split_name == 'train':
-        #     continue
-
-        # get sample-level advanced features
-        dataset[split_name] = dataset[split_name].apply(tokenize, num_proc=multiprocessing.cpu_count(),
-                                                        mode="memory")
-
-        dataset[split_name] = dataset[split_name].apply(feature_func, num_proc=multiprocessing.cpu_count(), mode="memory")
-        all_features = asdict(dataset[split_name]._info)["features"]
-
-        # turn on advanced fields
-        for feature_name, feature_info in all_features.items():
-            # this is defined for the case when feature is `text_tokenized`
-            if feature_name.find("tokenize") != -1 and \
-                    all_features[feature_name]["dtype"] == "string":
-                feature_info["raw_feature"] = True
-                feature_info["is_bucket"] = False
-            elif feature_name not in raw_features.keys():
-                feature_info["raw_feature"] = False
-                feature_info["is_bucket"] = True
-
-
-        # add sample-level features
-        features_mongodb.update(all_features)
-
-
-
-
-
-
-    for split_name in all_splits:
-
-        # if split_name == "train":
-        #     continue
-
-
-        # calculate dataset-level features
-        dataset[split_name] = dataset[split_name].apply(get_features_dataset_level_text_classification, mode="memory", prefix="avg")
-
-        features_dataset = get_features_dataset(dataset[split_name]._stat)
-
-
-        for attr, feat_info in features_dataset.items():
-
-            feat_info = asdict(feat_info)
-            value = dataset[split_name]._stat[attr]
-            feat_info["value"] = value
-            features_dataset[attr] = feat_info
-        features_dataset_new = prefix_dict_key(features_dataset, prefix=split_name)
-
-        # add dataset-level features
-        features_mongodb.update(features_dataset_new)
-
-
-
-    return asdict(dataset['train']._info), features_mongodb, dataset
-
-
-
-
-
-
 def validate_generate_db_metadata(
         dataset_name, transformation, version, task_categories, tasks, split, languages, sub_dataset=None,
         summary=None, homepage=None, repository=None,
@@ -253,10 +240,6 @@ def validate_generate_db_metadata(
         'source': 'user',
     }
 
-
-
-
-
 def generate_db_metadata_from_sdk(metadata,
                                       features,
                                       dataset_name_db,
@@ -326,3 +309,78 @@ def generate_db_metadata_from_sdk(metadata,
         data_typology=data_typology,
         prompt_infos=prompt_infos,
     )
+
+
+
+
+
+
+
+def client(dataset_name_db,
+           directory_of_files,
+           language,
+           task,
+           transformation = {'type': 'origin'},
+           version = "origin",
+           data_typology="textdataset"):
+
+
+    metadata_sdk, metadata_features_sdk, dataset_sdk  = get_info(directory_of_files, language, task)
+
+    print(dataset_sdk)
+    print(metadata_sdk.keys())
+
+    # reformat the metadata information for db
+    metadata_db = generate_db_metadata_from_sdk(metadata=metadata_sdk,
+                                                features=metadata_features_sdk,
+                                                dataset_name_db=dataset_name_db,
+                                                transformation=transformation,
+                                                version=version,
+                                                languages=language,
+                                                data_typology=data_typology)
+
+
+
+
+
+    MAX_NUMBER_OF_SAMPLES = 100000
+    samples_db = []
+    for split in dataset_sdk.keys():
+        for idx, sample in enumerate(dataset_sdk[split]):
+            if idx > MAX_NUMBER_OF_SAMPLES:
+                break
+            samples_db.append({
+                'split_name': split,
+                'features': sample
+            })
+
+
+
+    print(metadata_db, samples_db)
+
+    ### call the API
+    # data_json = {
+    #     'metadata': metadata_db,
+    #     'samples': samples_db,
+    #     'user_name': self.user_name,
+    #     'password': self.password,
+    #     'role': self.role,
+    #     'status': self.status,
+    # }
+
+
+
+
+# ----------- Example -----------------
+# directory_of_files: the path of user-uploaded data
+dataset_name_db = "qc"
+directory_of_files = "./" + dataset_name_db # ./qc
+language = "en"
+task = "text-classification"
+transformation = {'type': 'origin'}
+version = "origin"
+data_typology="textdataset"
+
+client(dataset_name_db, directory_of_files, language, task, transformation, version, data_typology)
+
+

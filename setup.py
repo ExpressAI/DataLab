@@ -48,12 +48,14 @@ REQUIRED_PKGS = [
     "sacrebleu",
     "compare_mt",
     "scikit-learn", # restricted by hatesonar pkg ==0.23.2
-    "py7zr",
+    # "py7zr", # for wikipedia dataset
     # for hate speech
-    "hatesonar",
-    "dateparser",
+    # "hatesonar", # for calculating hatespeech bias
+    # "dateparser", # for the edit-reformat_date operation
     "seqeval",
-    "torch", # too larger
+    "jieba",
+    # "torch", # too larger
+    "apache-beam",
     # "explainaboard",
 ]
 
@@ -180,7 +182,7 @@ EXTRAS_REQUIRE = {
 
 setup(
     name="datalabs",
-    version="0.3.11",
+    version="0.3.13",
     description="Datalabs",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",

@@ -5,19 +5,21 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
+
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
+
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 import csv
 import datalabs
 from datalabs.tasks import TextClassification
 import os
+
 
 _DESCRIPTION = """\
 The dataset contains 7.2 million reviews for 520,000 products in more than 1,100 categories from Amazon.
@@ -48,7 +50,8 @@ _LICENSE = "NA"
 
 _DATA_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/yf_amazon/ratings.zip"
 
-class YFAMAZON(datalabs.GeneratorBasedBuilder):
+
+class YFAmazon(datalabs.GeneratorBasedBuilder):
     def _info(self):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
@@ -114,3 +117,5 @@ class YFAMAZON(datalabs.GeneratorBasedBuilder):
                         "title": title,
                         "comment": comment
                     }
+
+

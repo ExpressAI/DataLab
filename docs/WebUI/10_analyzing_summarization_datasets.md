@@ -87,6 +87,20 @@ pn_summary | `document` | Summarization | ``` load_dataset("pn_summary") ``` | C
 scitldr | `tldr-auth` | Summarization | ``` load_dataset("scitldr", "tldr-auth") ``` | Current definition: text: `str`, summary: `str` |
 scitldr | `tldr-pr` | Summarization | ``` load_dataset("scitldr", "tldr-pr") ``` | Current definition: text: `str`, summary: `List[str]` |
 gazeta | `document` |  Summarization | ``` load_dataset("gazeta") ``` | Current definition: text, summary |
+mlgsum | 12 languages: `["de", "en", "es", "fr", "hi", "id", "pt", "ru", "tr", "uk", "vi", "zh"]` |  Summarization | ``` load_dataset("mlgsum", "LANGUAGE_ID") ``` | Current definition: `text`, `summary`, Multilingual Dataset |
+wikilingua | 18 languages: `["en", "es", "pt", "fr", "de", "ru", "it", "id", "nl", "ar", "zh", "vi", "th", "ja", "ko", "hi", "cs", "tr"]` |  Summarization | ``` load_dataset("wikilingua", LANGUAGE_ID) ``` | Current definition: `text`, `summary`, Multilingual Dataset |
+wikilingua | 17 language pairs: `["es-en", "pt-en", "fr-en", "de-en", "ru-en", "it-en", "id-en", "nl-en", "ar-en", "zh-en", "vi-en", "th-en", "ja-en", "ko-en", "hi-en", "cs-en", "tr-en"]` |  Summarization | ``` load_dataset("wikilingua", "LANGUAGE_ID-en") ``` | Current definition: `text`, `summary`, Crosslingual Dataset |
+qbsum | `query-based`  | QuerySummarization | ``` load_dataset("qbsum", "query-based") ``` | Current definition: `text`, `summary`, `query` |
+open4business | `document`  | Summarization | ``` load_dataset("open4business", "document") ``` | Current definition: `text`, `summary` |
+summscreen | `non-anonymized-ForeverDreaming`  | Summarization | ``` load_dataset("summscreen", "non-anonymized-ForeverDreaming") ``` | Current definition: `text`, `summary`, ForeverDreaming split, non-anonymized version, tokenized |
+summscreen | `anonymized-ForeverDreaming`  | Summarization | ``` load_dataset("summscreen", "anonymized-ForeverDreaming") ``` | Current definition: `text`, `summary`, ForeverDreaming split, anonymized version, tokenized |
+summscreen | `non-anonymized-TVMegaSite`  | Summarization | ``` load_dataset("summscreen", "non-anonymized-TVMegaSite") ``` | Current definition: `text`, `summary`, TVMegaSite split, non-anonymized version, tokenized |
+summscreen | `anonymized-TVMegaSite`  | Summarization | ``` load_dataset("summscreen", "anonymized-TVMegaSite") ``` | Current definition: `text`, `summary`, TVMegaSite split, anonymized version, tokenized |
+aeslc | `document` | Summarization | ```load_dataset("aeslc")``` | Current definition: text, summary |
+k_sportssum | `document` | Summarization | ```load_dataset("k_sportssum")``` | Current definition: text: `{"commentary": List[str], "score": List[str]}`, summary: `str` |
+peersum | `document` | Summarization | ```load_dataset("peersum")``` | Current definition: text, summary |
+peersum | `dialogue` | DialogSummarization | ``` load_dataset("peersum", "dialogue") ``` | Current definition: dialogue: `{"speaker": List[str], "text": List[str]}`, summary: `List[str]`  |
+pts | `document` | Summarization | ```load_dataset("pts")``` | Current definition: text, summary |
 
 ## Examples
 

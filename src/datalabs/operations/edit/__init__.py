@@ -20,7 +20,6 @@ from .plugins.general.replace_hyponyms.transformation import *
 from .plugins.general.replace_hypernyms.transformation import *
 from .plugins.general.replace_greetings.transformation import *
 from .plugins.general.replace_acronyms.transformation import *
-from .plugins.general.reformat_date.transformation import *
 from .plugins.general.insert_abbreviation.transformation import *
 # from .plugins.general.factive_verb.transformation import *
 from .plugins.general.emojify.transformation import *
