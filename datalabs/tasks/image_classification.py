@@ -14,8 +14,8 @@
 from dataclasses import dataclass
 from typing import ClassVar, Dict, Optional, Tuple
 
-from ..features import ClassLabel, Features, Value
-from .base import TaskTemplate
+from datalabs.features import ClassLabel, Features, Value
+from datalabs.tasks.base import TaskTemplate
 
 
 @dataclass

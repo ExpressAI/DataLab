@@ -1,5 +1,6 @@
 # coding=utf-8
-# Copyright 2020 The HuggingFace Datasets Authors and the TensorFlow Datasets Authors, DataLab Authors.
+# Copyright 2020 The HuggingFace Datasets Authors and the TensorFlow
+# Datasets Authors, DataLab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,26 +18,24 @@
 """ Arrow ArrowReader."""
 
 import copy
+from dataclasses import dataclass
 import math
 import os
 import re
 import shutil
-from dataclasses import dataclass
-from typing import TYPE_CHECKING, List, Optional, Union
+from typing import List, Optional, TYPE_CHECKING, Union
 
 import pyarrow as pa
 import pyarrow.parquet as pq
 
+from datalabs.naming import _split_re, filename_for_dataset_split
+from datalabs.table import concat_tables, InMemoryTable, MemoryMappedTable, Table
+from datalabs.utils import cached_path, logging
 from datalabs.utils.file_utils import DownloadConfig
 
-from .naming import _split_re, filename_for_dataset_split
-from .table import InMemoryTable, MemoryMappedTable, Table, concat_tables
-from .utils import cached_path, logging
-
-
 if TYPE_CHECKING:
-    from .info import DatasetInfo  # noqa: F401
-    from .splits import Split  # noqa: F401
+    from datalabs.info import DatasetInfo  # noqa: F401
+    from datalabs.splits import Split  # noqa: F401
 
 
 logger = logging.get_logger(__name__)
@@ -44,7 +43,7 @@ logger = logging.get_logger(__name__)
 HF_GCP_BASE_URL = "https://storage.googleapis.com/huggingface-nlp/cache/datasets"
 
 _SUB_SPEC_RE = re.compile(
-    fr"""
+    rf"""
 ^
  (?P<split>{_split_re[1:-1]})
  (\[
@@ -96,7 +95,8 @@ def make_file_instructions(name, split_infos, instruction, filetype_suffix=None)
         name: Name of the dataset.
         split_infos: `List[SplitInfo]`, Dataset splits information
         instruction: `ReadInstruction` or `str`
-        filetype_suffix: `Optional[str]` suffix of dataset files, e.g. 'arrow' or 'parquet'
+        filetype_suffix: `Optional[str]` suffix of dataset files, e.g.
+         'arrow' or 'parquet'
 
     Returns:
         file_intructions: FileInstructions instance
@@ -108,11 +108,16 @@ def make_file_instructions(name, split_infos, instruction, filetype_suffix=None)
     absolute_instructions = instruction.to_absolute(name2len)
 
     return _make_file_instructions_from_absolutes(
-        name=name, name2len=name2len, absolute_instructions=absolute_instructions, filetype_suffix=filetype_suffix
+        name=name,
+        name2len=name2len,
+        absolute_instructions=absolute_instructions,
+        filetype_suffix=filetype_suffix,
     )
 
 
-def _make_file_instructions_from_absolutes(name, name2len, absolute_instructions, filetype_suffix=None):
+def _make_file_instructions_from_absolutes(
+    name, name2len, absolute_instructions, filetype_suffix=None
+):
     """Returns the files instructions from the absolute instructions list."""
     # For each split, return the files instruction (skip/take)
     file_instructions = []
@@ -120,12 +125,16 @@ def _make_file_instructions_from_absolutes(name, name2len, absolute_instructions
     for abs_instr in absolute_instructions:
         length = name2len[abs_instr.splitname]
         filename = filename_for_dataset_split(
-            dataset_name=name, split=abs_instr.splitname, filetype_suffix=filetype_suffix
+            dataset_name=name,
+            split=abs_instr.splitname,
+            filetype_suffix=filetype_suffix,
         )
         from_ = 0 if abs_instr.from_ is None else abs_instr.from_
         to = length if abs_instr.to is None else abs_instr.to
         num_examples += to - from_
-        single_file_instructions = [{"filename": filename, "skip": from_, "take": to - from_}]
+        single_file_instructions = [
+            {"filename": filename, "skip": from_, "take": to - from_}
+        ]
         file_instructions.extend(single_file_instructions)
     return FileInstructions(
         num_examples=num_examples,
@@ -159,10 +168,13 @@ class BaseReader:
         Args:
             files: List[dict(filename, skip, take)], the files information.
                 The filenames contain the absolute path, not relative.
-                skip/take indicates which example read in the file: `ds.slice(skip, take)`
+                skip/take indicates which example read in the file:
+                `ds.slice(skip, take)`
             in_memory (bool, default False): Whether to copy the data in-memory.
         """
-        assert len(files) > 0 and all(isinstance(f, dict) for f in files), "please provide valid file informations"
+        assert len(files) > 0 and all(
+            isinstance(f, dict) for f in files
+        ), "please provide valid file informations"
         pa_tables = []
         files = copy.deepcopy(files)
         for f in files:
@@ -173,9 +185,12 @@ class BaseReader:
         pa_tables = [t for t in pa_tables if len(t) > 0]
         if not pa_tables and (self._info is None or self._info.features is None):
             raise ValueError(
-                "Tried to read an empty table. Please specify at least info.features to create an empty table with the right type."
+                "Tried to read an empty table. Please specify at least"
+                "info.features to create an empty table with the right type."
             )
-        pa_tables = pa_tables or [InMemoryTable.from_batches([], schema=pa.schema(self._info.features.type))]
+        pa_tables = pa_tables or [
+            InMemoryTable.from_batches([], schema=pa.schema(self._info.features.type))
+        ]
         pa_table = concat_tables(pa_tables) if len(pa_tables) != 1 else pa_tables[0]
         return pa_table
 
@@ -212,7 +227,9 @@ class BaseReader:
         if not files:
             msg = f'Instruction "{instructions}" corresponds to no data!'
             raise AssertionError(msg)
-        return self.read_files(files=files, original_instructions=instructions, in_memory=in_memory)
+        return self.read_files(
+            files=files, original_instructions=instructions, in_memory=in_memory
+        )
 
     def read_files(
         self,
@@ -226,7 +243,8 @@ class BaseReader:
             files: List[dict(filename, skip, take)], the files information.
                 The filenames contains the relative path, not absolute.
                 skip/take indicates which example read in the file: `ds.skip().take()`
-            original_instructions: store the original instructions used to build the dataset split in the dataset.
+            original_instructions: store the original instructions used to
+             build the dataset split in the dataset.
             in_memory (bool, default False): Whether to copy the data in-memory.
 
         Returns:
@@ -234,7 +252,8 @@ class BaseReader:
         """
         # Prepend path to filename
         pa_table = self._read_files(files, in_memory=in_memory)
-        # If original_instructions is not None, convert it to a human-readable NamedSplit
+        # If original_instructions is not None, convert it to a
+        # human-readable NamedSplit
         if original_instructions is not None:
             from .splits import Split  # noqa
 
@@ -254,11 +273,17 @@ class BaseReader:
                 the `datalab` directory on GCS.
 
         """
-        remote_cache_dir = HF_GCP_BASE_URL + "/" + relative_data_dir.replace(os.sep, "/")
+        remote_cache_dir = (
+            HF_GCP_BASE_URL + "/" + relative_data_dir.replace(os.sep, "/")
+        )
         try:
             remote_dataset_info = os.path.join(remote_cache_dir, "dataset_info.json")
-            downloaded_dataset_info = cached_path(remote_dataset_info.replace(os.sep, "/"))
-            shutil.move(downloaded_dataset_info, os.path.join(self._path, "dataset_info.json"))
+            downloaded_dataset_info = cached_path(
+                remote_dataset_info.replace(os.sep, "/")
+            )
+            shutil.move(
+                downloaded_dataset_info, os.path.join(self._path, "dataset_info.json")
+            )
             if self._info is not None:
                 self._info.update(self._info.from_directory(self._path))
         except FileNotFoundError as err:
@@ -271,11 +296,17 @@ class BaseReader:
                     split_infos=self._info.splits.values(),
                 )
                 for file_instruction in file_instructions:
-                    remote_prepared_filename = os.path.join(remote_cache_dir, file_instruction["filename"])
-                    downloaded_prepared_filename = cached_path(
-                        remote_prepared_filename.replace(os.sep, "/"), download_config=download_config
+                    remote_prepared_filename = os.path.join(
+                        remote_cache_dir, file_instruction["filename"]
                     )
-                    shutil.move(downloaded_prepared_filename, os.path.join(self._path, file_instruction["filename"]))
+                    downloaded_prepared_filename = cached_path(
+                        remote_prepared_filename.replace(os.sep, "/"),
+                        download_config=download_config,
+                    )
+                    shutil.move(
+                        downloaded_prepared_filename,
+                        os.path.join(self._path, file_instruction["filename"]),
+                    )
         except FileNotFoundError as err:
             raise MissingFilesOnHfGcsError(err) from None
 
@@ -283,7 +314,8 @@ class BaseReader:
 class ArrowReader(BaseReader):
     """
     Build a Dataset object out of Instruction instance(s).
-    This Reader uses either memory mapping or file descriptors (in-memory) on arrow files.
+    This Reader uses either memory mapping or file descriptors
+    (in-memory) on arrow files.
     """
 
     def __init__(self, path: str, info: Optional["DatasetInfo"]):
@@ -305,7 +337,11 @@ class ArrowReader(BaseReader):
         )
         table = ArrowReader.read_table(filename, in_memory=in_memory)
         # here we don't want to slice an empty table, or it may segfault
-        if skip is not None and take is not None and not (skip == 0 and take == len(table)):
+        if (
+            skip is not None
+            and take is not None
+            and not (skip == 0 and take == len(table))
+        ):
             table = table.slice(skip, take)
         return table
 
@@ -351,7 +387,11 @@ class ParquetReader(BaseReader):
         # Parquet read_table always loads data in memory, independently of memory_map
         pa_table = pq.read_table(filename, memory_map=True)
         # here we don't want to slice an empty table, or it may segfault
-        if skip is not None and take is not None and not (skip == 0 and take == len(pa_table)):
+        if (
+            skip is not None
+            and take is not None
+            and not (skip == 0 and take == len(pa_table))
+        ):
             pa_table = pa_table.slice(skip, take)
         return pa_table
 
@@ -377,15 +417,22 @@ class _RelativeInstruction:
 
     def __post_init__(self):
         assert self.unit is None or self.unit in ["%", "abs"]
-        assert self.rounding is None or self.rounding in ["closest", "pct1_dropremainder"]
+        assert self.rounding is None or self.rounding in [
+            "closest",
+            "pct1_dropremainder",
+        ]
         if self.unit != "%" and self.rounding is not None:
-            raise AssertionError("It is forbidden to specify rounding if not using percent slicing.")
+            raise AssertionError(
+                "It is forbidden to specify rounding if not using percent slicing."
+            )
         if self.unit == "%" and self.from_ is not None and abs(self.from_) > 100:
             raise AssertionError("Percent slice boundaries must be > -100 and < 100.")
         if self.unit == "%" and self.to is not None and abs(self.to) > 100:
             raise AssertionError("Percent slice boundaries must be > -100 and < 100.")
         # Update via __dict__ due to instance being "frozen"
-        self.__dict__["rounding"] = "closest" if self.rounding is None and self.unit == "%" else self.rounding
+        self.__dict__["rounding"] = (
+            "closest" if self.rounding is None and self.unit == "%" else self.rounding
+        )
 
 
 def _str_to_read_instruction(spec):
@@ -425,7 +472,9 @@ def _rel_to_abs_instr(rel_instr, name2len):
         rel_instr: RelativeInstruction instance.
         name2len: dict {split_name: num_examples}.
     """
-    pct_to_abs = _pct_to_abs_closest if rel_instr.rounding == "closest" else _pct_to_abs_pct1
+    pct_to_abs = (
+        _pct_to_abs_closest if rel_instr.rounding == "closest" else _pct_to_abs_pct1
+    )
     split = rel_instr.splitname
     if split not in name2len:
         raise ValueError(f'Unknown split "{split}". Should be one of {list(name2len)}.')
@@ -439,7 +488,10 @@ def _rel_to_abs_instr(rel_instr, name2len):
         from_ = 0 if from_ is None else from_
         to = num_examples if to is None else to
     if abs(from_) > num_examples or abs(to) > num_examples:
-        msg = f'Requested slice [{from_ or ""}:{to or ""}] incompatible with {num_examples} examples.'
+        msg = (
+            f'Requested slice [{from_ or ""}:{to or ""}] '
+            f"incompatible with {num_examples} examples."
+        )
         raise AssertionError(msg)
     if from_ < 0:
         from_ = num_examples + from_
@@ -461,8 +513,10 @@ class ReadInstruction:
 
       # The following lines are equivalent:
       ds = datalab.load_dataset('mnist', split='test[:33%]')
-      ds = datalab.load_dataset('mnist', split=datalab.ReadInstruction.from_spec('test[:33%]'))
-      ds = datalab.load_dataset('mnist', split=datalab.ReadInstruction('test', to=33, unit='%'))
+      ds = datalab.load_dataset('mnist', split=datalab.
+      ReadInstruction.from_spec('test[:33%]'))
+      ds = datalab.load_dataset('mnist', split=datalab.
+      ReadInstruction('test', to=33, unit='%'))
       ds = datalab.load_dataset('mnist', split=datalab.ReadInstruction(
           'test', from_=0, to=33, unit='%'))
 
@@ -488,7 +542,8 @@ class ReadInstruction:
           for k in range(0, 100, 10)])
       trains = datalab.load_dataset(
           'mnist',
-          [datalab.ReadInstruction('train', to=k, unit='%') + datalab.ReadInstruction('train', from_=k+10, unit='%')
+          [datalab.ReadInstruction('train', to=k, unit='%') +
+           datalab.ReadInstruction('train', from_=k+10, unit='%')
           for k in range(0, 100, 10)])
 
     """
@@ -500,7 +555,8 @@ class ReadInstruction:
     @classmethod
     def _read_instruction_from_relative_instructions(cls, relative_instructions):
         """Returns ReadInstruction obj initialized with relative_instructions."""
-        # Use __new__ to bypass __init__ used by public API and not conveniant here.
+        # Use __new__ to bypass __init__ used by public API and not
+        # conveniant here.
         result = cls.__new__(cls)
         result._init(relative_instructions)  # pylint: disable=protected-access
         return result
@@ -510,7 +566,8 @@ class ReadInstruction:
 
         Args:
             split_name (str): name of the split to read. Eg: 'train'.
-            rounding (str, optional): The rounding behaviour to use when percent slicing is
+            rounding (str, optional): The rounding behaviour to use
+            when percent slicing is
                 used. Ignored when slicing with absolute indices.
                 Possible values:
                  - 'closest' (default): The specified percentages are rounded to the
@@ -540,15 +597,20 @@ class ReadInstruction:
 
         Args:
             spec (str): split(s) + optional slice(s) to read + optional rounding
-                        if percents are used as the slicing unit. A slice can be specified,
+                        if percents are used as the slicing unit.
+                        A slice can be specified,
                         using absolute numbers (int) or percentages (int). E.g.
                             `test`: test split.
                             `test + validation`: test split + validation split.
                             `test[10:]`: test split, minus its first 10 records.
                             `test[:10%]`: first 10% records of test split.
-                            `test[:20%](pct1_dropremainder)`: first 10% records, rounded with
-                                                              the `pct1_dropremainder` rounding.
-                            `test[:-5%]+train[40%:60%]`: first 95% of test + middle 20% of
+                            `test[:20%](pct1_dropremainder)`: first 10% records,
+                             rounded with
+                                                              the
+                                                              `pct1_dropremainder`
+                                                              rounding.
+                            `test[:-5%]+train[40%:60%]`: first 95% of test +
+                            middle 20% of
                                                          train.
 
         Returns:
@@ -575,7 +637,9 @@ class ReadInstruction:
                 to = str(to) + unit if to is not None else ""
                 slice_str = f"[{from_}:{to}]"
                 rounding_str = (
-                    f"({rounding})" if unit == "%" and rounding is not None and rounding != "closest" else ""
+                    f"({rounding})"
+                    if unit == "%" and rounding is not None and rounding != "closest"
+                    else ""
                 )
                 rel_instr_spec += slice_str + rounding_str
             rel_instr_specs.append(rel_instr_spec)
@@ -593,7 +657,10 @@ class ReadInstruction:
             and other_ris[0].unit != "abs"
             and self._relative_instructions[0].rounding != other_ris[0].rounding
         ):
-            raise AssertionError("It is forbidden to sum ReadInstruction instances with different rounding values.")
+            raise AssertionError(
+                "It is forbidden to sum ReadInstruction instances with"
+                " different rounding values."
+            )
         return self._read_instruction_from_relative_instructions(self_ris + other_ris)
 
     def __str__(self):
@@ -613,4 +680,7 @@ class ReadInstruction:
         Returns:
             list of _AbsoluteInstruction instances (corresponds to the + in spec).
         """
-        return [_rel_to_abs_instr(rel_instr, name2len) for rel_instr in self._relative_instructions]
+        return [
+            _rel_to_abs_instr(rel_instr, name2len)
+            for rel_instr in self._relative_instructions
+        ]

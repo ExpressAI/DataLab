@@ -1,17 +1,17 @@
-from typing import Dict, List, Optional, Any
-from typing import Callable, Mapping
-from operation import TextOperation, text_operation
+from datalabs.operations.operation import text_operation, TextOperation
 
 
 class Inference(TextOperation):
-
-    def __init__(self, *args, **kwargs, ):
+    def __init__(
+        self,
+        *args,
+        **kwargs,
+    ):
         super(Inference, self).__init__(*args, **kwargs)
         self._data_type = "TextData"
 
 
 class inference(text_operation):
-
     def __init__(self, *args, **kwargs):
         super(inference, self).__init__(*args, **kwargs)
 
@@ -22,9 +22,12 @@ class inference(text_operation):
         else:
             f = param_arg[0]
             name = self.name or f.__name__
-            tf_cls = Inference(name=name, func=f,
-                               resources=self.resources,
-                               contributor=self.contributor,
-                               task=self.task,
-                               description=self.description, )
+            tf_cls = Inference(
+                name=name,
+                func=f,
+                resources=self.resources,
+                contributor=self.contributor,
+                task=self.task,
+                description=self.description,
+            )
             return tf_cls

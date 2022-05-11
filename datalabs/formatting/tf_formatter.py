@@ -19,9 +19,8 @@ from typing import TYPE_CHECKING
 import numpy as np
 import pyarrow as pa
 
-from ..utils.py_utils import map_nested
-from .formatting import Formatter
-
+from datalabs.formatting.formatting import Formatter
+from datalabs.utils.py_utils import map_nested
 
 if TYPE_CHECKING:
     import tensorflow as tf
@@ -58,21 +57,26 @@ class TFFormatter(Formatter[dict, "tf.Tensor", dict]):
             return tf.convert_to_tensor(value, dtype=tf_dtype)
         except ValueError:
             try:
-                return tf.ragged.stack([np.array(subarr, dtype=np_dtype) for subarr in value])
+                return tf.ragged.stack(
+                    [np.array(subarr, dtype=np_dtype) for subarr in value]
+                )
             except ValueError:
                 # tf.ragged.constant is orders of magnitude slower than tf.ragged.stack
-                return tf.ragged.constant(value, **{**default_dtype, **self.tf_tensor_kwargs})
+                return tf.ragged.constant(
+                    value, **{**default_dtype, **self.tf_tensor_kwargs}
+                )
 
     def _recursive_tensorize(self, data_struct: dict):
         # support for nested types like struct of list of struct
         if isinstance(data_struct, (list, np.ndarray)):
-            if (
-                data_struct.dtype == np.object
-            ):  # tensorflow tensors can sometimes be instantied from an array of objects
+            if data_struct.dtype == np.object:  # tensorflow tensors can sometimes be
+                # instantied from an array of objects
                 try:
                     return self._tensorize(data_struct)
                 except ValueError:
-                    return [self.recursive_tensorize(substruct) for substruct in data_struct]
+                    return [
+                        self.recursive_tensorize(substruct) for substruct in data_struct
+                    ]
         return self._tensorize(data_struct)
 
     def recursive_tensorize(self, data_struct: dict):

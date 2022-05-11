@@ -1,8 +1,9 @@
-from sklearn.metrics import accuracy_score
 from random import choices
+
 import numpy as np
 import scipy
 import sklearn.metrics
+from sklearn.metrics import accuracy_score
 
 
 class Metric:
@@ -102,10 +103,11 @@ class F1score(Metric):
     def evaluate(self):
         # print(self._true_labels[0:10])
         # print(self._predicted_labels[0:10])
-        # print(sklearn.metrics.f1_score(self._true_labels[0:10], self._predicted_labels[0:10], average='micro'))
+        # print(sklearn.metrics.f1_score(self._true_labels[0:10],
+        # self._predicted_labels[0:10], average='micro'))
         # exit()
         return self._evaluate(
-            self._true_labels, self._predicted_labels, average='micro'
+            self._true_labels, self._predicted_labels, average="micro"
         )
 
 

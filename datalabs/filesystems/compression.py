@@ -23,32 +23,45 @@ class BaseCompressedFileFileSystem(AbstractArchiveFileSystem):
     """Read contents of compressed file as a filesystem with one file inside."""
 
     root_marker = ""
-    protocol: str = (
-        None  # protocol passed in prefix to the url. ex: "gzip", for gzip://file.txt::http://foo.bar/file.txt.gz
-    )
+    protocol: str = None  # protocol passed in prefix to the url.
+    # ex: "gzip", for gzip://file.txt::http://foo.bar/file.txt.gz
     compression: str = None  # compression type in fsspec. ex: "gzip"
-    extension: str = None  # extension of the filename to strip. ex: "".gz" to get file.txt from file.txt.gz
+    extension: str = None  # extension of the filename to strip.
+    # ex: "".gz" to get file.txt from file.txt.gz
 
     def __init__(
-        self, fo: str = "", target_protocol: Optional[str] = None, target_options: Optional[dict] = None, **kwargs
+        self,
+        fo: str = "",
+        target_protocol: Optional[str] = None,
+        target_options: Optional[dict] = None,
+        **kwargs,
     ):
         """
         The compressed file system can be instantiated from any compressed file.
-        It reads the contents of compressed file as a filesystem with one file inside, as if it was an archive.
+        It reads the contents of compressed file as a filesystem
+        with one file inside, as if it was an archive.
 
         The single file inside the filesystem is named after the compresssed file,
         without the compression extension at the end of the filename.
 
         Args:
-            fo (:obj:``str``): Path to compressed file. Will fetch file using ``fsspec.open()``
+            fo (:obj:``str``): Path to compressed file. Will fetch
+            file using ``fsspec.open()``
             mode (:obj:``str``): Currently, only 'rb' accepted
-            target_protocol(:obj:``str``, optional): To override the FS protocol inferred from a URL.
-            target_options (:obj:``dict``, optional): Kwargs passed when instantiating the target FS.
+            target_protocol(:obj:``str``, optional): To override the
+            FS protocol inferred from a URL.
+            target_options (:obj:``dict``, optional): Kwargs passed
+             when instantiating the target FS.
         """
         super().__init__(self, **kwargs)
-        # always open as "rb" since fsspec can then use the TextIOWrapper to make it work for "r" mode
+        # always open as "rb" since fsspec can then use the
+        # TextIOWrapper to make it work for "r" mode
         self.file = fsspec.open(
-            fo, mode="rb", protocol=target_protocol, compression=self.compression, **(target_options or {})
+            fo,
+            mode="rb",
+            protocol=target_protocol,
+            compression=self.compression,
+            **(target_options or {}),
         )
         self.info = self.file.fs.info(self.file.path)
         self.compressed_name = os.path.basename(self.file.path.split("::")[0])
@@ -83,9 +96,14 @@ class BaseCompressedFileFileSystem(AbstractArchiveFileSystem):
     ):
         path = self._strip_protocol(path)
         if mode != "rb":
-            raise ValueError(f"Tried to read with mode {mode} on file {self.file.path} opened with mode 'rb'")
+            raise ValueError(
+                f"Tried to read with mode {mode} on file {self.file.path}"
+                f" opened with mode 'rb'"
+            )
         if path != self.uncompressed_name:
-            raise FileNotFoundError(f"Expected file {self.uncompressed_name} but got {path}")
+            raise FileNotFoundError(
+                f"Expected file {self.uncompressed_name} but got {path}"
+            )
         return self.file.open()
 
 
@@ -150,11 +168,14 @@ class ZstdFileSystem(BaseCompressedFileFileSystem):
             block_size=block_size,
             **kwargs,
         )
-        # We need to wrap the zstd decompressor to avoid this error in fsspec==2021.7.0 and zstandard==0.15.2:
+        # We need to wrap the zstd decompressor to avoid this error
+        # in fsspec==2021.7.0 and zstandard==0.15.2:
         #
-        # File "/Users/user/.virtualenvs/hf-datalab/lib/python3.7/site-packages/fsspec/editing.py", line 145, in open
+        # File "/Users/user/.virtualenvs/hf-datalab/lib/python3.7/
+        # site-packages/fsspec/editing.py", line 145, in open
         #     out.close = close
-        # AttributeError: 'zstd.ZstdDecompressionReader' object attribute 'close' is read-only
+        # AttributeError: 'zstd.ZstdDecompressionReader' object
+        # attribute 'close' is read-only
         #
         # see https://github.com/intake/filesystem_spec/issues/725
         _enter = self.file.__enter__

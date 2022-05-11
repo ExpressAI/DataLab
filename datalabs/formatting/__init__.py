@@ -1,5 +1,6 @@
 # coding=utf-8
-# Copyright 2020 The HuggingFace Datasets Authors and the TensorFlow Datasets Authors, DataLab Authors.
+# Copyright 2020 The HuggingFace Datasets Authors and the TensorFlow Datasets
+# Authors, DataLab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,19 +19,18 @@
 
 from typing import Dict, List, Optional
 
-from .. import config
-from ..utils.logging import get_logger
-from .formatting import (
+from datalabs import config
+from datalabs.formatting.formatting import (
     ArrowFormatter,
     CustomFormatter,
+    format_table,
     Formatter,
     NumpyFormatter,
     PandasFormatter,
     PythonFormatter,
-    format_table,
     query_table,
 )
-
+from datalabs.utils.logging import get_logger
 
 logger = get_logger(__name__)
 
@@ -39,7 +39,9 @@ _FORMAT_TYPES_ALIASES: Dict[Optional[str], str] = {}
 _FORMAT_TYPES_ALIASES_UNAVAILABLE: Dict[Optional[str], Exception] = {}
 
 
-def _register_formatter(formatter_cls: type, format_type: Optional[str], aliases: Optional[List[str]] = None):
+def _register_formatter(
+    formatter_cls: type, format_type: Optional[str], aliases: Optional[List[str]] = None
+):
     """
     Register a Formatter object using a name and optional aliases.
     This function must be used on a Formatter class.
@@ -47,30 +49,36 @@ def _register_formatter(formatter_cls: type, format_type: Optional[str], aliases
     aliases = aliases if aliases is not None else []
     if format_type in _FORMAT_TYPES:
         logger.warning(
-            f"Overwriting format type '{format_type}' ({_FORMAT_TYPES[format_type].__name__} -> {formatter_cls.__name__})"
+            f"Overwriting format type '{format_type}'"
+            f" ({_FORMAT_TYPES[format_type].__name__} -> {formatter_cls.__name__})"
         )
     _FORMAT_TYPES[format_type] = formatter_cls
     for alias in set(aliases + [format_type]):
         if alias in _FORMAT_TYPES_ALIASES:
             logger.warning(
-                f"Overwriting format type alias '{alias}' ({_FORMAT_TYPES_ALIASES[alias]} -> {format_type})"
+                f"Overwriting format type alias '{alias}'"
+                f" ({_FORMAT_TYPES_ALIASES[alias]} -> {format_type})"
             )
         _FORMAT_TYPES_ALIASES[alias] = format_type
 
 
 def _register_unavailable_formatter(
-    unavailable_error: Exception, format_type: Optional[str], aliases: Optional[List[str]] = None
+    unavailable_error: Exception,
+    format_type: Optional[str],
+    aliases: Optional[List[str]] = None,
 ):
     """
     Register an unavailable Formatter object using a name and optional aliases.
-    This function must be used on an Exception object that is raised when trying to get the unavailable formatter.
+    This function must be used on an Exception object that is raised
+     when trying to get the unavailable formatter.
     """
     aliases = aliases if aliases is not None else []
     for alias in set(aliases + [format_type]):
         _FORMAT_TYPES_ALIASES_UNAVAILABLE[alias] = unavailable_error
 
 
-# Here we define all the available formatting functions that can be used by `Dataset.set_format`
+# Here we define all the available formatting functions that can be
+# used by `Dataset.set_format`
 _register_formatter(PythonFormatter, None, aliases=["python"])
 _register_formatter(ArrowFormatter, "arrow", aliases=["pa", "pyarrow"])
 _register_formatter(NumpyFormatter, "numpy", aliases=["np"])
@@ -82,7 +90,8 @@ _register_formatter(CustomFormatter, "custom")
 #
 #     _register_formatter(TorchFormatter, "torch", aliases=["pt", "pytorch"])
 # else:
-#     _torch_error = ValueError("PyTorch needs to be installed to be able to return PyTorch tensors.")
+#     _torch_error = ValueError("PyTorch needs to be installed to
+#     be able to return PyTorch tensors.")
 #     _register_unavailable_formatter(_torch_error, "torch", aliases=["pt", "pytorch"])
 
 if config.TF_AVAILABLE:
@@ -90,7 +99,9 @@ if config.TF_AVAILABLE:
 
     _register_formatter(TFFormatter, "tensorflow", aliases=["tf"])
 else:
-    _tf_error = ValueError("Tensorflow needs to be installed to be able to return Tensorflow tensors.")
+    _tf_error = ValueError(
+        "Tensorflow needs to be installed to be able to return Tensorflow tensors."
+    )
     _register_unavailable_formatter(_tf_error, "tensorflow", aliases=["tf"])
 
 if config.JAX_AVAILABLE:
@@ -98,12 +109,15 @@ if config.JAX_AVAILABLE:
 
     _register_formatter(JaxFormatter, "jax", aliases=[])
 else:
-    _jax_error = ValueError("JAX needs to be installed to be able to return JAX arrays.")
+    _jax_error = ValueError(
+        "JAX needs to be installed to be able to return JAX arrays."
+    )
     _register_unavailable_formatter(_jax_error, "jax", aliases=[])
 
 
 def get_format_type_from_alias(format_type: Optional[str]) -> Optional[str]:
-    """If the given format type is a known alias, then return its main type name. Otherwise return the type with no change."""
+    """If the given format type is a known alias, then return its
+    main type name. Otherwise return the type with no change."""
     if format_type in _FORMAT_TYPES_ALIASES:
         return _FORMAT_TYPES_ALIASES[format_type]
     else:
@@ -115,7 +129,8 @@ def get_formatter(format_type: Optional[str], **format_kwargs) -> Formatter:
     Factory function to get a Formatter given its type name and keyword arguments.
     A formatter is an object that extracts and formats data from pyarrow table.
     It defines the formatting for rows, colums and batches.
-    If the formatter for a given type name doesn't exist or is not available, an error is raised.
+    If the formatter for a given type name doesn't exist or is not
+     available, an error is raised.
     """
     format_type = get_format_type_from_alias(format_type)
     if format_type in _FORMAT_TYPES:
@@ -124,5 +139,7 @@ def get_formatter(format_type: Optional[str], **format_kwargs) -> Formatter:
         raise _FORMAT_TYPES_ALIASES_UNAVAILABLE[format_type]
     else:
         raise ValueError(
-            f"Return type should be None or selected in {list(type for type in _FORMAT_TYPES.keys() if type != None)}, but got '{format_type}'"
+            f"Return type should be None or selected in "
+            f"{list(type for type in _FORMAT_TYPES.keys() if type != None)},"
+            f" but got '{format_type}'"
         )

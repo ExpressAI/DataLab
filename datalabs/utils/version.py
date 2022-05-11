@@ -17,10 +17,9 @@
 """Version utils."""
 
 import dataclasses
-import re
 from dataclasses import dataclass
+import re
 from typing import Optional, Union
-
 
 _VERSION_TMPL = r"^(?P<major>{v})" r"\.(?P<minor>{v})" r"\.(?P<patch>{v})$"
 _VERSION_WILDCARD_REG = re.compile(_VERSION_TMPL.format(v=r"\d+|\*"))
@@ -64,7 +63,9 @@ class Version:
             return Version(other)
         elif isinstance(other, Version):
             return other
-        raise AssertionError(f"{other} (type {type(other)}) cannot be compared to version.")
+        raise AssertionError(
+            f"{other} (type {type(other)}) cannot be compared to version."
+        )
 
     def __eq__(self, other):
         other = self._validate_operand(other)
@@ -98,7 +99,11 @@ class Version:
                 number or a wildcard.
         """
         major, minor, patch = _str_to_version(other_version, allow_wildcard=True)
-        return major in [self.major, "*"] and minor in [self.minor, "*"] and patch in [self.patch, "*"]
+        return (
+            major in [self.major, "*"]
+            and minor in [self.minor, "*"]
+            and patch in [self.patch, "*"]
+        )
 
     @classmethod
     def from_dict(cls, dic):
@@ -117,4 +122,7 @@ def _str_to_version(version_str, allow_wildcard=False):
         else:
             msg += " with {x,y,z} being digits."
         raise ValueError(msg)
-    return tuple(v if v == "*" else int(v) for v in [res.group("major"), res.group("minor"), res.group("patch")])
+    return tuple(
+        v if v == "*" else int(v)
+        for v in [res.group("major"), res.group("minor"), res.group("patch")]
+    )

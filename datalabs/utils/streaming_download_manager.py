@@ -1,21 +1,21 @@
+from asyncio import TimeoutError
 import glob
+from itertools import chain
 import os
+from pathlib import Path, PurePosixPath
 import posixpath
 import re
 import tarfile
 import time
-from asyncio import TimeoutError
-from itertools import chain
-from pathlib import Path, PurePosixPath
 from typing import List, Optional, Tuple, Union
 
-import fsspec
 from aiohttp.client_exceptions import ClientError
+import fsspec
 
-from .. import config
-from ..filesystems import COMPRESSION_FILESYSTEMS
-from .download_manager import DownloadConfig, map_nested
-from .file_utils import (
+from datalabs import config
+from datalabs.filesystems import COMPRESSION_FILESYSTEMS
+from datalabs.utils.download_manager import DownloadConfig, map_nested
+from datalabs.utils.file_utils import (
     get_authentication_headers_for_url,
     http_head,
     is_local_path,
@@ -23,8 +23,7 @@ from .file_utils import (
     is_remote_url,
     url_or_path_join,
 )
-from .logging import get_logger
-
+from datalabs.utils.logging import get_logger
 
 logger = get_logger(__name__)
 
@@ -45,13 +44,18 @@ BASE_KNOWN_EXTENSIONS = [
 ]
 COMPRESSION_EXTENSION_TO_PROTOCOL = {
     # single file compression
-    **{fs_class.extension.lstrip("."): fs_class.protocol for fs_class in COMPRESSION_FILESYSTEMS},
+    **{
+        fs_class.extension.lstrip("."): fs_class.protocol
+        for fs_class in COMPRESSION_FILESYSTEMS
+    },
     # archive compression
     "zip": "zip",
     "tar": "tar",
     "tgz": "tar",
 }
-SINGLE_FILE_COMPRESSION_PROTOCOLS = {fs_class.protocol for fs_class in COMPRESSION_FILESYSTEMS}
+SINGLE_FILE_COMPRESSION_PROTOCOLS = {
+    fs_class.protocol for fs_class in COMPRESSION_FILESYSTEMS
+}
 SINGLE_SLASH_AFTER_PROTOCOL_PATTERN = re.compile(r"(?<!:):/")
 
 
@@ -70,18 +74,25 @@ MAGIC_NUMBER_TO_UNSUPPORTED_COMPRESSION_PROTOCOL = {
 }
 MAGIC_NUMBER_MAX_LENGTH = max(
     len(magic_number)
-    for magic_number in chain(MAGIC_NUMBER_TO_COMPRESSION_PROTOCOL, MAGIC_NUMBER_TO_UNSUPPORTED_COMPRESSION_PROTOCOL)
+    for magic_number in chain(
+        MAGIC_NUMBER_TO_COMPRESSION_PROTOCOL,
+        MAGIC_NUMBER_TO_UNSUPPORTED_COMPRESSION_PROTOCOL,
+    )
 )
 
 
 def xjoin(a, *p):
     """
-    This function extends os.path.join to support the "::" hop separator. It supports both paths and urls.
+    This function extends os.path.join to support the "::" hop
+    separator. It supports both paths and urls.
 
-    A shorthand, particularly useful where you have multiple hops, is to “chain” the URLs with the special separator "::".
-    This is used to access files inside a zip file over http for example.
+    A shorthand, particularly useful where you have multiple hops,
+     is to “chain” the URLs with the special separator "::".
+    This is used to access files inside a zip file over http for
+     example.
 
-    Let's say you have a zip file at https://host.com/archive.zip, and you want to access the file inside the zip file at /folder1/file.txt.
+    Let's say you have a zip file at https://host.com/archive.zip
+    , and you want to access the file inside the zip file at /folder1/file.txt.
     Then you can just chain the url this way:
 
         zip://folder1/file.txt::https://host.com/archive.zip
@@ -103,17 +114,21 @@ def xjoin(a, *p):
 
 def xdirname(a):
     """
-    This function extends os.path.dirname to support the "::" hop separator. It supports both paths and urls.
+    This function extends os.path.dirname to support the "::" hop separator.
+     It supports both paths and urls.
 
-    A shorthand, particularly useful where you have multiple hops, is to “chain” the URLs with the special separator "::".
+    A shorthand, particularly useful where you have multiple hops, is
+     to “chain” the URLs with the special separator "::".
     This is used to access files inside a zip file over http for example.
 
-    Let's say you have a zip file at https://host.com/archive.zip, and you want to access the file inside the zip file at /folder1/file.txt.
+    Let's say you have a zip file at https://host.com/archive.zip, and
+     you want to access the file inside the zip file at /folder1/file.txt.
     Then you can just chain the url this way:
 
         zip://folder1/file.txt::https://host.com/archive.zip
 
-    The xdirname function allows you to apply the dirname on the first path of the chain.
+    The xdirname function allows you to apply the dirname on the
+     first path of the chain.
 
     Example::
 
@@ -134,17 +149,21 @@ def xdirname(a):
 
 def xbasename(a):
     """
-    This function extends os.path.basename to support the "::" hop separator. It supports both paths and urls.
+    This function extends os.path.basename to support the "::" hop separator.
+     It supports both paths and urls.
 
-    A shorthand, particularly useful where you have multiple hops, is to “chain” the URLs with the special separator "::".
+    A shorthand, particularly useful where you have multiple hops, is to
+     “chain” the URLs with the special separator "::".
     This is used to access files inside a zip file over http for example.
 
-    Let's say you have a zip file at https://host.com/archive.zip, and you want to access the file inside the zip file at /folder1/file.txt.
+    Let's say you have a zip file at https://host.com/archive.zip,
+    and you want to access the file inside the zip file at /folder1/file.txt.
     Then you can just chain the url this way:
 
         zip://folder1/file.txt::https://host.com/archive.zip
 
-    The xbasename function allows you to apply the basename on the first path of the chain.
+    The xbasename function allows you to apply the basename on the
+    first path of the chain.
 
     Example::
 
@@ -169,7 +188,9 @@ def _as_posix(path: Path):
     """
     path_as_posix = path.as_posix()
     path_as_posix = SINGLE_SLASH_AFTER_PROTOCOL_PATTERN.sub("://", path_as_posix)
-    path_as_posix += "//" if path_as_posix.endswith(":") else ""  # Add slashes to root of the protocol
+    path_as_posix += (
+        "//" if path_as_posix.endswith(":") else ""
+    )  # Add slashes to root of the protocol
     return path_as_posix
 
 
@@ -197,7 +218,9 @@ def _add_retries_to_file_obj_read_method(file_obj):
                 break
             except (ClientError, TimeoutError):
                 logger.warning(
-                    f"Got disconnected from remote data host. Retrying in {config.STREAMING_READ_RETRY_INTERVAL}sec [{retry}/{max_retries}]"
+                    f"Got disconnected from remote data host. "
+                    f"Retrying in {config.STREAMING_READ_RETRY_INTERVAL}sec"
+                    f" [{retry}/{max_retries}]"
                 )
                 time.sleep(config.STREAMING_READ_RETRY_INTERVAL)
         else:
@@ -208,21 +231,33 @@ def _add_retries_to_file_obj_read_method(file_obj):
 
 
 def _get_extraction_protocol_with_magic_number(f) -> Optional[str]:
-    """read the magic number from a file-like object and return the compression protocol"""
+    """read the magic number from a file-like object and return
+    the compression protocol"""
     prev_loc = f.loc
     magic_number = f.read(MAGIC_NUMBER_MAX_LENGTH)
     f.seek(prev_loc)
     for i in range(MAGIC_NUMBER_MAX_LENGTH):
-        compression = MAGIC_NUMBER_TO_COMPRESSION_PROTOCOL.get(magic_number[: MAGIC_NUMBER_MAX_LENGTH - i])
-        if compression is not None:  # TODO(QL): raise an error for .tar.gz files as in _get_extraction_protocol
+        compression = MAGIC_NUMBER_TO_COMPRESSION_PROTOCOL.get(
+            magic_number[: MAGIC_NUMBER_MAX_LENGTH - i]
+        )
+        if (
+            compression is not None
+        ):  # TODO(QL): raise an error for .tar.gz files as in _get_extraction_protocol
             return compression
-        compression = MAGIC_NUMBER_TO_UNSUPPORTED_COMPRESSION_PROTOCOL.get(magic_number[: MAGIC_NUMBER_MAX_LENGTH - i])
+        compression = MAGIC_NUMBER_TO_UNSUPPORTED_COMPRESSION_PROTOCOL.get(
+            magic_number[: MAGIC_NUMBER_MAX_LENGTH - i]
+        )
         if compression is not None:
-            raise NotImplementedError(f"Compression protocol '{compression}' not implemented.")
+            raise NotImplementedError(
+                f"Compression protocol '{compression}' not implemented."
+            )
 
 
-def _get_extraction_protocol(urlpath: str, use_auth_token: Optional[Union[str, bool]] = None) -> Optional[str]:
-    # get inner file: zip://train-00000.json.gz::https://foo.bar/data.zip -> zip://train-00000.json.gz
+def _get_extraction_protocol(
+    urlpath: str, use_auth_token: Optional[Union[str, bool]] = None
+) -> Optional[str]:
+    # get inner file: zip://train-00000.json.gz::https://foo.bar/data.zip
+    # -> zip://train-00000.json.gz
     path = urlpath.split("::")[0]
     # Get extension: https://foo.bar/train.json.gz -> gz
     extension = path.split(".")[-1]
@@ -234,27 +269,39 @@ def _get_extraction_protocol(urlpath: str, use_auth_token: Optional[Union[str, b
         return None
     elif path.endswith(".tar.gz") or path.endswith(".tgz"):
         raise NotImplementedError(
-            f"Extraction protocol for TAR archives like '{urlpath}' is not implemented in streaming mode. Please use `dl_manager.iter_archive` instead."
+            f"Extraction protocol for TAR archives like '{urlpath}' is "
+            f"not implemented in streaming mode. Please use "
+            f"`dl_manager.iter_archive` instead."
         )
     elif extension in COMPRESSION_EXTENSION_TO_PROTOCOL:
         return COMPRESSION_EXTENSION_TO_PROTOCOL[extension]
 
     if is_remote_url(urlpath):
         # get headers and cookies for authentication on the HF Hub and for Google Drive
-        urlpath, kwargs = _prepare_http_url_kwargs(urlpath, use_auth_token=use_auth_token)
+        urlpath, kwargs = _prepare_http_url_kwargs(
+            urlpath, use_auth_token=use_auth_token
+        )
     else:
         urlpath, kwargs = urlpath, {}
     with fsspec.open(urlpath, **kwargs) as f:
         return _get_extraction_protocol_with_magic_number(f)
 
 
-def _prepare_http_url_kwargs(url: str, use_auth_token: Optional[Union[str, bool]] = None) -> Tuple[str, dict]:
+def _prepare_http_url_kwargs(
+    url: str, use_auth_token: Optional[Union[str, bool]] = None
+) -> Tuple[str, dict]:
     """
-    Prepare the URL and the kwargs that must be passed to the HttpFileSystem or to requests.get/head
+    Prepare the URL and the kwargs that must be passed to the
+     HttpFileSystem or to requests.get/head
 
-    In particular it resolves google drive URLs and it adds the authentication headers for the Hugging Face Hub.
+    In particular it resolves google drive URLs and it adds
+     the authentication headers for the Hugging Face Hub.
     """
-    kwargs = {"headers": get_authentication_headers_for_url(url, use_auth_token=use_auth_token)}
+    kwargs = {
+        "headers": get_authentication_headers_for_url(
+            url, use_auth_token=use_auth_token
+        )
+    }
     if "drive.google.com" in url:
         response = http_head(url)
         cookies = None
@@ -264,23 +311,36 @@ def _prepare_http_url_kwargs(url: str, use_auth_token: Optional[Union[str, bool]
                 cookies = response.cookies
                 kwargs["cookies"] = cookies
     if url.startswith("https://raw.githubusercontent.com/"):
-        # Workaround for served data with gzip content-encoding: https://github.com/fsspec/filesystem_spec/issues/389
+        # Workaround for served data with gzip content-encoding:
+        # https://github.com/fsspec/filesystem_spec/issues/389
         kwargs["block_size"] = 0
     return url, kwargs
 
 
-def xopen(file: str, mode="r", *args, use_auth_token: Optional[Union[str, bool]] = None, **kwargs):
+def xopen(
+    file: str,
+    mode="r",
+    *args,
+    use_auth_token: Optional[Union[str, bool]] = None,
+    **kwargs,
+):
     """
-    This function extends the builtin `open` function to support remote files using fsspec.
+    This function extends the builtin `open` function to support remote
+     files using fsspec.
 
     It also has a retry mechanism in case connection fails.
-    The args and kwargs are passed to fsspec.open, except `use_auth_token` which is used for queries to private repos on huggingface.co
+    The args and kwargs are passed to fsspec.open, except `use_auth_token`
+     which is used for queries to private repos on huggingface.co
     """
     main_hop, *rest_hops = file.split("::")
     # add headers and cookies for authentication on the HF Hub and for Google Drive
-    if not rest_hops and (main_hop.startswith("http://") or main_hop.startswith("https://")):
+    if not rest_hops and (
+        main_hop.startswith("http://") or main_hop.startswith("https://")
+    ):
         file, new_kwargs = _prepare_http_url_kwargs(file, use_auth_token=use_auth_token)
-    elif rest_hops and (rest_hops[0].startswith("http://") or rest_hops[0].startswith("https://")):
+    elif rest_hops and (
+        rest_hops[0].startswith("http://") or rest_hops[0].startswith("https://")
+    ):
         url = rest_hops[0]
         url, http_kwargs = _prepare_http_url_kwargs(url, use_auth_token=use_auth_token)
         new_kwargs = {"https": http_kwargs}
@@ -309,7 +369,11 @@ def xlistdir(path: str, use_auth_token: Optional[Union[str, bool]] = None) -> Li
         # globbing inside a zip in a private repo requires authentication
         if rest_hops and fsspec.get_fs_token_paths(rest_hops[0])[0].protocol == "https":
             storage_options = {
-                "https": {"headers": get_authentication_headers_for_url(rest_hops[0], use_auth_token=use_auth_token)}
+                "https": {
+                    "headers": get_authentication_headers_for_url(
+                        rest_hops[0], use_auth_token=use_auth_token
+                    )
+                }
             }
         else:
             storage_options = None
@@ -331,12 +395,15 @@ def xpathopen(path: Path, *args, **kwargs):
     return xopen(_as_posix(path), *args, **kwargs)
 
 
-def xglob(urlpath, *, recursive=False, use_auth_token: Optional[Union[str, bool]] = None):
+def xglob(
+    urlpath, *, recursive=False, use_auth_token: Optional[Union[str, bool]] = None
+):
     """Extend `glob.glob` function to support remote files.
 
     Args:
         urlpath (:obj:`str`): URL path with shell-style wildcard patterns.
-        recursive (:obj:`bool`, default `False`): Whether to match the "**" pattern recursively to zero or more
+        recursive (:obj:`bool`, default `False`):
+        Whether to match the "**" pattern recursively to zero or more
             directories or subdirectories.
 
     Returns:
@@ -347,7 +414,9 @@ def xglob(urlpath, *, recursive=False, use_auth_token: Optional[Union[str, bool]
         return glob.glob(main_hop, recursive=recursive)
     else:
         # globbing inside a zip in a private repo requires authentication
-        if rest_hops and (rest_hops[0].startswith("http://") or rest_hops[0].startswith("https://")):
+        if rest_hops and (
+            rest_hops[0].startswith("http://") or rest_hops[0].startswith("https://")
+        ):
             url = rest_hops[0]
             url, kwargs = _prepare_http_url_kwargs(url, use_auth_token=use_auth_token)
             storage_options = {"https": kwargs}
@@ -355,16 +424,22 @@ def xglob(urlpath, *, recursive=False, use_auth_token: Optional[Union[str, bool]
         else:
             storage_options = None
         fs, *_ = fsspec.get_fs_token_paths(urlpath, storage_options=storage_options)
-        # - If there's no "*" in the pattern, get_fs_token_paths() doesn't do any pattern matching
+        # - If there's no "*" in the pattern, get_fs_token_paths()
+        # doesn't do any pattern matching
         #   so to be able to glob patterns like "[0-9]", we have to call `fs.glob`.
-        # - Also "*" in get_fs_token_paths() only matches files: we have to call `fs.glob` to match directories.
+        # - Also "*" in get_fs_token_paths() only matches files:
+        # we have to call `fs.glob` to match directories.
         # - If there is "**" in the pattern, `fs.glob` must be called anyway.
         globbed_paths = fs.glob(main_hop)
-        return ["::".join([f"{fs.protocol}://{globbed_path}"] + rest_hops) for globbed_path in globbed_paths]
+        return [
+            "::".join([f"{fs.protocol}://{globbed_path}"] + rest_hops)
+            for globbed_path in globbed_paths
+        ]
 
 
 def xpathglob(path, pattern, use_auth_token: Optional[Union[str, bool]] = None):
-    """Glob function for argument of type :obj:`~pathlib.Path` that supports both local paths end remote URLs.
+    """Glob function for argument of type :obj:`~pathlib.Path` that
+    supports both local paths end remote URLs.
 
     Args:
         path (:obj:`~pathlib.Path`): Calling Path instance.
@@ -379,17 +454,23 @@ def xpathglob(path, pattern, use_auth_token: Optional[Union[str, bool]] = None):
         yield from Path(main_hop).glob(pattern)
     else:
         # globbing inside a zip in a private repo requires authentication
-        if rest_hops and (rest_hops[0].startswith("http://") or rest_hops[0].startswith("https://")):
+        if rest_hops and (
+            rest_hops[0].startswith("http://") or rest_hops[0].startswith("https://")
+        ):
             url = rest_hops[0]
             url, kwargs = _prepare_http_url_kwargs(url, use_auth_token=use_auth_token)
             storage_options = {"https": kwargs}
             posix_path = "::".join([main_hop, url, *rest_hops[1:]])
         else:
             storage_options = None
-        fs, *_ = fsspec.get_fs_token_paths(xjoin(posix_path, pattern), storage_options=storage_options)
-        # - If there's no "*" in the pattern, get_fs_token_paths() doesn't do any pattern matching
+        fs, *_ = fsspec.get_fs_token_paths(
+            xjoin(posix_path, pattern), storage_options=storage_options
+        )
+        # - If there's no "*" in the pattern, get_fs_token_paths() doesn't
+        # do any pattern matching
         #   so to be able to glob patterns like "[0-9]", we have to call `fs.glob`.
-        # - Also "*" in get_fs_token_paths() only matches files: we have to call `fs.glob` to match directories.
+        # - Also "*" in get_fs_token_paths() only matches files: we have
+        # to call `fs.glob` to match directories.
         # - If there is "**" in the pattern, `fs.glob` must be called anyway.
         globbed_paths = fs.glob(xjoin(main_hop, pattern))
         for globbed_path in globbed_paths:
@@ -397,7 +478,8 @@ def xpathglob(path, pattern, use_auth_token: Optional[Union[str, bool]] = None):
 
 
 def xpathrglob(path, pattern, **kwargs):
-    """Rglob function for argument of type :obj:`~pathlib.Path` that supports both local paths end remote URLs.
+    """Rglob function for argument of type :obj:`~pathlib.Path` that supports
+     both local paths end remote URLs.
 
     Args:
         path (:obj:`~pathlib.Path`): Calling Path instance.
@@ -410,7 +492,8 @@ def xpathrglob(path, pattern, **kwargs):
 
 
 def xpathstem(path: Path):
-    """Stem function for argument of type :obj:`~pathlib.Path` that supports both local paths end remote URLs.
+    """Stem function for argument of type :obj:`~pathlib.Path` that supports
+     both local paths end remote URLs.
 
     Args:
         path (:obj:`~pathlib.Path`): Calling Path instance.
@@ -422,7 +505,8 @@ def xpathstem(path: Path):
 
 
 def xpathsuffix(path: Path):
-    """Suffix function for argument of type :obj:`~pathlib.Path` that supports both local paths end remote URLs.
+    """Suffix function for argument of type :obj:`~pathlib.Path` that
+    supports both local paths end remote URLs.
 
     Args:
         path (:obj:`~pathlib.Path`): Calling Path instance.
@@ -433,20 +517,27 @@ def xpathsuffix(path: Path):
     return PurePosixPath(_as_posix(path).split("::")[0]).suffix
 
 
-def xpandas_read_csv(filepath_or_buffer, use_auth_token: Optional[Union[str, bool]] = None, **kwargs):
+def xpandas_read_csv(
+    filepath_or_buffer, use_auth_token: Optional[Union[str, bool]] = None, **kwargs
+):
     import pandas as pd
 
     if hasattr(filepath_or_buffer, "read"):
         return pd.read_csv(filepath_or_buffer, **kwargs)
     else:
-        return pd.read_csv(xopen(filepath_or_buffer, use_auth_token=use_auth_token), **kwargs)
+        return pd.read_csv(
+            xopen(filepath_or_buffer, use_auth_token=use_auth_token), **kwargs
+        )
 
 
 class StreamingDownloadManager(object):
     """
-    Download manager that uses the "::" separator to navigate through (possibly remote) compressed archives.
-    Contrary to the regular DownloadManager, the `download` and `extract` methods don't actually download nor extract
-    data, but they rather return the path or url that could be opened using the `xopen` function which extends the
+    Download manager that uses the "::" separator to navigate through
+    (possibly remote) compressed archives.
+    Contrary to the regular DownloadManager, the `download` and
+    `extract` methods don't actually download nor extract
+    data, but they rather return the path or url that could be opened
+    using the `xopen` function which extends the
     builtin `open` function to stream data from remote files.
     """
 
@@ -483,14 +574,20 @@ class StreamingDownloadManager(object):
 
     def _extract(self, urlpath: str) -> str:
         urlpath = str(urlpath)
-        protocol = _get_extraction_protocol(urlpath, use_auth_token=self.download_config.use_auth_token)
+        protocol = _get_extraction_protocol(
+            urlpath, use_auth_token=self.download_config.use_auth_token
+        )
         if protocol is None:
             # no extraction
             return urlpath
         elif protocol in SINGLE_FILE_COMPRESSION_PROTOCOLS:
             # there is one single file which is the uncompressed file
             inner_file = os.path.basename(urlpath.split("::")[0])
-            inner_file = inner_file[: inner_file.rindex(".")] if "." in inner_file else inner_file
+            inner_file = (
+                inner_file[: inner_file.rindex(".")]
+                if "." in inner_file
+                else inner_file
+            )
             # check for tar.gz, tar.bz2 etc.
             if inner_file.endswith(".tar"):
                 return f"tar://::{protocol}://{inner_file}::{urlpath}"
@@ -512,7 +609,9 @@ class StreamingDownloadManager(object):
             Generator yielding tuple (path_within_archive, file_obj).
             File-Obj are opened in byte mode (io.BufferedReader)
         """
-        with xopen(urlpath, "rb", use_auth_token=self.download_config.use_auth_token) as f:
+        with xopen(
+            urlpath, "rb", use_auth_token=self.download_config.use_auth_token
+        ) as f:
             stream = tarfile.open(fileobj=f, mode="r|*")
             for tarinfo in stream:
                 file_path = tarinfo.name
@@ -520,7 +619,9 @@ class StreamingDownloadManager(object):
                     continue
                 if file_path is None:
                     continue
-                if os.path.basename(file_path).startswith(".") or os.path.basename(file_path).startswith("__"):
+                if os.path.basename(file_path).startswith(".") or os.path.basename(
+                    file_path
+                ).startswith("__"):
                     # skipping hidden files
                     continue
                 file_obj = stream.extractfile(tarinfo)

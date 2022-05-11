@@ -13,13 +13,13 @@
 from dataclasses import dataclass
 from typing import ClassVar, Dict
 
-from ..features import Features, Value
-from .base import TaskTemplate
+from datalabs.features import Features, Value
+from datalabs.tasks.base import TaskTemplate
 
 
 @dataclass
 class AutomaticSpeechRecognition(TaskTemplate):
-    task_category:str = "automatic-speech-recognition"
+    task_category: str = "automatic-speech-recognition"
     task: str = "automatic-speech-recognition"
     # TODO(lewtun): Replace input path feature with dedicated `Audio` features
     # when https://github.com/huggingface/datasets/pull/2324 is implemented
@@ -30,4 +30,7 @@ class AutomaticSpeechRecognition(TaskTemplate):
 
     @property
     def column_mapping(self) -> Dict[str, str]:
-        return {self.audio_file_path_column: "audio_file_path", self.transcription_column: "transcription"}
+        return {
+            self.audio_file_path_column: "audio_file_path",
+            self.transcription_column: "transcription",
+        }

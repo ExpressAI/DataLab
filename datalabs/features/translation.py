@@ -100,17 +100,23 @@ class TranslationVariableLanguages:
     _type: str = field(default="TranslationVariableLanguages", init=False, repr=False)
 
     def __post_init__(self):
-        self.languages = list(sorted(list(set(self.languages)))) if self.languages else None
+        self.languages = (
+            list(sorted(list(set(self.languages)))) if self.languages else None
+        )
         self.num_languages = len(self.languages) if self.languages else None
 
     def __call__(self):
-        return pa.struct({"language": pa.list_(pa.string()), "translation": pa.list_(pa.string())})
+        return pa.struct(
+            {"language": pa.list_(pa.string()), "translation": pa.list_(pa.string())}
+        )
 
     def encode_example(self, translation_dict):
         lang_set = set(self.languages)
         if self.languages and set(translation_dict) - lang_set:
             raise ValueError(
-                f'Some languages in example ({", ".join(sorted(set(translation_dict) - lang_set))}) are not in valid set ({", ".join(lang_set)}).'
+                f"Some languages in example "
+                f'({", ".join(sorted(set(translation_dict) - lang_set))})'
+                f' are not in valid set ({", ".join(lang_set)}).'
             )
 
         # Convert dictionary into tuples, splitting out cases where there are

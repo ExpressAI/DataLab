@@ -17,12 +17,12 @@ from typing import BinaryIO, Optional, Union
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from .. import Dataset, Features, NamedSplit, config
-from ..formatting import query_table
-from ..packaged_modules import _PACKAGED_DATASETS_MODULES
-from ..packaged_modules.parquet.parquet import Parquet
-from ..utils.typing import NestedDataStructureLike, PathLike
-from .abc import AbstractDatasetReader
+from datalabs import config, Dataset, Features, NamedSplit
+from datalabs.formatting import query_table
+from datalabs.io.abc import AbstractDatasetReader
+from datalabs.packaged_modules import _PACKAGED_DATASETS_MODULES
+from datalabs.packaged_modules.parquet.parquet import Parquet
+from datalabs.utils.typing import NestedDataStructureLike, PathLike
 
 
 class ParquetDatasetReader(AbstractDatasetReader):
@@ -36,9 +36,18 @@ class ParquetDatasetReader(AbstractDatasetReader):
         **kwargs,
     ):
         super().__init__(
-            path_or_paths, split=split, features=features, cache_dir=cache_dir, keep_in_memory=keep_in_memory, **kwargs
+            path_or_paths,
+            split=split,
+            features=features,
+            cache_dir=cache_dir,
+            keep_in_memory=keep_in_memory,
+            **kwargs,
         )
-        path_or_paths = path_or_paths if isinstance(path_or_paths, dict) else {self.split: path_or_paths}
+        path_or_paths = (
+            path_or_paths
+            if isinstance(path_or_paths, dict)
+            else {self.split: path_or_paths}
+        )
         hash = _PACKAGED_DATASETS_MODULES["parquet"][1]
         self.builder = Parquet(
             cache_dir=cache_dir,
@@ -66,7 +75,9 @@ class ParquetDatasetReader(AbstractDatasetReader):
 
         # Build dataset for splits
         dataset = self.builder.as_dataset(
-            split=self.split, ignore_verifications=ignore_verifications, in_memory=self.keep_in_memory
+            split=self.split,
+            ignore_verifications=ignore_verifications,
+            in_memory=self.keep_in_memory,
         )
         return dataset
 
@@ -85,16 +96,26 @@ class ParquetDatasetWriter:
         self.parquet_writer_kwargs = parquet_writer_kwargs
 
     def write(self) -> int:
-        batch_size = self.batch_size if self.batch_size else config.DEFAULT_MAX_BATCH_SIZE
+        batch_size = (
+            self.batch_size if self.batch_size else config.DEFAULT_MAX_BATCH_SIZE
+        )
 
         if isinstance(self.path_or_buf, (str, bytes, os.PathLike)):
             with open(self.path_or_buf, "wb+") as buffer:
-                written = self._write(file_obj=buffer, batch_size=batch_size, **self.parquet_writer_kwargs)
+                written = self._write(
+                    file_obj=buffer, batch_size=batch_size, **self.parquet_writer_kwargs
+                )
         else:
-            written = self._write(file_obj=self.path_or_buf, batch_size=batch_size, **self.parquet_writer_kwargs)
+            written = self._write(
+                file_obj=self.path_or_buf,
+                batch_size=batch_size,
+                **self.parquet_writer_kwargs,
+            )
         return written
 
-    def _write(self, file_obj: BinaryIO, batch_size: int, **parquet_writer_kwargs) -> int:
+    def _write(
+        self, file_obj: BinaryIO, batch_size: int, **parquet_writer_kwargs
+    ) -> int:
         """Writes the pyarrow table as Parquet to a binary file handle.
 
         Caller is responsible for opening and closing the handle.
@@ -108,7 +129,9 @@ class ParquetDatasetWriter:
             batch = query_table(
                 table=self.dataset._data,
                 key=slice(offset, offset + batch_size),
-                indices=self.dataset._indices if self.dataset._indices is not None else None,
+                indices=self.dataset._indices
+                if self.dataset._indices is not None
+                else None,
             )
             writer.write_table(batch)
             written += batch.nbytes

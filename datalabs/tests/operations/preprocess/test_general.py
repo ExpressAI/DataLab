@@ -1,13 +1,11 @@
 import unittest
 
-from datalabs import operations, load_dataset
-from preprocess import *
+from preprocess import tokenize_nltk
+
+from datalabs import load_dataset
 
 
 class MyTestCase(unittest.TestCase):
-
-
-
     def test_general(self):
 
         dataset = load_dataset("qc")
@@ -16,13 +14,5 @@ class MyTestCase(unittest.TestCase):
         print(next(res))
 
 
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
-
-
-
-
-
-

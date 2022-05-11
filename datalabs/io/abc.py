@@ -14,9 +14,9 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Union
 
-from .. import DatasetDict, Features, NamedSplit
-from ..arrow_dataset import Dataset
-from ..utils.typing import NestedDataStructureLike, PathLike
+from datalabs import DatasetDict, Features, NamedSplit
+from datalabs.arrow_dataset import Dataset
+from datalabs.utils.typing import NestedDataStructureLike, PathLike
 
 
 class AbstractDatasetReader(ABC):

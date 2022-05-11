@@ -20,15 +20,15 @@
 
 import contextlib
 import functools
+from io import BytesIO as StringIO
 import itertools
+from multiprocessing import Pool, RLock
 import os
 import pickle
 import re
+from shutil import disk_usage
 import sys
 import types
-from io import BytesIO as StringIO
-from multiprocessing import Pool, RLock
-from shutil import disk_usage
 from types import CodeType, FunctionType
 from typing import Callable, ClassVar, Dict, Generic, Optional, Tuple, Union
 
@@ -36,9 +36,8 @@ import dill
 import numpy as np
 from tqdm.auto import tqdm
 
-from .. import utils
-from . import logging
-
+from datalabs import utils
+from datalabs.utils import logging
 
 try:  # pragma: no branch
     import typing_extensions as _typing_extensions
@@ -47,10 +46,8 @@ except ImportError:
     _typing_extensions = Literal = Final = None
 
 
-
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
-
 
 
 # used for explainahboard
@@ -98,7 +95,6 @@ def print_dict(dict_obj, print_infomation="dict"):
     eprint("")
 
 
-
 logger = logging.get_logger(__name__)
 
 
@@ -124,7 +120,13 @@ def size_str(size_in_bytes):
     if not size_in_bytes:
         return "Unknown size"
 
-    _NAME_LIST = [("PiB", 2 ** 50), ("TiB", 2 ** 40), ("GiB", 2 ** 30), ("MiB", 2 ** 20), ("KiB", 2 ** 10)]
+    _NAME_LIST = [
+        ("PiB", 2**50),
+        ("TiB", 2**40),
+        ("GiB", 2**30),
+        ("MiB", 2**20),
+        ("KiB", 2**10),
+    ]
 
     size_in_bytes = float(size_in_bytes)
     for (name, size_bytes) in _NAME_LIST:
@@ -152,7 +154,8 @@ def string_to_dict(string: str, pattern: str) -> Dict[str, str]:
         pattern (str): pattern formatted like a python f-string
 
     Returns:
-        Dict[str, str]: dictionary of variable -> value, retrieved from the input using the pattern
+        Dict[str, str]: dictionary of variable -> value, retrieved
+         from the input using the pattern
     """
     regex = re.sub(r"{(.+?)}", r"(?P<_\1>.+)", pattern)
     values = list(re.search(regex, string).groups())
@@ -239,13 +242,20 @@ def _single_map_nested(args):
     if rank is not None and not disable_tqdm and "notebook" in tqdm.__name__:
         print(" ", end="", flush=True)
 
-    # Loop over single examples or batches and write to buffer/file if examples are to be updated
-    pbar_iterable = data_struct.items() if isinstance(data_struct, dict) else data_struct
+    # Loop over single examples or batches and write to
+    # buffer/file if examples are to be updated
+    pbar_iterable = (
+        data_struct.items() if isinstance(data_struct, dict) else data_struct
+    )
     pbar_desc = "#" + str(rank) if rank is not None else None
-    pbar = utils.tqdm(pbar_iterable, disable=disable_tqdm, position=rank, unit="obj", desc=pbar_desc)
+    pbar = utils.tqdm(
+        pbar_iterable, disable=disable_tqdm, position=rank, unit="obj", desc=pbar_desc
+    )
 
     if isinstance(data_struct, dict):
-        return {k: _single_map_nested((function, v, types, None, True)) for k, v in pbar}
+        return {
+            k: _single_map_nested((function, v, types, None, True)) for k, v in pbar
+        }
     else:
         mapped = [_single_map_nested((function, v, types, None, True)) for v in pbar]
         if isinstance(data_struct, list):
@@ -268,7 +278,8 @@ def map_nested(
     disable_tqdm: bool = True,
 ):
     """Apply a function recursively to each element of a nested data struct.
-    If num_proc > 1 and the length of data_struct is longer than num_proc: use multi-processing
+    If num_proc > 1 and the length of data_struct is longer
+     than num_proc: use multi-processing
     """
     if types is None:
         types = []
@@ -286,9 +297,13 @@ def map_nested(
         return function(data_struct)
 
     disable_tqdm = (
-        disable_tqdm or bool(logging.get_verbosity() == logging.NOTSET) or not utils.is_progress_bar_enabled()
+        disable_tqdm
+        or bool(logging.get_verbosity() == logging.NOTSET)
+        or not utils.is_progress_bar_enabled()
     )
-    iterable = list(data_struct.values()) if isinstance(data_struct, dict) else data_struct
+    iterable = (
+        list(data_struct.values()) if isinstance(data_struct, dict) else data_struct
+    )
 
     if num_proc is None:
         num_proc = 1
@@ -304,14 +319,17 @@ def map_nested(
             mod = len(iterable) % num_proc
             start = div * index + min(index, mod)
             end = start + div + (1 if index < mod else 0)
-            split_kwds.append((function, iterable[start:end], types, index, disable_tqdm))
+            split_kwds.append(
+                (function, iterable[start:end], types, index, disable_tqdm)
+            )
         assert len(iterable) == sum(len(i[1]) for i in split_kwds), (
             f"Error dividing inputs iterable among processes. "
             f"Total number of objects {len(iterable)}, "
             f"length: {sum(len(i[1]) for i in split_kwds)}"
         )
         logger.info(
-            f"Spawning {num_proc} processes for {len(iterable)} objects in slices of {[len(i[1]) for i in split_kwds]}"
+            f"Spawning {num_proc} processes for {len(iterable)} "
+            f"objects in slices of {[len(i[1]) for i in split_kwds]}"
         )
         initargs, initializer = None, None
         if not disable_tqdm:
@@ -341,7 +359,9 @@ def zip_nested(arg0, *args, **kwargs):
 
     # Could add support for more exotic data_struct, like OrderedDict
     if isinstance(arg0, dict):
-        return {k: zip_nested(*a, dict_only=dict_only) for k, a in zip_dict(arg0, *args)}
+        return {
+            k: zip_nested(*a, dict_only=dict_only) for k, a in zip_dict(arg0, *args)
+        }
     elif not dict_only:
         if isinstance(arg0, list):
             return [zip_nested(*a, dict_only=dict_only) for a in zip(arg0, *args)]
@@ -355,7 +375,9 @@ def flatten_nest_dict(d):
     flat_dict = NonMutableDict()
     for k, v in d.items():
         if isinstance(v, dict):
-            flat_dict.update({f"{k}/{k2}": v2 for k2, v2 in flatten_nest_dict(v).items()})
+            flat_dict.update(
+                {f"{k}/{k2}": v2 for k2, v2 in flatten_nest_dict(v).items()}
+            )
         else:
             flat_dict[k] = v
     return flat_dict
@@ -389,7 +411,10 @@ class Pickler(dill.Pickler):
     dispatch = dill._dill.MetaCatchingDict(dill.Pickler.dispatch.copy())
 
     def save_global(self, obj, name=None):
-        if sys.version_info[:2] < (3, 7) and _CloudPickleTypeHintFix._is_parametrized_type_hint(
+        if sys.version_info[:2] < (
+            3,
+            7,
+        ) and _CloudPickleTypeHintFix._is_parametrized_type_hint(
             obj
         ):  # noqa  # pragma: no branch
             # Parametrized typing constructs in Python < 3.7 are not compatible
@@ -402,7 +427,8 @@ class Pickler(dill.Pickler):
             dill.Pickler.save_global(self, obj, name=name)
 
     def memoize(self, obj):
-        # don't memoize strings since two identical strings can have different python ids
+        # don't memoize strings since two identical strings can have
+        # different python ids
         if type(obj) != str:
             dill.Pickler.memoize(self, obj)
 
@@ -417,7 +443,8 @@ def dump(obj, file):
 def _no_cache_fields(obj):
     try:
         if (
-            "PreTrainedTokenizerBase" in [base_class.__name__ for base_class in type(obj).__mro__]
+            "PreTrainedTokenizerBase"
+            in [base_class.__name__ for base_class in type(obj).__mro__]
             and hasattr(obj, "cache")
             and isinstance(obj.cache, dict)
         ):
@@ -483,8 +510,12 @@ class _CloudPickleTypeHintFix:
             else:
                 initargs = (obj.__origin__, (list(args[:-1]), args[-1]))
         else:  # pragma: no cover
-            raise pickle.PicklingError(f"Datasets pickle Error: Unknown type {type(obj)}")
-        pickler.save_reduce(_CloudPickleTypeHintFix._create_parametrized_type_hint, initargs, obj=obj)
+            raise pickle.PicklingError(
+                f"Datasets pickle Error: Unknown type {type(obj)}"
+            )
+        pickler.save_reduce(
+            _CloudPickleTypeHintFix._create_parametrized_type_hint, initargs, obj=obj
+        )
 
 
 @pklregister(CodeType)
@@ -510,7 +541,9 @@ def _save_code(pickler, obj):
     #
     # Only those two lines are different from the original implementation:
     co_filename = (
-        "" if obj.co_filename.startswith("<") or obj.co_name == "<lambda>" else os.path.basename(obj.co_filename)
+        ""
+        if obj.co_filename.startswith("<") or obj.co_name == "<lambda>"
+        else os.path.basename(obj.co_filename)
     )
     co_firstlineno = 1
     # The rest is the same as in the original dill implementation
@@ -603,7 +636,9 @@ def save_function(pickler, obj):
         _memo = (id(obj) in dill._dill.stack) and (_recurse is not None)
         dill._dill.stack[id(obj)] = len(dill._dill.stack), obj
         if dill._dill.PY3:
-            _super = ("super" in getattr(obj.__code__, "co_names", ())) and (_byref is not None)
+            _super = ("super" in getattr(obj.__code__, "co_names", ())) and (
+                _byref is not None
+            )
             if _super:
                 pickler._byref = True
             if _memo:
@@ -611,7 +646,15 @@ def save_function(pickler, obj):
             fkwdefaults = getattr(obj, "__kwdefaults__", None)
             pickler.save_reduce(
                 dill._dill._create_function,
-                (obj.__code__, globs, obj.__name__, obj.__defaults__, obj.__closure__, obj.__dict__, fkwdefaults),
+                (
+                    obj.__code__,
+                    globs,
+                    obj.__name__,
+                    obj.__defaults__,
+                    obj.__closure__,
+                    obj.__dict__,
+                    fkwdefaults,
+                ),
                 obj=obj,
             )
         else:
@@ -626,7 +669,14 @@ def save_function(pickler, obj):
                 pickler._recurse = False
             pickler.save_reduce(
                 dill._dill._create_function,
-                (obj.func_code, globs, obj.func_name, obj.func_defaults, obj.func_closure, obj.__dict__),
+                (
+                    obj.func_code,
+                    globs,
+                    obj.func_name,
+                    obj.func_defaults,
+                    obj.func_closure,
+                    obj.__dict__,
+                ),
                 obj=obj,
             )
         if _super:
@@ -636,7 +686,11 @@ def save_function(pickler, obj):
         if (
             dill._dill.OLDER
             and not _byref
-            and (_super or (not _super and _memo) or (not _super and not _memo and _recurse))
+            and (
+                _super
+                or (not _super and _memo)
+                or (not _super and not _memo and _recurse)
+            )
         ):
             pickler.clear_memo()
         dill._dill.log.info("# F1")
@@ -649,7 +703,13 @@ def save_function(pickler, obj):
 
 
 def copyfunc(func):
-    result = types.FunctionType(func.__code__, func.__globals__, func.__name__, func.__defaults__, func.__closure__)
+    result = types.FunctionType(
+        func.__code__,
+        func.__globals__,
+        func.__name__,
+        func.__defaults__,
+        func.__closure__,
+    )
     result.__kwdefaults__ = func.__kwdefaults__
     return result
 
@@ -667,7 +727,6 @@ try:
         pickler.save_reduce(regex.compile, args, obj=obj)
         dill._dill.log.info("# Re")
         return
-
 
 except ImportError:
     pass

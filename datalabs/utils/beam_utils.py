@@ -1,16 +1,15 @@
 import os
 
-import pyarrow as pa
-import pyarrow.parquet as pq
 from apache_beam.io import filebasedsink
 from apache_beam.io.filesystem import CompressionTypes
 from apache_beam.io.filesystems import FileSystems
 from apache_beam.io.iobase import Write
 from apache_beam.pipeline import Pipeline
 from apache_beam.transforms import PTransform
+import pyarrow as pa
+import pyarrow.parquet as pq
 
-from .logging import get_logger
-
+from datalabs.utils.logging import get_logger
 
 CHUNK_SIZE = 2 << 20  # 2mb
 logger = get_logger(__name__)
@@ -29,9 +28,15 @@ def upload_local_to_remote(local_file_path, remote_file_path, force_upload=False
     fs = FileSystems
     if fs.exists(remote_file_path):
         if force_upload:
-            logger.info(f"Remote path already exist: {remote_file_path}. Overwriting it as force_upload=True.")
+            logger.info(
+                f"Remote path already exist: {remote_file_path}. "
+                f"Overwriting it as force_upload=True."
+            )
         else:
-            logger.info(f"Remote path already exist: {remote_file_path}. Skipping it as force_upload=False.")
+            logger.info(
+                f"Remote path already exist: {remote_file_path}."
+                f" Skipping it as force_upload=False."
+            )
             return
     with fs.create(remote_file_path) as remote_file:
         with open(local_file_path, "rb") as local_file:
@@ -46,9 +51,15 @@ def download_remote_to_local(remote_file_path, local_file_path, force_download=F
     fs = FileSystems
     if os.path.exists(local_file_path):
         if force_download:
-            logger.info(f"Local path already exist: {remote_file_path}. Overwriting it as force_upload=True.")
+            logger.info(
+                f"Local path already exist: {remote_file_path}. "
+                f"Overwriting it as force_upload=True."
+            )
         else:
-            logger.info(f"Local path already exist: {remote_file_path}. Skipping it as force_upload=False.")
+            logger.info(
+                f"Local path already exist: {remote_file_path}. "
+                f"Skipping it as force_upload=False."
+            )
             return
     with fs.open(remote_file_path) as remote_file:
         with open(local_file_path, "wb") as local_file:
@@ -60,7 +71,8 @@ def download_remote_to_local(remote_file_path, local_file_path, force_download=F
 
 class WriteToParquet(PTransform):
     """
-    From `apache_beam.io.parquetio.WriteToParquet`, but with a fix for the jira issue `BEAM-10022`.
+    From `apache_beam.io.parquetio.WriteToParquet`, but with a fix
+     for the jira issue `BEAM-10022`.
     Only the method `_flush_buffer` is different from the original implementation.
 
         A ``PTransform`` for writing parquet files.

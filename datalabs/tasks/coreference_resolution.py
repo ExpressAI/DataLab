@@ -13,25 +13,28 @@
 
 from dataclasses import dataclass
 from typing import ClassVar, Dict, Optional, Tuple
-from ..features import ClassLabel, Features, Value
-from .base import TaskTemplate
+
+from datalabs.features import ClassLabel, Features, Value
+from datalabs.tasks.base import TaskTemplate
+
 
 @dataclass
 class CoreferenceResolution(TaskTemplate):
-    # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
+    # `task` is not a ClassVar since we want it to be
+    # part of the `asdict` output for JSON serialization
     task_category: str = "coreference-resolution"
     task: str = "coreference-resolution"
-    input_schema: ClassVar[Features] = Features({
-        'text': Value('string'),
-        'pronoun': Value('string'),
-        'pronoun_idx': Value('int32'),
-        'quote': Value('string'),
-        'quote_idx': Value('int32'),
-    })
+    input_schema: ClassVar[Features] = Features(
+        {
+            "text": Value("string"),
+            "pronoun": Value("string"),
+            "pronoun_idx": Value("int32"),
+            "quote": Value("string"),
+            "quote_idx": Value("int32"),
+        }
+    )
     # TODO(lewtun): Find a more elegant approach without descriptors.
-    label_schema: ClassVar[Features] = Features({
-        "label": ClassLabel
-    })
+    label_schema: ClassVar[Features] = Features({"label": ClassLabel})
     text_column: str = "text"
     pronoun_column: str = "pronoun"
     pronoun_idx_column: str = "pronoun_idx"
@@ -61,4 +64,3 @@ class CoreferenceResolution(TaskTemplate):
             self.quote_idx_column: "quote",
             self.label_column: "label",
         }
-

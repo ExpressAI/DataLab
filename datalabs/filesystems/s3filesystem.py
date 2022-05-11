@@ -16,8 +16,11 @@ import s3fs
 
 class S3FileSystem(s3fs.S3FileSystem):
     """
-    ``datalab.filesystems.S3FileSystem`` is a subclass of `s3fs.S3FileSystem <https://s3fs.readthedocs.io/en/latest/api.html>`_, which is a known
-    implementation of ``fsspec``. `Filesystem Spec (FSSPEC) <https://filesystem-spec.readthedocs.io/en/latest/?badge=latest>`_  is a project to
+    ``datalab.filesystems.S3FileSystem`` is a subclass of
+    `s3fs.S3FileSystem <https://s3fs.readthedocs.io/en/latest/api.html>
+    `_, which is a known
+    implementation of ``fsspec``. `Filesystem Spec (FSSPEC)
+     <https://filesystem-spec.readthedocs.io/en/latest/?badge=latest>`_  is a project to
     unify various projects and classes to work with remote filesystems
     and file-system-like abstractions using a standard pythonic interface.
 
@@ -29,14 +32,17 @@ class S3FileSystem(s3fs.S3FileSystem):
       >>> s3.ls('public-datalab/imdb/train')  # doctest: +SKIP
       ['dataset_info.json.json','dataset.arrow','state.json']
 
-      Listing files from private s3 bucket using ``aws_access_key_id`` and ``aws_secret_access_key``.
+      Listing files from private s3 bucket using ``aws_access_key_id``
+      and ``aws_secret_access_key``.
 
       >>> import datalabs
-      >>> s3 = datalabs.filesystems.S3FileSystem(key=aws_access_key_id, secret=aws_secret_access_key)  # doctest: +SKIP
+      >>> s3 = datalabs.filesystems.S3FileSystem(key=aws_access_key_id,
+      secret=aws_secret_access_key)  # doctest: +SKIP
       >>> s3.ls('my-private-datalab/imdb/train')  # doctest: +SKIP
       ['dataset_info.json.json','dataset.arrow','state.json']
 
-      Using ``S3Filesystem`` with ``botocore.session.Session`` and custom ``aws_profile``.
+      Using ``S3Filesystem`` with ``botocore.session.Session``
+      and custom ``aws_profile``.
 
       >>> import botocore
       >>> from datalabs.filesystems import S3Filesystem
@@ -50,9 +56,11 @@ class S3FileSystem(s3fs.S3FileSystem):
       >>> from datalabs import load_from_disk
       >>> from datalabs.filesystems import S3Filesystem
       >>>
-      >>> s3 = S3FileSystem(key=aws_access_key_id, secret=aws_secret_access_key)  # doctest: +SKIP
+      >>> s3 = S3FileSystem(key=aws_access_key_id,
+      secret=aws_secret_access_key)  # doctest: +SKIP
       >>>
-      >>> dataset = load_from_disk('s3://my-private-datalab/imdb/train',fs=s3)  # doctest: +SKIP
+      >>> dataset = load_from_disk(
+      's3://my-private-datalab/imdb/train',fs=s3)  # doctest: +SKIP
       >>>
       >>> print(len(dataset))
       25000
@@ -64,9 +72,11 @@ class S3FileSystem(s3fs.S3FileSystem):
       >>>
       >>> dataset = load_dataset("imdb")
       >>>
-      >>> s3 = S3FileSystem(key=aws_access_key_id, secret=aws_secret_access_key)  # doctest: +SKIP
+      >>> s3 = S3FileSystem(key=aws_access_key_id,
+       secret=aws_secret_access_key)  # doctest: +SKIP
       >>>
-      >>> dataset.save_to_disk('s3://my-private-datalab/imdb/train',fs=s3)  # doctest: +SKIP
+      >>> dataset.save_to_disk(
+      's3://my-private-datalab/imdb/train',fs=s3)  # doctest: +SKIP
 
 
 

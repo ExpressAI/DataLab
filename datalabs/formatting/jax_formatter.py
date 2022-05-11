@@ -19,9 +19,8 @@ from typing import TYPE_CHECKING
 import numpy as np
 import pyarrow as pa
 
-from ..utils.py_utils import map_nested
-from .formatting import Formatter
-
+from datalabs.formatting.formatting import Formatter
+from datalabs.utils.py_utils import map_nested
 
 if TYPE_CHECKING:
     import jax.numpy as jnp
@@ -39,7 +38,8 @@ class JaxFormatter(Formatter[dict, "jnp.ndarray", dict]):
         default_dtype = {}
         if np.issubdtype(value.dtype, np.integer):
             # the default int precision depends on the jax config
-            # see https://jax.readthedocs.io/en/latest/notebooks/Common_Gotchas_in_JAX.html#double-64bit-precision
+            # see https://jax.readthedocs.io/en/latest/notebooks/
+            # Common_Gotchas_in_JAX.html#double-64bit-precision
             if jax.config.jax_enable_x64:
                 default_dtype = {"dtype": jnp.int64}
             else:
@@ -55,8 +55,12 @@ class JaxFormatter(Formatter[dict, "jnp.ndarray", dict]):
         # support for nested types like struct of list of struct
         if isinstance(data_struct, (list, np.ndarray)):
             data_struct = np.array(data_struct, copy=False)
-            if data_struct.dtype == np.object:  # jax arrays cannot be instantied from an array of objects
-                return [self.recursive_tensorize(substruct) for substruct in data_struct]
+            if (
+                data_struct.dtype == np.object
+            ):  # jax arrays cannot be instantied from an array of objects
+                return [
+                    self.recursive_tensorize(substruct) for substruct in data_struct
+                ]
         return self._tensorize(data_struct)
 
     def recursive_tensorize(self, data_struct: dict):
