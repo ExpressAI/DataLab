@@ -26,3 +26,15 @@ jobs:
           python -c "import nltk; nltk.download('omw-1.4')"
       - name: Run tests with unittest
         run: python -m unittest discover
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Python 3
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.9
+      - name: format
+        uses: pre-commit/action@v2.0.3
+        with:
+          extra_args: black --all-files
