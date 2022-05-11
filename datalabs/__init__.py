@@ -102,7 +102,6 @@ from datalabs.splits import (
     SplitInfo,
     SubSplitInfo,
 )
-from datalabs.tasks.task_info import get_task_categories, Task, TaskCategory, TaskType
 from datalabs.utils import *
 
 SCRIPTS_VERSION = "master" if _version.parse(__version__).is_devrelease else __version__
