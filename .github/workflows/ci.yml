@@ -1,5 +1,10 @@
 name: Continuous Integration
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: ["**"]
 
 jobs:
   build:
@@ -22,7 +27,20 @@ jobs:
       - name: Run tests with unittest
         run: python -m unittest discover
 
-    format:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Python 3
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.9
+      - name: format
+        uses: pre-commit/action@v2.0.3
+        with:
+          extra_args: black --all-files
+          exclude: "datasets"
+    isort:
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v3
@@ -30,34 +48,21 @@ jobs:
           uses: actions/setup-python@v3
           with:
             python-version: 3.9
-        - name: format
+        - name: isort
           uses: pre-commit/action@v2.0.3
           with:
-            extra_args: black --all-files
+            extra_args: isort --all-files
             exclude: "datasets"
-      isort:
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v3
-          - name: Install Python 3
-            uses: actions/setup-python@v3
-            with:
-              python-version: 3.9
-          - name: isort
-            uses: pre-commit/action@v2.0.3
-            with:
-              extra_args: isort --all-files
-              exclude: "datasets"
-      lint:
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v3
-          - name: Install Python 3
-            uses: actions/setup-python@v3
-            with:
-              python-version: 3.9
-          - name: lint
-            uses: pre-commit/action@v2.0.3
-            with:
-              extra_args: flake8 --all-files
-              exclude: "datasets"
+    lint:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - name: Install Python 3
+          uses: actions/setup-python@v3
+          with:
+            python-version: 3.9
+        - name: lint
+          uses: pre-commit/action@v2.0.3
+          with:
+            extra_args: flake8 --all-files
+            exclude: "datasets"
