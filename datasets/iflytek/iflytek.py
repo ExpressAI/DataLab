@@ -170,7 +170,7 @@ class IFLYTEK(datalabs.GeneratorBasedBuilder):
                     ]),
                 }
             ),
-            homepage="",
+            homepage="https://github.com/CLUEbenchmark/CLUE",
             citation=_CITATION,
             languages=["zh"],
             task_templates=[TopicClassification(text_column="text", label_column="label", task="topic-classification")],

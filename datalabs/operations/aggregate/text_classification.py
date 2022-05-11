@@ -7,7 +7,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from operation import DatasetOperation, dataset_operation
-from featurize.general import *
+from datalabs.operations.featurize.general import *
 from data import TextData
 
 class TextClassificationAggregating(Aggregating, DatasetOperation):
