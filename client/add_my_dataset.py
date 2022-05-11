@@ -1,8 +1,5 @@
-import json
-
 from client import Client
 from example_funcs import text_classification_func
-import requests
 
 # the user name of your account: https://datalab.nlpedia.ai/user
 client = Client(
