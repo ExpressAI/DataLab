@@ -35,7 +35,6 @@ import os
 import threading
 import time
 
-
 try:
     import warnings
 except ImportError:
@@ -134,7 +133,9 @@ class BaseFileLock:
 
     def __init__(self, lock_file, timeout=-1, max_filename_length=None):
         """ """
-        max_filename_length = max_filename_length if max_filename_length is not None else 255
+        max_filename_length = (
+            max_filename_length if max_filename_length is not None else 255
+        )
         # Hash the filename if it's too long
         lock_file = self.hash_filename_if_too_long(lock_file, max_filename_length)
         # The path to the lock file.
@@ -269,18 +270,23 @@ class BaseFileLock:
             while True:
                 with self._thread_lock:
                     if not self.is_locked:
-                        logger().debug(f"Attempting to acquire lock {lock_id} on {lock_filename}")
+                        logger().debug(
+                            f"Attempting to acquire lock {lock_id} on {lock_filename}"
+                        )
                         self._acquire()
 
                 if self.is_locked:
                     logger().debug(f"Lock {lock_id} acquired on {lock_filename}")
                     break
                 elif timeout >= 0 and time.time() - start_time > timeout:
-                    logger().debug(f"Timeout on acquiring lock {lock_id} on {lock_filename}")
+                    logger().debug(
+                        f"Timeout on acquiring lock {lock_id} on {lock_filename}"
+                    )
                     raise Timeout(self._lock_file)
                 else:
                     logger().debug(
-                        f"Lock {lock_id} not acquired on {lock_filename}, waiting {poll_intervall} seconds ..."
+                        f"Lock {lock_id} not acquired"
+                        f" on {lock_filename}, waiting {poll_intervall} seconds ..."
                     )
                     time.sleep(poll_intervall)
         except:  # noqa
@@ -313,7 +319,9 @@ class BaseFileLock:
                     lock_id = id(self)
                     lock_filename = self._lock_file
 
-                    logger().debug(f"Attempting to release lock {lock_id} on {lock_filename}")
+                    logger().debug(
+                        f"Attempting to release lock {lock_id} on {lock_filename}"
+                    )
                     self._release()
                     self._lock_counter = 0
                     logger().debug(f"Lock {lock_id} released on {lock_filename}")
@@ -337,7 +345,12 @@ class BaseFileLock:
         if len(filename) > max_length and max_length > 0:
             dirname = os.path.dirname(path)
             hashed_filename = str(hash(filename))
-            new_filename = filename[: max_length - len(hashed_filename) - 8] + "..." + hashed_filename + ".lock"
+            new_filename = (
+                filename[: max_length - len(hashed_filename) - 8]
+                + "..."
+                + hashed_filename
+                + ".lock"
+            )
             return os.path.join(dirname, new_filename)
         else:
             return path
@@ -354,9 +367,11 @@ class WindowsFileLock(BaseFileLock):
     """
 
     def __init__(self, lock_file, timeout=-1, max_filename_length=None):
-        from .file_utils import relative_to_absolute_path
+        from datalabs.utils.file_utils import relative_to_absolute_path
 
-        super().__init__(lock_file, timeout=timeout, max_filename_length=max_filename_length)
+        super().__init__(
+            lock_file, timeout=timeout, max_filename_length=max_filename_length
+        )
         self._lock_file = "\\\\?\\" + relative_to_absolute_path(self.lock_file)
 
     def _acquire(self):
@@ -401,7 +416,9 @@ class UnixFileLock(BaseFileLock):
 
     def __init__(self, lock_file, timeout=-1, max_filename_length=None):
         max_filename_length = os.statvfs(os.path.dirname(lock_file)).f_namemax
-        super().__init__(lock_file, timeout=timeout, max_filename_length=max_filename_length)
+        super().__init__(
+            lock_file, timeout=timeout, max_filename_length=max_filename_length
+        )
 
     def _acquire(self):
         open_mode = os.O_RDWR | os.O_CREAT | os.O_TRUNC
@@ -419,7 +436,8 @@ class UnixFileLock(BaseFileLock):
         # Do not remove the lockfile:
         #
         #   https://github.com/benediktschmitt/py-filelock/issues/31
-        #   https://stackoverflow.com/questions/17708885/flock-removing-locked-file-without-race-condition
+        #   https://stackoverflow.com/questions/17708885/
+        #   flock-removing-locked-file-without-race-condition
         fd = self._lock_file_fd
         self._lock_file_fd = None
         fcntl.flock(fd, fcntl.LOCK_UN)

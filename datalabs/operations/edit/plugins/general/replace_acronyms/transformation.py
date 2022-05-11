@@ -1,9 +1,11 @@
 import os
-
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../')))
-from edit.editing import *
 
+from datalabs.operations.edit.editing import editing
+
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))
+)
 
 
 def transformation(sentence, lowercase, acronyms):
@@ -17,21 +19,26 @@ def transformation(sentence, lowercase, acronyms):
             key_index = lower_sentece.index(lower_key)
             key_end = key_index + len(key)
             new_sentence = (
-                new_sentence[:key_index]
-                + acronyms[key]
-                + new_sentence[key_end:]
+                new_sentence[:key_index] + acronyms[key] + new_sentence[key_end:]
             )
 
     return new_sentence
 
-@editing(name = "replace_acronyms", contributor = "xl_augmenter",
-         task = "Any", description="This transformation changes abbreviations and acronyms appearing in a text to their expanded form and respectively,")
-def replace_acronyms(text:str, seed=0, max_outputs=1,lowercase=False):
 
-    acronyms_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../resources/acronyms.tsv")
+@editing(
+    name="replace_acronyms",
+    contributor="xl_augmenter",
+    task="Any",
+    description="This transformation changes abbreviations and acronyms"
+    " appearing in a text to their expanded form and respectively,",
+)
+def replace_acronyms(text: str, seed=0, max_outputs=1, lowercase=False):
+
+    acronyms_file_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "../../../resources/acronyms.tsv"
+    )
     # print(acronyms_file_path)
     sep = "\t"
-    encoding = "utf-8"
 
     # Load acronyms from file
     temp_acronyms = {}
@@ -46,9 +53,4 @@ def replace_acronyms(text:str, seed=0, max_outputs=1,lowercase=False):
 
     # return [transformation(text, lowercase, acronyms)]
 
-    return {"text_replace_acronyms":transformation(text, lowercase, acronyms)}
-
-
-# sentence = "I studied at New York University and Massachusetts Institute of Technology."
-# perturbed = replace_acronyms(text=sentence)
-# print(perturbed)
+    return {"text_replace_acronyms": transformation(text, lowercase, acronyms)}

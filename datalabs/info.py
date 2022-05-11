@@ -1,5 +1,6 @@
 # coding=utf-8
-# Copyright 2020 The HuggingFace Datasets Authors and the TensorFlow Datasets Authors, DataLab Authors.
+# Copyright 2020 The HuggingFace Datasets Authors and the TensorFlow Datasets
+# Authors, DataLab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,39 +32,28 @@ processed the dataset as well:
 
 import copy
 import dataclasses
+from dataclasses import asdict, dataclass, field
 import json
 import os
 import re
-import requests
+from typing import Any, List, Optional, Union
+
 import pymongo
-from dataclasses import asdict, dataclass, field
-from typing import List, Optional, Union, Any
 
-from datalabs.tasks.text_classification import TextClassification
-from datalabs.tasks.text_classification import TopicClassification
-from datalabs.tasks.sequence_labeling import SequenceLabeling
-from datalabs.tasks.text_matching import TextMatching
-from datalabs.tasks.span_text_classification import SpanTextClassification
+from datalabs import config
+from datalabs.features import ClassLabel, Features, Value
 from datalabs.prompt import Prompt
-import hashlib  # for mdb ids of prompts
-
-from . import config
-from .features import Features, Value, ClassLabel
-from .splits import SplitDict
-from .tasks import TaskTemplate, task_template_from_dict
-from .utils import Version
-from .utils.logging import get_logger
-from .utils.py_utils import unique_values
-
+from datalabs.splits import SplitDict
+from datalabs.tasks import task_template_from_dict, TaskTemplate
+from datalabs.tasks.sequence_labeling import SequenceLabeling
+from datalabs.tasks.span_text_classification import SpanTextClassification
+from datalabs.tasks.text_classification import TextClassification, TopicClassification
+from datalabs.tasks.text_matching import TextMatching
+from datalabs.utils import Version
+from datalabs.utils.logging import get_logger
+from datalabs.utils.py_utils import unique_values
 
 logger = get_logger(__name__)
-
-
-
-
-
-
-
 
 
 @dataclass
@@ -99,7 +89,9 @@ class PostProcessedInfo:
     @classmethod
     def from_dict(cls, post_processed_info_dict: dict) -> "PostProcessedInfo":
         field_names = set(f.name for f in dataclasses.fields(cls))
-        return cls(**{k: v for k, v in post_processed_info_dict.items() if k in field_names})
+        return cls(
+            **{k: v for k, v in post_processed_info_dict.items() if k in field_names}
+        )
 
 
 @dataclass
@@ -194,8 +186,10 @@ class Popularity:
 #     supported_plm_types: List[str] = None
 #     signal_type: List[str] = None
 #     results: List[PromptResult] = None
-#     # features:Optional[Features] = None # {"length":Value("int64"), "shape":Value("string"), "skeleton": Value("string")}
-#     features: Optional[dict] = None  # {"length":5, "shape":"prefix", "skeleton": "what_about"}
+#     # features:Optional[Features] = None # {"length":Value("int64"),
+#     "shape":Value("string"), "skeleton": Value("string")}
+#     features: Optional[dict] = None  # {"length":5, "shape":"prefix",
+#     "skeleton": "what_about"}
 #     reference: str = None
 #     contributor: str = "Datalab"
 #
@@ -203,19 +197,18 @@ class Popularity:
 #         # Convert back to the correct classes when we reload from dict
 #         if self.template is not None and self.answers is not None:
 #             if isinstance(self.answers, dict):
-#                 self.id = hashlib.md5((self.template + json.dumps(self.answers)).encode()).hexdigest()
+#                 self.id = hashlib.md5((self.template +
+#                 json.dumps(self.answers)).encode()).hexdigest()
 #             if isinstance(self.answers, str):
-#                 self.id = hashlib.md5((self.template + self.answers).encode()).hexdigest()
+#                 self.id = hashlib.md5((self.template + self.answers).
+#                 encode()).hexdigest()
 #             else:
 #                 self.id = hashlib.md5(self.template.encode()).hexdigest()
 
 
-
-
-
 class MongoDBClientCore:
     def __init__(self, cluster: str):
-        assert (re.match(r'cluster[01]', cluster))
+        assert re.match(r"cluster[01]", cluster)
 
         self.cluster = cluster
         self.url = ""
@@ -244,12 +237,14 @@ class MongoDBClient:
         if not confirm:
             return
         target = self.core.client[database]
-        if collection != None:
+        if collection is not None:
             target = target[collection]
         target.drop()
 
     def query_metadata(self, dataset_name: str):
-        return self.__query("metadata", "dataset_metadata", {"dataset_name": dataset_name})
+        return self.__query(
+            "metadata", "dataset_metadata", {"dataset_name": dataset_name}
+        )
 
     def insert_metadata(self, metadata: dict):
         self.__insert("metadata", "dev_dataset_metadata", metadata)
@@ -271,17 +266,32 @@ class DatasetInfo:
         description (str): A description of the dataset.
         citation (str): A BibTeX citation of the dataset.
         homepage (str): A URL to the official homepage for the dataset.
-        license (str): The dataset's license. It can be the name of the license or a paragraph containing the terms of the license.
-        features (Features, optional): The features used to specify the dataset's column types.
-        post_processed (PostProcessedInfo, optional): Information regarding the resources of a possible post-processing of a dataset. For example, it can contain the information of an index.
-        supervised_keys (SupervisedKeysData, optional): Specifies the input feature and the label for supervised learning if applicable for the dataset (legacy from TFDS).
-        builder_name (str, optional): The name of the :class:`GeneratorBasedBuilder` subclass used to create the dataset. Usually matched to the corresponding script name. It is also the snake_case version of the dataset builder class name.
-        config_name (str, optional): The name of the configuration derived from :class:`BuilderConfig`
+        license (str): The dataset's license. It can be the name of the
+        license or a paragraph containing the terms of the license.
+        features (Features, optional): The features used to specify the
+        dataset's column types.
+        post_processed (PostProcessedInfo, optional): Information regarding
+         the resources of a possible post-processing of a dataset. For example,
+          it can contain the information of an index.
+        supervised_keys (SupervisedKeysData, optional): Specifies the input
+         feature and the label for supervised learning if applicable for the
+          dataset (legacy from TFDS).
+        builder_name (str, optional): The name of the :class:`GeneratorBasedBuilder`
+         subclass used to create the dataset. Usually matched to the corresponding
+         script name. It is also the snake_case version of the dataset builder class
+          name.
+        config_name (str, optional): The name of the configuration derived from
+        :class:`BuilderConfig`
         version (str or Version, optional): The version of the dataset.
         splits (dict, optional): The mapping between split name and metadata.
-        download_checksums (dict, optional): The mapping between the URL to download the dataset's checksums and corresponding metadata.
-        task_templates (List[TaskTemplate], optional): The task templates to prepare the dataset for during training and evaluation. Each template casts the dataset's :class:`Features` to standardized column names and types as detailed in :py:mod:`datalab.tasks`.
-        **config_kwargs: Keyword arguments to be passed to the :class:`BuilderConfig` and used in the :class:`DatasetBuilder`.
+        download_checksums (dict, optional): The mapping between the URL to
+         download the dataset's checksums and corresponding metadata.
+        task_templates (List[TaskTemplate], optional): The task templates
+         to prepare the dataset for during training and evaluation. Each template
+          casts the dataset's :class:`Features` to standardized column names and
+          types as detailed in :py:mod:`datalab.tasks`.
+        **config_kwargs: Keyword arguments to be passed to the :
+        class:`BuilderConfig` and used in the :class:`DatasetBuilder`.
     """
 
     # Set in the dataset scripts
@@ -332,8 +342,12 @@ class DatasetInfo:
     # other type
     languages: Optional[List] = field(default_factory=list)
     model_ids: Optional[list] = field(default_factory=list)
-    speaker_demographic: Optional[SpeakerDemographic] = field(default_factory=SpeakerDemographic)
-    annotator_demographic: Optional[AnnotatorDemographic] = field(default_factory=AnnotatorDemographic)
+    speaker_demographic: Optional[SpeakerDemographic] = field(
+        default_factory=SpeakerDemographic
+    )
+    annotator_demographic: Optional[AnnotatorDemographic] = field(
+        default_factory=AnnotatorDemographic
+    )
     speech_situation: Optional[SpeechSituation] = field(default_factory=SpeechSituation)
     size: Optional[SizeInfo] = field(default_factory=SizeInfo)
     popularity: Optional[Popularity] = field(default_factory=Popularity)
@@ -342,7 +356,9 @@ class DatasetInfo:
         # Convert back to the correct classes when we reload from dict
         if self.features is not None and not isinstance(self.features, Features):
             self.features = Features.from_dict(self.features)
-        if self.post_processed is not None and not isinstance(self.post_processed, PostProcessedInfo):
+        if self.post_processed is not None and not isinstance(
+            self.post_processed, PostProcessedInfo
+        ):
             self.post_processed = PostProcessedInfo.from_dict(self.post_processed)
         if self.version is not None and not isinstance(self.version, Version):
             if isinstance(self.version, str):
@@ -351,7 +367,9 @@ class DatasetInfo:
                 self.version = Version.from_dict(self.version)
         if self.splits is not None and not isinstance(self.splits, SplitDict):
             self.splits = SplitDict.from_split_dict(self.splits)
-        if self.supervised_keys is not None and not isinstance(self.supervised_keys, SupervisedKeysData):
+        if self.supervised_keys is not None and not isinstance(
+            self.supervised_keys, SupervisedKeysData
+        ):
             if isinstance(self.supervised_keys, (tuple, list)):
                 self.supervised_keys = SupervisedKeysData(*self.supervised_keys)
             else:
@@ -361,10 +379,14 @@ class DatasetInfo:
         if self.task_templates is not None:
             if isinstance(self.task_templates, (list, tuple)):
                 templates = [
-                    template if isinstance(template, TaskTemplate) else task_template_from_dict(template)
+                    template
+                    if isinstance(template, TaskTemplate)
+                    else task_template_from_dict(template)
                     for template in self.task_templates
                 ]
-                self.task_templates = [template for template in templates if template is not None]
+                self.task_templates = [
+                    template for template in templates if template is not None
+                ]
             elif isinstance(self.task_templates, TaskTemplate):
                 self.task_templates = [self.task_templates]
             else:
@@ -384,7 +406,7 @@ class DatasetInfo:
                             text_column=template.text_column,
                             label_column=template.label_column,
                             task=template.task,
-                            labels=labels
+                            labels=labels,
                         )
                     if isinstance(template, TopicClassification):
                         labels = None
@@ -406,7 +428,7 @@ class DatasetInfo:
                             text2_column=template.text2_column,
                             label_column=template.label_column,
                             task=template.task,
-                            labels=labels
+                            labels=labels,
                         )
                     if isinstance(template, SpanTextClassification):
                         labels = None
@@ -417,16 +439,19 @@ class DatasetInfo:
                             text_column=template.text_column,
                             label_column=template.label_column,
                             task=template.task,
-                            labels=labels
+                            labels=labels,
                         )
                     if isinstance(template, SequenceLabeling):
                         labels = None
                         # print(self.features)
                         # print(self.features[template.tags_column].feature)
-                        if isinstance(self.features[template.tags_column].feature, ClassLabel):
+                        if isinstance(
+                            self.features[template.tags_column].feature, ClassLabel
+                        ):
                             labels = self.features[template.tags_column].feature.names
                         self.task_templates[idx] = SequenceLabeling(
-                            tokens_column=template.tokens_column, tags_column=template.tags_column,
+                            tokens_column=template.tokens_column,
+                            tags_column=template.tags_column,
                             task=template.task,
                             labels=labels,
                         )
@@ -447,7 +472,7 @@ class DatasetInfo:
             self._fill_db_attr(metadata)
 
     def _infer_attr(self):
-        if self.dataset_name == None:
+        if self.dataset_name is None:
             self.dataset_name = self.builder_name
 
     def _fill_db_attr(self, metadata):
@@ -488,7 +513,9 @@ class DatasetInfo:
 
         Also save the license separately in LICENCE.
         """
-        with open(os.path.join(dataset_info_dir, config.DATASET_INFO_FILENAME), "wb") as f:
+        with open(
+            os.path.join(dataset_info_dir, config.DATASET_INFO_FILENAME), "wb"
+        ) as f:
             self._dump_info(f)
 
         with open(os.path.join(dataset_info_dir, config.LICENSE_FILENAME), "wb") as f:
@@ -498,17 +525,23 @@ class DatasetInfo:
         return asdict(self)
 
     def _dump_info(self, file):
-        """Dump info in `file` file-like object open in bytes mode (to support remote files)"""
+        """Dump info in `file` file-like object open in bytes mode (to support
+        remote files)"""
         file.write(json.dumps(asdict(self)).encode("utf-8"))
 
     def _dump_license(self, file):
-        """Dump license in `file` file-like object open in bytes mode (to support remote files)"""
+        """Dump license in `file` file-like object open in bytes mode (to
+        support remote files)"""
         file.write(self.license.encode("utf-8"))
 
     @classmethod
     def from_merge(cls, dataset_infos: List["DatasetInfo"]):
-        dataset_infos = [dset_info.copy() for dset_info in dataset_infos if dset_info is not None]
-        description = "\n\n".join(unique_values(info.description for info in dataset_infos))
+        dataset_infos = [
+            dset_info.copy() for dset_info in dataset_infos if dset_info is not None
+        ]
+        description = "\n\n".join(
+            unique_values(info.description for info in dataset_infos)
+        )
         citation = "\n\n".join(unique_values(info.citation for info in dataset_infos))
         homepage = "\n\n".join(unique_values(info.homepage for info in dataset_infos))
         license = "\n\n".join(unique_values(info.license for info in dataset_infos))
@@ -517,9 +550,15 @@ class DatasetInfo:
         task_templates = None
 
         # Find common task templates across all dataset infos
-        all_task_templates = [info.task_templates for info in dataset_infos if info.task_templates is not None]
+        all_task_templates = [
+            info.task_templates
+            for info in dataset_infos
+            if info.task_templates is not None
+        ]
         if len(all_task_templates) > 1:
-            task_templates = list(set(all_task_templates[0]).intersection(*all_task_templates[1:]))
+            task_templates = list(
+                set(all_task_templates[0]).intersection(*all_task_templates[1:])
+            )
         elif len(all_task_templates):
             task_templates = list(set(all_task_templates[0]))
         # If no common task templates found, replace empty list with None
@@ -550,9 +589,15 @@ class DatasetInfo:
         """
         logger.info(f"Loading Dataset info from {dataset_info_dir}")
         if not dataset_info_dir:
-            raise ValueError("Calling DatasetInfo.from_directory() with undefined dataset_info_dir.")
+            raise ValueError(
+                "Calling DatasetInfo.from_directory() with undefined dataset_info_dir."
+            )
 
-        with open(os.path.join(dataset_info_dir, config.DATASET_INFO_FILENAME), "r", encoding="utf-8") as f:
+        with open(
+            os.path.join(dataset_info_dir, config.DATASET_INFO_FILENAME),
+            "r",
+            encoding="utf-8",
+        ) as f:
             dataset_info_dict = json.load(f)
         return cls.from_dict(dataset_info_dict)
 
@@ -572,7 +617,12 @@ class DatasetInfo:
         )
 
     def copy(self) -> "DatasetInfo":
-        protect_list = ["download_size", "post_processing_size", "dataset_size", "size_in_bytes"]
+        protect_list = [
+            "download_size",
+            "post_processing_size",
+            "dataset_size",
+            "size_in_bytes",
+        ]
         argv = filter(lambda item: item[0] not in protect_list, self.__dict__.items())
         return self.__class__(**{k: copy.deepcopy(v) for k, v in argv})
 
@@ -580,20 +630,35 @@ class DatasetInfo:
 class DatasetInfosDict(dict):
     def write_to_directory(self, dataset_infos_dir, overwrite=False):
         total_dataset_infos = {}
-        dataset_infos_path = os.path.join(dataset_infos_dir, config.DATASETDICT_INFOS_FILENAME)
+        dataset_infos_path = os.path.join(
+            dataset_infos_dir, config.DATASETDICT_INFOS_FILENAME
+        )
         if os.path.exists(dataset_infos_path) and not overwrite:
-            logger.info(f"Dataset Infos already exists in {dataset_infos_dir}. Completing it with new infos.")
+            logger.info(
+                f"Dataset Infos already exists in {dataset_infos_dir}. Completing"
+                f" it with new infos."
+            )
             total_dataset_infos = self.from_directory(dataset_infos_dir)
         else:
             logger.info(f"Writing new Dataset Infos in {dataset_infos_dir}")
         total_dataset_infos.update(self)
         with open(dataset_infos_path, "w", encoding="utf-8") as f:
-            json.dump({config_name: asdict(dset_info) for config_name, dset_info in total_dataset_infos.items()}, f)
+            json.dump(
+                {
+                    config_name: asdict(dset_info)
+                    for config_name, dset_info in total_dataset_infos.items()
+                },
+                f,
+            )
 
     @classmethod
     def from_directory(cls, dataset_infos_dir):
         logger.info(f"Loading Dataset Infos from {dataset_infos_dir}")
-        with open(os.path.join(dataset_infos_dir, config.DATASETDICT_INFOS_FILENAME), "r", encoding="utf-8") as f:
+        with open(
+            os.path.join(dataset_infos_dir, config.DATASETDICT_INFOS_FILENAME),
+            "r",
+            encoding="utf-8",
+        ) as f:
             dataset_infos_dict = {
                 config_name: DatasetInfo.from_dict(dataset_info_dict)
                 for config_name, dataset_info_dict in json.load(f).items()
@@ -630,12 +695,15 @@ class MetricInfo:
 
     def __post_init__(self):
         if "predictions" not in self.features:
-            raise ValueError("Need to have at least a 'predictions' field in 'features'.")
+            raise ValueError(
+                "Need to have at least a 'predictions' field in 'features'."
+            )
         if self.format is not None:
             for key, value in self.features.items():
                 if not isinstance(value, Value):
                     raise ValueError(
-                        f"When using 'numpy' format, all features should be a `datalab.Value` feature. "
+                        f"When using 'numpy' format, all features should be"
+                        f" a `datalab.Value` feature. "
                         f"Here {key} is an instance of {value.__class__.__name__}"
                     )
 
@@ -643,10 +711,18 @@ class MetricInfo:
         """Write `MetricInfo` as JSON to `metric_info_dir`.
         Also save the license separately in LICENCE.
         """
-        with open(os.path.join(metric_info_dir, config.METRIC_INFO_FILENAME), "w", encoding="utf-8") as f:
+        with open(
+            os.path.join(metric_info_dir, config.METRIC_INFO_FILENAME),
+            "w",
+            encoding="utf-8",
+        ) as f:
             json.dump(asdict(self), f)
 
-        with open(os.path.join(metric_info_dir, config.LICENSE_FILENAME), "w", encoding="utf-8") as f:
+        with open(
+            os.path.join(metric_info_dir, config.LICENSE_FILENAME),
+            "w",
+            encoding="utf-8",
+        ) as f:
             f.write(self.license)
 
     @classmethod
@@ -659,9 +735,15 @@ class MetricInfo:
         """
         logger.info(f"Loading Metric info from {metric_info_dir}")
         if not metric_info_dir:
-            raise ValueError("Calling MetricInfo.from_directory() with undefined metric_info_dir.")
+            raise ValueError(
+                "Calling MetricInfo.from_directory() with undefined metric_info_dir."
+            )
 
-        with open(os.path.join(metric_info_dir, config.METRIC_INFO_FILENAME), "r", encoding="utf-8") as f:
+        with open(
+            os.path.join(metric_info_dir, config.METRIC_INFO_FILENAME),
+            "r",
+            encoding="utf-8",
+        ) as f:
             metric_info_dict = json.load(f)
         return cls.from_dict(metric_info_dict)
 
@@ -671,10 +753,10 @@ class MetricInfo:
         return cls(**{k: v for k, v in metric_info_dict.items() if k in field_names})
 
 
-
 """
 The following is introduced for explainaboard
 """
+
 
 @dataclass
 class Table:
@@ -783,7 +865,8 @@ class SysOutputInfo:
     def from_directory(cls, sys_output_info_dir: str) -> "SysOutputInfo":
         """Create SysOutputInfo from the JSON file in `sys_output_info_dir`.
         Args:
-            sys_output_info_dir (`str`): The directory containing the metadata file. This
+            sys_output_info_dir (`str`): The directory containing the metadata
+            file. This
                 should be the root directory of a specific dataset version.
         """
         logger.info("Loading Dataset info from %s", sys_output_info_dir)
@@ -803,7 +886,8 @@ class SysOutputInfo:
     # @classmethod
     # def from_dict(cls, task_name: str, sys_output_info_dict: dict) -> "SysOutputInfo":
     #     field_names = set(f.name for f in dataclasses.fields(cls))
-    #     return cls(task_name, **{k: v for k, v in sys_output_info_dict.items() if k in field_names})
+    #     return cls(task_name, **{k: v for k, v in sys_output_info_dict.items()
+    #     if k in field_names})
 
     @classmethod
     def from_dict(cls, sys_output_info_dict: dict) -> "SysOutputInfo":
@@ -824,4 +908,3 @@ class SysOutputInfo:
 
     def copy(self) -> "SysOutputInfo":
         return self.__class__(**{k: copy.deepcopy(v) for k, v in self.__dict__.items()})
-

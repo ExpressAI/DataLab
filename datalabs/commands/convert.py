@@ -11,16 +11,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from argparse import ArgumentParser, Namespace
 import os
 import re
 import shutil
-from argparse import ArgumentParser, Namespace
 
 from datalabs.commands import BaseDatasetsCLICommand
 from datalabs.utils.logging import get_logger
 
-
-HIGHLIGHT_MESSAGE_PRE = """<<<<<<< This should probably be modified because it mentions: """
+HIGHLIGHT_MESSAGE_PRE = (
+    """<<<<<<< This should probably be modified because it mentions: """
+)
 
 HIGHLIGHT_MESSAGE_POST = """=======
 >>>>>>>
@@ -45,7 +46,10 @@ TO_CONVERT = [
     (r"tfds\.features\.Text\(", r"datalab.Value('string'),"),
     (r"features\s*=\s*tfds.features.FeaturesDict\(", r"features=datalab.Features("),
     (r"tfds\.features\.FeaturesDict\(", r"dict("),
-    (r"The TensorFlow Datasets Authors", r"The TensorFlow Datasets Authors and the HuggingFace Datasets Authors"),
+    (
+        r"The TensorFlow Datasets Authors",
+        r"The TensorFlow Datasets Authors and the HuggingFace Datasets Authors",
+    ),
     (r"tfds\.", r"datalab."),
     (r"dl_manager\.manual_dir", r"self.config.data_dir"),
     (r"self\.builder_config", r"self.config"),
@@ -72,16 +76,21 @@ class ConvertCommand(BaseDatasetsCLICommand):
         """
         train_parser = parser.add_parser(
             "convert",
-            help="Convert a TensorFlow Datasets dataset to a HuggingFace Datasets dataset.",
+            help="Convert a TensorFlow Datasets dataset to a HuggingFace"
+            " Datasets dataset.",
         )
         train_parser.add_argument(
             "--tfds_path",
             type=str,
             required=True,
-            help="Path to a TensorFlow Datasets folder to convert or a single tfds file to convert.",
+            help="Path to a TensorFlow Datasets folder to convert or a single"
+            " tfds file to convert.",
         )
         train_parser.add_argument(
-            "--datasets_directory", type=str, required=True, help="Path to the HuggingFace Datasets folder."
+            "--datasets_directory",
+            type=str,
+            required=True,
+            help="Path to the HuggingFace Datasets folder.",
         )
         train_parser.set_defaults(func=convert_command_factory)
 
@@ -97,11 +106,15 @@ class ConvertCommand(BaseDatasetsCLICommand):
         elif os.path.isfile(self._tfds_path):
             abs_tfds_path = os.path.dirname(self._tfds_path)
         else:
-            raise ValueError("--tfds_path is neither a directory nor a file. Please check path.")
+            raise ValueError(
+                "--tfds_path is neither a directory nor a file. Please check path."
+            )
 
         abs_datasets_path = os.path.abspath(self._datasets_directory)
 
-        self._logger.info(f"Converting datalab from {abs_tfds_path} to {abs_datasets_path}")
+        self._logger.info(
+            f"Converting datalab from {abs_tfds_path} to {abs_datasets_path}"
+        )
 
         utils_files = []
         with_manual_update = []
@@ -117,7 +130,12 @@ class ConvertCommand(BaseDatasetsCLICommand):
             input_file = os.path.join(abs_tfds_path, f_name)
             output_file = os.path.join(abs_datasets_path, f_name)
 
-            if not os.path.isfile(input_file) or "__init__" in f_name or "_test" in f_name or ".py" not in f_name:
+            if (
+                not os.path.isfile(input_file)
+                or "__init__" in f_name
+                or "_test" in f_name
+                or ".py" not in f_name
+            ):
                 self._logger.info("Skipping file")
                 continue
 
@@ -159,18 +177,28 @@ class ConvertCommand(BaseDatasetsCLICommand):
                     for pattern, replacement in TO_CONVERT:
                         out_line = re.sub(pattern, replacement, out_line)
 
-                # Take care of saving utilities (to later move them together with main script)
+                # Take care of saving utilities (to later move them together
+                # with main script)
                 if "tensorflow_datasets" in out_line:
-                    match = re.match(r"from\stensorflow_datasets.*import\s([^\.\r\n]+)", out_line)
-                    tfds_imports.extend(imp.strip() for imp in match.group(1).split(","))
+                    match = re.match(
+                        r"from\stensorflow_datasets.*import\s([^\.\r\n]+)", out_line
+                    )
+                    tfds_imports.extend(
+                        imp.strip() for imp in match.group(1).split(",")
+                    )
                     out_line = "from . import " + match.group(1)
 
                 # Check we have not forget anything
                 assert (
-                    "tf." not in out_line and "tfds." not in out_line and "tensorflow_datasets" not in out_line
+                    "tf." not in out_line
+                    and "tfds." not in out_line
+                    and "tensorflow_datasets" not in out_line
                 ), f"Error converting {out_line.strip()}"
 
-                if "GeneratorBasedBuilder" in out_line or "BeamBasedBuilder" in out_line:
+                if (
+                    "GeneratorBasedBuilder" in out_line
+                    or "BeamBasedBuilder" in out_line
+                ):
                     is_builder = True
                 out_lines.append(out_line)
 
@@ -200,10 +228,14 @@ class ConvertCommand(BaseDatasetsCLICommand):
                 self._logger.info(f"Moving {dest_folder} to {utils_file}")
                 shutil.copy(utils_file, dest_folder)
             except KeyError:
-                self._logger.error(f"Cannot find destination folder for {utils_file}. Please copy manually.")
+                self._logger.error(
+                    f"Cannot find destination folder for {utils_file}. Please"
+                    f" copy manually."
+                )
 
         if with_manual_update:
             for file_path in with_manual_update:
                 self._logger.warning(
-                    f"You need to manually update file {file_path} to remove configurations using 'TextEncoderConfig'."
+                    f"You need to manually update file {file_path} to remove"
+                    f" configurations using 'TextEncoderConfig'."
                 )

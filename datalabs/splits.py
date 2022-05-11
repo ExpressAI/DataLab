@@ -1,5 +1,6 @@
 # coding=utf-8
-# Copyright 2020 The HuggingFace Datasets Authors and the TensorFlow Datasets Authors, DataLab Authors.
+# Copyright 2020 The HuggingFace Datasets Authors and
+# the TensorFlow Datasets Authors, DataLab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,13 +20,13 @@
 
 import abc
 import collections
-import re
 from dataclasses import dataclass, field
+import re
 from typing import Dict, List, Optional, Union
 
-from .arrow_reader import FileInstructions, make_file_instructions
-from .naming import _split_re
-from .utils.py_utils import NonMutableDict
+from datalabs.arrow_reader import FileInstructions, make_file_instructions
+from datalabs.naming import _split_re
+from datalabs.utils.py_utils import NonMutableDict
 
 
 @dataclass
@@ -75,7 +76,8 @@ class SplitBase(metaclass=abc.ABCMeta):
     """Abstract base class for Split compositionality.
 
     See the
-    [guide on splits](https://github.com/huggingface/datasets/blob/master/docs/source/splits.rst)
+    [guide on splits](https://github.com/huggingface/datasets/
+    blob/master/docs/source/splits.rst)
     for more information.
 
     There are three parts to the composition:
@@ -120,7 +122,9 @@ class SplitBase(metaclass=abc.ABCMeta):
         """Equality: datalab.Split.TRAIN == 'train'."""
         if isinstance(other, (NamedSplit, str)):
             return False
-        raise NotImplementedError("Equality is not implemented between merged/sub splits.")
+        raise NotImplementedError(
+            "Equality is not implemented between merged/sub splits."
+        )
 
     def __ne__(self, other):
         """InEquality: datalab.Split.TRAIN != 'test'."""
@@ -130,7 +134,9 @@ class SplitBase(metaclass=abc.ABCMeta):
         """Merging: datalab.Split.TRAIN + datalab.Split.TEST."""
         return _SplitMerged(self, other)
 
-    def subsplit(self, arg=None, k=None, percent=None, weighted=None):  # pylint: disable=redefined-outer-name
+    def subsplit(
+        self, arg=None, k=None, percent=None, weighted=None
+    ):  # pylint: disable=redefined-outer-name
         """Divides this split into subsplits.
 
         There are 3 ways to define subsplits, which correspond to the 3
@@ -199,7 +205,9 @@ class SplitBase(metaclass=abc.ABCMeta):
 
         def assert_slices_coverage(slices):
             # Ensure that the expended slices cover all percents.
-            assert sum((list(range(*s.indices(100))) for s in slices), []) == list(range(100))
+            assert sum((list(range(*s.indices(100))) for s in slices), []) == list(
+                range(100)
+            )
 
         if k:
             if not 0 < k <= 100:
@@ -244,7 +252,9 @@ class SplitBase(metaclass=abc.ABCMeta):
 class PercentSliceMeta(type):
     def __getitem__(cls, slice_value):
         if not isinstance(slice_value, slice):
-            raise ValueError(f"datalab.percent should only be called with slice, not {slice_value}")
+            raise ValueError(
+                f"datalab.percent should only be called with slice, not {slice_value}"
+            )
         return slice_value
 
 
@@ -253,7 +263,8 @@ class PercentSlice(metaclass=PercentSliceMeta):
     """Syntactic sugar for defining slice subsplits: `datalab.percent[75:-5]`.
 
     See the
-    [guide on splits](https://github.com/huggingface/datasets/blob/master/docs/source/splits.rst)
+    [guide on splits](https://github.com/huggingface/datasets/blob/
+    master/docs/source/splits.rst)
     for more information.
     """
     # pylint: enable=line-too-long
@@ -307,7 +318,8 @@ class NamedSplit(SplitBase):
     Examples:
         Each descriptor can be composed with other using addition or slice. Ex::
 
-            split = datalab.Split.TRAIN.subsplit(datalab.percent[0:25]) + datalab.Split.TEST
+            split = datalab.Split.TRAIN.subsplit(datalab.percent[0:25])
+            + datalab.Split.TEST
 
         The resulting split will correspond to 25% of the train split merged with
         100% of the test split.
@@ -328,23 +340,30 @@ class NamedSplit(SplitBase):
                     datalab.Split.TRAIN.subsplit(datalab.percent[:25]) +
                     datalab.Split.TEST.subsplit(datalab.percent[:50])
             )
-            split = (datalab.Split.TRAIN + datalab.Split.TEST).subsplit(datalab.percent[:50])
+            split = (datalab.Split.TRAIN + datalab.Split.TEST).
+            subsplit(datalab.percent[:50])
 
 
         But not::
 
             train = datalab.Split.TRAIN
             test = datalab.Split.TEST
-            split = train.subsplit(datalab.percent[:25]).subsplit(datalab.percent[:25])
-            split = (train.subsplit(datalab.percent[:25]) + test).subsplit(datalab.percent[:50])
+            split = train.subsplit(datalab.percent[:25]).subsplit
+            (datalab.percent[:25])
+            split = (train.subsplit(datalab.percent[:25]) + test).
+            subsplit(datalab.percent[:50])
     """
 
     def __init__(self, name):
         self._name = name
-        split_names_from_instruction = [split_instruction.split("[")[0] for split_instruction in name.split("+")]
+        split_names_from_instruction = [
+            split_instruction.split("[")[0] for split_instruction in name.split("+")
+        ]
         for split_name in split_names_from_instruction:
             if not re.match(_split_re, split_name):
-                raise ValueError(f"Split name should match '{_split_re}' but got '{split_name}'.")
+                raise ValueError(
+                    f"Split name should match '{_split_re}' but got '{split_name}'."
+                )
 
     def __str__(self):
         return self._name
@@ -442,7 +461,10 @@ class SplitReadInstruction:
     """
 
     def __init__(self, split_info=None):
-        self._splits = NonMutableDict(error_msg="Overlap between splits. Split {key} has been added with " "itself.")
+        self._splits = NonMutableDict(
+            error_msg="Overlap between splits. Split {key} has been added with "
+            "itself."
+        )
 
         if split_info:
             self.add(SlicedSplitInfo(split_info=split_info, slice_value=None))
@@ -460,8 +482,12 @@ class SplitReadInstruction:
         # TODO(epot): If a split is already added but there is no overlap between
         # the slices, should merge the slices (ex: [:10] + [80:])
         split_instruction = SplitReadInstruction()
-        split_instruction._splits.update(self._splits)  # pylint: disable=protected-access
-        split_instruction._splits.update(other._splits)  # pylint: disable=protected-access
+        split_instruction._splits.update(
+            self._splits
+        )  # pylint: disable=protected-access
+        split_instruction._splits.update(
+            other._splits
+        )  # pylint: disable=protected-access
         return split_instruction
 
     def __getitem__(self, slice_value):
@@ -470,7 +496,10 @@ class SplitReadInstruction:
         split_instruction = SplitReadInstruction()
         for v in self._splits.values():
             if v.slice_value is not None:
-                raise ValueError(f"Trying to slice Split {v.split_info.name} which has already been sliced")
+                raise ValueError(
+                    f"Trying to slice Split {v.split_info.name} which has"
+                    f" already been sliced"
+                )
             v = v._asdict()
             v["slice_value"] = slice_value
             split_instruction.add(SlicedSplitInfo(**v))
@@ -502,7 +531,9 @@ class SplitDict(dict):
 
     def __setitem__(self, key: Union[SplitBase, str], value: SplitInfo):
         if key != value.name:
-            raise ValueError(f"Cannot add elem. (key mismatch: '{key}' != '{value.name}')")
+            raise ValueError(
+                f"Cannot add elem. (key mismatch: '{key}' != '{value.name}')"
+            )
         if key in self:
             raise ValueError(f"Split {key} already present")
         super(SplitDict, self).__setitem__(key, value)
@@ -520,7 +551,9 @@ class SplitDict(dict):
         return sum(s.num_examples for s in self.values())
 
     @classmethod
-    def from_split_dict(cls, split_infos: Union[List, Dict], dataset_name: Optional[str] = None):
+    def from_split_dict(
+        cls, split_infos: Union[List, Dict], dataset_name: Optional[str] = None
+    ):
         """Returns a new SplitDict initialized from a Dict or List of `split_infos`."""
         if isinstance(split_infos, dict):
             split_infos = list(split_infos.values())
@@ -558,7 +591,8 @@ class SplitGenerator:
     Args:
         name (str): Name of the Split for which the generator will
             create the examples.
-        **gen_kwargs: Keyword arguments to forward to the :meth:`DatasetBuilder._generate_examples` method
+        **gen_kwargs: Keyword arguments to forward to the :meth:
+        `DatasetBuilder._generate_examples` method
             of the builder.
     """
 

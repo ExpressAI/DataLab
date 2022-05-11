@@ -18,19 +18,25 @@ from pathos.multiprocessing import ProcessPool as Pool
 from tqdm.auto import tqdm
 
 
-def _parallel(ordered: bool, function: Callable, *iterables: Iterable, **kwargs: Any) -> Generator:
+def _parallel(
+    ordered: bool, function: Callable, *iterables: Iterable, **kwargs: Any
+) -> Generator:
     """Returns a generator for a parallel map with a progress bar.
     Arguments:
-        ordered(bool): True for an ordered map, false for an unordered map.
-        function(Callable): The function to apply to each element of the given Iterables.
-        iterables(Tuple[Iterable]): One or more Iterables containing the data to be mapped.
+        ordered(bool): True for an ordered map, false
+        for an unordered map.
+        function(Callable): The function to apply
+        to each element of the given Iterables.
+        iterables(Tuple[Iterable]): One or more
+        Iterables containing the data to be mapped.
     Returns:
-        A generator which will apply the function to each element of the given Iterables
+        A generator which will apply the function
+        to each element of the given Iterables
         in parallel in order with a progress bar.
     """
 
     # Extract num_cpus
-    num_cpus = kwargs.pop('num_cpus', None)
+    num_cpus = kwargs.pop("num_cpus", None)
 
     # Determine num_cpus
     if num_cpus is None:
@@ -42,7 +48,7 @@ def _parallel(ordered: bool, function: Callable, *iterables: Iterable, **kwargs:
     length = min(len(iterable) for iterable in iterables if isinstance(iterable, Sized))
 
     # Create parallel generator
-    map_type = 'imap' if ordered else 'uimap'
+    map_type = "imap" if ordered else "uimap"
     pool = Pool(num_cpus)
     map_func = getattr(pool, map_type)
 
@@ -93,10 +99,13 @@ def p_uimap(function: Callable, *iterables: Iterable, **kwargs: Any) -> Generato
 def _sequential(function: Callable, *iterables: Iterable, **kwargs: Any) -> Generator:
     """Returns a generator for a sequential map with a progress bar.
     Arguments:
-        function(Callable): The function to apply to each element of the given Iterables.
-        iterables(Tuple[Iterable]): One or more Iterables containing the data to be mapped.
+        function(Callable): The function to apply to each
+        element of the given Iterables.
+        iterables(Tuple[Iterable]): One or more Iterables
+        containing the data to be mapped.
     Returns:
-        A generator which will apply the function to each element of the given Iterables
+        A generator which will apply the function to each
+         element of the given Iterables
         sequentially in order with a progress bar.
     """
 

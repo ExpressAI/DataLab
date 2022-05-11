@@ -1,8 +1,10 @@
 import unittest
-import math
+
+from aggregate import get_average_length
+from featurize import get_length
+
 from datalabs import load_dataset
-from featurize import *
-from aggregate import *
+
 
 class MyTestCase(unittest.TestCase):
     def test_Data_featurize(self):
@@ -16,5 +18,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(len(new_dataset_one[0].keys()), 3)
         self.assertEqual(len(new_dataset_two._stat.keys()), 1)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

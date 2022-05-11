@@ -1,10 +1,14 @@
 import itertools
+import os
 import random
 import re
-import os
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../')))
-from edit.editing import *
+
+from datalabs.operations.edit.editing import editing
+
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))
+)
 
 
 # Setting up a tuple of possible replaceable greetings and farewells
@@ -96,18 +100,24 @@ def greetings_and_farewells(text, seed=0, max_outputs=1):
 
     return output_texts
 
-@editing(name = "replace_greetings", contributor = "xl_augmenter",
-         task = "Any", description="This transformation will replace greetings (e.g. Hi, Howdy) and farewells (e.g. See you, Good night) by a similar one.")
-def replace_greetings(text:str, seed=0, max_outputs=1):
+
+@editing(
+    name="replace_greetings",
+    contributor="xl_augmenter",
+    task="Any",
+    description="This transformation will replace greetings (e.g. Hi, Howdy)"
+    " and farewells (e.g. See you, Good night) by a similar one.",
+)
+def replace_greetings(text: str, seed=0, max_outputs=1):
 
     processed_text = greetings_and_farewells(
         text=text, seed=seed, max_outputs=max_outputs
     )
     # return processed_text
-    return {"text_replace_greetings":processed_text[0]}
+    return {"text_replace_greetings": processed_text[0]}
 
 
-# sentence = "Good morning, John. I've sent a memo to your desk, let me know if you need anything else. Best regards"
+# sentence = "Good morning, John. I've sent a memo to your desk, let me know
+# if you need anything else. Best regards"
 # perturbed = replace_greetings(text=sentence)
 # print(perturbed)
-

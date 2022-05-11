@@ -1,14 +1,14 @@
 # %%
+from collections import Counter, namedtuple
+
 import nltk
-from nltk import word_tokenize, sent_tokenize
-from collections import namedtuple, Counter
+from nltk import sent_tokenize, word_tokenize
 from nltk.util import ngrams
 
-
 try:
-    nltk.data.find('tokenizers/punkt')
+    nltk.data.find("tokenizers/punkt")
 except LookupError:
-    nltk.download('punkt')
+    nltk.download("punkt")
 
 
 class SUMAttribute:
@@ -23,36 +23,32 @@ class SUMAttribute:
     * novelty
     * copy_len
     """
+
     Match = namedtuple("Match", ("summary", "text", "length"))
 
     def __call__(self, texts, summaries):
-        """ texts: a list of source documents.
-            summaries: a list of generated summaries.
-            :return: a list of dics
+        """texts: a list of source documents.
+        summaries: a list of generated summaries.
+        :return: a list of dics
         """
         out = []
         for text, summary in zip(texts, summaries):
             out.append(self.cal_attributes_each(text, summary))
         return out
 
-
     def get_schema(self):
         return {
-                "attr_density": 0.0,
-                "attr_coverage": 0.0,
-                "attr_compression": 0.0,
-                "attr_repetition": 0.0,
-                "attr_novelty": 0.0,
-                "attr_copy_len": 0.0,
-                "attr_source_len": 0.0,
-                "attr_hypothesis_len": 0.0,
-                }
-
-
+            "attr_density": 0.0,
+            "attr_coverage": 0.0,
+            "attr_compression": 0.0,
+            "attr_repetition": 0.0,
+            "attr_novelty": 0.0,
+            "attr_copy_len": 0.0,
+            "attr_source_len": 0.0,
+            "attr_hypothesis_len": 0.0,
+        }
 
     def cal_attributes_each(self, text, summary):
-
-
 
         # Normalize text
         tokenized_text = word_tokenize(text)
@@ -68,7 +64,7 @@ class SUMAttribute:
             density, coverage, compression = 0, 0, 0
         else:
             # Density
-            density = sum(o.length ** 2 for o in matches) / summary_len
+            density = sum(o.length**2 for o in matches) / summary_len
             # Coverage
             coverage = sum(o.length for o in matches) / summary_len
             # Compression
@@ -85,9 +81,16 @@ class SUMAttribute:
             copy_len = 0
         else:
             copy_len = sum(copy_lens) / len(copy_lens)
-        return {"attr_density": density, "attr_coverage": coverage, "attr_compression": compression,
-                "attr_repetition": repetition, "attr_novelty": novelty, "attr_copy_len": copy_len,
-                "attr_source_len": len(normalized_text), "attr_hypothesis_len": len(normalized_summary)}
+        return {
+            "attr_density": density,
+            "attr_coverage": coverage,
+            "attr_compression": compression,
+            "attr_repetition": repetition,
+            "attr_novelty": novelty,
+            "attr_copy_len": copy_len,
+            "attr_source_len": len(normalized_text),
+            "attr_hypothesis_len": len(normalized_summary),
+        }
 
     def get_ngrams(self, doc, n):
         doc = doc.lower()
@@ -99,7 +102,8 @@ class SUMAttribute:
         return _ngrams
 
     def cal_novelty(self, text, summary, n=2):
-        """ Proportion of segments in the summaries that haven’t appeared in source documents.
+        """Proportion of segments in the summaries that haven’t
+        appeared in source documents.
         The segments can be instantiated as n-grams.
         """
         cnt_all = 0
@@ -118,7 +122,8 @@ class SUMAttribute:
             return cnt_nov / cnt_all
 
     def cal_repetition(self, summary, n=3):
-        """ Measures the rate of repeated segments in summaries. We choose n-gram as segment unit."""
+        """Measures the rate of repeated segments in summaries.
+        We choose n-gram as segment unit."""
         cnt_all = 0
         cnt_rep = 0
         _ngrams = self.get_ngrams(summary, n=n)
@@ -150,8 +155,7 @@ class SUMAttribute:
                 if a[a_start] == b[b_start]:
                     a_end = a_start
                     b_end = b_start
-                    while a_end < len(a) and b_end < len(b) \
-                            and b[b_end] == a[a_end]:
+                    while a_end < len(a) and b_end < len(b) and b[b_end] == a[a_end]:
                         b_end += 1
                         a_end += 1
                     length = a_end - a_start
@@ -174,8 +178,16 @@ class SUMAttribute:
 # if __name__ == "__main__":
 #     sum_class = SUMAttribute()
 #     summary = [
-#         "Follow the path and impact of flooding along the Mississippi River . Find out why officials are shutting down another Japanese nuclear plant . Visit a university in Illinois where students study the circus arts . Use the Daily Discussion to help students understand today's featured news stories .",
-#         "80,000 hard partiers jam streets of Cape Town, South Africa on January 2 . 12 Icelandic bonfires dot Reykjavík and bars open a little AFTER midnight . Rio de Janeiro, Brazil, offers all-night whirlwind of beach dancing, live concerts . Vegas has Tribute-Palooza: bands imitate U2, Kiss, Elton John and others ."
+#         "Follow the path and impact of flooding along the Mississippi River .
+#         Find out why officials are shutting down another Japanese nuclear plant
+#         . Visit a university in Illinois where students study the circus arts .
+#         Use the Daily Discussion to help students understand today's featured
+#         news stories .",
+#         "80,000 hard partiers jam streets of Cape Town, South Africa on January
+#         2 . 12 Icelandic bonfires dot Reykjavík and bars open a little AFTER midnight
+#         . Rio de Janeiro, Brazil, offers all-night whirlwind of beach dancing,
+#         live concerts . Vegas has Tribute-Palooza: bands imitate U2, Kiss,
+#         Elton John and others ."
 #     ]
 #     results = sum_class(summary, summary)
 #     print(results)

@@ -18,7 +18,7 @@ import fsspec
 from fsspec import AbstractFileSystem
 from huggingface_hub.hf_api import DatasetInfo
 
-from ..utils.file_utils import get_authentication_headers_for_url, hf_hub_url
+from datalabs.utils.file_utils import get_authentication_headers_for_url, hf_hub_url
 
 
 class HfFileSystem(AbstractFileSystem):
@@ -35,7 +35,8 @@ class HfFileSystem(AbstractFileSystem):
     ):
         """
         The compressed file system can be instantiated from any compressed file.
-        It reads the contents of compressed file as a filesystem with one file inside, as if it was an archive.
+        It reads the contents of compressed file as a filesystem
+        with one file inside, as if it was an archive.
 
         The single file inside the filesystem is named after the compresssed file,
         without the compression extension at the end of the filename.
@@ -44,7 +45,8 @@ class HfFileSystem(AbstractFileSystem):
             repo_info (:obj:``DatasetInfo``, `optional`):
                 Dataset repository info from huggingface_hub.HfApi().dataset_info(...)
             token (:obj:``str``, `optional`):
-                Hugging Face token. Will default to the locally saved token if not provided.
+                Hugging Face token. Will default to the locally
+                saved token if not provided.
         """
         super().__init__(self, **kwargs)
         self.repo_info = repo_info
@@ -54,7 +56,11 @@ class HfFileSystem(AbstractFileSystem):
     def _get_dirs(self):
         if self.dir_cache is None:
             self.dir_cache = {
-                hf_file.rfilename: {"name": hf_file.rfilename, "size": 0 or None, "type": "file"}  # TODO(QL): add size
+                hf_file.rfilename: {
+                    "name": hf_file.rfilename,
+                    "size": 0 or None,
+                    "type": "file",
+                }  # TODO(QL): add size
                 for hf_file in self.repo_info.siblings
             }
 
@@ -65,7 +71,10 @@ class HfFileSystem(AbstractFileSystem):
         **kwargs,
     ):
         if not isinstance(self.repo_info, DatasetInfo):
-            raise NotImplementedError(f"Open is only implemented for dataset repositories, but got {self.repo_info}")
+            raise NotImplementedError(
+                f"Open is only implemented for dataset repositories,"
+                f" but got {self.repo_info}"
+            )
         url = hf_hub_url(self.repo_info.id, path, revision=self.repo_info.sha)
         return fsspec.open(
             url,

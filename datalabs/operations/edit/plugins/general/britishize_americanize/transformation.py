@@ -1,31 +1,43 @@
-import random
 import json
-import spacy
 import os.path
-
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../')))
-from edit.editing import *
+
+from datalabs.operations.edit.editing import editing
+
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))
+)
 
 
-@editing(name = "britishize_americanize", contributor = "xl_augmenter",
-         task = "Any", description="This transformation takes a sentence and converts it from british english to american english and vice-versa")
-def britishize_americanize(text:str):
+@editing(
+    name="britishize_americanize",
+    contributor="xl_augmenter",
+    task="Any",
+    description="This transformation takes a sentence and converts it "
+    "from british english to american english and vice-versa",
+)
+def britishize_americanize(text: str):
     """
     Parameters:
         string(str): original string
-        final_dict(dict): dictionary with all the different possible words in american and british english
+        final_dict(dict): dictionary with all the different possible words
+         in american and british english
     Returns:
         str: String after replacing the words
     """
 
     scriptpath = os.path.dirname(__file__)
-    with open(os.path.join(scriptpath, '../../../resources/american_spellings.json'), 'r') as file:
+    with open(
+        os.path.join(scriptpath, "../../../resources/american_spellings.json"), "r"
+    ) as file:
         american_spellings_dict = json.loads(file.read())
-    with open(os.path.join(scriptpath, '../../../resources/british_spellings.json'), 'r') as file:
+    with open(
+        os.path.join(scriptpath, "../../../resources/british_spellings.json"), "r"
+    ) as file:
         british_spellings_dict = json.loads(file.read())
 
-    # Creating a custom vocab dictionary consisting of totally different words for same context
+    # Creating a custom vocab dictionary consisting of totally different
+    # words for same context
     difference_british_to_american = {
         "trousers": "pants",
         "flat": "apartment",
@@ -85,19 +97,15 @@ def britishize_americanize(text:str):
     }
     # Replacing the keys with values and vice versa for the custom vocab dictionary
     # And merging both of them
-    vocab_diff = dict(
-        (v, k) for k, v in difference_british_to_american.items()
-    )
+    vocab_diff = dict((v, k) for k, v in difference_british_to_american.items())
     vocab_diff.update(difference_british_to_american)
 
     final_dict = {**american_spellings_dict, **british_spellings_dict, **vocab_diff}
 
-
     text = " ".join([final_dict.get(word, word) for word in text.split()])
 
-    return {"text_britishize_americanize":text}
+    return {"text_britishize_americanize": text}
     # return [text]
-
 
 
 # sentence = "I will turn in the homework on Friday for sure! trousers"

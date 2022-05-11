@@ -14,22 +14,22 @@
 import abc
 import dataclasses
 from dataclasses import dataclass
-from typing import ClassVar, Dict, Type, TypeVar, List, Any
-from ..prompt import Prompt
+from typing import ClassVar, Dict, List, Type, TypeVar
 
-from ..features import Features
-
+from datalabs.features import Features
+from datalabs.prompt import Prompt
 
 T = TypeVar("T", bound="TaskTemplate")
 
 
 @dataclass
 class TaskTemplate(abc.ABC):
-    # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
+    # `task` is not a ClassVar since we want it to be part of
+    # the `asdict` output for JSON serialization
     task: str
     input_schema: ClassVar[Features]
     label_schema: ClassVar[Features]
-    prompts:List[Prompt] = None
+    prompts: List[Prompt] = None
 
     @classmethod
     def get_prompts(self):

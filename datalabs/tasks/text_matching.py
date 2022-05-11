@@ -14,18 +14,22 @@
 from dataclasses import dataclass
 from typing import ClassVar, Dict, Optional, Tuple
 
-from ..features import ClassLabel, Features, Value
-from .base import TaskTemplate
+from datalabs.features import ClassLabel, Features, Value
+from datalabs.tasks.base import TaskTemplate
 
 
 @dataclass
 class TextMatching(TaskTemplate):
-    # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
-    task_category:str = "text-matching"
+    # `task` is not a ClassVar since we want it
+    # to be part of the `asdict` output for JSON serialization
+    task_category: str = "text-matching"
     task: str = "natural-language-inference"
-    input_schema: ClassVar[Features] = Features({"text1": Value("string"),
-                                                 "text2":Value("string"),
-                                                 })
+    input_schema: ClassVar[Features] = Features(
+        {
+            "text1": Value("string"),
+            "text2": Value("string"),
+        }
+    )
     # TODO(lewtun): Find a more elegant approach without descriptors.
     label_schema: ClassVar[Features] = Features({"labels": ClassLabel})
     text1_column: str = "text1"
@@ -41,7 +45,6 @@ class TextMatching(TaskTemplate):
 
             # self.__dict__["labels"] = tuple(sorted(self.labels))
             self.__dict__["labels"] = self.labels
-
 
             self.__dict__["label_schema"] = self.label_schema.copy()
             self.label_schema["labels"] = ClassLabel(names=self.labels)

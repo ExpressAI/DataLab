@@ -1,22 +1,33 @@
-import random
 import json
-import spacy
-import os.path
-#from initialize import spacy_nlp
-# python -m spacy download en_core_web_sm
-import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../')))
-from edit.editing import *
+import os.path
+import random
+import sys
+
+import spacy
+
+from datalabs.operations.edit.editing import editing
+
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))
+)
 
 
-@editing(name = "abbreviate", contributor = "xl_augmenter",
-         task = "Any", description="Replaces a word or phrase with its abbreviated counterpart")
-def abbreviate(text, prob = 0.5, seed = 0, max_outputs = 1):
+@editing(
+    name="abbreviate",
+    contributor="xl_augmenter",
+    task="Any",
+    description="Replaces a word or phrase with its abbreviated counterpart",
+)
+def abbreviate(text, prob=0.5, seed=0, max_outputs=1):
     scriptpath = os.path.dirname(__file__)
-    with open(os.path.join(scriptpath, '../../../resources/phrase_abbrev_dict.json'), 'r') as file:
+    with open(
+        os.path.join(scriptpath, "../../../resources/phrase_abbrev_dict.json"), "r"
+    ) as file:
         phrase_abbrev_dict = json.loads(file.read())
-    with open(os.path.join(scriptpath, '../../../resources/word_abbrev_dict.json'), 'r') as file:
+    with open(
+        os.path.join(scriptpath, "../../../resources/word_abbrev_dict.json"), "r"
+    ) as file:
         word_abbrev_dict = json.loads(file.read())
 
     spacy_nlp = spacy.load("en_core_web_sm")
@@ -37,13 +48,10 @@ def abbreviate(text, prob = 0.5, seed = 0, max_outputs = 1):
                 trans.append(word)
         trans1 = " ".join([str(word) for word in trans])
         transf.append(trans1)
-    #return transf
-    return {"text_abbreviate":transf[0]}
-
+    # return transf
+    return {"text_abbreviate": transf[0]}
 
 
 # sentence = "I will turn in the homework on Friday for sure!"
 # perturbed = abbreviate(text=sentence)
 # print(perturbed)
-
-

@@ -3,16 +3,26 @@ dependency: nltk
 main functions: ext_oracle(), lead_k()
 """
 
-from nltk import sent_tokenize, word_tokenize
-import numpy as np
-from typing import List
 from functools import partial
-from multiprocessing import Pool
 import json
+from multiprocessing import Pool
+from typing import List
 
-def _ext_oracle(src: List[str], ref: str, sim_fn, max_sent: int = -1, max_len: int = -1, threshold: int = -1):
+from nltk import word_tokenize
+import numpy as np
+
+
+def _ext_oracle(
+    src: List[str],
+    ref: str,
+    sim_fn,
+    max_sent: int = -1,
+    max_len: int = -1,
+    threshold: int = -1,
+):
     """
-    A functionality of generating the extractive oracle for a sample in the summarization dataset
+    A functionality of generating the extractive oracle for a
+    sample in the summarization dataset
     src: source documents
     ref: reference summaries
     sim_fn: sim_fn: similarity function between two strings
@@ -57,7 +67,16 @@ def thread_wrapper(x, fn):
     return fn(*x)
 
 
-def ext_oracle(src: List[List[str]], ref: List[str], sim_fn, max_sent: int = -1, max_len: int = -1, threshold: int = -1, num_workers: int = 4, out_dir: str = None):
+def ext_oracle(
+    src: List[List[str]],
+    ref: List[str],
+    sim_fn,
+    max_sent: int = -1,
+    max_len: int = -1,
+    threshold: int = -1,
+    num_workers: int = 4,
+    out_dir: str = None,
+):
     """
     A functionality of generating the extractive oracle for a summarization dataset
     src: source documents, each sample should be a list of sentences (strings)
@@ -67,7 +86,8 @@ def ext_oracle(src: List[List[str]], ref: List[str], sim_fn, max_sent: int = -1,
     max_len: maximum length of the oracle summaries, optional
     threshold: a predefined threshold for stoping creteria, optional
     num_workers: number of threads for computing
-    out_dir: write the results to a file instead of returning them if the path is provided
+    out_dir: write the results to a file instead of returning
+    them if the path is provided
 
     returns: oracle summaries (list of str)
     labels: one hot labels
@@ -78,13 +98,18 @@ def ext_oracle(src: List[List[str]], ref: List[str], sim_fn, max_sent: int = -1,
     labels = []
     oracles = []
     scores = []
-    oracle_info = []
     score = 0
     cnt = 0
     if out_dir is not None:
         f = open(out_dir, "w")
     if num_workers > 1:
-        fn = partial(_ext_oracle, sim_fn=sim_fn, max_sent=max_sent, max_len=max_len, threshold=threshold)
+        fn = partial(
+            _ext_oracle,
+            sim_fn=sim_fn,
+            max_sent=max_sent,
+            max_len=max_len,
+            threshold=threshold,
+        )
         fn = partial(thread_wrapper, fn=fn)
         with Pool(processes=num_workers) as pool:
             result = pool.imap(fn, zip(src, ref), chunksize=64)
@@ -96,7 +121,7 @@ def ext_oracle(src: List[List[str]], ref: List[str], sim_fn, max_sent: int = -1,
                     labels.append(l)
                     scores.append(s)
                 score += s
-                cnt += 1          
+                cnt += 1
     else:
         for (x, y) in zip(src, ref):
             o, l, s = _ext_oracle(x, y, sim_fn, max_sent, max_len, threshold)
@@ -115,7 +140,14 @@ def ext_oracle(src: List[List[str]], ref: List[str], sim_fn, max_sent: int = -1,
     return oracles, labels, scores, score
 
 
-def lead_k(src: List[List[str]], ref: List[str], k: int, sim_fn, num_workers: int = 4, out_dir: str = None):
+def lead_k(
+    src: List[List[str]],
+    ref: List[str],
+    k: int,
+    sim_fn,
+    num_workers: int = 4,
+    out_dir: str = None,
+):
     """
     A functionality of generating summaries using lead-k sentences
     src: source documents, each sample should be a list of sentences (strings)
@@ -123,7 +155,8 @@ def lead_k(src: List[List[str]], ref: List[str], k: int, sim_fn, num_workers: in
     k: the number of leading sentences to use as summaries
     sim_fn: similarity function between two strings
     num_workers: number of threads for computing
-    out_dir: write the results to a file instead of returning them if the path is provided
+    out_dir: write the results to a file instead of returning them
+     if the path is provided
 
     returns: lead-k summaries (list of str)
     scores: scores of each lead-k summary
@@ -147,7 +180,7 @@ def lead_k(src: List[List[str]], ref: List[str], k: int, sim_fn, num_workers: in
                     summaries.append(x)
                     scores.append(s)
                 score += s
-                cnt += 1          
+                cnt += 1
     else:
         for (x, y) in zip(src, ref):
             x, s = _lead_k(x, y, k, sim_fn)

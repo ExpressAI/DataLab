@@ -1,9 +1,8 @@
-import warnings
 from functools import wraps
 from typing import Callable, Optional
+import warnings
 
-from .logging import get_logger
-
+from datalabs.utils.logging import get_logger
 
 _emitted_deprecation_warnings = set()
 logger = get_logger(__name__)

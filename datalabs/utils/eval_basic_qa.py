@@ -1,26 +1,25 @@
 from collections import Counter
-import string
 import re
+import string
 from typing import List
 
-
-'''
+"""
 QA
-'''
+"""
 
 
 def normalize_answer(s):
     """Lower text and remove punctuation, articles and extra whitespace."""
 
     def remove_articles(text):
-        return re.sub(r'\b(a|an|the)\b', ' ', text)
+        return re.sub(r"\b(a|an|the)\b", " ", text)
 
     def white_space_fix(text):
-        return ' '.join(text.split())
+        return " ".join(text.split())
 
     def remove_punc(text):
         exclude = set(string.punctuation)
-        return ''.join(ch for ch in text if ch not in exclude)
+        return "".join(ch for ch in text if ch not in exclude)
 
     def lower(text):
         return text.lower()
@@ -43,7 +42,8 @@ def f1_score_qa_sample_level(prediction: str, ground_truth: str):
 
 def exact_match_sample_level(prediction: str, ground_truth: str):
     # print("prediction, ground_truth 2: ",prediction, ground_truth)
-    # print("normalize_answer: ",normalize_answer(prediction),normalize_answer(ground_truth))
+    # print("normalize_answer: ",normalize_answer(prediction),
+    # normalize_answer(ground_truth))
     return normalize_answer(prediction) == normalize_answer(ground_truth)
 
 

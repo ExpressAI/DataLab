@@ -1,5 +1,4 @@
-from .logging import get_logger
-
+from datalabs.utils.logging import get_logger
 
 logger = get_logger(__name__)
 
@@ -17,7 +16,8 @@ class _PatchedModuleObj:
 
 class patch_submodule:
     """
-    Patch a submodule attribute of an object, by keeping all other submodules intact at all levels.
+    Patch a submodule attribute of an object, by keeping
+     all other submodules intact at all levels.
 
     Examples:
 
@@ -46,7 +46,11 @@ class patch_submodule:
         *submodules, attr = self.target.split(".")
         current = self.obj
         for key in submodules:
-            setattr(current, key, _PatchedModuleObj(getattr(current, key, None), attrs=self.attrs))
+            setattr(
+                current,
+                key,
+                _PatchedModuleObj(getattr(current, key, None), attrs=self.attrs),
+            )
             current = getattr(current, key)
         setattr(current, attr, self.new)
 
