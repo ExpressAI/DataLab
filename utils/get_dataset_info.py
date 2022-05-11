@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-import traceback
 import argparse
-import os
-import sys
 import importlib
 import inspect
-
 import json
-from datalabs import GeneratorBasedBuilder, load_dataset, DatasetDict
+import os
+import sys
+import traceback
+
+from datalabs import GeneratorBasedBuilder, load_dataset
 
 """
 This script writes out information regarding all datasets supported by the datalab
@@ -16,7 +16,9 @@ SDK in jsonl format, in general one dataset per line.
 """
 
 # TODO(gneubig): there is probably an easier way of doing this without downloading
-#                datasets, but it's non-trivial, so we'll stick with this for now
+# datasets, but it's non-trivial, so we'll stick with this for now
+
+
 def get_splits(
     dataset: str, sub_dataset: str | None, prev_data: dict
 ) -> dict[str, int]:
@@ -53,7 +55,8 @@ def main():
     )
     parser.add_argument(
         "--previous_jsonl",
-        help="if a jsonl file already exists, read it in and cache information to save time",
+        help="if a jsonl file already exists, read it in and cache "
+        "information to save time",
         type=str,
         required=False,
         default=None,
@@ -139,7 +142,7 @@ def main():
                         metadata["sub_datasets"] = sub_datasets
 
                 print(f"printing metadata for {file_name}", file=sys.stderr)
-            except Exception as e:
+            except Exception as e:  # noqa
                 traceback.print_exc()
                 metadata = "ERROR"
             print(json.dumps({file_name: metadata}), file=out_stream)
