@@ -10,6 +10,6 @@ client = Client(
     sub_dataset_name_sdk="default",
     status="public",
     feature_func=text_classification_func,
-    end_point_add_dataset="https://datalab.nlpedia.ai/" "api/upload_new_dataset",
+    end_point_add_dataset="https://datalab.nlpedia.ai/api/upload_new_dataset",
 )
 client.add_dataset_from_sdk()

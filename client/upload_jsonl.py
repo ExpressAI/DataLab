@@ -2,14 +2,14 @@ from dataclasses import asdict
 import multiprocessing
 import os
 
-from aggregate.text_classification import (
-    get_features_dataset_level as get_features_dataset_level_text_classification,
-)
 from example_funcs import (  # noqa it depends on your task; you could also customized the function
     text_classification_func,
 )
 
 from datalabs import load_dataset
+from datalabs.operations.aggregate.text_classification import (
+    get_features_dataset_level as get_features_dataset_level_text_classification,
+)
 from datalabs.operations.preprocess.general import tokenize
 from datalabs.tasks.text_classification import TextClassification
 from datalabs.utils.more_features import get_features_dataset, prefix_dict_key
@@ -89,7 +89,7 @@ def get_info(directory_of_files, language, task):
             metadata = asdict(dataset[split_name]._info)
             metadata["features"] = features_mongodb
 
-    return asdict(dataset["train"]._info), metadata, dataset
+    return asdict(dataset["train"]._info), features_mongodb, dataset
 
 
 def get_paper_template(

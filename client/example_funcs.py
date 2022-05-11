@@ -1,7 +1,7 @@
-from featurize import nlp_featurizing
 from utils_funcs import basic_features, get_summary_features
 
 import datalabs  # # noqa
+from datalabs.operations.featurize import nlp_featurizing
 
 """
 Note:

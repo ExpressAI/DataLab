@@ -2,11 +2,10 @@ from dataclasses import asdict
 import multiprocessing
 
 # this is task-dependent
-from aggregate.text_classification import (
+from datalabs import load_dataset
+from datalabs.operations.aggregate.text_classification import (
     get_features_dataset_level as get_features_dataset_level_text_classification,
 )
-
-from datalabs import load_dataset
 from datalabs.operations.preprocess.general import tokenize
 from datalabs.utils.more_features import get_features_dataset, prefix_dict_key
 
