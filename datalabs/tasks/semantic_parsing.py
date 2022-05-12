@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import ClassVar
 
 from datalabs.features import Features, Value
-from datalabs.tasks import register_task, TaskTemplate, TaskType
+from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 
 
 @register_task(TaskType.semantic_parsing)

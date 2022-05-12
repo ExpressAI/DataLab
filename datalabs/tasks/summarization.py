@@ -3,16 +3,16 @@ from typing import ClassVar
 
 from datalabs.features import Features, Value
 from datalabs.features.features import Sequence
-from datalabs.tasks import register_task, TaskType
-from datalabs.tasks.conditional_text_generation import (
-    ConditionalTextGeneration,
-    GuidedConditionalTextGeneration,
+from datalabs.tasks.base import register_task, TaskType
+from datalabs.tasks.conditional_generation import (
+    ConditionalGeneration,
+    GuidedConditionalGeneration,
 )
 
 
 @register_task(TaskType.summarization)
 @dataclass
-class Summarization(ConditionalTextGeneration):
+class Summarization(ConditionalGeneration):
     task: TaskType = TaskType.summarization
     source_column: str = "text"
     reference_column: str = "summary"
@@ -63,7 +63,7 @@ class DialogSummarization(Summarization):
 
 @register_task(TaskType.query_summarization)
 @dataclass
-class QuerySummarization(Summarization, GuidedConditionalTextGeneration):
+class QuerySummarization(Summarization, GuidedConditionalGeneration):
     """Query-based summarization task.
     data format: {
         "text": str,

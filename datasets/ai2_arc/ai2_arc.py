@@ -17,8 +17,8 @@ import os
 
 import datalabs
 
-from datalabs.tasks import QuestionAnsweringMultipleChoicesWithoutContext
-
+# from datalabs.tasks import QuestionAnsweringMultipleChoicesWithoutContext
+from datalabs import get_task, TaskType
 
 # TODO(ai2_arc): BibTeX citation
 _CITATION = """\
@@ -102,8 +102,9 @@ class Ai2Arc(datalabs.GeneratorBasedBuilder):
             homepage="https://allenai.org/data/arc",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringMultipleChoicesWithoutContext(
-                    question_column="question", answers_column="answers",
+                get_task(TaskType.qa_multiple_choice_without_context)(
+                    question_column="question",
+                    answers_column="answers",
                     options_column="options",
                     task="question-answering-multiple-choices-without-context",
                 )
@@ -150,6 +151,8 @@ class Ai2Arc(datalabs.GeneratorBasedBuilder):
                 choices = data["question"]["choices"]
                 text_choices = [choice["text"] for choice in choices]
                 label_choices = [choice["label"] for choice in choices]
+                if answerkey not in dict_map.keys(): # there are some other option names, e.g.,2
+                    continue
                 option_index = dict_map[answerkey]
                 yield id_, {
                     "id": str(id_sample - 1),

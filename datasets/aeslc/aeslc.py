@@ -1,7 +1,9 @@
 """AESLC: Annotated Enron Subject Line Corpus."""
 import os
 import datalabs
-from datalabs.tasks import Summarization, MultiRefSummarization
+from datalabs import get_task, TaskType
+
+
 
 _CITATION = """\
 @inproceedings{zhang-tetreault-2019-email,
@@ -50,8 +52,11 @@ class AESLCDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="Email subject line generation Dataset.",
-            task_templates=[MultiRefSummarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.multi_ref_summarization)(
+                    source_column=_ARTICLE,
+                    reference_column=_ABSTRACT)
+            ]
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -70,9 +75,10 @@ class AESLCDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=["en"],
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE,
+                    reference_column=_ABSTRACT)
             ],
         )
 

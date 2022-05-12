@@ -15,7 +15,7 @@ import abc
 import dataclasses
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import ClassVar, List, Type, TypeVar
+from typing import ClassVar, Dict, List, Type, TypeVar
 
 from datalabs.features import Features
 from datalabs.prompt import Prompt
@@ -25,8 +25,8 @@ T = TypeVar("T", bound="TaskTemplate")
 
 class TaskType(str, Enum):
     root = "ROOT"
-    conditional_text_generation = "conditional-text-generation"
-    guided_conditional_text_generation = "guided-conditional-text-generation"
+    conditional_generation = "conditional-generation"
+    guided_conditional_generation = "guided-conditional-generation"
     coreference_resolution = "coreference-resolution"
     kg_prediction = "kg-prediction"
     kg_link_tail_prediction = "kg-link-tail-prediction"
@@ -98,3 +98,18 @@ class TaskTemplate(abc.ABC):
     def from_dict(cls: Type[T], template_dict: dict) -> T:
         field_names = set(f.name for f in dataclasses.fields(cls))
         return cls(**{k: v for k, v in template_dict.items() if k in field_names})
+
+
+TASK_REGISTRY: Dict = {}
+
+
+def register_task(task: TaskType):
+    def register_task_fn(cls):
+        TASK_REGISTRY[task] = cls
+        return cls
+
+    return register_task_fn
+
+
+def get_task(task: TaskType) -> TaskTemplate:
+    return TASK_REGISTRY[task]

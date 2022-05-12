@@ -4,7 +4,7 @@ from typing import ClassVar, Optional, Tuple
 from datalabs.enums import Metrics, PLMType, PromptShape, SignalType
 from datalabs.features import ClassLabel, Features, Value
 from datalabs.prompt import Prompt, PromptResult
-from datalabs.tasks import register_task, TaskTemplate, TaskType
+from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 
 
 @register_task(TaskType.text_classification)
@@ -14,6 +14,11 @@ class TextClassification(TaskTemplate):
     text_column: str = "text"
     label_column: str = "label"
     labels: Optional[Tuple[str]] = None
+
+    def set_labels(self, labels):
+        self.__dict__["labels"] = tuple(labels)
+        self.__dict__["label_schema"] = self.label_schema.copy()
+        self.label_schema["labels"] = ClassLabel(names=labels)
 
     def __post_init__(self):
         self.task_categories = [

@@ -1,8 +1,6 @@
 import unittest
 
-from datalabs.tasks.span_relation_prediction import (
-    RelationExtraction,
-)
+from datalabs.tasks.span_relation_prediction import RelationExtraction
 
 
 class MyTestCase(unittest.TestCase):

@@ -1,7 +1,7 @@
 from typing import Optional
 
 from datalabs.tasks import (
-    conditional_text_generation,
+    conditional_generation,
     coreference_resolution,
     kg_prediction,
     machine_translation,
@@ -14,12 +14,17 @@ from datalabs.tasks import (
     text_classification,
     text_pair_classification,
 )
-from datalabs.tasks.base import TaskTemplate, TaskType
-from datalabs.tasks.task_registry import get_task, register_task, TASK_REGISTRY
+from datalabs.tasks.base import (
+    get_task,
+    register_task,
+    TASK_REGISTRY,
+    TaskTemplate,
+    TaskType,
+)
 from datalabs.utils.logging import get_logger
 
 __all__ = [
-    "conditional_text_generation",
+    "conditional_generation",
     "coreference_resolution",
     "kg_prediction",
     "machine_translation",

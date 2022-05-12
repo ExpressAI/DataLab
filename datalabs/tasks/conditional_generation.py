@@ -2,13 +2,13 @@ from dataclasses import dataclass
 from typing import ClassVar
 
 from datalabs.features.features import Features, Value
-from datalabs.tasks import register_task, TaskTemplate, TaskType
+from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 
 
-@register_task(TaskType.conditional_text_generation)
+@register_task(TaskType.conditional_generation)
 @dataclass
-class ConditionalTextGeneration(TaskTemplate):
-    task: TaskType = TaskType.conditional_text_generation
+class ConditionalGeneration(TaskTemplate):
+    task: TaskType = TaskType.conditional_generation
     source_column: str = "source"
     reference_column: str = "reference"
 
@@ -26,10 +26,10 @@ class ConditionalTextGeneration(TaskTemplate):
             )
 
 
-@register_task(TaskType.guided_conditional_text_generation)
+@register_task(TaskType.guided_conditional_generation)
 @dataclass
-class GuidedConditionalTextGeneration(ConditionalTextGeneration):
-    task: TaskType = TaskType.guided_conditional_text_generation
+class GuidedConditionalGeneration(ConditionalGeneration):
+    task: TaskType = TaskType.guided_conditional_generation
     source_column: str = "source"
     reference_column: str = "reference"
     guidance_column: str = "guidance"

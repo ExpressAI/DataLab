@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import ClassVar, Optional, Tuple
 
 from datalabs.features import ClassLabel, Features, Value
-from datalabs.tasks import register_task, TaskTemplate, TaskType
+from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 
 
 @register_task(TaskType.text_pair_classification)
@@ -13,6 +13,11 @@ class TextPairClassification(TaskTemplate):
     text2_column: str = "text2"
     label_column: str = "label"
     labels: Optional[Tuple[str]] = None
+
+    def set_labels(self, labels):
+        self.__dict__["labels"] = tuple(labels)
+        self.__dict__["label_schema"] = self.label_schema.copy()
+        self.label_schema["labels"] = ClassLabel(names=labels)
 
     def __post_init__(self):
         self.task_categories = [

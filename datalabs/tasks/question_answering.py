@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import ClassVar
 
 from datalabs.features import ClassLabel, Features, Sequence, Value
-from datalabs.tasks import register_task, TaskTemplate, TaskType
+from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 
 
 @register_task(TaskType.qa)

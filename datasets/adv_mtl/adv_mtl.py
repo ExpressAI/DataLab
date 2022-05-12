@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import datalabs
-from datalabs.tasks import TextClassification
-# Find for instance the citation on arxiv or on the dataset repo/website
+from datalabs import get_task, TaskType
+
 _CITATION = """\
 @article{liu2017adversarial,
 title={Adversarial Multi-task Learning for Text Classification},
@@ -63,17 +63,10 @@ class AdvMtl(datalabs.GeneratorBasedBuilder):
             license=_LICENSE,
             # Citation for the dataset
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.sentiment_classification)()],
         )
 
     def _split_generators(self, dl_manager):
-        """Returns SplitGenerators."""
-        # If several configurations are possible (listed in BUILDER_CONFIGS), the configuration selected by the user is in self.config.name
-
-        # dl_manager is a datalab.download.DownloadManager that can be used to download and extract URLs
-        # It can accept any type or nested list/dict and will give back the same structure with the url replaced with path to local files.
-        # By default the archives will be extracted and a path to a cached folder where they are extracted is returned instead of the archive
-
         result = []
         data_types = ["train", "test"]
         fields = [

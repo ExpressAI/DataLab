@@ -45,10 +45,6 @@ from datalabs.features import ClassLabel, Features, Value
 from datalabs.prompt import Prompt
 from datalabs.splits import SplitDict
 from datalabs.tasks import task_template_from_dict, TaskTemplate
-from datalabs.tasks.sequence_labeling import SequenceLabeling
-from datalabs.tasks.span_text_classification import SpanTextClassification
-from datalabs.tasks.text_classification import TextClassification, TopicClassification
-from datalabs.tasks.text_pair_classification import TextPairClassification
 from datalabs.utils import Version
 from datalabs.utils.logging import get_logger
 from datalabs.utils.py_utils import unique_values
@@ -398,63 +394,17 @@ class DatasetInfo:
             self.task_templates = list(self.task_templates)
             if self.features is not None:
                 for idx, template in enumerate(self.task_templates):
-                    if isinstance(template, TextClassification):
-                        labels = None
-                        if isinstance(self.features[template.label_column], ClassLabel):
-                            labels = self.features[template.label_column].names
-                        self.task_templates[idx] = TextClassification(
-                            text_column=template.text_column,
-                            label_column=template.label_column,
-                            task=template.task,
-                            labels=labels,
-                        )
-                    if isinstance(template, TopicClassification):
-                        labels = None
-                        if isinstance(self.features[template.label_column], ClassLabel):
-                            labels = self.features[template.label_column].names
-                        self.task_templates[idx] = TopicClassification(
-                            text_column=template.text_column,
-                            label_column=template.label_column,
-                            task=template.task,
-                            labels=labels,
-                            prompts=template.prompts,
-                        )
-                    if isinstance(template, TextPairClassification):
-                        labels = None
-                        if isinstance(self.features[template.label_column], ClassLabel):
-                            labels = self.features[template.label_column].names
-                        self.task_templates[idx] = TextPairClassification(
-                            text1_column=template.text1_column,
-                            text2_column=template.text2_column,
-                            label_column=template.label_column,
-                            task=template.task,
-                            labels=labels,
-                        )
-                    if isinstance(template, SpanTextClassification):
-                        labels = None
-                        if isinstance(self.features[template.label_column], ClassLabel):
-                            labels = self.features[template.label_column].names
-                        self.task_templates[idx] = SpanTextClassification(
-                            span_column=template.span_column,
-                            text_column=template.text_column,
-                            label_column=template.label_column,
-                            task=template.task,
-                            labels=labels,
-                        )
-                    if isinstance(template, SequenceLabeling):
-                        labels = None
-                        # print(self.features)
-                        # print(self.features[template.tags_column].feature)
-                        if isinstance(
-                            self.features[template.tags_column].feature, ClassLabel
-                        ):
-                            labels = self.features[template.tags_column].feature.names
-                        self.task_templates[idx] = SequenceLabeling(
-                            tokens_column=template.tokens_column,
-                            tags_column=template.tags_column,
-                            task=template.task,
-                            labels=labels,
-                        )
+
+                    is_label_column = None
+                    for col_name, type_name in template.label_schema.items():
+                        if type_name == ClassLabel:
+                            is_label_column = col_name
+
+                    if is_label_column is not None and isinstance(
+                        self.features[is_label_column], ClassLabel
+                    ):
+                        labels = self.features[template.label_column].names
+                        self.task_templates[idx].set_labels(labels)
 
         # Protected from other codes:
         self.download_size = None

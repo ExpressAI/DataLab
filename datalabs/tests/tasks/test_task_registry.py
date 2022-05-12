@@ -1,6 +1,6 @@
 import unittest
 
-from datalabs.tasks.task_registry import get_task, TASK_REGISTRY
+from datalabs.tasks.base import get_task, TASK_REGISTRY
 
 
 class MyTestCase(unittest.TestCase):

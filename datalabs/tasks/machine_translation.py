@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import ClassVar, Dict, List
 
 from datalabs.features import Features, Translation
-from datalabs.tasks import register_task, TaskTemplate, TaskType
+from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 
 
 @register_task(TaskType.machine_translation)
@@ -19,7 +19,7 @@ class MachineTranslation(TaskTemplate):
     lang_sub_columns: List[str] = field(default_factory=list)
 
     def __post_init__(self):
-        self.task_categories = [TaskType.conditional_text_generation]
+        self.task_categories = [TaskType.conditional_generation]
 
     @property
     def column_mapping(self) -> Dict[str, str]:
