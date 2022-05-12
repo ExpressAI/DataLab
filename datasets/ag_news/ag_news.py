@@ -16,14 +16,10 @@
 
 import csv
 import os
-import datalabs
-from datalabs.tasks import TextClassification, TopicClassification
-from datalabs import Dataset, Prompts
 from pathlib import Path
+import datalabs
+from datalabs import get_task, TaskType, Prompts
 
-from featurize.general import get_features_sample_level
-
-from datalabs.utils.more_features import prefix_dict_key, get_feature_arguments
 
 _DESCRIPTION = """\
 AG is a collection of more than 1 million news articles. News articles have been
@@ -56,76 +52,39 @@ _TEST_DOWNLOAD_URL = "https://raw.githubusercontent.com/mhjabreel/CharCnn_Keras/
 _PROMPT_URL = "https://raw.githubusercontent.com/ExpressAI/DataLab/main/datasets/ag_news/prompts.json"
 
 
-# class AGNewsDataset(Dataset):
-#     def apply(self, func):
-#         if func._type == 'Aggregating':
 
 
-def instantiate_task_prompt(category_names):
-    # instantiate task prompts into dataset prompts
-    textual_choices_with_or = ", ".join(category_names[:-1]) + " or " + category_names[-1]
-    textual_choices_without_or = ", ".join(category_names)
-    category_to_answers = dict(zip(category_names, [[category] for category in category_names]))
-    task_prompts = TopicClassification.get_prompts()
-
-    # for prompt_id in task_prompts:
-    #     task_prompts[prompt_id].answers = category_to_answers
-    #     task_prompts[prompt_id].template = task_prompts[prompt_id].template.replace("{{textual_choices_with_or}}", textual_choices_with_or) \
-    #         .replace("{{textual_choices_without_or}}", textual_choices_without_or)
-    return task_prompts
 
 
-def infer_schema_dataset_level(sample_level_schema: dict):
-    dataset_level_schema = {}
-    for feature_name, value in sample_level_schema.items():
-        if isinstance(value, int) or isinstance(value, float):
-            dataset_level_schema[feature_name] = value
-    return dataset_level_schema
 
-
-EXPAND = True
-FIELD = "text"
 
 
 class AGNews(datalabs.GeneratorBasedBuilder):
 
     def _info(self):
-
         category_names = ["World", "Sports", "Business", "Science and Technology"]
         # Task prompts
-        prompts = instantiate_task_prompt(category_names)  # instantiate task prompt based on the current dataset
-        features_dataset = {}
-        features_sample = datalabs.Features(
+        prompts = get_task(TaskType.topic_classification)().get_prompts()  # instantiate task prompt based on the current dataset
+        # Add PromptSource prompts
+        prompts.update(Prompts.from_url(_PROMPT_URL))
+        features = datalabs.Features(
             {
-                FIELD: datalabs.Value("string"),
+                "text": datalabs.Value("string"),
                 "label": datalabs.features.ClassLabel(
                     names=category_names),
 
             })
 
-        if self.feature_expanding:
-            sample_level_schema = get_features_sample_level("This is a test sample")
-            dict_feature_argument = get_feature_arguments(sample_level_schema, field=FIELD,
-                                                          feature_level="sample_level")
-            additional_features = datalabs.Features(dict_feature_argument)
-            features_sample.update(additional_features)
-
-            dataset_level_schema = infer_schema_dataset_level(sample_level_schema)
-            dict_feature_argument = get_feature_arguments(dataset_level_schema, field="avg" + "_" + FIELD,
-                                                          feature_level="dataset_level")
-            features_dataset = datalabs.Features(dict_feature_argument)
-
-        # Add PromptSource prompts
-        prompts.update(Prompts.from_url(_PROMPT_URL))
-
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=features_sample,
-            features_dataset=features_dataset,
+            features=features,
             homepage="http://groups.di.unipi.it/~gulli/AG_corpus_of_news_articles.html",
             citation=_CITATION,
             languages=["en"],
-            task_templates=[TopicClassification(text_column="text", label_column="label")],
+            task_templates=[
+                get_task(TaskType.topic_classification)
+                (text_column="text", label_column="label")
+            ],
             prompts=prompts
         )
 
@@ -155,13 +114,6 @@ class AGNews(datalabs.GeneratorBasedBuilder):
                 label, title, description = row
                 label = textualize_label[label]
                 text = " ".join((title, description))
-                # yield id_, {"text": text, "label": label}
 
-                raw_feature_info = {FIELD: text, "label": label}
+                yield id_, {"text": text, "label": label}
 
-                if not self.feature_expanding:
-                    yield id_, raw_feature_info
-                else:
-                    additional_feature_info = prefix_dict_key(get_features_sample_level(text), FIELD)
-                    raw_feature_info.update(additional_feature_info)
-                    yield id_, raw_feature_info

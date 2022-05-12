@@ -1,16 +1,16 @@
 from dataclasses import dataclass
 from typing import ClassVar, Optional, Tuple
 
-from datalabs.features.features import ClassLabel, Features, Value
+from datalabs.features import ClassLabel, Features, Value
 from datalabs.tasks import register_task, TaskTemplate, TaskType
 
 
-@register_task(TaskType.span_text_classification)
+@register_task(TaskType.text_pair_classification)
 @dataclass
-class SpanTextClassification(TaskTemplate):
-    task: TaskType = TaskType.span_text_classification
-    span_column: str = "span"
-    text_column: str = "text"
+class TextPairClassification(TaskTemplate):
+    task: TaskType = TaskType.text_pair_classification
+    text1_column: str = "text1"
+    text2_column: str = "text2"
     label_column: str = "label"
     labels: Optional[Tuple[str]] = None
 
@@ -22,8 +22,8 @@ class SpanTextClassification(TaskTemplate):
         if self.input_schema is None:
             self.input_schema: ClassVar[Features] = Features(
                 {
-                    self.span_column: Value("string"),
-                    self.text_column: Value("string"),
+                    self.text1_column: Value("string"),
+                    self.text2_column: Value("string"),
                 }
             )
         if self.label_schema is None:
@@ -40,10 +40,10 @@ class SpanTextClassification(TaskTemplate):
             self.label_schema["labels"] = ClassLabel(names=self.labels)
 
 
-@register_task(TaskType.aspect_based_sentiment_classification)
+@register_task(TaskType.natural_language_inference)
 @dataclass
-class AspectBasedSentimentClassification(SpanTextClassification):
-    task: TaskType = TaskType.aspect_based_sentiment_classification
-    span_column: str = "aspect"
-    text_column: str = "text"
+class NaturalLanguageInference(TextPairClassification):
+    task: TaskType = TaskType.natural_language_inference
+    text1_column: str = "text1"
+    text2_column: str = "text2"
     label_column: str = "label"

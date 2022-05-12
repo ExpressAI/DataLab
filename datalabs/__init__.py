@@ -19,7 +19,7 @@
 # pylint: enable=line-too-long
 # pylint: disable=g-import-not-at-top,g-bad-import-order,wrong-import-position
 
-__version__ = "1.16.2.dev0"
+__version__ = "0.4.0"
 
 from packaging import version as _version
 import pyarrow
@@ -28,16 +28,6 @@ from pyarrow import total_allocated_bytes
 from datalabs.operations import operation
 from datalabs.operations.data import *
 
-# from .operations import operation
-# from .operations import data
-
-if _version.parse(pyarrow.__version__).major < 3:
-    raise ImportWarning(
-        "To use `datalab`, the module `pyarrow>=3.0.0` is required, "
-        "and the current version of `pyarrow` doesn't match this condition.\n"
-        "If you are running this in a Google Colab, you should probably"
-        " just restart the runtime to use the right version of `pyarrow`."
-    )
 
 from datalabs.arrow_dataset import concatenate_datasets, Dataset
 from datalabs.arrow_reader import ArrowReader, ReadInstruction
@@ -91,6 +81,7 @@ from datalabs.load import (
 from datalabs.metric import Metric
 from datalabs.operations.aggregate import aggregating
 from datalabs.prompt import Prompt, PromptResult, Prompts
+from datalabs.tasks import get_task, TaskType
 from datalabs.splits import (
     NamedSplit,
     NamedSplitAll,
@@ -103,5 +94,6 @@ from datalabs.splits import (
     SubSplitInfo,
 )
 from datalabs.utils import *
+from datalabs.operations import featurize, aggregate, edit, infer, preprocess
 
 SCRIPTS_VERSION = "master" if _version.parse(__version__).is_devrelease else __version__

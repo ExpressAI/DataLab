@@ -12,12 +12,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import csv
 from email import header
 import datalabs
-from datalabs.tasks import TextClassification
-from datalabs import Dataset
+from datalabs import get_task, TaskType
+
 
 # Find for instance the citation on arxiv or on the dataset repo/website
 _CITATION = """\
@@ -53,13 +52,12 @@ class WAIMAI(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[TextClassification(text_column="text", label_column="label", task="sentiment-classification")],
+            task_templates=[get_task(TaskType.text_classification)()],
         )
 
     def _split_generators(self, dl_manager):
         # dl_manager is a datalab.download.DownloadManager that can be used to download and extract URLs
         train_path = dl_manager.download_and_extract(_URL)
-        print(f"train_path: \t{train_path}")
         return [
             datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path})
         ]

@@ -48,7 +48,7 @@ from datalabs.tasks import task_template_from_dict, TaskTemplate
 from datalabs.tasks.sequence_labeling import SequenceLabeling
 from datalabs.tasks.span_text_classification import SpanTextClassification
 from datalabs.tasks.text_classification import TextClassification, TopicClassification
-from datalabs.tasks.text_matching import TextMatching
+from datalabs.tasks.text_pair_classification import TextPairClassification
 from datalabs.utils import Version
 from datalabs.utils.logging import get_logger
 from datalabs.utils.py_utils import unique_values
@@ -419,11 +419,11 @@ class DatasetInfo:
                             labels=labels,
                             prompts=template.prompts,
                         )
-                    if isinstance(template, TextMatching):
+                    if isinstance(template, TextPairClassification):
                         labels = None
                         if isinstance(self.features[template.label_column], ClassLabel):
                             labels = self.features[template.label_column].names
-                        self.task_templates[idx] = TextMatching(
+                        self.task_templates[idx] = TextPairClassification(
                             text1_column=template.text1_column,
                             text2_column=template.text2_column,
                             label_column=template.label_column,
