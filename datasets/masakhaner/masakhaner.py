@@ -123,6 +123,7 @@ class MasakhaNER(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://www.aclweb.org/anthology/W03-0419/",
             citation=_CITATION,
+            languages=[self.config.language],
             task_templates=[SequenceLabeling(tokens_column="tokens", tags_column="tags",
                                                           task="named-entity-recognition")]
         )
