@@ -108,7 +108,7 @@ class WikiLinguaDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             license=_LICENSE,
-            languages=[self.config.name],
+            languages=self.config.name.split('-'),
             task_templates=[Summarization(
                 text_column=_ARTICLE,
                 summary_column=_ABSTRACT),

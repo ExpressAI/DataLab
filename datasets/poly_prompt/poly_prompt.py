@@ -295,6 +295,7 @@ class PolyPrompt(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 features
             ),
+            languages=[self.config.name.split('.')[-1]],
             supervised_keys=None,
             # Homepage of the dataset for documentation
             citation=self.config.citation + "\n" + _CITATION,

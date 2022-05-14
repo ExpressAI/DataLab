@@ -1,5 +1,6 @@
 # coding=utf-8
-# Copyright 2020 The HuggingFace Datasets Authors and the TensorFlow Datasets Authors, DataLab Authors
+# Copyright 2020 The HuggingFace Datasets Authors and the
+# TensorFlow Datasets Authors, DataLab Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +20,6 @@
 import itertools
 import os
 import re
-
 
 _uppercase_uppercase_re = re.compile(r"([A-Z]+)([A-Z][a-z])")
 _lowercase_uppercase_re = re.compile(r"([a-z\d])([A-Z])")
@@ -41,7 +41,9 @@ def snakecase_to_camelcase(name):
     """Convert snake-case string to camel-case string."""
     name = _single_underscore_re.split(name)
     name = [_multiple_underscores_re.split(n) for n in name]
-    return "".join(n.capitalize() for n in itertools.chain.from_iterable(name) if n != "")
+    return "".join(
+        n.capitalize() for n in itertools.chain.from_iterable(name) if n != ""
+    )
 
 
 def filename_prefix_for_name(name):

@@ -14,24 +14,25 @@
 from dataclasses import dataclass
 from typing import ClassVar, Dict, Optional, Tuple
 
-from ..features import ClassLabel, Features, Value
-from .base import TaskTemplate
+from datalabs.features import ClassLabel, Features, Value
+from datalabs.tasks.base import TaskTemplate
 
 
 @dataclass
 class RelationExtraction(TaskTemplate):
-    # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
-    task_category:str = "relation-extraction"
+    # `task` is not a ClassVar since we want it to be part
+    # of the `asdict` output for JSON serialization
+    task_category: str = "relation-extraction"
     task: str = "relation-extraction"
-    input_schema: ClassVar[Features] = Features({
-        'text': Value('string'),
-        'subject': Value('string'),
-        'object': Value('string'),
-    })
+    input_schema: ClassVar[Features] = Features(
+        {
+            "text": Value("string"),
+            "subject": Value("string"),
+            "object": Value("string"),
+        }
+    )
     # TODO(lewtun): Find a more elegant approach without descriptors.
-    label_schema: ClassVar[Features] = Features({
-        'predicates': ClassLabel
-    })
+    label_schema: ClassVar[Features] = Features({"predicates": ClassLabel})
     text_column: str = "text"
     subject_column: str = "subject"
     object_column: str = "object"
@@ -46,7 +47,6 @@ class RelationExtraction(TaskTemplate):
 
             # self.__dict__["labels"] = tuple(sorted(self.labels))
             self.__dict__["predicates"] = self.predicates
-
 
             self.__dict__["label_schema"] = self.label_schema.copy()
             self.label_schema["predicates"] = ClassLabel(names=self.predicates)

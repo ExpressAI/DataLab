@@ -1,13 +1,17 @@
 import json
 import os
 import random
+import sys
 
 import nltk
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 
-import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../')))
-from edit.editing import *
+from datalabs.operations.edit.editing import editing
+
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))
+)
+
 
 def get_(big_list, small_list):
     big_str = " ".join(big_list)
@@ -15,17 +19,24 @@ def get_(big_list, small_list):
 
     big_str.index(small_str)
 
-@editing(name = "change_color", contributor = "xl_augmenter",
-         task = "Any", description="This transformation augments the input sentence by randomly replacing colors.")
-def change_color(text:str, max_outputs = 1, seed = 0, mapping: dict = None):
+
+@editing(
+    name="change_color",
+    contributor="xl_augmenter",
+    task="Any",
+    description="This transformation augments the input sentence"
+    " by randomly replacing colors.",
+)
+def change_color(text: str, max_outputs=1, seed=0, mapping: dict = None):
 
     scriptpath = os.path.dirname(__file__)
-    with open(os.path.join(scriptpath, '../../../resources/colors.json'), 'r') as file:
+    with open(os.path.join(scriptpath, "../../../resources/colors.json"), "r") as file:
         colors_dict = json.loads(file.read())
 
     color_names = [color["name"] for color in colors_dict.values()]
 
-    if mapping is None: mapping = {}
+    if mapping is None:
+        mapping = {}
 
     random.seed(seed)
 
@@ -58,15 +69,11 @@ def change_color(text:str, max_outputs = 1, seed = 0, mapping: dict = None):
             else:
                 new_color = random.choice(mapping[new_color])
             # Generate sentence
-            new_sentence = (
-                    new_sentence[:start_idx]
-                    + new_color
-                    + new_sentence[end_idx:]
-            )
+            new_sentence = new_sentence[:start_idx] + new_color + new_sentence[end_idx:]
         new_sentences.append(new_sentence)
 
     # return new_sentences
-    return {"text_change_color":new_sentences[0]}
+    return {"text_change_color": new_sentences[0]}
 
 
 # sentence = "I bought this pink pair of shoes today! Isn't it pretty?"

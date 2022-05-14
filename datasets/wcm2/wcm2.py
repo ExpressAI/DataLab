@@ -103,6 +103,7 @@ class WCM2(datalabs.GeneratorBasedBuilder):
             homepage = _HOMEPAGE,
             citation = _CITATION,
             version = self.VERSION,
+            languages=[self.config.name],
             task_templates = [TextClassification(text_column="text",
             label_column="label",
             task="text-classification")],

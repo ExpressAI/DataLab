@@ -14,18 +14,22 @@
 from dataclasses import dataclass
 from typing import ClassVar, Dict, Optional, Tuple
 
-from ..features import ClassLabel, Features, Value
-from .base import TaskTemplate
+from datalabs.features.features import ClassLabel, Features, Value
+from datalabs.tasks.base import TaskTemplate
 
 
 @dataclass
 class SpanTextClassification(TaskTemplate):
-    # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
-    task_category:str = "span-text-classification"
+    # `task` is not a ClassVar since we want it to be part of the
+    # `asdict` output for JSON serialization
+    task_category: str = "span-text-classification"
     task: str = "aspect-based-sentiment-classification"
-    input_schema: ClassVar[Features] = Features({"span": Value("string"),
-                                                 "text":Value("string"),
-                                                 })
+    input_schema: ClassVar[Features] = Features(
+        {
+            "span": Value("string"),
+            "text": Value("string"),
+        }
+    )
     # TODO(lewtun): Find a more elegant approach without descriptors.
     label_schema: ClassVar[Features] = Features({"labels": ClassLabel})
     span_column: str = "span"
@@ -41,7 +45,6 @@ class SpanTextClassification(TaskTemplate):
 
             # self.__dict__["labels"] = tuple(sorted(self.labels))
             self.__dict__["labels"] = self.labels
-
 
             self.__dict__["label_schema"] = self.label_schema.copy()
             self.label_schema["labels"] = ClassLabel(names=self.labels)

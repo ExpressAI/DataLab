@@ -1,18 +1,14 @@
 # Lint as: python3
-
-import datetime
-import itertools
 import os
-import sys
 
 from setuptools import find_packages, setup
-
 
 REQUIRED_PKGS = [
     # We use numpy>=1.17 to have np.random.Generator (Dataset shuffling)
     "numpy>=1.17",
     # Backend and serialization.
-    # Minimum 3.0.0 to support mix of struct and list types in parquet, and batch iterators of parquet data
+    # Minimum 3.0.0 to support mix of struct and list types in parquet,
+    # and batch iterators of parquet data
     "pyarrow>=3.0.0,!=4.0.0",
     # For smart caching dataset processing
     "dill",
@@ -29,7 +25,8 @@ REQUIRED_PKGS = [
     # for better multiprocessing
     "multiprocess",
     "pathos",
-    # to get metadata of optional dependencies such as torch or tensorflow for Python versions that don't have it
+    # to get metadata of optional dependencies such as torch or tensorflow
+    # for Python versions that don't have it
     "importlib_metadata;python_version<'3.8'",
     # to save datalabs locally or on any filesystem
     # minimum 2021.05.0 to have the AbstractArchiveFileSystem
@@ -46,16 +43,10 @@ REQUIRED_PKGS = [
     "lexicalrichness",
     "sacrebleu",
     "compare_mt",
-    "scikit-learn", # restricted by hatesonar pkg ==0.23.2
-    # "py7zr", # for wikipedia dataset
-    # for hate speech
-    # "hatesonar", # for calculating hatespeech bias
-    # "dateparser", # for the edit-reformat_date operation
+    "scikit-learn",  # restricted by hatesonar pkg ==0.23.2
     "seqeval",
     "jieba",
-    # "torch", # too larger
     "apache-beam",
-    # "explainaboard",
 ]
 
 AUDIO_REQUIRE = []
@@ -65,8 +56,7 @@ BENCHMARKS_REQUIRE = []
 TESTS_REQUIRE = []
 
 
-
-QUALITY_REQUIRE = ["black==21.4b0", "flake8==3.7.9", "isort>=5.0.0", "pyyaml>=5.3.1"]
+QUALITY_REQUIRE = ["black==22.3.0", "flake8==4.0.1", "isort>=5.6.4"]
 
 
 EXTRAS_REQUIRE = {
@@ -77,7 +67,7 @@ EXTRAS_REQUIRE = {
 
 setup(
     name="datalabs",
-    version="0.3.13",
+    version="0.4.0",
     description="Datalabs",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
@@ -87,13 +77,16 @@ setup(
     download_url="https://github.com/expressai/datalabs/tags",
     license="Apache 2.0",
     packages=find_packages(),
-    package_data={"datalabs": ["py.typed", "scripts/templates/*"],
-                  "datalabs.utils.resources": ["*.json", "*.yaml"],
-                  "datalabs.operations.featurize.pre_models":["*.pkl","*.json"],
-                  "datalabs.operations.featurize.resources.gender_data": ["*.json"],
-                  "datalabs.operations.edit.resources": ["*.json","*.txt", "*.names","*.tsv"],
-                  },
-    entry_points={"console_scripts": ["datalabs-cli=datalabs.commands.datasets_cli:main"]},
+    package_data={
+        "datalabs": ["py.typed", "scripts/templates/*"],
+        "datalabs.utils.resources": ["*.json", "*.yaml"],
+        "datalabs.operations.featurize.pre_models": ["*.pkl", "*.json"],
+        "datalabs.operations.featurize.resources.gender_data": ["*.json"],
+        "datalabs.operations.edit.resources": ["*.json", "*.txt", "*.names", "*.tsv"],
+    },
+    entry_points={
+        "console_scripts": ["datalabs-cli=datalabs.commands.datasets_cli:main"]
+    },
     install_requires=REQUIRED_PKGS,
     extras_require=EXTRAS_REQUIRE,
     classifiers=[
@@ -110,11 +103,7 @@ setup(
     ],
     keywords="dataset",
     zip_safe=False,
-    include_package_data=True
+    include_package_data=True,
 )
 
 os.system("python -m spacy download en_core_web_sm")
-
-
-
-

@@ -1,5 +1,6 @@
 # coding=utf-8
-# Copyright 2020 The HuggingFace Datasets Authors and the TensorFlow Datasets Authors, DataLab Authors.
+# Copyright 2020 The HuggingFace Datasets Authors and the
+# TensorFlow Datasets Authors, DataLab Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,25 +15,26 @@
 # limitations under the License.
 
 # Lint as: python3
-""" This class handle features definition in datalab and some utilities to display table type."""
-import copy
-import re
-import sys
+""" This class handle features definition in datalab and
+ some utilities to display table type."""
 from collections.abc import Iterable
+import copy
 from dataclasses import dataclass, field, fields
 from functools import reduce
 from operator import mul
+import re
+import sys
 from typing import Any, ClassVar, Dict, List, Optional
 from typing import Sequence as Sequence_
 from typing import Tuple, Union
 
 import numpy as np
 import pandas as pd
-import pyarrow as pa
-import pyarrow.types
 from pandas.api.extensions import ExtensionArray as PandasExtensionArray
 from pandas.api.extensions import ExtensionDtype as PandasExtensionDtype
+import pyarrow as pa
 from pyarrow.lib import TimestampType
+import pyarrow.types
 from pyarrow.types import is_boolean, is_primitive
 
 from datalabs import config, utils
@@ -40,13 +42,13 @@ from datalabs.features.audio import Audio
 from datalabs.features.translation import Translation, TranslationVariableLanguages
 from datalabs.utils.logging import get_logger
 
-
 logger = get_logger(__name__)
 
 
 def _arrow_to_datasets_dtype(arrow_type: pa.DataType) -> str:
     """
-    _arrow_to_datasets_dtype takes a pyarrow.DataType and converts it to a datalab string dtype.
+    _arrow_to_datasets_dtype takes a pyarrow.DataType and
+    converts it to a datalab string dtype.
     In effect, `dt == string_to_arrow(_arrow_to_datasets_dtype(dt))`
     """
 
@@ -93,7 +95,9 @@ def _arrow_to_datasets_dtype(arrow_type: pa.DataType) -> str:
     elif pyarrow.types.is_large_string(arrow_type):
         return "large_string"
     else:
-        raise ValueError(f"Arrow type {arrow_type} does not have a datalab dtype equivalent.")
+        raise ValueError(
+            f"Arrow type {arrow_type} does not have a datalab dtype equivalent."
+        )
 
 
 @dataclass
@@ -111,19 +115,21 @@ class BucketInfo:
     _setting: Any = 1  # For different bucket_methods, the settings are diverse
 
 
-
 def string_to_arrow(datasets_dtype: str) -> pa.DataType:
     """
     string_to_arrow takes a datalab string dtype and converts it to a pyarrow.DataType.
 
     In effect, `dt == string_to_arrow(_arrow_to_datasets_dtype(dt))`
 
-    This is necessary because the datalab.Value() primitive type is constructed using a string dtype
+    This is necessary because the datalab.Value() primitive type
+    is constructed using a string dtype
 
     Value(dtype=str)
 
-    But Features.type (via `get_nested_type()` expects to resolve Features into a pyarrow Schema,
-        which means that each Value() must be able to resolve into a corresponding pyarrow.DataType, which is the
+    But Features.type (via `get_nested_type()` expects to resolve
+    Features into a pyarrow Schema,
+        which means that each Value() must be able to resolve into
+         a corresponding pyarrow.DataType, which is the
         purpose of this function.
     """
     timestamp_regex = re.compile(r"^timestamp\[(.*)\]$")
@@ -144,16 +150,20 @@ def string_to_arrow(datasets_dtype: str) -> pa.DataType:
             return pa.timestamp(internals_matches.group(1), internals_matches.group(2))
         else:
             raise ValueError(
-                f"{datasets_dtype} is not a validly formatted string representation of a pyarrow timestamp."
+                f"{datasets_dtype} is not a validly formatted "
+                f"string representation of a pyarrow timestamp."
                 f"Examples include timestamp[us] or timestamp[us, tz=America/New_York]"
-                f"See: https://arrow.apache.org/docs/python/generated/pyarrow.timestamp.html#pyarrow.timestamp"
+                f"See: https://arrow.apache.org/docs/python/generated"
+                f"/pyarrow.timestamp.html#pyarrow.timestamp"
             )
     elif datasets_dtype not in pa.__dict__:
         if str(datasets_dtype + "_") not in pa.__dict__:
             raise ValueError(
-                f"Neither {datasets_dtype} nor {datasets_dtype + '_'} seems to be a pyarrow data type. "
+                f"Neither {datasets_dtype} nor {datasets_dtype + '_'}"
+                f" seems to be a pyarrow data type. "
                 f"Please make sure to use a correct data type, see: "
-                f"https://arrow.apache.org/docs/python/api/datatypes.html#factory-functions"
+                f"https://arrow.apache.org/docs/python/api/datatypes"
+                f".html#factory-functions"
             )
         arrow_data_factory_function_name = str(datasets_dtype + "_")
     else:
@@ -167,19 +177,25 @@ def _cast_to_python_objects(obj: Any, only_1d_for_numpy: bool) -> Tuple[Any, boo
     Cast pytorch/tensorflow/pandas objects to python numpy array/lists.
     It works recursively.
 
-    To avoid iterating over possibly long lists, it first checks if the first element that is not None has to be casted.
-    If the first element needs to be casted, then all the elements of the list will be casted, otherwise they'll stay the same.
-    This trick allows to cast objects that contain tokenizers outputs without iterating over every single token for example.
+    To avoid iterating over possibly long lists, it first checks
+    if the first element that is not None has to be casted.
+    If the first element needs to be casted, then all the elements
+     of the list will be casted, otherwise they'll stay the same.
+    This trick allows to cast objects that contain tokenizers
+    outputs without iterating over every single token for example.
 
     Args:
         obj: the object (nested struct) to cast
-        only_1d_for_numpy (bool): whether to keep the full multi-dim tensors as multi-dim numpy arrays, or convert them to
-            nested lists of 1-dimensional numpy arrays. This can be useful to keep only 1-d arrays to instantiate Arrow arrays.
+        only_1d_for_numpy (bool): whether to keep the full
+        multi-dim tensors as multi-dim numpy arrays, or convert them to
+            nested lists of 1-dimensional numpy arrays. This
+             can be useful to keep only 1-d arrays to instantiate Arrow arrays.
             Indeed Arrow only support converting 1-dimensional array values.
 
     Returns:
         casted_obj: the casted object
-        has_changed (bool): True if the object has been changed, False if it is identical
+        has_changed (bool): True if the object has been
+        changed, False if it is identical
     """
 
     if config.TF_AVAILABLE and "tensorflow" in sys.modules:
@@ -195,24 +211,42 @@ def _cast_to_python_objects(obj: Any, only_1d_for_numpy: bool) -> Tuple[Any, boo
         if not only_1d_for_numpy or obj.ndim == 1:
             return obj, False
         else:
-            return [_cast_to_python_objects(x, only_1d_for_numpy=only_1d_for_numpy)[0] for x in obj], True
-    elif config.TORCH_AVAILABLE and "torch" in sys.modules and isinstance(obj, torch.Tensor):
+            return [
+                _cast_to_python_objects(x, only_1d_for_numpy=only_1d_for_numpy)[0]
+                for x in obj
+            ], True
+    elif (
+        config.TORCH_AVAILABLE
+        and "torch" in sys.modules
+        and isinstance(obj, torch.Tensor)
+    ):
         if not only_1d_for_numpy or obj.ndim == 1:
             return obj.detach().cpu().numpy(), True
         else:
             return [
-                _cast_to_python_objects(x, only_1d_for_numpy=only_1d_for_numpy)[0] for x in obj.detach().cpu().numpy()
+                _cast_to_python_objects(x, only_1d_for_numpy=only_1d_for_numpy)[0]
+                for x in obj.detach().cpu().numpy()
             ], True
-    elif config.TF_AVAILABLE and "tensorflow" in sys.modules and isinstance(obj, tf.Tensor):
+    elif (
+        config.TF_AVAILABLE
+        and "tensorflow" in sys.modules
+        and isinstance(obj, tf.Tensor)
+    ):
         if not only_1d_for_numpy or obj.ndim == 1:
             return obj.numpy(), True
         else:
-            return [_cast_to_python_objects(x, only_1d_for_numpy=only_1d_for_numpy)[0] for x in obj.numpy()], True
+            return [
+                _cast_to_python_objects(x, only_1d_for_numpy=only_1d_for_numpy)[0]
+                for x in obj.numpy()
+            ], True
     elif config.JAX_AVAILABLE and "jax" in sys.modules and isinstance(obj, jnp.ndarray):
         if not only_1d_for_numpy or obj.ndim == 1:
             return np.asarray(obj), True
         else:
-            return [_cast_to_python_objects(x, only_1d_for_numpy=only_1d_for_numpy)[0] for x in np.asarray(obj)], True
+            return [
+                _cast_to_python_objects(x, only_1d_for_numpy=only_1d_for_numpy)[0]
+                for x in np.asarray(obj)
+            ], True
     elif isinstance(obj, pd.Series):
         return obj.values.tolist(), True
     elif isinstance(obj, pd.DataFrame):
@@ -221,7 +255,9 @@ def _cast_to_python_objects(obj: Any, only_1d_for_numpy: bool) -> Tuple[Any, boo
         output = {}
         has_changed = False
         for k, v in obj.items():
-            casted_v, has_changed_v = _cast_to_python_objects(v, only_1d_for_numpy=only_1d_for_numpy)
+            casted_v, has_changed_v = _cast_to_python_objects(
+                v, only_1d_for_numpy=only_1d_for_numpy
+            )
             has_changed |= has_changed_v
             output[k] = casted_v
         return output if has_changed else obj, has_changed
@@ -234,7 +270,12 @@ def _cast_to_python_objects(obj: Any, only_1d_for_numpy: bool) -> Tuple[Any, boo
                 first_elmt, only_1d_for_numpy=only_1d_for_numpy
             )
             if has_changed_first_elmt:
-                return [_cast_to_python_objects(elmt, only_1d_for_numpy=only_1d_for_numpy)[0] for elmt in obj], True
+                return [
+                    _cast_to_python_objects(elmt, only_1d_for_numpy=only_1d_for_numpy)[
+                        0
+                    ]
+                    for elmt in obj
+                ], True
             else:
                 if isinstance(obj, list):
                     return obj, False
@@ -251,9 +292,12 @@ def cast_to_python_objects(obj: Any, only_1d_for_numpy=False) -> Any:
     Cast numpy/pytorch/tensorflow/pandas objects to python lists.
     It works recursively.
 
-    To avoid iterating over possibly long lists, it first checks if the first element that is not None has to be casted.
-    If the first element needs to be casted, then all the elements of the list will be casted, otherwise they'll stay the same.
-    This trick allows to cast objects that contain tokenizers outputs without iterating over every single token for example.
+    To avoid iterating over possibly long lists, it first
+     checks if the first element that is not None has to be casted.
+    If the first element needs to be casted, then all the
+     elements of the list will be casted, otherwise they'll stay the same.
+    This trick allows to cast objects that contain tokenizers
+     outputs without iterating over every single token for example.
 
     Args:
         obj: the object (nested struct) to cast
@@ -331,7 +375,9 @@ class _ArrayXD:
         self.shape = tuple(self.shape)
 
     def __call__(self):
-        pa_type = globals()[self.__class__.__name__ + "ExtensionType"](self.shape, self.dtype)
+        pa_type = globals()[self.__class__.__name__ + "ExtensionType"](
+            self.shape, self.dtype
+        )
         return pa_type
 
     def encode_example(self, value):
@@ -383,7 +429,9 @@ class _ArrayXDExtensionType(pa.PyExtensionType):
         assert (
             self.ndims is not None and self.ndims > 1
         ), "You must instantiate an array type with a value for dim that is > 1"
-        assert len(shape) == self.ndims, f"shape={shape} and ndims={self.ndims} dom't match"
+        assert (
+            len(shape) == self.ndims
+        ), f"shape={shape} and ndims={self.ndims} dom't match"
         self.shape = tuple(shape)
         self.value_type = dtype
         self.storage_dtype = self._generate_dtype(self.value_type)
@@ -402,7 +450,8 @@ class _ArrayXDExtensionType(pa.PyExtensionType):
         dtype = string_to_arrow(dtype)
         for d in reversed(self.shape):
             dtype = pa.list_(dtype)
-            # Don't specify the size of the list, since fixed length list arrays have issues
+            # Don't specify the size of the list, since fixed
+            # length list arrays have issues
             # being validated after slicing in pyarrow 0.17.1
         return dtype
 
@@ -428,14 +477,20 @@ class Array5DExtensionType(_ArrayXDExtensionType):
 
 def _is_zero_copy_only(pa_type: pa.DataType) -> bool:
     """
-    When converting a pyarrow array to a numpy array, we must know whether this could be done in zero-copy or not.
-    This function returns the value of the ``zero_copy_only`` parameter to pass to ``.to_numpy()``, given the type of the pyarrow array.
+    When converting a pyarrow array to a numpy array, we must
+    know whether this could be done in zero-copy or not.
+    This function returns the value of the ``zero_copy_only``
+    parameter to pass to ``.to_numpy()``, given the type of the pyarrow array.
 
     # zero copy is available for all primitive types except booleans
-    # primitive types are types for which the physical representation in arrow and in numpy
-    # https://github.com/wesm/arrow/blob/c07b9b48cf3e0bbbab493992a492ae47e5b04cad/python/pyarrow/types.pxi#L821
-    # see https://arrow.apache.org/docs/python/generated/pyarrow.Array.html#pyarrow.Array.to_numpy
-    # and https://issues.apache.org/jira/browse/ARROW-2871?jql=text%20~%20%22boolean%20to_numpy%22
+    # primitive types are types for which the physical representation
+     in arrow and in numpy
+    # https://github.com/wesm/arrow/blob/c07b9b48cf3e0bbbab493992a492a
+    e47e5b04cad/python/pyarrow/types.pxi#L821
+    # see https://arrow.apache.org/docs/python/generated/pyarrow.
+    Array.html#pyarrow.Array.to_numpy
+    # and https://issues.apache.org/jira/browse/ARROW-2871?jql=tex
+    t%20~%20%22boolean%20to_numpy%22
     """
     return is_primitive(pa_type) and not is_boolean(pa_type)
 
@@ -464,7 +519,9 @@ class ArrayExtensionArray(pa.ExtensionArray):
         ndims = self.type.ndims
 
         for dim in range(1, ndims):
-            assert shape[dim] is not None, f"Support only dynamic size on first dimension. Got: {shape}"
+            assert (
+                shape[dim] is not None
+            ), f"Support only dynamic size on first dimension. Got: {shape}"
 
         arrays = []
         first_dim_offsets = np.array([off.as_py() for off in storage.offsets])
@@ -502,7 +559,12 @@ class PandasArrayExtensionDtype(PandasExtensionDtype):
             )
         zero_copy_only = _is_zero_copy_only(array.type)
         if isinstance(array, pa.ChunkedArray):
-            numpy_arr = np.vstack([chunk.to_numpy(zero_copy_only=zero_copy_only) for chunk in array.chunks])
+            numpy_arr = np.vstack(
+                [
+                    chunk.to_numpy(zero_copy_only=zero_copy_only)
+                    for chunk in array.chunks
+                ]
+            )
         else:
             numpy_arr = array.to_numpy(zero_copy_only=zero_copy_only)
         return PandasArrayExtensionArray(numpy_arr)
@@ -540,7 +602,8 @@ class PandasArrayExtensionArray(PandasExtensionArray):
         But for other dtypes, the returned shape is the same as the one of ``data``.
 
         More info about pandas 1D requirement for PandasExtensionArray here:
-        https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.api.extensions.ExtensionArray.html#pandas.api.extensions.ExtensionArray
+        https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.api.
+        extensions.ExtensionArray.html#pandas.api.extensions.ExtensionArray
 
         """
         if dtype == object:
@@ -558,13 +621,20 @@ class PandasArrayExtensionArray(PandasExtensionArray):
 
     @classmethod
     def _from_sequence(
-        cls, scalars, dtype: Optional[PandasArrayExtensionDtype] = None, copy: bool = False
+        cls,
+        scalars,
+        dtype: Optional[PandasArrayExtensionDtype] = None,
+        copy: bool = False,
     ) -> "PandasArrayExtensionArray":
-        data = np.array(scalars, dtype=dtype if dtype is None else dtype.value_type, copy=copy)
+        data = np.array(
+            scalars, dtype=dtype if dtype is None else dtype.value_type, copy=copy
+        )
         return cls(data, copy=copy)
 
     @classmethod
-    def _concat_same_type(cls, to_concat: Sequence_["PandasArrayExtensionArray"]) -> "PandasArrayExtensionArray":
+    def _concat_same_type(
+        cls, to_concat: Sequence_["PandasArrayExtensionArray"]
+    ) -> "PandasArrayExtensionArray":
         data = np.vstack([va._data for va in to_concat])
         return cls(data, copy=False)
 
@@ -582,7 +652,9 @@ class PandasArrayExtensionArray(PandasExtensionArray):
     def __setitem__(self, key: Union[int, slice, np.ndarray], value: Any) -> None:
         raise NotImplementedError()
 
-    def __getitem__(self, item: Union[int, slice, np.ndarray]) -> Union[np.ndarray, "PandasArrayExtensionArray"]:
+    def __getitem__(
+        self, item: Union[int, slice, np.ndarray]
+    ) -> Union[np.ndarray, "PandasArrayExtensionArray"]:
         if isinstance(item, int):
             return self._data[item]
         return PandasArrayExtensionArray(self._data[item], copy=False)
@@ -593,17 +665,26 @@ class PandasArrayExtensionArray(PandasExtensionArray):
         indices: np.ndarray = np.asarray(indices, dtype="int")
         if allow_fill:
             fill_value = (
-                self.dtype.na_value if fill_value is None else np.asarray(fill_value, dtype=self.dtype.value_type)
+                self.dtype.na_value
+                if fill_value is None
+                else np.asarray(fill_value, dtype=self.dtype.value_type)
             )
             mask = indices == -1
             if (indices < -1).any():
-                raise ValueError("Invalid value in `indices`, must be all >= -1 for `allow_fill` is True")
+                raise ValueError(
+                    "Invalid value in `indices`, must be all >= "
+                    "-1 for `allow_fill` is True"
+                )
             elif len(self) > 0:
                 pass
             elif not np.all(mask):
-                raise IndexError("Invalid take for empty PandasArrayExtensionArray, must be all -1.")
+                raise IndexError(
+                    "Invalid take for empty PandasArrayExtensionArray, must be all -1."
+                )
             else:
-                data = np.array([fill_value] * len(indices), dtype=self.dtype.value_type)
+                data = np.array(
+                    [fill_value] * len(indices), dtype=self.dtype.value_type
+                )
                 return PandasArrayExtensionArray(data, copy=False)
         took = self._data.take(indices, axis=0)
         if allow_fill and mask.any():
@@ -650,7 +731,7 @@ class ClassLabel:
     id: Optional[str] = None
     is_bucket: bool = False
     require_training_set: bool = False
-    feature_level:str = "sample_level"
+    feature_level: str = "sample_level"
     bucket_info: BucketInfo = None
     raw_feature: str = True
     # Automatically constructed
@@ -674,7 +755,9 @@ class ClassLabel:
             elif self.num_classes is not None:
                 self.names = [str(i) for i in range(self.num_classes)]
             else:
-                raise ValueError("Please provide either num_classes, names or names_file.")
+                raise ValueError(
+                    "Please provide either num_classes, names or names_file."
+                )
         # Set self.num_classes
         if self.num_classes is None:
             self.num_classes = len(self.names)
@@ -687,16 +770,19 @@ class ClassLabel:
         self._int2str = [str(name) for name in self.names]
         self._str2int = {name: i for i, name in enumerate(self._int2str)}
         if len(self._int2str) != len(self._str2int):
-            raise ValueError("Some label names are duplicated. Each label name should be unique.")
+            raise ValueError(
+                "Some label names are duplicated. Each label name should be unique."
+            )
 
     def __call__(self):
         return self.pa_type
 
     def str2int(self, values: Union[str, Iterable]):
         """Conversion class name string => integer."""
-        assert isinstance(values, str) or isinstance(
-            values, Iterable
-        ), f"Values {values} should be a string or an Iterable (list, numpy array, pytorch, tensorflow tensors)"
+        assert isinstance(values, str) or isinstance(values, Iterable), (
+            f"Values {values} should be a string or an Iterable (list, "
+            f"numpy array, pytorch, tensorflow tensors)"
+        )
         return_list = True
         if isinstance(values, str):
             values = [values]
@@ -722,9 +808,10 @@ class ClassLabel:
 
     def int2str(self, values: Union[int, Iterable]):
         """Conversion integer => class name string."""
-        assert isinstance(values, int) or isinstance(
-            values, Iterable
-        ), f"Values {values} should be an integer or an Iterable (list, numpy array, pytorch, tensorflow tensors)"
+        assert isinstance(values, int) or isinstance(values, Iterable), (
+            f"Values {values} should be an integer or an Iterable (list,"
+            f" numpy array, pytorch, tensorflow tensors)"
+        )
         return_list = True
         if isinstance(values, int):
             values = [values]
@@ -754,13 +841,18 @@ class ClassLabel:
 
         # Allowing -1 to mean no label.
         if not -1 <= example_data < self.num_classes:
-            raise ValueError(f"Class label {example_data:d} greater than configured num_classes {self.num_classes}")
+            raise ValueError(
+                f"Class label {example_data:d} greater than configured"
+                f" num_classes {self.num_classes}"
+            )
         return example_data
 
     @staticmethod
     def _load_names_from_file(names_filepath):
         with open(names_filepath, "r", encoding="utf-8") as f:
-            return [name.strip() for name in f.read().split("\n") if name.strip()]  # Filter empty names
+            return [
+                name.strip() for name in f.read().split("\n") if name.strip()
+            ]  # Filter empty names
 
 
 @dataclass
@@ -801,6 +893,7 @@ class Span:
     id: Optional[str] = None
     pa_type: ClassVar[Any] = None
 
+
 @dataclass
 class Sequence:
     """Construct a list of feature from a single type or a dict of types.
@@ -808,7 +901,7 @@ class Sequence:
     """
 
     feature: Any
-    feature_level:str = "sample_level"
+    feature_level: str = "sample_level"
     raw_feature: str = True
     length: int = -1
     id: Optional[str] = None
@@ -840,50 +933,60 @@ FeatureType = Union[
 
 def get_nested_type(schema: FeatureType) -> pa.DataType:
     """
-    get_nested_type() converts a datalab.FeatureType into a pyarrow.DataType, and acts as the inverse of
+    get_nested_type() converts a datalab.FeatureType into a pyarrow.
+    DataType, and acts as the inverse of
         generate_from_arrow_type().
 
-    It performs double-duty as the implementation of Features.type and handles the conversion of
+    It performs double-duty as the implementation of Features.type
+     and handles the conversion of
         datalab.Feature->pa.struct
     """
     # Nested structures: we allow dict, list/tuples, sequences
     if isinstance(schema, Features):
         return pa.struct(
             {key: get_nested_type(schema[key]) for key in schema}
-        )  # Features is subclass of dict, and dict order is deterministic since Python 3.6
+        )  # Features is subclass of dict, and dict order is
+        # deterministic since Python 3.6
     elif isinstance(schema, dict):
         return pa.struct(
             {key: get_nested_type(schema[key]) for key in schema}
         )  # however don't sort on struct types since the order matters
     elif isinstance(schema, (list, tuple)):
-        assert len(schema) == 1, "We defining list feature, you should just provide one example of the inner type"
+        assert len(schema) == 1, (
+            "We defining list feature, you should just provide one "
+            "example of the inner type"
+        )
         value_type = get_nested_type(schema[0])
         return pa.list_(value_type)
     elif isinstance(schema, Sequence):
         value_type = get_nested_type(schema.feature)
         # We allow to reverse list of dict => dict of list for compatibility with tfds
         if isinstance(value_type, pa.StructType):
-            return pa.struct({f.name: pa.list_(f.type, schema.length) for f in value_type})
+            return pa.struct(
+                {f.name: pa.list_(f.type, schema.length) for f in value_type}
+            )
         return pa.list_(value_type, schema.length)
 
-    # Other objects are callable which returns their data type (ClassLabel, Array2D, Translation, Arrow datatype creation methods)
+    # Other objects are callable which returns their data type
+    # (ClassLabel, Array2D, Translation, Arrow datatype creation methods)
     return schema()
 
 
 def encode_nested_example(schema, obj):
     """Encode a nested example.
-    This is used since some features (in particular ClassLabel) have some logic during encoding.
+    This is used since some features (in particular ClassLabel)
+     have some logic during encoding.
 
-    To avoid iterating over possibly long lists, it first checks if the first element that is not None has to be encoded.
-    If the first element needs to be encoded, then all the elements of the list will be encoded, otherwise they'll stay the same.
+    To avoid iterating over possibly long lists, it first checks
+    if the first element that is not None has to be encoded.
+    If the first element needs to be encoded, then all the elements
+     of the list will be encoded, otherwise they'll stay the same.
     """
 
     # print("--------------")
     # print("schema:\t", schema)
     # print("obj\t",obj)
     # print("--------------\n")
-
-
 
     # if isinstance(schema,dict):
     #     schema_new = {}
@@ -898,7 +1001,8 @@ def encode_nested_example(schema, obj):
     # Nested structures: we allow dict, list/tuples, sequences
     if isinstance(schema, dict):
         return {
-            k: encode_nested_example(sub_schema, sub_obj) for k, (sub_schema, sub_obj) in utils.zip_dict(schema, obj)
+            k: encode_nested_example(sub_schema, sub_obj)
+            for k, (sub_schema, sub_obj) in utils.zip_dict(schema, obj)
         }
     elif isinstance(schema, (list, tuple)):
         sub_schema = schema[0]
@@ -920,12 +1024,17 @@ def encode_nested_example(schema, obj):
             if isinstance(obj, (list, tuple)):
                 # obj is a list of dict
                 for k, dict_tuples in utils.zip_dict(schema.feature, *obj):
-                    list_dict[k] = [encode_nested_example(dict_tuples[0], o) for o in dict_tuples[1:]]
+                    list_dict[k] = [
+                        encode_nested_example(dict_tuples[0], o)
+                        for o in dict_tuples[1:]
+                    ]
                 return list_dict
             else:
                 # obj is a single dict
                 for k, (sub_schema, sub_objs) in utils.zip_dict(schema.feature, obj):
-                    list_dict[k] = [encode_nested_example(sub_schema, o) for o in sub_objs]
+                    list_dict[k] = [
+                        encode_nested_example(sub_schema, o) for o in sub_objs
+                    ]
                 return list_dict
         # schema.feature is not a dict
         if isinstance(obj, str):  # don't interpret a string as a list
@@ -938,14 +1047,21 @@ def encode_nested_example(schema, obj):
                     if first_elmt is not None:
                         break
                 # be careful when comparing tensors here
-                if not isinstance(first_elmt, list) or encode_nested_example(schema.feature, first_elmt) != first_elmt:
+                if (
+                    not isinstance(first_elmt, list)
+                    or encode_nested_example(schema.feature, first_elmt) != first_elmt
+                ):
                     return [encode_nested_example(schema.feature, o) for o in obj]
             return list(obj)
     # Object with special encoding:
-    # ClassLabel will convert from string to int, TranslationVariableLanguages does some checks
-    elif isinstance(schema, (Audio, ClassLabel, TranslationVariableLanguages, Value, _ArrayXD)):
+    # ClassLabel will convert from string to int, TranslationVariableLanguages
+    # does some checks
+    elif isinstance(
+        schema, (Audio, ClassLabel, TranslationVariableLanguages, Value, _ArrayXD)
+    ):
         return schema.encode_example(obj)
-    # Other object should be directly convertible to a native Arrow type (like Translation and Translation)
+    # Other object should be directly convertible to a native Arrow type
+    # (like Translation and Translation)
     return obj
 
 
@@ -953,11 +1069,16 @@ def generate_from_dict(obj: Any):
     """Regenerate the nested feature object from a deserialized dict.
     We use the '_type' fields to get the dataclass name to load.
 
-    generate_from_dict is the recursive helper for Features.from_dict, and allows for a convenient constructor syntax
-    to define features from deserialized JSON dictionaries. This function is used in particular when deserializing
-    a :class:`DatasetInfo` that was dumped to a JSON object. This acts as an analogue to
-    :meth:`Features.from_arrow_schema` and handles the recursive field-by-field instantiation, but doesn't require any
-    mapping to/from pyarrow, except for the fact that it takes advantage of the mapping of pyarrow primitive dtypes
+    generate_from_dict is the recursive helper for Features.from_dict,
+     and allows for a convenient constructor syntax
+    to define features from deserialized JSON dictionaries. This function
+     is used in particular when deserializing
+    a :class:`DatasetInfo` that was dumped to a JSON object. This acts
+     as an analogue to
+    :meth:`Features.from_arrow_schema` and handles the recursive
+    field-by-field instantiation, but doesn't require any
+    mapping to/from pyarrow, except for the fact that it takes
+    advantage of the mapping of pyarrow primitive dtypes
     that :class:`Value` automatically performs.
     """
     # Nested structures: we allow dict, list/tuples, sequences
@@ -969,7 +1090,9 @@ def generate_from_dict(obj: Any):
     class_type = globals()[obj.pop("_type")]
 
     if class_type == Sequence:
-        return Sequence(feature=generate_from_dict(obj["feature"]), length=obj["length"])
+        return Sequence(
+            feature=generate_from_dict(obj["feature"]), length=obj["length"]
+        )
 
     field_names = set(f.name for f in fields(class_type))
     return class_type(**{k: v for k, v in obj.items() if k in field_names})
@@ -977,18 +1100,25 @@ def generate_from_dict(obj: Any):
 
 def generate_from_arrow_type(pa_type: pa.DataType) -> FeatureType:
     """
-    generate_from_arrow_type accepts an arrow DataType and returns a datalab FeatureType to be used as the type for
+    generate_from_arrow_type accepts an arrow DataType and returns
+     a datalab FeatureType to be used as the type for
         a single field.
 
-    This is the high-level arrow->datalab type conversion and is inverted by get_nested_type().
+    This is the high-level arrow->datalab type conversion and is
+    inverted by get_nested_type().
 
-    This operates at the individual *field* level, whereas Features.from_arrow_schema() operates at the
-        full schema level and holds the methods that represent the bijection from Features<->pyarrow.Schema
+    This operates at the individual *field* level, whereas
+    Features.from_arrow_schema() operates at the
+        full schema level and holds the methods that represent
+         the bijection from Features<->pyarrow.Schema
     """
     if isinstance(pa_type, pa.StructType):
         return {field.name: generate_from_arrow_type(field.type) for field in pa_type}
     elif isinstance(pa_type, pa.FixedSizeListType):
-        return Sequence(feature=generate_from_arrow_type(pa_type.value_type), length=pa_type.list_size)
+        return Sequence(
+            feature=generate_from_arrow_type(pa_type.value_type),
+            length=pa_type.list_size,
+        )
     elif isinstance(pa_type, pa.ListType):
         feature = generate_from_arrow_type(pa_type.value_type)
         if isinstance(feature, (dict, tuple, list)):
@@ -998,14 +1128,17 @@ def generate_from_arrow_type(pa_type: pa.DataType) -> FeatureType:
         array_feature = [None, None, Array2D, Array3D, Array4D, Array5D][pa_type.ndims]
         return array_feature(shape=pa_type.shape, dtype=pa_type.value_type)
     elif isinstance(pa_type, pa.DictionaryType):
-        raise NotImplementedError  # TODO(thom) this will need access to the dictionary as well (for labels). I.e. to the py_table
+        raise NotImplementedError  # TODO(thom) this will need access
+        # to the dictionary as well (for labels). I.e. to the py_table
     elif isinstance(pa_type, pa.DataType):
         return Value(dtype=_arrow_to_datasets_dtype(pa_type))
     else:
         raise ValueError(f"Cannot convert {pa_type} to a Feature type.")
 
 
-def numpy_to_pyarrow_listarray(arr: np.ndarray, type: pa.DataType = None) -> pa.ListArray:
+def numpy_to_pyarrow_listarray(
+    arr: np.ndarray, type: pa.DataType = None
+) -> pa.ListArray:
     """Build a PyArrow ListArray from a multidimensional NumPy array"""
     arr = np.array(arr)
     values = pa.array(arr.flatten(), type=type)
@@ -1023,10 +1156,14 @@ def list_of_pa_arrays_to_pyarrow_listarray(l_arr: List[pa.Array]) -> pa.ListArra
     return pa.ListArray.from_arrays(offsets, values)
 
 
-def list_of_np_array_to_pyarrow_listarray(l_arr: List[np.ndarray], type: pa.DataType = None) -> pa.ListArray:
+def list_of_np_array_to_pyarrow_listarray(
+    l_arr: List[np.ndarray], type: pa.DataType = None
+) -> pa.ListArray:
     """Build a PyArrow ListArray from a possibly nested list of NumPy arrays"""
     if len(l_arr) > 0:
-        return list_of_pa_arrays_to_pyarrow_listarray([numpy_to_pyarrow_listarray(arr, type=type) for arr in l_arr])
+        return list_of_pa_arrays_to_pyarrow_listarray(
+            [numpy_to_pyarrow_listarray(arr, type=type) for arr in l_arr]
+        )
     else:
         return pa.array([], type=type)
 
@@ -1034,30 +1171,44 @@ def list_of_np_array_to_pyarrow_listarray(l_arr: List[np.ndarray], type: pa.Data
 class Features(dict):
     """A special dictionary that defines the internal structure of a dataset.
 
-    Instantiated with a dictionary of type ``dict[str, FieldType]``, where keys are the desired column names,
+    Instantiated with a dictionary of type ``dict[str, FieldType]``,
+    where keys are the desired column names,
     and values are the type of that column.
 
     ``FieldType`` can be one of the following:
-        - a :class:`datalab.Value` feature specifies a single typed value, e.g. ``int64`` or ``string``
-        - a :class:`datalab.ClassLabel` feature specifies a field with a predefined set of classes which can have labels
+        - a :class:`datalab.Value` feature specifies a single typed
+        value, e.g. ``int64`` or ``string``
+        - a :class:`datalab.ClassLabel` feature specifies a field with
+         a predefined set of classes which can have labels
           associated to them and will be stored as integers in the dataset
-        - a python :obj:`dict` which specifies that the field is a nested field containing a mapping of sub-fields to sub-fields
-          features. It's possible to have nested fields of nested fields in an arbitrary manner
-        - a python :obj:`list` or a :class:`datalab.Sequence` specifies that the field contains a list of objects. The python
-          :obj:`list` or :class:`datalab.Sequence` should be provided with a single sub-feature as an example of the feature
+        - a python :obj:`dict` which specifies that the field is a nested
+         field containing a mapping of sub-fields to sub-fields
+          features. It's possible to have nested fields of nested fields
+           in an arbitrary manner
+        - a python :obj:`list` or a :class:`datalab.Sequence` specifies
+         that the field contains a list of objects. The python
+          :obj:`list` or :class:`datalab.Sequence` should be provided
+          with a single sub-feature as an example of the feature
           type hosted in this list
 
           .. note::
 
-           A :class:`datalab.Sequence` with a internal dictionary feature will be automatically converted into a dictionary of
-           lists. This behavior is implemented to have a compatilbity layer with the TensorFlow Datasets library but may be
-           un-wanted in some cases. If you don't want this behavior, you can use a python :obj:`list` instead of the
+           A :class:`datalab.Sequence` with a internal dictionary
+           feature will be automatically converted into a dictionary of
+           lists. This behavior is implemented to have a compatilbity
+            layer with the TensorFlow Datasets library but may be
+           un-wanted in some cases. If you don't want this behavior
+           , you can use a python :obj:`list` instead of the
            :class:`datalab.Sequence`.
 
-        - a :class:`Array2D`, :class:`Array3D`, :class:`Array4D` or :class:`Array5D` feature for multidimensional arrays
-        - an :class:`Audio` feature to store the absolute path to an audio file or a dictionary with the relative path
-          to an audio file ("path" key) and its bytes content ("bytes" key). This feature extracts the audio data.
-        - :class:`datalab.Translation` and :class:`datalab.TranslationVariableLanguages`, the two features specific to Machine Translation
+        - a :class:`Array2D`, :class:`Array3D`, :class:`Array4D` or
+        :class:`Array5D` feature for multidimensional arrays
+        - an :class:`Audio` feature to store the absolute path to an
+        audio file or a dictionary with the relative path
+          to an audio file ("path" key) and its bytes content ("bytes" key).
+           This feature extracts the audio data.
+        - :class:`datalab.Translation` and :class:`datalab.TranslationVariableLanguages
+        `, the two features specific to Machine Translation
     """
 
     def get_bucket_features(self) -> List:
@@ -1105,8 +1256,6 @@ class Features(dict):
         #     print(feature_name)
 
         return bucket_features
-
-
 
     def get_pre_computed_features(self) -> List:
         """
@@ -1156,9 +1305,6 @@ class Features(dict):
 
         return pre_computed_features
 
-
-
-
     @property
     def type(self):
         """
@@ -1192,10 +1338,14 @@ class Features(dict):
         We use the '_type' key to infer the dataclass name of the feature FieldType.
 
         It allows for a convenient constructor syntax
-        to define features from deserialized JSON dictionaries. This function is used in particular when deserializing
-        a :class:`DatasetInfo` that was dumped to a JSON object. This acts as an analogue to
-        :meth:`Features.from_arrow_schema` and handles the recursive field-by-field instantiation, but doesn't require
-        any mapping to/from pyarrow, except for the fact that it takes advantage of the mapping of pyarrow primitive
+        to define features from deserialized JSON dictionaries.
+        This function is used in particular when deserializing
+        a :class:`DatasetInfo` that was dumped to a JSON object.
+         This acts as an analogue to
+        :meth:`Features.from_arrow_schema` and handles the recursive
+         field-by-field instantiation, but doesn't require
+        any mapping to/from pyarrow, except for the fact that
+        it takes advantage of the mapping of pyarrow primitive
         dtypes that :class:`Value` automatically performs.
 
         Args:
@@ -1205,7 +1355,8 @@ class Features(dict):
             :class:`Features`
 
         Examples:
-            >>> Features.from_dict({'_type': {'dtype': 'string', 'id': None, '_type': 'Value'}})
+            >>> Features.from_dict({'_type': {'dtype': 'string',
+             'id': None, '_type': 'Value'}})
             {'_type': Value(dtype='string', id=None)}
         """
         obj = generate_from_dict(dic)
@@ -1236,10 +1387,14 @@ class Features(dict):
         """
         encoded_batch = {}
         if set(batch) != set(self):
-            raise ValueError(f"Column mismatch between batch {set(batch)} and features {set(self)}")
+            raise ValueError(
+                f"Column mismatch between batch {set(batch)} and features {set(self)}"
+            )
         for key, column in batch.items():
             column = cast_to_python_objects(column)
-            encoded_batch[key] = [encode_nested_example(self[key], obj) for obj in column]
+            encoded_batch[key] = [
+                encode_nested_example(self[key], obj) for obj in column
+            ]
         return encoded_batch
 
     def decode_example(self, example: dict):
@@ -1252,7 +1407,9 @@ class Features(dict):
             :obj:`dict[str, Any]`
         """
         return {
-            column: feature.decode_example(value) if hasattr(feature, "decode_example") else value
+            column: feature.decode_example(value)
+            if hasattr(feature, "decode_example")
+            else value
             for column, (feature, value) in utils.zip_dict(
                 {key: value for key, value in self.items() if key in example}, example
             )
@@ -1305,7 +1462,8 @@ class Features(dict):
         """
         Reorder Features fields to match the field order of other Features.
 
-        The order of the fields is important since it matters for the underlying arrow data.
+        The order of the fields is important since it matters for the
+        underlying arrow data.
         Re-ordering the fields allows to make the underlying arrow data type match.
 
         Args:
@@ -1317,13 +1475,18 @@ class Features(dict):
         Examples:
 
             >>> from datalabs import Features, Sequence, Value
-            >>> # let's say we have to features with a different order of nested fields (for a and b for example)
-            >>> f1 = Features({"root": Sequence({"a": Value("string"), "b": Value("string")})})
-            >>> f2 = Features({"root": {"b": Sequence(Value("string")), "a": Sequence(Value("string"))}})
+            >>> # let's say we have to features with a different
+            order of nested fields (for a and b for example)
+            >>> f1 = Features({"root": Sequence({"a": Value("string"),
+             "b": Value("string")})})
+            >>> f2 = Features({"root": {"b": Sequence(Value("string")),
+             "a": Sequence(Value("string"))}})
             >>> assert f1.type != f2.type
-            >>> # re-ordering keeps the base structure (here Sequence is defined at the root level), but make the fields order match
+            >>> # re-ordering keeps the base structure (here Sequence
+            is defined at the root level), but make the fields order match
             >>> f1.reorder_fields_as(f2)
-            {'root': Sequence(feature={'b': Value(dtype='string', id=None), 'a': Value(dtype='string', id=None)}, length=-1, id=None)}
+            {'root': Sequence(feature={'b': Value(dtype='string', id=None),
+             'a': Value(dtype='string', id=None)}, length=-1, id=None)}
             >>> assert f1.reorder_fields_as(f2).type == f2.type
         """
 
@@ -1340,23 +1503,40 @@ class Features(dict):
                 if isinstance(source, dict):
                     source = {k: [v] for k, v in source.items()}
                     reordered = recursive_reorder(source, target, stack)
-                    return Sequence({k: v[0] for k, v in reordered.items()}, id=id_, length=length)
+                    return Sequence(
+                        {k: v[0] for k, v in reordered.items()}, id=id_, length=length
+                    )
                 else:
                     source = [source]
                     reordered = recursive_reorder(source, target, stack)
                     return Sequence(reordered[0], id=id_, length=length)
             elif isinstance(source, dict):
                 if not isinstance(target, dict):
-                    raise ValueError(f"Type mismatch: between {source} and {target}" + stack_position)
+                    raise ValueError(
+                        f"Type mismatch: between {source} and {target}" + stack_position
+                    )
                 if sorted(source) != sorted(target):
-                    raise ValueError(f"Keys mismatch: between {source} and {target}" + stack_position)
-                return {key: recursive_reorder(source[key], target[key], stack + f".{key}") for key in target}
+                    raise ValueError(
+                        f"Keys mismatch: between {source} and {target}" + stack_position
+                    )
+                return {
+                    key: recursive_reorder(source[key], target[key], stack + f".{key}")
+                    for key in target
+                }
             elif isinstance(source, list):
                 if not isinstance(target, list):
-                    raise ValueError(f"Type mismatch: between {source} and {target}" + stack_position)
+                    raise ValueError(
+                        f"Type mismatch: between {source} and {target}" + stack_position
+                    )
                 if len(source) != len(target):
-                    raise ValueError(f"Length mismatch: between {source} and {target}" + stack_position)
-                return [recursive_reorder(source[i], target[i], stack + f".<list>") for i in range(len(target))]
+                    raise ValueError(
+                        f"Length mismatch: between {source} and {target}"
+                        + stack_position
+                    )
+                return [
+                    recursive_reorder(source[i], target[i], stack + ".<list>")
+                    for i in range(len(target))
+                ]
             else:
                 return source
 

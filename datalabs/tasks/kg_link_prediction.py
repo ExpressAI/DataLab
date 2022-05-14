@@ -12,15 +12,15 @@
 # limitations under the License.
 
 from dataclasses import dataclass
-from typing import ClassVar, Dict, Optional, Tuple
+from typing import Dict
 
-from ..features import ClassLabel, Features, Value
-from .base import TaskTemplate
+from datalabs.tasks.base import TaskTemplate
 
 
 @dataclass
 class KGLinkPrediction(TaskTemplate):
-    # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
+    # `task` is not a ClassVar since we want it
+    # to be part of the `asdict` output for JSON serialization
     task_category: str = "kg-link-prediction"
     task: str = "kg-link-prediction"
     # input_schema: ClassVar[Features] = Features({"text": Value("string")})
@@ -29,9 +29,6 @@ class KGLinkPrediction(TaskTemplate):
     head_column: str = "head"
     link_column: str = "link"
     tail_column: str = "tail"
-
-
-
 
     @property
     def column_mapping(self) -> Dict[str, str]:

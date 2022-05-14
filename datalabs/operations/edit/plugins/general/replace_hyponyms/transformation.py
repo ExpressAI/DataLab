@@ -1,15 +1,26 @@
+import os
+import random
+import sys
+
+from checklist.editor import Editor
 import numpy as np
 import spacy
-import random
-from checklist.editor import Editor
-import os
-import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../')))
-from edit.editing import *
 
-@editing(name = "replace_hyponyms", contributor = "xl_augmenter",
-         task = "Any", description="This operation makes lexical substitutions using hyponyms of the common nouns in a sentence when possible")
-def replace_hyponyms(text:str, n=1, seed=0, max_outputs=1):
+from datalabs.operations.edit.editing import editing
+
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../"))
+)
+
+
+@editing(
+    name="replace_hyponyms",
+    contributor="xl_augmenter",
+    task="Any",
+    description="This operation makes lexical substitutions using hyponyms "
+    "of the common nouns in a sentence when possible",
+)
+def replace_hyponyms(text: str, n=1, seed=0, max_outputs=1):
     nlp = spacy.load("en_core_web_sm")
     editor = Editor()
 
@@ -23,7 +34,7 @@ def replace_hyponyms(text:str, n=1, seed=0, max_outputs=1):
     random.seed(0)  # To get the same output as in test.json
     random.shuffle(shuf_tokens)
     for token in shuf_tokens:
-        if token.pos_ == 'NOUN':
+        if token.pos_ == "NOUN":
             words.append(token)
             hyp_list = editor.hyponyms(text, token.text)
             for hyp in hyp_list:
@@ -32,18 +43,13 @@ def replace_hyponyms(text:str, n=1, seed=0, max_outputs=1):
             if len(perturbed_texts) >= max_outputs:
                 break
     perturbed_texts = (
-        perturbed_texts[: max_outputs]
-        if len(perturbed_texts) > 0
-        else [text]
+        perturbed_texts[:max_outputs] if len(perturbed_texts) > 0 else [text]
     )
 
-    return {"text_replace_hyponyms":perturbed_texts[0]}
+    return {"text_replace_hyponyms": perturbed_texts[0]}
     # return perturbed_texts
 
 
 # sentence = "Andrew finally returned the French book to Chris that I bought last week."
 # perturbed = replace_hyponyms(text=sentence)
 # print(perturbed)
-
-
-

@@ -14,16 +14,19 @@
 from dataclasses import dataclass
 from typing import ClassVar, Dict, Optional, Tuple
 
-from ..features import ClassLabel, Features, Value
-from .base import TaskTemplate
+from datalabs.features import ClassLabel, Features, Value
+from datalabs.tasks.base import TaskTemplate
 
 
 @dataclass
 class AspectBasedSentimentClassification(TaskTemplate):
-    # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
+    # `task` is not a ClassVar since we want it to be part of the
+    # `asdict` output for JSON serialization
     task_category: str = "aspect-based-sentiment-classification"
     task: str = "aspect-based-sentiment-classification"
-    input_schema: ClassVar[Features] = Features({"text": Value("string"), "aspect": Value("string")})
+    input_schema: ClassVar[Features] = Features(
+        {"text": Value("string"), "aspect": Value("string")}
+    )
     label_schema: ClassVar[Features] = Features({"labels": ClassLabel})
     aspect_column: str = "aspect"
     text_column: str = "text"

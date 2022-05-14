@@ -1,11 +1,9 @@
 import unittest
-import datalabs
-from data import Data, TextData
-from operation import OperationFunction, operation_function
-from featurize import *
 
+from featurize import get_entities_spacy, get_length, get_postag_nltk, get_postag_spacy
 
-
+import datalabs  # noqa
+from datalabs.operations.data import TextData
 
 """
 from datalab.operations.edit.core import add_typos_checklist
@@ -23,60 +21,44 @@ res = dataset["test"].apply(get_length)
 
 """
 
+
 class MyTestCase(unittest.TestCase):
-
-
     def test_Data_PREPROCESSING_REGISTRY(self):
         print("\n---- test_Data_PREPROCESSING_REGISTRY ---")
 
-        a = ['I love this movie', 'do you love this movie']
+        a = ["I love this movie", "do you love this movie"]
         A = TextData(a)
 
-        # print(A.data)
-
         B = A.apply(get_length)
-        # for b in B:
-        #     print(b)
+        print(B)
 
-
-
-
-    # def test_Data_PREPROCESSING_REGISTRY(self):
-    #     print("\n---- test_Data_PREPROCESSING_REGISTRY ---")
-    #
-    #     a = ['I love this movie', 'do you love this movie']
-    #     A = TextData(a)
-    #
-    #     print(A.data)
-    #     B = A.apply(preprocess.core.tokenize_nltk)
-    #     for b in B:
-    #         print(b)
-    # #
-    # #
     def test_Data_featurize(self):
         print("\n---- test_Data_featurize ---")
 
-        a = ['I love this movie.', 'apple is looking at buying U.K. startup for $1 billion.']
+        a = [
+            "I love this movie.",
+            "apple is looking at buying U.K. startup for $1 billion.",
+        ]
         A = TextData(a)
 
         B = A.apply(get_length)
-        # for b in B:
-        #     print(b)
+        print(B)
 
         B = A.apply(get_entities_spacy)
+        print(B)
         # for b in B:
         #     print(b)
 
         B = A.apply(get_postag_nltk)
+        print(B)
         # for b in B:
         #     print(b)
 
         B = A.apply(get_postag_spacy)
+        print(B)
         # for b in B:
         #     print(b)
 
 
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

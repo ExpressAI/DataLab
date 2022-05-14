@@ -10,14 +10,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import importlib
 from functools import wraps
+import importlib
 from typing import Optional, Union
 from unittest.mock import patch
 
-from .utils.logging import get_logger
-from .utils.patching import patch_submodule
-from .utils.streaming_download_manager import (
+from datalabs.utils.logging import get_logger
+from datalabs.utils.patching import patch_submodule
+from datalabs.utils.streaming_download_manager import (
     xbasename,
     xdirname,
     xglob,
@@ -33,20 +33,23 @@ from .utils.streaming_download_manager import (
     xpathsuffix,
 )
 
-
 logger = get_logger(__name__)
 
 
-def extend_module_for_streaming(module_path, use_auth_token: Optional[Union[str, bool]] = None):
+def extend_module_for_streaming(
+    module_path, use_auth_token: Optional[Union[str, bool]] = None
+):
     """Extend the module to support streaming.
 
     We patch some functions in the module to use `fsspec` to support data streaming:
     - We use `fsspec.open` to open and read remote files. We patch the module function:
       - `open`
-    - We use the "::" hop separator to join paths and navigate remote compressed/archive files. We patch the module
+    - We use the "::" hop separator to join paths and navigate remote
+     compressed/archive files. We patch the module
       functions:
       - `os.path.join`
-      - `pathlib.Path.joinpath` and `pathlib.Path.__truediv__` (called when using the "/" operator)
+      - `pathlib.Path.joinpath` and `pathlib.Path.__truediv__`
+      (called when using the "/" operator)
 
     The patched functions are replaced with custom functions defined to work with the
     :class:`~utils.streaming_download_manager.StreamingDownloadManager`.
@@ -85,5 +88,7 @@ def extend_module_for_streaming(module_path, use_auth_token: Optional[Union[str,
         patch.object(module.Path, "rglob", wrap_auth(xpathrglob)).start()
         patch.object(module.Path, "stem", property(fget=xpathstem)).start()
         patch.object(module.Path, "suffix", property(fget=xpathsuffix)).start()
-    patch_submodule(module, "pd.read_csv", wrap_auth(xpandas_read_csv), attrs=["__version__"]).start()
+    patch_submodule(
+        module, "pd.read_csv", wrap_auth(xpandas_read_csv), attrs=["__version__"]
+    ).start()
     module._patched_for_streaming = True

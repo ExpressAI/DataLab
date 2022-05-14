@@ -27,7 +27,6 @@
 
  
 
-
 ## Installation
 DataLab can be installed from PyPi
 ```bash
@@ -41,9 +40,45 @@ or from the source
 pip install --upgrade pip
 git clone git@github.com:ExpressAI/DataLab.git
 cd Datalab
-pip install .
+pip install -e .[dev]
 python -m nltk.downloader omw-1.4 # to support more feature calculation
 ```
+By adding `[dev]`, some [extra libraries](https://github.com/ExpressAI/DataLab/blob/03f69e5424859e3e9dbcbb487d3e1ce3de45a599/setup.py#L66) will be installed, such as `pre-commit`, `black` and so on.
+
+
+
+#### Code Quality Check?
+If you would like to contribute to DataLab, checking the code style and quality before your pull
+request is highly recommended. In this project, three types of checks will be expected: (a) black
+(2) flake8 (3) isort
+
+you could achieve this in two ways:
+
+##### Manually (suitable for developers using Github Destop)
+```shell
+pre-commit install
+git init .
+pre-commit run --all-files or
+```
+where `pre-commit run -all-files` is equivalent to
+```shell
+pre-commit run black   # (this is also equivalent to python -m black .)
+pre-commit run isort   # (this is also equivalent to isort .)
+pre-commit run flake8  # (this is  also equivalent to flake8)
+```
+Notably, `black` and `isort` can help us fix code style automatically, while `flake8` only
+provide hints with us, which means we need to fix these issues raised by `flake8`.
+
+
+
+##### Automatically (suitable for developers using Git CLI)
+
+```shell
+pre-commit install
+git init .
+git commit -m "your update message"
+```
+The `git commit` will automatically activate the command `pre-commit run -all-files`
 
 ## Using DataLab
 Below we give several simple examples to showcase the usage of DataLab:

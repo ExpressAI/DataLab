@@ -15,7 +15,6 @@
 """ Logging utilities. """
 
 import logging
-import os
 from logging import CRITICAL  # NOQA
 from logging import DEBUG  # NOQA
 from logging import ERROR  # NOQA
@@ -24,8 +23,8 @@ from logging import INFO  # NOQA
 from logging import NOTSET  # NOQA
 from logging import WARN  # NOQA
 from logging import WARNING  # NOQA
+import os
 from typing import Optional
-
 
 log_levels = {
     "debug": logging.DEBUG,
@@ -40,7 +39,8 @@ _default_log_level = logging.WARNING
 
 def _get_default_logging_level():
     """
-    If DATASETS_VERBOSITY env var is set to one of the valid choices return that as the new default level.
+    If DATASETS_VERBOSITY env var is set to one of the
+    valid choices return that as the new default level.
     If it is not - fall back to ``_default_log_level``
     """
     env_level_str = os.getenv("DATASETS_VERBOSITY", None)
@@ -156,7 +156,8 @@ def disable_propagation() -> None:
 
 def enable_propagation() -> None:
     """Enable propagation of the library log outputs.
-    Please disable the HuggingFace datalab library's default handler to prevent double logging if the root logger has
+    Please disable the HuggingFace datalab library's default
+     handler to prevent double logging if the root logger has
     been configured.
     """
     _get_library_root_logger().propagate = True

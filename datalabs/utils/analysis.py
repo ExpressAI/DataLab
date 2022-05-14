@@ -1,5 +1,6 @@
-from .py_utils import *  # noqa
 import json
+
+from datalabs.utils.py_utils import *  # noqa
 
 
 def cap_feature(s):
@@ -31,11 +32,11 @@ def beautify_interval(interval):
         return interval[0]
     else:
         if len(interval) == 1:
-            bk_name = '(' + format(float(interval[0]), '.3g') + ',)'
+            bk_name = "(" + format(float(interval[0]), ".3g") + ",)"
             return bk_name
         else:
-            range1_r = '(' + format(float(interval[0]), '.3g') + ','
-            range1_l = format(float(interval[1]), '.3g') + ')'
+            range1_r = "(" + format(float(interval[0]), ".3g") + ","
+            range1_l = format(float(interval[1]), ".3g") + ")"
             bk_name = range1_r + range1_l
             return bk_name
 
@@ -171,7 +172,8 @@ def bucket_attribute_specified_bucket_value(
     #
     #
     #
-    # [(0,), (0.1, 0.2), (0.3,0.4), (0.5, 0.6)] --> [(0,), (0,0.2), (0.2, 0.4), (0.4, 0.6)]
+    # [(0,), (0.1, 0.2), (0.3,0.4), (0.5, 0.6)] --> [(0,), (0,0.2),
+    # (0.2, 0.4), (0.4, 0.6)]
     # dict_old2new = interval_transformer(dict_bucket2span.keys())
     # dict_bucket2span_new = {}
     # for inter_list, span_list in dict_bucket2span.items():

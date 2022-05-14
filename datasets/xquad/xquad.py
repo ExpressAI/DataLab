@@ -90,6 +90,7 @@ class Xquad(datalabs.GeneratorBasedBuilder):
             # Homepage of the dataset for documentation
             homepage="https://github.com/deepmind/xquad",
             citation=_CITATION,
+            languages=[self.config.lang],
             task_templates=[
                 QuestionAnsweringExtractive(
                     question_column="question", context_column="context", answers_column="answers"

@@ -1,5 +1,5 @@
-from .eval_basic import *  # noqa
-from .py_utils import *  # noqa
+from datalabs.utils.eval_basic import *  # noqa
+from datalabs.utils.py_utils import *  # noqa
 
 
 def f1_score_seqeval_bucket(pred_chunks, true_chunks):
