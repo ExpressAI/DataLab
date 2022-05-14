@@ -1,7 +1,7 @@
 """WikiLingua: A Multilingual Abstractive Summarization Dataset"""
 import os
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @inproceedings{ladhak-etal-2020-wikilingua,
@@ -80,16 +80,20 @@ class WikiLinguaDataset(datalabs.GeneratorBasedBuilder):
             name=l,
             version=datalabs.Version("1.0.0"),
             description=f"WikiLingua Dataset for multilingual summarization, {l} split",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT),
+            ]
         ) for l in ["en", "es", "pt", "fr", "de", "ru", "it", "id", "nl", "ar", "zh", "vi", "th", "ja", "ko", "hi", "cs", "tr"]
     ] + [
         WikiLinguaConfig(
             name=f"{l}-en",
             version=datalabs.Version("1.0.0"),
             description=f"WikiLingua Dataset for crosslingual summarization, {l}-en split",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT),
+            ]
         ) for l in ["es", "pt", "fr", "de", "ru", "it", "id", "nl", "ar", "zh", "vi", "th", "ja", "ko", "hi", "cs", "tr"]
     ])
     DEFAULT_CONFIG_NAME = "en"
@@ -109,9 +113,9 @@ class WikiLinguaDataset(datalabs.GeneratorBasedBuilder):
             version=self.VERSION,
             license=_LICENSE,
             languages=[self.config.name],
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT),
             ],
         )
 

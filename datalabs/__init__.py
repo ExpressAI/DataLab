@@ -25,10 +25,6 @@ from packaging import version as _version
 import pyarrow
 from pyarrow import total_allocated_bytes
 
-from datalabs.operations import operation
-from datalabs.operations.data import *
-
-
 from datalabs.arrow_dataset import concatenate_datasets, Dataset
 from datalabs.arrow_reader import ArrowReader, ReadInstruction
 from datalabs.arrow_writer import ArrowWriter
@@ -79,9 +75,10 @@ from datalabs.load import (
     prepare_module,
 )
 from datalabs.metric import Metric
+from datalabs.operations import operation
 from datalabs.operations.aggregate import aggregating
+from datalabs.operations.data import *
 from datalabs.prompt import Prompt, PromptResult, Prompts
-from datalabs.tasks import get_task, TaskType
 from datalabs.splits import (
     NamedSplit,
     NamedSplitAll,
@@ -93,7 +90,5 @@ from datalabs.splits import (
     SplitInfo,
     SubSplitInfo,
 )
+from datalabs.tasks import get_task, TaskType
 from datalabs.utils import *
-from datalabs.operations import featurize, aggregate, edit, infer, preprocess
-
-SCRIPTS_VERSION = "master" if _version.parse(__version__).is_devrelease else __version__

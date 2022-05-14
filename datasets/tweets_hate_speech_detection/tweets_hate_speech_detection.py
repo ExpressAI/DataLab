@@ -16,11 +16,9 @@
 # Lint as: python3
 """Detecing which tweets showcase hate or racist remarks."""
 
-
 import csv
-
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 
 _DESCRIPTION = """\
@@ -57,7 +55,7 @@ class TweetsHateSpeechDetection(datalabs.GeneratorBasedBuilder):
             ),
             homepage="https://github.com/sharmaroshan/Twitter-Sentiment-Analysis",
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.hatespeech_identification)(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

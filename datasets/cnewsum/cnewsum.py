@@ -2,7 +2,7 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @inproceedings{Wang2021CNewSumAL,
@@ -50,8 +50,10 @@ class CNewSumDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("2.0.0"),
             description="CNewSum, A Large-scale Chinese News Summarization Dataset",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT),
+            ],
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -70,9 +72,9 @@ class CNewSumDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=["zh"],
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT),
             ],
         )
 

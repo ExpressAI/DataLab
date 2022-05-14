@@ -17,11 +17,8 @@
 
 import json
 import os
-
-# import datasets
-
 import datalabs
-from datalabs.tasks import SemanticParsing
+from datalabs import get_task, TaskType
 
 
 # logger = datasets.logging.get_logger(__name__)
@@ -44,7 +41,7 @@ _HOMEPAGE = "https://yale-lily.github.io/spider"
 
 _LICENSE = "CC BY-SA 4.0"
 
-_URL = "https://drive.google.com/uc?export=download&id=1_AckYkinAnhqmRQtGsQgUKAnTHxxX5J0"
+_URL = "https://drive.google.com/uc?export=download&id=1_AckYkinAnhqmRQtGsQgUKAnTHxxX5J0&confirm=yes"
 
 
 class Spider(datalabs.GeneratorBasedBuilder):
@@ -77,8 +74,9 @@ class Spider(datalabs.GeneratorBasedBuilder):
             license=_LICENSE,
             citation=_CITATION,
             task_templates=[
-                SemanticParsing(
-                    question_column="question", query_column="query"
+                get_task(TaskType.text_to_sql)(
+                    question_column="question",
+                    query_column="query"
                 )
             ],
         )

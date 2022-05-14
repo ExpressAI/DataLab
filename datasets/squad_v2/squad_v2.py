@@ -19,7 +19,7 @@
 import json
 
 import datalabs
-from datalabs.tasks import QuestionAnsweringExtractive
+from datalabs import get_task, TaskType
 
 
 # TODO(squad_v2): BibTeX citation
@@ -98,7 +98,7 @@ class SquadV2(datalabs.GeneratorBasedBuilder):
             homepage="https://rajpurkar.github.io/SQuAD-explorer/",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringExtractive(
+                get_task(TaskType.qa_extractive)(
                     question_column="question", context_column="context", answers_column="answers"
                 )
             ],

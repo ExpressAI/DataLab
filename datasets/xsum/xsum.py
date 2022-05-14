@@ -19,9 +19,8 @@
 
 import json
 import os
-
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs import get_task, TaskType
 
 _CITATION = """
 @inproceedings{narayan-etal-2018-dont,
@@ -97,9 +96,9 @@ class Xsum(datalabs.GeneratorBasedBuilder):
             supervised_keys=(_DOCUMENT, _SUMMARY),
             homepage="https://github.com/EdinburghNLP/XSum/tree/master/XSum-Dataset",
             citation=_CITATION,
-            task_templates=[Summarization(
-                text_column=_DOCUMENT,
-                summary_column=_SUMMARY),
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_DOCUMENT,
+                reference_column=_SUMMARY),
             ],
         )
 

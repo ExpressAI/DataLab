@@ -23,11 +23,8 @@ import json
 import re
 
 import apache_beam as beam
-
 import datalabs
-
-from datalabs.tasks import QuestionAnsweringAbstractiveNQ
-
+from datalabs import get_task, TaskType
 
 
 _CITATION = """
@@ -114,8 +111,10 @@ class NaturalQuestions(datalabs.BeamBasedBuilder):
             homepage=_URL,
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringAbstractiveNQ(
-                    question_column="question", context_column="context", answers_column="answers"
+                get_task(TaskType.qa_abstractive_nq)(
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers"
                 )
             ],
         )

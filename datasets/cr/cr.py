@@ -13,7 +13,7 @@
 
 import csv
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 _DESCRIPTION = """\
 CR is a customer review data set and each sample is labelled as positive or negative.
@@ -57,7 +57,7 @@ class CR(datalabs.GeneratorBasedBuilder):
             homepage="https://www.cs.uic.edu/~liub/FBS/opinion-mining-final-WSDM.pdf",
             citation=_CITATION,
             languages=["en"],
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.sentiment_classification)(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

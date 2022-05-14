@@ -30,13 +30,13 @@ This dataset is used in the paper of adversarial multi-task learning in text cla
 """
 
 _HOMEPAGE = "http://pfliu.com/paper/adv-mtl.html"
-
 # TODO: Add the licence for the dataset here if you can find it
 _LICENSE = "N/A"
-
 # The HuggingFace dataset library don't host the datalab but only point to the original files
 # This can be an arbitrary nested dict/list of URLs (see below in `_split_generators` method)
 _URLs = "https://raw.githubusercontent.com/ShiinaHiiragi/multi-task-dataset/master/{}.task.{}"
+_LANGUAGES = ["en"]
+_TASK_TEMPLATES = [get_task(TaskType.sentiment_classification)()]
 
 class AdvMtl(datalabs.GeneratorBasedBuilder):
     VERSION = datalabs.Version("1.0.0")
@@ -63,7 +63,8 @@ class AdvMtl(datalabs.GeneratorBasedBuilder):
             license=_LICENSE,
             # Citation for the dataset
             citation=_CITATION,
-            task_templates=[get_task(TaskType.sentiment_classification)()],
+            task_templates=_TASK_TEMPLATES,
+            languages = _LANGUAGES,
         )
 
     def _split_generators(self, dl_manager):

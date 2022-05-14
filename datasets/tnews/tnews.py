@@ -20,10 +20,9 @@ import datalabs
 import zipfile
 from pydantic import FilePath
 import requests
-from datalabs.tasks import TextClassification, TopicClassification
-from datalabs import Dataset, Prompts
+from datalabs import get_task, TaskType
 
-from datalabs.utils.more_features import prefix_dict_key, get_feature_arguments
+
 
 _DESCRIPTION = """\
 TNEWS is a short news text data set from Toutiao and each text is labelled with one of 15 categories of news. 
@@ -86,7 +85,10 @@ class TNEWS(datalabs.GeneratorBasedBuilder):
             homepage="https://www.clue.ai/index.html",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[TopicClassification(text_column="text", label_column="label", task="topic-classification")],
+            task_templates=[get_task(TaskType.topic_classification)(
+                text_column="text",
+                label_column="label"
+            )],
         )
 
     def _split_generators(self, dl_manager):

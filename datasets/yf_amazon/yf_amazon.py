@@ -12,9 +12,10 @@
 # limitations under the License.
 
 import csv
-import datalabs
-from datalabs.tasks import TextClassification
 import os
+import datalabs
+from datalabs import get_task, TaskType
+
 _DESCRIPTION = """\
 Dataset from Amazon Reviews.
 For more information, please refer to https://github.com/SophonPlus/ChineseNlpCorpus/blob/master/datasets/yf_amazon/intro.ipynb. 
@@ -46,7 +47,9 @@ class YFAmazon(datalabs.GeneratorBasedBuilder):
             homepage="xx",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[TextClassification(text_column="title", label_column="rating")],
+            task_templates=[get_task(TaskType.sentiment_classification)(
+                text_column="title",
+                label_column="rating")],
         )
 
     def _split_generators(self, dl_manager):

@@ -18,9 +18,8 @@
 
 
 import json
-
 import datalabs
-from datalabs.tasks import QuestionAnsweringDCQA
+from datalabs import get_task, TaskType
 
 
 logger = datalabs.logging.get_logger(__name__)
@@ -103,9 +102,7 @@ class Dcqa(datalabs.GeneratorBasedBuilder):
             homepage="https://github.com/wjko2/DCQA-Discourse-Comprehension-by-Question-Answering",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringDCQA(
-                    task= "question-answering-dcqa"
-                )
+                get_task(TaskType.qa_dcqa)()
             ],
         )
 

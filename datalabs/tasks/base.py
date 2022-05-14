@@ -31,6 +31,7 @@ class TaskType(str, Enum):
     kg_prediction = "kg-prediction"
     kg_link_tail_prediction = "kg-link-tail-prediction"
     machine_translation = "machine-translation"
+    code_generation = "code-generation"
     qa = "qa"
     qa_extractive = "qa-extractive"
     qa_abstractive = "qa-abstractive"
@@ -58,10 +59,16 @@ class TaskType(str, Enum):
     multi_ref_summarization = "multi-ref-summarization"
     text_classification = "text-classification"
     sentiment_classification = "sentiment-classification"
+    emotion_classification = "emotion-classification"
+    intent_classification = "intent-classification"
+    hatespeech_identification = "hatespeech-identification"
+    spam_identification = "spam-identification"
+    grammatical_judgment = "grammatical-judgment"
     question_classification = "question-classification"
     topic_classification = "topic-classification"
     text_pair_classification = "text-pair-classification"
     natural_language_inference = "natural-language-inference"
+    paraphrase_identification = "paraphrase-identification"
 
     @staticmethod
     def list():

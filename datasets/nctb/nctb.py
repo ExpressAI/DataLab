@@ -1,7 +1,7 @@
 """NCTB Bengali abstractive summarization dataset."""
 import os
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @inproceedings{chowdhury-etal-2021-unsupervised,
@@ -70,8 +70,9 @@ class NCTBDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="NCTB, An Abstractive Bengali Summarization Dataset.",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -90,10 +91,9 @@ class NCTBDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=["bn"],  # Bengali: https://huggingface.co/languages#:~:text=51-,Bengali,-bn
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
-            ],
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         )
 
     def _split_generators(self, dl_manager):

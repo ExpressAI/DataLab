@@ -1,6 +1,6 @@
 import json
 import datalabs
-from datalabs.tasks import MachineTranslation
+from datalabs import get_task, TaskType
 
 from datalabs.utils.logging import get_logger
 
@@ -80,8 +80,7 @@ class MConala(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             languages=[self.config.name,'python'],
             task_templates=[
-                MachineTranslation(
-                    task="code-generation",
+                get_task(TaskType.code_generation)(
                     translation_column="translation",
                     lang_sub_columns=[self.config.name,'python'],
                 )

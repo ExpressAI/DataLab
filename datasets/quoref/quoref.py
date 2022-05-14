@@ -19,10 +19,8 @@
 # sys.path.append("..")
 import json
 import os
-
 import datalabs
-
-from datalabs.tasks import QuestionAnsweringExtractive
+from datalabs import get_task, TaskType
 
 # TODO(quoref): BibTeX citation
 _CITATION = """\
@@ -79,8 +77,10 @@ class Quoref(datalabs.GeneratorBasedBuilder):
             homepage="https://leaderboard.allenai.org/quoref/submissions/get-started",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringExtractive(
-                    question_column="question", context_column="context", answers_column="answers"
+                get_task(TaskType.qa_extractive)(
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers"
                 )
             ],
         )

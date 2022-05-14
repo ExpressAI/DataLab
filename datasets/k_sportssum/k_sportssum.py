@@ -2,7 +2,7 @@
 import os
 import json
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @inproceedings{wang2022knowledge,
@@ -50,8 +50,8 @@ class KSportsSumDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="Dataset for sports game summarization.",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE, reference_column=_ABSTRACT)]
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -73,9 +73,9 @@ class KSportsSumDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=["zh"],
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT),
             ],
         )
 
@@ -86,24 +86,25 @@ class KSportsSumDataset(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={
-                    "f_path": os.path.join(f_path, "train.json")}
+                    "f_path": os.path.join(f_path, "K-SportsSum/train.json")}
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 gen_kwargs={
-                    "f_path": os.path.join(f_path, "val.json")}
+                    "f_path": os.path.join(f_path, "K-SportsSum/val.json")}
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 gen_kwargs={
-                    "f_path": os.path.join(f_path, "test.json")}
+                    "f_path": os.path.join(f_path, "K-SportsSum/test.json")}
             ),
         ]
 
     def _generate_examples(self, f_path):
         """Generate K-SportsSum examples."""
-        with open("K-SportsSum/val.json", encoding="utf-8") as f:
+        with open(f_path) as f:
             original_datas = json.load(f)
+
 
         datas = []
         for original_data in original_datas:

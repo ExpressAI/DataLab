@@ -12,10 +12,8 @@
 # limitations under the License.
 
 import csv
-
 import datalabs
-from datalabs.tasks import AspectBasedSentimentClassification
-from datalabs import Dataset
+from datalabs import get_task, TaskType
 
 _DESCRIPTION = """\
 Twitter is an aspect-based sentiment classification dataset, processed from tweets. Each tweet is labeled as positive,
@@ -61,8 +59,8 @@ class Twitter(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["en"],
             task_templates=[
-                AspectBasedSentimentClassification(
-                    aspect_column="aspect",
+                get_task(TaskType.aspect_based_sentiment_classification)(
+                    span_column="aspect",
                     text_column="text",
                     label_column="label"
                 )]

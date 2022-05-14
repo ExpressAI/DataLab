@@ -51,12 +51,54 @@ class SentimentClassification(TextClassification):
     label_column: str = "label"
 
 
+@register_task(TaskType.emotion_classification)
+@dataclass
+class EmotionClassification(TextClassification):
+    task: TaskType = TaskType.emotion_classification
+    text_column: str = "text"
+    label_column: str = "label"
+
+
+@register_task(TaskType.hatespeech_identification)
+@dataclass
+class HatespeechIdentification(TextClassification):
+    task: TaskType = TaskType.hatespeech_identification
+    text_column: str = "text"
+    label_column: str = "label"
+
+
 @register_task(TaskType.question_classification)
 @dataclass
 class QuestionClassification(TextClassification):
     task: TaskType = TaskType.question_classification
-    text_column: str = "question"
+    text_column: str = "text"
     label_column: str = "label"
+
+
+
+@register_task(TaskType.spam_identification)
+@dataclass
+class SpamClassification(TextClassification):
+    task: TaskType = TaskType.spam_identification
+    text_column: str = "text"
+    label_column: str = "label"
+
+
+@register_task(TaskType.intent_classification)
+@dataclass
+class IntentClassification(TextClassification):
+    task: TaskType = TaskType.intent_classification
+    text_column: str = "text"
+    label_column: str = "label"
+
+@register_task(TaskType.grammatical_judgment)
+@dataclass
+class GrammaticalJudgment(TextClassification):
+    task: TaskType = TaskType.grammatical_judgment
+    text_column: str = "text"
+    label_column: str = "label"
+
+
 
 
 @register_task(TaskType.topic_classification)

@@ -28,7 +28,7 @@ import re
 import xml.etree.cElementTree as ElementTree
 from abc import ABC, abstractmethod
 import datalabs
-from datalabs.tasks import MachineTranslation
+from datalabs import get_task, TaskType
 
 
 logger = datalabs.logging.get_logger(__name__)
@@ -705,7 +705,7 @@ class Wmt(ABC, datalabs.GeneratorBasedBuilder):
             supervised_keys=(source, target),
             homepage=self.config.url,
             citation=self.config.citation,
-            task_templates=[MachineTranslation(
+            task_templates=[get_task(TaskType.machine_translation)(
                 translation_column="translation",
                 lang_sub_columns=self.config.language_pair
             )]

@@ -1,7 +1,7 @@
 """QBSUM:  A large-scale query-based document summarization dataset from real-world applications"""
 import os
 import datalabs
-from datalabs.tasks import Summarization, QuerySummarization
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @article{DBLP:journals/csl/ZhaoYLZHCNLG21,
@@ -64,8 +64,10 @@ class QBSUMDataset(datalabs.GeneratorBasedBuilder):
             name="query-based",
             version=datalabs.Version("1.0.0"),
             description=f"QBSUM Dataset for query-based summarization",
-            task_templates=[QuerySummarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT, query_column=_KEY)]
+            task_templates=[get_task(TaskType.query_summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT,
+                guidance_column=_KEY)]
         )]
     DEFAULT_CONFIG_NAME = "query-based"
 
@@ -84,9 +86,10 @@ class QBSUMDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=[self.config.name],
-            task_templates=[QuerySummarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT, query_column=_KEY),
-            ],
+            task_templates=[get_task(TaskType.query_summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT,
+                guidance_column=_KEY)]
         )
 
     def _split_generators(self, dl_manager):

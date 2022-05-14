@@ -2,20 +2,12 @@ import json
 from operator import imod
 import os
 import datalabs
-from datalabs.tasks import Summarization, MultiDocSummarization
+from datalabs import get_task, TaskType
 from datalabs.tasks.summarization import _MDS_TEXT_COLUMN
 import tempfile
 import subprocess
 
 
-# the following package are needed when more additional features are expected to be calculated
-from featurize.summarization import (
-    get_features_sample_level,
-    get_schema_of_sample_level_features,
-    )
-from datalabs.utils.more_features import (
-    get_feature_schemas,
-)
 
 
 
@@ -87,56 +79,75 @@ class MultiNewsDataset(datalabs.GeneratorBasedBuilder):
             name="raw-single",
             version=datalabs.Version("1.0.0"),
             description="MultiNews dataset for summarization, single document version, with raw data",
-            task_templates=[Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         ),
         MultiNewsConfig(
             name="raw-cleaned-single",
             version=datalabs.Version("1.0.0"),
             description="MultiNews dataset for summarization, single document version, with cleaned raw data, see issue https://github.com/Alex-Fabbri/Multi-News/issues/11",
-            task_templates=[Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         ),
         MultiNewsConfig(
             name="preprocessed-single",
             version=datalabs.Version("1.0.0"),
             description="MultiNews dataset for summarization, single document version, with preprocessed data",
-            task_templates=[Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         ),
         MultiNewsConfig(
             name="truncated-single",
             version=datalabs.Version("1.0.0"),
             description="MultiNews dataset for summarization, single document version, with preprocessed and truncated data",
-            task_templates=[Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         ),
         MultiNewsConfig(
             name="raw-multi",
             version=datalabs.Version("1.0.0"),
             description="MultiNews dataset for summarization, multi-document version, with raw data",
-            task_templates=[MultiDocSummarization(text_column=_MDS_TEXT_COLUMN, summary_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.multi_doc_summarization)(
+                    source_column=_MDS_TEXT_COLUMN,
+                    reference_column=_ABSTRACT)]
         ),
         MultiNewsConfig(
             name="raw-cleaned-multi",
             version=datalabs.Version("1.0.0"),
             description="MultiNews dataset for summarization, multi-document version, with cleaned raw data, see issue https://github.com/Alex-Fabbri/Multi-News/issues/11",
-            task_templates=[MultiDocSummarization(text_column=_MDS_TEXT_COLUMN, summary_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.multi_doc_summarization)(
+                    source_column=_MDS_TEXT_COLUMN,
+                    reference_column=_ABSTRACT)]
         ),
         MultiNewsConfig(
             name="preprocessed-multi",
             version=datalabs.Version("1.0.0"),
             description="MultiNews dataset for summarization, multi-document version, with preprocessed data",
-            task_templates=[MultiDocSummarization(text_column=_MDS_TEXT_COLUMN, summary_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.multi_doc_summarization)(
+                    source_column=_MDS_TEXT_COLUMN,
+                    reference_column=_ABSTRACT)]
         ),
         MultiNewsConfig(
             name="truncated-multi",
             version=datalabs.Version("1.0.0"),
             description="MultiNews dataset for summarization, multi-document version, with preprocessed and truncated data",
-            task_templates=[MultiDocSummarization(text_column=_MDS_TEXT_COLUMN, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.multi_doc_summarization)(
+                source_column=_MDS_TEXT_COLUMN,
+                reference_column=_ABSTRACT)]
         ), 
     ]
     DEFAULT_CONFIG_NAME = "raw-multi"
 
     def _info(self):
         # Should return a datalab.DatasetInfo object
-        features_dataset = {}
+
         if "multi" in self.config.name:
             features_sample=datalabs.Features(
                 {
@@ -151,15 +162,9 @@ class MultiNewsDataset(datalabs.GeneratorBasedBuilder):
                     _ABSTRACT: datalabs.Value("string"),
                 }
             )
-            if self.feature_expanding:
-                features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                        get_schema_of_sample_level_features)
-
-
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features_sample,
-            features_dataset=features_dataset,
             supervised_keys=None,
             homepage="https://github.com/Alex-Fabbri/Multi-News",
             citation=_CITATION,
@@ -218,14 +223,8 @@ class MultiNewsDataset(datalabs.GeneratorBasedBuilder):
                     row_tgt = row_tgt.strip().lstrip("– ")
 
                     raw_feature_info = {"text": row_src, "summary": row_tgt}
+                    yield id_, raw_feature_info
 
-                    if not self.feature_expanding:
-                        yield id_, raw_feature_info
-                    else:
-                        additional_feature_info = get_features_sample_level(raw_feature_info)
-                        raw_feature_info.update(additional_feature_info)
-                        # print(additional_feature_info)
-                        yield id_, raw_feature_info
         elif self.config.name in ["preprocessed-single", "truncated-single"]:
             with open(src_path, encoding="utf-8") as f_src, open(tgt_path, encoding="utf-8") as f_tgt:
                 for (id_, (row_src, row_tgt)) in enumerate(zip(f_src, f_tgt)):
@@ -234,13 +233,9 @@ class MultiNewsDataset(datalabs.GeneratorBasedBuilder):
 
                     raw_feature_info = {"text": row_src, "summary": row_tgt}
 
-                    if not self.feature_expanding:
-                        yield id_, raw_feature_info
-                    else:
-                        additional_feature_info = get_features_sample_level(raw_feature_info)
-                        raw_feature_info.update(additional_feature_info)
-                        # print(additional_feature_info)
-                        yield id_, raw_feature_info
+
+                    yield id_, raw_feature_info
+
 
 
         elif self.config.name in ["raw-multi", "raw-cleaned-multi"]:

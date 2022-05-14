@@ -3,17 +3,9 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import Summarization, QuerySummarization
+from datalabs import get_task, TaskType
 from nltk import word_tokenize
 
-# the following package are needed when more additional features are expected to be calculated
-from featurize.summarization import (
-    get_features_sample_level,
-    get_schema_of_sample_level_features,
-    )
-from datalabs.utils.more_features import (
-    get_feature_schemas,
-)
 
 
 
@@ -91,21 +83,24 @@ class QMSumDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="QMSum dataset for summarization, single document summarization version",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         ),
         QMSumConfig(
             name="query-based",
             version=datalabs.Version("1.0.0"),
             description="QMSum dataset for summarization, query-based summarization version",
-            task_templates=[QuerySummarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT, query_column=_KEY)]
+            task_templates=[get_task(TaskType.query_summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT,
+                guidance_column=_KEY)]
         ),
     ]
     DEFAULT_CONFIG_NAME = "query-based"
 
     def _info(self):
-        features_dataset = {}
+
         # Should return a datalab.DatasetInfo object
         if "document" in self.config.name:
 
@@ -115,10 +110,6 @@ class QMSumDataset(datalabs.GeneratorBasedBuilder):
                     _ABSTRACT: datalabs.Value("string"),
                 }
             )
-            if self.feature_expanding:
-                features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                        get_schema_of_sample_level_features)
-
         else:
             features_sample = datalabs.Features(
                 {
@@ -130,7 +121,6 @@ class QMSumDataset(datalabs.GeneratorBasedBuilder):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features_sample,
-            features_dataset=features_dataset,
             supervised_keys=None,
             homepage="https://github.com/Yale-LILY/QMSum",
             citation=_CITATION,
@@ -175,16 +165,8 @@ class QMSumDataset(datalabs.GeneratorBasedBuilder):
 
                         raw_feature_info = cur
 
-                        if not self.feature_expanding:
-                            yield _id, raw_feature_info
-                        else:
-                            additional_feature_info = get_features_sample_level(raw_feature_info)
-                            raw_feature_info.update(additional_feature_info)
-                            # print(additional_feature_info)
-                            yield _id, raw_feature_info
 
-
-
+                        yield _id, raw_feature_info
 
                     else:
                         query, src = clean_data(query), clean_data(src)
@@ -201,15 +183,8 @@ class QMSumDataset(datalabs.GeneratorBasedBuilder):
 
                         raw_feature_info = cur
 
-                        if not self.feature_expanding:
-                            yield _id, raw_feature_info
-                        else:
-                            additional_feature_info = get_features_sample_level(raw_feature_info)
-                            raw_feature_info.update(additional_feature_info)
-                            # print(additional_feature_info)
-                            yield _id, raw_feature_info
 
-
+                        yield _id, raw_feature_info
 
                     else:
                         query, src = clean_data(query), clean_data(src)

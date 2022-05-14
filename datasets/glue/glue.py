@@ -20,12 +20,9 @@
 import csv
 import os
 import textwrap
-
 import numpy as np
-
 import datalabs
-from datalabs.tasks import TextMatching
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 _GLUE_CITATION = """\
 @inproceedings{wang2019glue,
@@ -83,10 +80,9 @@ _MNLI_BASE_KWARGS = dict(
       }"""
     ),
     url="http://www.nyu.edu/projects/bowman/multinli/",
-    task_templates=[TextMatching(
+    task_templates=[get_task(TaskType.natural_language_inference)(
         text1_column="text1",
         text2_column="text2",
-        task="natural-language-inference",
         label_column="label"),
     ],
 )
@@ -167,7 +163,9 @@ class Glue(datalabs.GeneratorBasedBuilder):
             }"""
             ),
             url="https://nyu-mll.github.io/CoLA/",
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.grammatical_judgment)(
+                text_column="text",
+                label_column="label")],
         ),
         GlueConfig(
             name="sst2",
@@ -194,7 +192,8 @@ class Glue(datalabs.GeneratorBasedBuilder):
             }"""
             ),
             url="https://datalab.stanford.edu/sentiment/index.html",
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.sentiment_classification)(
+                text_column="text", label_column="label")],
         ),
         GlueConfig(
             name="mrpc",
@@ -219,10 +218,9 @@ class Glue(datalabs.GeneratorBasedBuilder):
             }"""
             ),
             url="https://www.microsoft.com/en-us/download/details.aspx?id=52398",
-            task_templates=[TextMatching(
+            task_templates=[get_task(TaskType.paraphrase_identification)(
                 text1_column="text1",
                 text2_column="text2",
-                task="natural-language-inference",
                 label_column="label"),
             ],
         ),
@@ -253,10 +251,9 @@ class Glue(datalabs.GeneratorBasedBuilder):
           }"""
             ),
             url="https://data.quora.com/First-Quora-Dataset-Release-Question-Pairs",
-            task_templates=[TextMatching(
+            task_templates=[get_task(TaskType.paraphrase_identification)(
                 text1_column="text1",
                 text2_column="text2",
-                task="natural-language-inference",
                 label_column="label"),
             ],
         ),
@@ -287,12 +284,12 @@ class Glue(datalabs.GeneratorBasedBuilder):
             ),
             url="http://ixa2.si.ehu.es/stswiki/index.php/STSbenchmark",
             process_label=np.float32,
-            task_templates=[TextMatching(
-                text1_column="text1",
-                text2_column="text2",
-                task="natural-language-inference",
-                label_column="label"),
-            ],
+            # task_templates=[TextMatching(
+            #     text1_column="text1",
+            #     text2_column="text2",
+            #     task="natural-language-inference",
+            #     label_column="label"),
+            # ],
         ),
         GlueConfig(
             name="mnli",
@@ -359,10 +356,9 @@ class Glue(datalabs.GeneratorBasedBuilder):
             }"""
             ),
             url="https://rajpurkar.github.io/SQuAD-explorer/",
-            task_templates=[TextMatching(
+            task_templates=[get_task(TaskType.natural_language_inference)(
                 text1_column="text1",
                 text2_column="text2",
-                task="question-answer-matching",
                 label_column="label"),
             ],
         ),
@@ -420,10 +416,9 @@ class Glue(datalabs.GeneratorBasedBuilder):
             }"""
             ),
             url="https://aclweb.org/aclwiki/Recognizing_Textual_Entailment",
-            task_templates=[TextMatching(
+            task_templates=[get_task(TaskType.natural_language_inference)(
                 text1_column="text1",
                 text2_column="text2",
-                task="question-answer-matching",
                 label_column="label"),
             ],
         ),
@@ -465,10 +460,9 @@ class Glue(datalabs.GeneratorBasedBuilder):
             }"""
             ),
             url="https://cs.nyu.edu/faculty/davise/papers/WinogradSchemas/WS.html",
-            task_templates=[TextMatching(
+            task_templates=[get_task(TaskType.natural_language_inference)(
                 text1_column="text1",
                 text2_column="text2",
-                task="question-answer-matching",
                 label_column="label"),
             ],
         ),
@@ -494,10 +488,9 @@ class Glue(datalabs.GeneratorBasedBuilder):
             data_dir="",  # We are downloading a tsv.
             citation="",  # The GLUE citation is sufficient.
             url="https://gluebenchmark.com/diagnostics",
-            task_templates=[TextMatching(
+            task_templates=[get_task(TaskType.natural_language_inference)(
                 text1_column="text1",
                 text2_column="text2",
-                task="question-answer-matching",
                 label_column="label"),
             ],
         ),

@@ -16,7 +16,7 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs import get_task, TaskType
 
 _CITATION = None
 _DESCRIPTION = """
@@ -64,9 +64,9 @@ class PubmedSumConfig(datalabs.BuilderConfig):
 class PubmedSumDataset(datalabs.GeneratorBasedBuilder):
     """PubmedSum Dataset."""
 
-    _TRAIN_FILE = "https://huggingface.co/datalab/ccdv/pubmed-summarization/resolve/main/train.zip"
-    _VAL_FILE = "https://huggingface.co/datalab/ccdv/pubmed-summarization/resolve/main/val.zip"
-    _TEST_FILE = "https://huggingface.co/datalab/ccdv/pubmed-summarization/resolve/main/test.zip"
+    _TRAIN_FILE = "https://huggingface.co/datasets/ccdv/pubmed-summarization/resolve/main/train.zip"
+    _VAL_FILE = "https://huggingface.co/datasets/ccdv/pubmed-summarization/resolve/main/val.zip"
+    _TEST_FILE = "https://huggingface.co/datasets/ccdv/pubmed-summarization/resolve/main/test.zip"
     BUILDER_CONFIGS = [
         PubmedSumConfig(
             name="section",
@@ -95,9 +95,9 @@ class PubmedSumDataset(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://github.com/armancohan/long-summarization",
             citation=_CITATION,
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT),
             ],
         )
 

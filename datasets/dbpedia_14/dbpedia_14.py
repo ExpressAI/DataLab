@@ -19,7 +19,7 @@ import csv
 import os
 
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 # TODO: Add BibTeX citation
 # Find for instance the citation on arxiv or on the dataset repo/website
@@ -53,7 +53,7 @@ _HOMEPAGE = "https://wiki.dbpedia.org/develop/datasets"
 _LICENSE = "Creative Commons Attribution-ShareAlike 3.0 and the GNU Free Documentation License"
 
 _URLs = {
-    "dbpedia_14": "https://drive.google.com/uc?export=download&id=0Bz8a_Dbh9QhbQ2Vic1kxMmZZQ1k",
+    "dbpedia_14": "https://drive.google.com/uc?export=download&id=0Bz8a_Dbh9QhbQ2Vic1kxMmZZQ1k&confirm=yes",
 }
 
 
@@ -112,7 +112,7 @@ class DBpedia14(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             license=_LICENSE,
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.topic_classification)(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

@@ -19,10 +19,8 @@
 
 import json
 import textwrap
-
-# import datasets
 import datalabs
-from datalabs.tasks import QuestionAnsweringExtractive,QuestionAnsweringHotpot
+from datalabs import get_task, TaskType
 
 
 _CITATION = """
@@ -120,8 +118,9 @@ class HotpotQA(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://hotpotqa.github.io/",
             citation=_CITATION,
+            languages = ["en"],
             task_templates=[
-                QuestionAnsweringHotpot(
+                get_task(TaskType.qa_hotpot)(
                     question_column="question", context_column="context", answers_column="answers", supporting_column="supporting_facts"
                 )
             ],

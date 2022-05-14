@@ -18,8 +18,7 @@
 
 
 import datalabs
-from datalabs.tasks import SequenceLabeling
-from datalabs.task_dataset import SequenceLabelingDataset
+from datalabs import get_task, TaskType
 
 logger = datalabs.logging.get_logger(__name__)
 
@@ -136,7 +135,9 @@ class WNUT_17(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="http://noisy-text.github.io/2017/emerging-rare-entities.html",
             citation=_CITATION,
-            task_templates=[SequenceLabeling(tokens_column="tokens", tags_column="tags")],
+            task_templates=[get_task(TaskType.named_entity_recognition)(
+                tokens_column="tokens",
+                tags_column="tags")],
         )
 
     def _split_generators(self, dl_manager):

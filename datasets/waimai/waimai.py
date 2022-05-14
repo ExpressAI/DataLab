@@ -52,7 +52,9 @@ class WAIMAI(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.text_classification)()],
+            task_templates=[get_task(TaskType.sentiment_classification)(
+                text_column="text",
+                label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

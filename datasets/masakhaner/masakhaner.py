@@ -18,9 +18,9 @@
 
 import datalabs
 import os
+from datalabs import get_task, TaskType
 
-from datalabs.tasks import SequenceLabeling
-from datalabs.task_dataset import SequenceLabelingDataset
+
 
 logger = datalabs.logging.get_logger(__name__)
 
@@ -123,8 +123,8 @@ class MasakhaNER(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://www.aclweb.org/anthology/W03-0419/",
             citation=_CITATION,
-            task_templates=[SequenceLabeling(tokens_column="tokens", tags_column="tags",
-                                                          task="named-entity-recognition")]
+            task_templates=[get_task(TaskType.named_entity_recognition)
+                            (tokens_column="tokens", tags_column="tags")]
         )
 
     def _split_generators(self, dl_manager):

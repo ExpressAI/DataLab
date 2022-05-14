@@ -10,13 +10,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import json
 import os
-
 import datalabs
-
-from datalabs.tasks import QuestionAnsweringMultipleChoicesWithoutContext
+from datalabs import get_task, TaskType
 
 
 
@@ -98,10 +95,10 @@ class Winogrande(datalabs.GeneratorBasedBuilder):
             homepage="https://leaderboard.allenai.org/winogrande/submissions/get-started",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringMultipleChoicesWithoutContext(
-                    question_column="question", answers_column="answers",
+                get_task(TaskType.qa_multiple_choice_without_context)(
+                    question_column="question",
+                    answers_column="answers",
                     options_column="options",
-                    task="question-answering-multiple-choices-without-context",
                 )
             ],
         )

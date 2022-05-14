@@ -21,8 +21,7 @@ import json
 import os
 
 import datalabs
-from datalabs.tasks import Summarization
-
+from datalabs import get_task, TaskType
 _CITATION = """
 @inproceedings{kornilova-eidelman-2019-billsum,
     title = "{B}ill{S}um: A Corpus for Automatic Summarization of {US} Legislation",
@@ -52,7 +51,7 @@ features for us bills. ca bills does not have.
   - sum_len: number of chars in summary.
 """
 
-_URL = "https://drive.google.com/uc?export=download&id=1g89WgFHMRbr4QrvA0ngh26PY081Nv3lx"
+_URL = "https://drive.google.com/uc?export=download&id=1g89WgFHMRbr4QrvA0ngh26PY081Nv3lx&confirm=yes"
 
 _DOCUMENT = "text"
 _SUMMARY = "summary"
@@ -79,9 +78,9 @@ class Billsum(datalabs.GeneratorBasedBuilder):
             supervised_keys=(_DOCUMENT, _SUMMARY),
             homepage="https://github.com/FiscalNote/BillSum",
             citation=_CITATION,
-            task_templates=[Summarization(
-                text_column=_DOCUMENT,
-                summary_column=_SUMMARY),
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_DOCUMENT,
+                reference_column=_SUMMARY),
             ],
         )
 

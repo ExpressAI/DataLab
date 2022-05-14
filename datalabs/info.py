@@ -395,15 +395,25 @@ class DatasetInfo:
             if self.features is not None:
                 for idx, template in enumerate(self.task_templates):
 
+                    if template.label_schema is None:
+                        continue
+
                     is_label_column = None
                     for col_name, type_name in template.label_schema.items():
-                        if type_name == ClassLabel:
+                        # for sequence labeling
+                        if col_name == "tags":
+                            is_label_column = col_name
+                        elif type_name == ClassLabel:
                             is_label_column = col_name
 
                     if is_label_column is not None and isinstance(
                         self.features[is_label_column], ClassLabel
                     ):
                         labels = self.features[template.label_column].names
+                        self.task_templates[idx].set_labels(labels)
+                    elif is_label_column is not None:
+                        # for sequence labeling tasks
+                        labels = self.features[template.tags_column].feature.names
                         self.task_templates[idx].set_labels(labels)
 
         # Protected from other codes:

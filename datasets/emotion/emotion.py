@@ -14,9 +14,8 @@
 # limitations under the License.
 
 import csv
-
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 
 _CITATION = """\
@@ -60,7 +59,7 @@ class Emotion(datalabs.GeneratorBasedBuilder):
             supervised_keys=("text", "label"),
             homepage=_URL,
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.emotion_classification)(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

@@ -16,7 +16,7 @@ import json
 import os
 
 import datalabs
-from datalabs.tasks import QuestionAnsweringExtractive
+from datalabs import get_task, TaskType
 
 
 # TODO(mlqa): BibTeX citation
@@ -102,7 +102,7 @@ class Mlqa(datalabs.GeneratorBasedBuilder):
             homepage="https://github.com/facebookresearch/MLQA",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringExtractive(
+                get_task(TaskType.qa_extractive)(
                     question_column="question", context_column="context", answers_column="answers"
                 )
             ],

@@ -12,10 +12,9 @@
 # limitations under the License.
 
 import json
-
 import datalabs
+from datalabs import get_task, TaskType
 
-from datalabs.tasks import QuestionAnsweringMultipleChoicesWithoutContext
 
 
 # TODO(commonsense_qa): BibTeX citation
@@ -84,10 +83,9 @@ class CommonsenseQa(datalabs.GeneratorBasedBuilder):
             homepage="https://www.tau-datasets.org/commonsenseqa",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringMultipleChoicesWithoutContext(
+                get_task(TaskType.qa_multiple_choice_without_context)(
                     question_column="question", answers_column="answers",
                     options_column="options",
-                    task="question-answering-multiple-choices-without-context",
                 )
             ],
         )

@@ -17,9 +17,7 @@ import textwrap
 
 import datalabs
 
-from datalabs.tasks import QuestionAnsweringMultipleChoicesWithoutContext
-
-
+from datalabs import get_task, TaskType
 
 # TODO(openBookQA): BibTeX citation
 _CITATION = """\
@@ -122,10 +120,10 @@ class Openbookqa(datalabs.GeneratorBasedBuilder):
             homepage="https://allenai.org/data/open-book-qa",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringMultipleChoicesWithoutContext(
-                    question_column="question", answers_column="answers",
-                    options_column="options",
-                    task="question-answering-multiple-choices-without-context",
+                get_task(TaskType.qa_multiple_choice_without_context)(
+                    question_column="question",
+                    answers_column="answers",
+                    options_column="options"
                 )
             ],
         )

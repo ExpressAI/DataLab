@@ -9,6 +9,8 @@ from datalabs.tasks.conditional_generation import (
     GuidedConditionalGeneration,
 )
 
+_MDS_TEXT_COLUMN = "texts"
+
 
 @register_task(TaskType.summarization)
 @dataclass

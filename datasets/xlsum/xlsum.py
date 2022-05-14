@@ -18,7 +18,7 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs import get_task, TaskType
 
 
 _CITATION = """\
@@ -128,9 +128,9 @@ class Xlsum(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             license=_LICENSE,
             version=self.VERSION,
-            task_templates=[Summarization(
-                text_column="text",
-                summary_column="summary"),
+            task_templates=[get_task(TaskType.summarization)(
+                source_column="text",
+                reference_column="summary"),
             ],
         )
 

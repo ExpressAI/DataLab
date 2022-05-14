@@ -1,18 +1,7 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import Summarization, DialogSummarization
-
-
-# the following package are needed when more additional features are expected to be calculated
-from featurize.summarization import (
-    get_features_sample_level,
-    get_schema_of_sample_level_features,
-    )
-from datalabs.utils.more_features import (
-    get_feature_schemas,
-)
-
+from datalabs import get_task, TaskType
 
 _DESCRIPTION = """
  The SAMSum dataset contains about 16k messenger-like conversations with summaries. Conversations were created and written down by linguists fluent in English. Linguists were asked to create conversations similar to those they write on a daily basis, reflecting the proportion of topics of their real-life messenger convesations. The style and register are diversified - conversations could be informal, semi-formal or formal, they may contain slang words, emoticons and typos. Then, the conversations were annotated with summaries. It was assumed that summaries should be a concise brief of what people talked about in the conversation in third person.
@@ -65,22 +54,23 @@ class SAMSumDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="SAMSum dataset for summarization, single document version",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         ),
         SAMSumConfig(
             name="dialogue",
             version=datalabs.Version("1.0.0"),
             description="SAMSum dataset for summarization, dialogue summarization version",
-            task_templates=[DialogSummarization(
-                text_column="dialogue", summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.dialog_summarization)(
+                source_column="dialogue",
+                reference_column=_ABSTRACT)]
         ),
     ]
     DEFAULT_CONFIG_NAME = "document"
 
     def _info(self):
-        # Should return a datalab.DatasetInfo object
-        features_dataset = {}
+
 
         if "document" in self.config.name:
             features_sample = datalabs.Features(
@@ -89,9 +79,6 @@ class SAMSumDataset(datalabs.GeneratorBasedBuilder):
                     _ABSTRACT: datalabs.Value("string"),
                 }
             )
-            if self.feature_expanding:
-                features_sample, features_dataset = get_feature_schemas(features_sample, get_schema_of_sample_level_features)
-
         else:
             features_sample = datalabs.Features({
                 "dialogue": datalabs.Sequence(datalabs.Features({
@@ -103,7 +90,6 @@ class SAMSumDataset(datalabs.GeneratorBasedBuilder):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features_sample,
-            features_dataset=features_dataset,
             supervised_keys=None,
             homepage=None,
             citation=_CITATION,
@@ -143,13 +129,8 @@ class SAMSumDataset(datalabs.GeneratorBasedBuilder):
                     _ABSTRACT: article["summary"]
                 }
 
-                if not self.feature_expanding:
-                    yield id_, raw_feature_info
-                else:
-                    additional_feature_info = get_features_sample_level(raw_feature_info)
-                    raw_feature_info.update(additional_feature_info)
-                    # print(additional_feature_info)
-                    yield id_, raw_feature_info
+
+                yield id_, raw_feature_info
 
             else:
                 dialogue = []

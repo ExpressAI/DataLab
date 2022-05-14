@@ -1,7 +1,7 @@
 """NCLS cross-lingual abstractive summarization dataset."""
 import os
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @inproceedings{zhu-etal-2019-ncls,
@@ -55,8 +55,9 @@ class NCLSDataset(datalabs.GeneratorBasedBuilder):
             name="en2zh",
             version=datalabs.Version("1.0.0"),
             description="NCLS Dataset for cross-lingual summarization, English-->Chinese version",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         )
     ]
     DEFAULT_CONFIG_NAME = "en2zh"
@@ -76,10 +77,9 @@ class NCLSDataset(datalabs.GeneratorBasedBuilder):
             license=_LICENSE,
             version=self.VERSION,
             languages=["en", "zh"],
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
-            ],
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         )
 
     def _split_generators(self, dl_manager):

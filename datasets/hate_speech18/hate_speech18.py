@@ -21,7 +21,7 @@ import csv
 import os
 
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @inproceedings{gibert2018hate,
@@ -70,7 +70,7 @@ class HateSpeech18(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://github.com/Vicomtech/hate-speech-dataset",
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.hatespeech_identification)(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

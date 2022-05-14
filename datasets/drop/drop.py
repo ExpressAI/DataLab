@@ -14,9 +14,8 @@
 
 import json
 import os
-
 import datalabs
-from datalabs.tasks import QuestionAnsweringAbstractive
+from datalabs import get_task, TaskType
 
 
 _CITATION = """\
@@ -109,8 +108,9 @@ class Drop(datalabs.GeneratorBasedBuilder):
             # Homepage of the dataset for documentation
             homepage="https://allennlp.org/drop",
             citation=_CITATION,
+            languages=["en"],
             task_templates=[
-                QuestionAnsweringAbstractive(
+                get_task(TaskType.qa_abstractive)(
                     question_column="question", context_column="context", answers_column="answers"
                 )
             ],

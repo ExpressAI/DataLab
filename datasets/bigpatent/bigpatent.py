@@ -1,21 +1,10 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import Summarization
 import gzip
 import tempfile
 import subprocess
-
-
-# the following package are needed when more additional features are expected to be calculated
-from featurize.summarization import (
-    get_features_sample_level,
-    get_schema_of_sample_level_features,
-    )
-from datalabs.utils.more_features import (
-    get_feature_schemas,
-)
-
+from datalabs import get_task, TaskType
 
 _DESCRIPTION = """
  BIGPATENT consists of 1.3 million records of U.S. patent documents along with human written abstractive summaries.
@@ -83,8 +72,6 @@ class BigPatentDataset(datalabs.GeneratorBasedBuilder):
     DEFAULT_CONFIG_NAME = "document"
 
     def _info(self):
-
-        features_dataset = {}
         features_sample = datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
@@ -92,22 +79,17 @@ class BigPatentDataset(datalabs.GeneratorBasedBuilder):
                     # "id": datalab.Value("string"),
                 }
             )
-        if self.feature_expanding:
-            features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                    get_schema_of_sample_level_features)
-
 
         # Should return a datalab.DatasetInfo object
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features_sample,
-            features_dataset=features_dataset,
             supervised_keys=None,
             homepage="https://evasharma.github.io/bigpatent/",
             citation=_CITATION,
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT),
             ],
         )
 
@@ -149,13 +131,7 @@ class BigPatentDataset(datalabs.GeneratorBasedBuilder):
                             _ABSTRACT: data["abstract"],
                         }
 
-                        if not self.feature_expanding:
-                            yield cnt, raw_feature_info
-                        else:
-                            additional_feature_info = get_features_sample_level(raw_feature_info)
-                            raw_feature_info.update(additional_feature_info)
-                            # print(additional_feature_info)
-                            yield cnt, raw_feature_info
 
+                        yield cnt, raw_feature_info
 
                         cnt += 1

@@ -4,7 +4,7 @@ import json
 import datalabs
 
 from datalabs.utils.logging import get_logger
-from datalabs.tasks import MachineTranslation
+from datalabs import get_task, TaskType
 
 logger = get_logger(__name__)
 
@@ -63,17 +63,14 @@ class Conala(datalabs.GeneratorBasedBuilder):
         return datalabs.DatasetInfo(
             # This is the description that will appear on the datasets page.
             description=_DESCRIPTION,
-            # datasets.features.FeatureConnectors
             features=features_sample,
             features_dataset=features_dataset,
             supervised_keys=None,
-            # Homepage of the dataset for documentation
             homepage="https://conala-corpus.github.io/",
             citation=_CITATION,
             languages=['en', 'python'],
             task_templates=[
-                MachineTranslation(
-                    task="code-generation",
+                get_task(TaskType.code_generation)(
                     translation_column="translation",
                     lang_sub_columns=["en", "python"],
                 )
@@ -82,7 +79,6 @@ class Conala(datalabs.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
-
         dataset_path = dl_manager.download_and_extract(dataset_url)
 
         split_gens = [

@@ -18,9 +18,8 @@
 
 
 import json
-
 import datalabs
-from datalabs.tasks import QuestionAnsweringExtractive
+from datalabs import get_task, TaskType
 
 
 logger = datalabs.logging.get_logger(__name__)
@@ -106,7 +105,7 @@ class Squad(datalabs.GeneratorBasedBuilder):
             homepage="https://rajpurkar.github.io/SQuAD-explorer/",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringExtractive(
+                get_task(TaskType.qa_extractive)(
                     question_column="question", context_column="context", answers_column="answers"
                 )
             ],

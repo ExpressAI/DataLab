@@ -3,11 +3,11 @@ import os
 import sys
 import datalabs
 import csv
-from datalabs.tasks import KGLinkPrediction
 # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
 import importlib
 from typing import Iterator
 
+from datalabs import get_task, TaskType
 # from .aggregate import fb15k_237_aggregating
 
 
@@ -80,7 +80,8 @@ class FB15k237Dataset(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://paperswithcode.com/dataset/fb15k",
             citation=_CITATION,
-            task_templates=[KGLinkPrediction(
+            languages=["en"],
+            task_templates=[get_task(TaskType.kg_link_tail_prediction)(
                 head_column = "head",
                 link_column = "link",
                 tail_column = "tail",

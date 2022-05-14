@@ -18,7 +18,7 @@
 import os
 import csv
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @misc{yang2022cino,
@@ -103,9 +103,9 @@ class WCM2(datalabs.GeneratorBasedBuilder):
             homepage = _HOMEPAGE,
             citation = _CITATION,
             version = self.VERSION,
-            task_templates = [TextClassification(text_column="text",
-            label_column="label",
-            task="text-classification")],
+            task_templates = [get_task(TaskType.topic_classification)(
+            text_column="text",
+            label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

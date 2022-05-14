@@ -52,3 +52,12 @@ class NaturalLanguageInference(TextPairClassification):
     text1_column: str = "text1"
     text2_column: str = "text2"
     label_column: str = "label"
+
+
+@register_task(TaskType.paraphrase_identification)
+@dataclass
+class ParaphraseIdentification(TextPairClassification):
+    task: TaskType = TaskType.paraphrase_identification
+    text1_column: str = "text1"
+    text2_column: str = "text2"
+    label_column: str = "label"

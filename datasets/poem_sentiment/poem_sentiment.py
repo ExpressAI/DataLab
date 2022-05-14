@@ -16,7 +16,7 @@
 
 
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @misc{sheng2020investigating,
@@ -35,9 +35,9 @@ This dataset can be used for tasks such as sentiment classification or style tra
 """
 
 
-_HOMEPAGE = "https://github.com/google-research-datalab/poem-sentiment"
+_HOMEPAGE = "https://github.com/google-research-dataset/poem-sentiment"
 
-_BASE_URL = "https://raw.githubusercontent.com/google-research-datalab/poem-sentiment/master/data/"
+_BASE_URL = "https://raw.githubusercontent.com/google-research-datasets/poem-sentiment/master/data/"
 _URLS = {
     "train": f"{_BASE_URL}/train.tsv",
     "dev": f"{_BASE_URL}/dev.tsv",
@@ -64,7 +64,9 @@ class PoemSentiment(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.sentiment_classification)(
+                text_column="text",
+                label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

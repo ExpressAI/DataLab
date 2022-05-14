@@ -19,7 +19,15 @@ class MachineTranslation(TaskTemplate):
     lang_sub_columns: List[str] = field(default_factory=list)
 
     def __post_init__(self):
-        self.task_categories = [TaskType.conditional_generation]
+
+        if self.task == TaskType.machine_translation:
+            self.task_categories = [TaskType.conditional_generation]
+        else:
+            self.task_categories = [
+                task_cls.get_task() for task_cls in self.get_task_parents()
+            ]
+
+
 
     @property
     def column_mapping(self) -> Dict[str, str]:
@@ -27,3 +35,11 @@ class MachineTranslation(TaskTemplate):
             self.translation_column: "translation",
             self.lang_sub_columns: field(default_factory=list),
         }
+
+
+@register_task(TaskType.code_generation)
+@dataclass
+class CodeGeneration(MachineTranslation):
+    task: TaskType = TaskType.code_generation
+    translation_column: str = "translation"
+    lang_sub_columns: List[str] = field(default_factory=list)

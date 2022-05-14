@@ -18,8 +18,8 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import SequenceLabeling
-from datalabs.task_dataset import SequenceLabelingDataset
+from datalabs import get_task, TaskType
+
 logger = datalabs.logging.get_logger(__name__)
 
 _CITATION = """\
@@ -71,7 +71,7 @@ class MSR(datalabs.GeneratorBasedBuilder):
             license=_LICENSE,
             languages=['zh'],
             version=self.VERSION,
-            task_templates=[SequenceLabeling(task="chinese-word-segmentation",
+            task_templates=[get_task(TaskType.word_segmentation)(
                                              tokens_column="tokens",
                                              tags_column="tags")],
         )

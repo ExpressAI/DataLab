@@ -20,7 +20,7 @@
 import csv
 
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 _DESCRIPTION = """\
 It is a large dataset of Android applications belonging to 23 differentapps categories, which provides an overview of the types of feedback users report on the apps and documents the evolution of the related code metrics. The dataset contains about 395 applications of the F-Droid repository, including around 600 versions, 280,000 user reviews (extracted with specific text mining approaches)
@@ -59,7 +59,7 @@ class AppReviews(datalabs.GeneratorBasedBuilder):
             ),
             homepage="https://giograno.me/assets/pdf/workshop/wama17.pdf",
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.sentiment_classification)(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

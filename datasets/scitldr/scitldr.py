@@ -1,7 +1,7 @@
 """SciTldr: Extreme Summarization of Scientific Documents."""
 import json
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @inproceedings{cachola-etal-2020-tldr,
@@ -62,15 +62,17 @@ class SciTldrDataset(datalabs.GeneratorBasedBuilder):
             name="tldr-auth",
             version=datalabs.Version("1.0.0"),
             description="Scientific document summarization dataset. TLDR-auth: TLDRs written from the perspective of the authors.",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         ),
         SciTldrConfig(
             name="tldr-pr",
             version=datalabs.Version("1.0.0"),
             description="Scientific document summarization dataset. TLDR-pr: TLDRs written from the perspective of the peer reviewers.",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         )
     ]
     DEFAULT_CONFIG_NAME = "tldr-auth"
@@ -100,9 +102,9 @@ class SciTldrDataset(datalabs.GeneratorBasedBuilder):
             license=_LICENSE,
             version=self.VERSION,
             languages=["en"],
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT),
             ],
         )
 

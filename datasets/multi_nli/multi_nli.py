@@ -19,9 +19,8 @@
 
 import json
 import os
-
 import datalabs
-from datalabs.tasks import TextMatching
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @InProceedings{N18-1101,
@@ -80,10 +79,9 @@ class MultiNli(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://www.nyu.edu/projects/bowman/multinli/",
             citation=_CITATION,
-            task_templates=[TextMatching(
+            task_templates=[get_task(TaskType.natural_language_inference)(
                 text1_column="text1",
                 text2_column="text2",
-                task="natural-language-inference",
                 label_column="label"),
             ],
         )
