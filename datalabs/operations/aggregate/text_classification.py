@@ -4,7 +4,6 @@ from typing import Any, Callable, Iterator, List, Mapping, Optional
 
 import numpy as np
 from tqdm import tqdm
-
 from datalabs.operations.aggregate.aggregating import Aggregating, aggregating
 from datalabs.operations.featurize.general import get_gender_bias
 from datalabs.operations.operation import dataset_operation, DatasetOperation
