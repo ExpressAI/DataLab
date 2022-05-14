@@ -15,7 +15,7 @@
 
 import json
 import datalabs
-from datalabs.tasks import TopicClassification
+from datalabs import get_task, TaskType
 
 
 _DESCRIPTION = """\
@@ -125,7 +125,9 @@ class CSLDCP(datalabs.GeneratorBasedBuilder):
             homepage="https://github.com/CLUEbenchmark/FewCLUE",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[TopicClassification(text_column="text", label_column="label", task="topic-classification")],
+            task_templates=[get_task(TaskType.topic_classification)(
+                text_column="text",
+                label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

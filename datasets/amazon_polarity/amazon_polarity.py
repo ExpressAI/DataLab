@@ -18,7 +18,7 @@
 import csv
 
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @inproceedings{mcauley2013hidden,
@@ -41,7 +41,7 @@ _HOMEPAGE = "https://registry.opendata.aws/"
 _LICENSE = "Apache License 2.0"
 
 _URLs = {
-    "amazon_polarity": "https://drive.google.com/u/0/uc?id=0Bz8a_Dbh9QhbaW12WVVZS2drcnM&export=download",
+    "amazon_polarity": "https://drive.google.com/u/0/uc?id=0Bz8a_Dbh9QhbaW12WVVZS2drcnM&export=download&confirm=t",
 }
 
 
@@ -88,6 +88,7 @@ class AmazonPolarity(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             license=_LICENSE,
             citation=_CITATION,
+            task_templates=[get_task(TaskType.sentiment_classification)()],
         )
 
     def _split_generators(self, dl_manager):

@@ -19,7 +19,7 @@
 import json
 
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @inproceedings{marc_reviews,
@@ -110,10 +110,7 @@ class AmazonReviewsMulti(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE_URL,
             citation=_CITATION,
             task_templates=[
-                TextClassification(text_column="text", label_column="label",
-                                   task="sentiment-classification"),
-                TextClassification(text_column="text", label_column="product_category",
-                                   task="topic-classification"),
+                get_task(TaskType.sentiment_classification)(text_column="text", label_column="label"),
             ],
         )
 

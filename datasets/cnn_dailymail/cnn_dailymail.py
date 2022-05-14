@@ -18,12 +18,10 @@
 
 import hashlib
 import os
-
 import datalabs
-from datalabs.tasks import Summarization
-
 import tempfile
 import subprocess
+from datalabs import get_task, TaskType
 
 logger = datalabs.logging.get_logger(__name__)
 
@@ -279,9 +277,9 @@ class CnnDailymail(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://github.com/abisee/cnn-dailymail",
             citation=_CITATION,
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_HIGHLIGHTS),
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_HIGHLIGHTS),
             ],
 
         )

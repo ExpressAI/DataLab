@@ -19,7 +19,7 @@ Code is heavily inspired from https://github.com/huggingface/datalabs/blob/maste
 import json
 
 import datalabs
-from datalabs.tasks import QuestionAnsweringExtractive
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @inproceedings{Lin2019ReasoningOP,
@@ -83,7 +83,7 @@ class Ropes(datalabs.GeneratorBasedBuilder):
             license=_LICENSE,
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringExtractive(
+                get_task(TaskType.qa_extractive)(
                     question_column="question", context_column="context", answers_column="answers"
                 )
             ],

@@ -1,7 +1,7 @@
 """PTS: Product Title Summarization Corpus."""
 import os
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @article{Sun2018MultiSourcePN,
@@ -46,8 +46,9 @@ class PTSDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="Product title summarization corpus.",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -66,10 +67,9 @@ class PTSDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=["zh"],
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
-            ],
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         )
 
     def _split_generators(self, dl_manager):

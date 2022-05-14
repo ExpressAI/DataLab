@@ -20,7 +20,7 @@ import os
 
 
 import datalabs
-from datalabs.tasks import QuestionAnsweringMultipleChoicesWithoutContext
+from datalabs import get_task, TaskType
 
 
 _CITATION = """\
@@ -91,10 +91,10 @@ class Piqa(datalabs.GeneratorBasedBuilder):
             homepage="https://yonatanbisk.com/piqa/",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringMultipleChoicesWithoutContext(
-                    question_column="question", answers_column="answers",
-                    options_column="options",
-                    task="question-answering-multiple-choices-without-context",
+                get_task(TaskType.qa_multiple_choice_without_context)(
+                    question_column="question",
+                    answers_column="answers",
+                    options_column="options"
                 )
             ],
         )

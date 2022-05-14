@@ -2,17 +2,8 @@
 import os
 import json
 import datalabs
-from datalabs.tasks import Summarization, MultiDocSummarization
+from datalabs import get_task, TaskType
 from datalabs.tasks.summarization import _MDS_TEXT_COLUMN
-
-# the following package are needed when more additional features are expected to be calculated
-from featurize.summarization import (
-    get_features_sample_level,
-    get_schema_of_sample_level_features,
-)
-from datalabs.utils.more_features import (
-    get_feature_schemas,
-)
 
 _CITATION = """\
 @InProceedings{antognini-faltings:2020:LREC2,
@@ -63,15 +54,15 @@ class GameWikiSumDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="GameWikiSum dataset for multi-document summarization, single document version.",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE, reference_column=_ABSTRACT)]
         ),
         GameWikiSumConfig(
             name="multidoc",
             version=datalabs.Version("1.0.0"),
             description="GameWikiSum dataset for multi-document summarization, multi-document version.",
-            task_templates=[MultiDocSummarization(
-                text_column=_MDS_TEXT_COLUMN, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.multi_doc_summarization)(
+                source_column=_MDS_TEXT_COLUMN, reference_column=_ABSTRACT)]
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -87,9 +78,6 @@ class GameWikiSumDataset(datalabs.GeneratorBasedBuilder):
                     _ABSTRACT: datalabs.Value("string"),
                 }
             )
-            if self.feature_expanding:
-                features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                        get_schema_of_sample_level_features)
         elif self.config.name == "multidoc":
             features_sample = datalabs.Features(
                 {
@@ -101,7 +89,6 @@ class GameWikiSumDataset(datalabs.GeneratorBasedBuilder):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features_sample,
-            features_dataset=features_dataset,
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
@@ -154,13 +141,8 @@ class GameWikiSumDataset(datalabs.GeneratorBasedBuilder):
                     _ARTICLE: article,
                     _ABSTRACT: summary
                 }
+                yield id_, raw_feature_info
 
-                if not self.feature_expanding:
-                    yield id_, raw_feature_info
-                else:
-                    additional_feature_info = get_features_sample_level(raw_feature_info)
-                    raw_feature_info.update(additional_feature_info)
-                    yield id_, raw_feature_info
             elif self.config.name == "multidoc":
                 article = [" ".join(sentences) for sentences in reviews]
                 yield id_, {

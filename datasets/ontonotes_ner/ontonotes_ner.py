@@ -18,8 +18,7 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import SequenceLabeling
-from datalabs.task_dataset import SequenceLabelingDataset
+from datalabs import get_task, TaskType
 logger = datalabs.logging.get_logger(__name__)
 
 _CITATION = """\
@@ -99,10 +98,6 @@ class OntonotesNERConfig(datalabs.BuilderConfig):
 
 class OntonotesNER(datalabs.GeneratorBasedBuilder):
 
-    def __init__(self,*args, **kwargs):
-        super(OntonotesNER, self).__init__(*args, **kwargs)
-        self.dataset_class = SequenceLabelingDataset
-
 
     VERSION = datalabs.Version("1.0.0")
 
@@ -137,7 +132,7 @@ class OntonotesNER(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             license=_LICENSE,
             version=self.VERSION,
-            task_templates=[SequenceLabeling(tokens_column="tokens", tags_column="tags")],
+            task_templates=[get_task(TaskType.named_entity_recognition)(tokens_column="tokens", tags_column="tags")],
         )
 
     def _split_generators(self, dl_manager):

@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import json
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 _DESCRIPTION = """\
 Don't Stop Pretraining is a paper that examines pre-training on existing datasets.
@@ -169,7 +169,7 @@ class DontStopPretraining(datalabs.GeneratorBasedBuilder):
             homepage="https://arxiv.org/abs/2004.10964",
             citation=_CITATION,
             languages=["en"],
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.text_classification)(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

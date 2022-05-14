@@ -16,7 +16,9 @@
 import json
 import datalabs
 from pydantic import FilePath
-from datalabs.tasks import TopicClassification
+import requests
+from datalabs import get_task, TaskType
+
 
 
 _DESCRIPTION = """\
@@ -80,7 +82,10 @@ class TNEWS(datalabs.GeneratorBasedBuilder):
             homepage="https://www.clue.ai/index.html",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[TopicClassification(text_column="text", label_column="label", task="topic-classification")],
+            task_templates=[get_task(TaskType.topic_classification)(
+                text_column="text",
+                label_column="label"
+            )],
         )
 
     def _split_generators(self, dl_manager):

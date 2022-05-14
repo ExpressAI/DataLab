@@ -16,10 +16,9 @@
 # limitations under the License.
 
 import csv
-import datalabs
-from datalabs.tasks import TextClassification
 import os
-
+import datalabs
+from datalabs import get_task, TaskType
 
 _DESCRIPTION = """\
 The dataset contains 7.2 million reviews for 520,000 products in more than 1,100 categories from Amazon.
@@ -69,7 +68,9 @@ class YFAmazon(datalabs.GeneratorBasedBuilder):
             homepage="https://doi.org/10.1145/2736277.2741087",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[TextClassification(text_column="title", label_column="rating")],
+            task_templates=[get_task(TaskType.sentiment_classification)(
+                text_column="title",
+                label_column="rating")],
         )
 
     def _split_generators(self, dl_manager):

@@ -1,7 +1,7 @@
 import json
 import datalabs
 import os
-from datalabs.tasks import TextMatching
+from datalabs import get_task, TaskType
 
 _CITATION = '''
 @inproceedings {xu-etal-2020-clue,
@@ -65,11 +65,12 @@ class AFQMC(datalabs.GeneratorBasedBuilder):
             homepage='https://github.com/CLUEbenchmark/CLUE',
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[TextMatching(
+            task_templates=[get_task(TaskType.natural_language_inference)
+                (
                 text1_column="text1",
                 text2_column="text2",
-                task="natural-language-inference",
-                label_column="label"),
+                label_column="label"
+            ),
             ],
         )
 

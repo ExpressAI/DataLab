@@ -17,7 +17,7 @@
 
 import csv
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 _DESCRIPTION = """\
 The task type of this dataset is Aspect-level Sentiment Classification, and the task definition is as follows: 
@@ -77,7 +77,7 @@ class SEABSA16PHNS(datalabs.GeneratorBasedBuilder):
             homepage="https://aclanthology.org/S16-1002",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.sentiment_classification)(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

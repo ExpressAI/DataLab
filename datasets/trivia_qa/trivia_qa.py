@@ -15,13 +15,12 @@
 """The Trivia datalab"""
 
 
-import datalabs
-# from datalabs.tasks import TextClassification
+
 import glob
 import json
 import os
-
-from datalabs.tasks import QuestionAnsweringExtractive
+import datalabs
+from datalabs import get_task, TaskType
 
 logger = datalabs.logging.get_logger(__name__)
 
@@ -190,6 +189,11 @@ class TriviaQa(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="http://nlp.cs.washington.edu/triviaqa/",
             citation=_CITATION,
+            task_templates = [get_task(TaskType.qa_extractive)(
+                question_column='question',
+                context_column='search_results',
+                answers_column='answer'
+            )]
         )
 
     def _split_generators(self, dl_manager):

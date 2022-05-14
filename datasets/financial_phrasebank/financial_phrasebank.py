@@ -22,7 +22,7 @@ rate of 5-8 annotators."""
 import os
 
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @article{Malo2014GoodDO,
@@ -125,9 +125,10 @@ class FinancialPhrasebank(datalabs.GeneratorBasedBuilder):
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
+            languages = ["en"],
             license=_LICENSE,
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.sentiment_classification)(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

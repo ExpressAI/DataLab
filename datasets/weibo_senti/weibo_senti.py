@@ -12,12 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import csv
-from email import header
 import datalabs
-from datalabs.tasks import TextClassification
-from datalabs import Dataset
+from datalabs import get_task, TaskType
 
 # Find for instance the citation on arxiv or on the dataset repo/website
 _CITATION = """\
@@ -54,7 +51,9 @@ class WeiboSenti(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[TextClassification(text_column="text", label_column="label", task="sentiment-classification")],
+            task_templates=[get_task(TaskType.sentiment_classification)(
+                text_column="text",
+                label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

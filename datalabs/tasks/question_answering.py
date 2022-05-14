@@ -1,50 +1,56 @@
 from dataclasses import dataclass
-from typing import ClassVar, Dict
+from typing import ClassVar
 
 from datalabs.features import ClassLabel, Features, Sequence, Value
-from datalabs.tasks.base import TaskTemplate
+from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 
 
+@register_task(TaskType.qa)
 @dataclass
-class QuestionAnsweringExtractive(TaskTemplate):
-    # adapt datasets: suqad-1, suqad-2, duorc, ...
-    # `task` is not a ClassVar since we want it
-    # to be part of the `asdict` output for JSON serialization
-    task_category: str = "question-answering-extractive"
-    task: str = "question-answering-extractive"
-    input_schema: ClassVar[Features] = Features(
-        {"question": Value("string"), "context": Value("string")}
-    )
-    label_schema: ClassVar[Features] = Features(
-        {
-            "answers": Sequence(
-                {
-                    "text": Value("string"),
-                    "answer_start": Value("int32"),
-                }
-            )
-        }
-    )
+class QuestionAnswering(TaskTemplate):
+    task: TaskType = TaskType.qa
     question_column: str = "question"
     context_column: str = "context"
     answers_column: str = "answers"
 
-    @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {
-            self.question_column: "question",
-            self.context_column: "context",
-            self.answers_column: "answers",
-        }
+    def __post_init__(self):
+        self.task_categories = [
+            task_cls.get_task() for task_cls in self.get_task_parents()
+        ]
+
+        if self.input_schema is None:
+            self.input_schema: ClassVar[Features] = Features(
+                {
+                    self.question_column: Value("string"),
+                    self.context_column: Value("string"),
+                }
+            )
+        if self.label_schema is None:
+            self.label_schema: ClassVar[Features] = Features(
+                {
+                    self.answers_column: Sequence(
+                        {
+                            "text": Value("string"),
+                            "answer_start": Value("int32"),
+                        }
+                    )
+                }
+            )
 
 
+@register_task(TaskType.qa_extractive)
 @dataclass
-class QuestionAnsweringAbstractive(TaskTemplate):
-    # adaptive datasets: drop
-    # `task` is not a ClassVar since we want it to be
-    # part of the `asdict` output for JSON serialization
-    task_category: str = "question-answering-abstractive"
-    task: str = "question-answering-abstractive"
+class QuestionAnsweringExtractive(QuestionAnswering):
+    task: TaskType = TaskType.qa_extractive
+    question_column: str = "question"
+    context_column: str = "context"
+    answers_column: str = "answers"
+
+
+@register_task(TaskType.qa_abstractive)
+@dataclass
+class QuestionAnsweringAbstractive(QuestionAnswering):
+    task: TaskType = TaskType.qa_abstractive
     input_schema: ClassVar[Features] = Features(
         {"question": Value("string"), "context": Value("string")}
     )
@@ -62,20 +68,11 @@ class QuestionAnsweringAbstractive(TaskTemplate):
     context_column: str = "context"
     answers_column: str = "answers"
 
-    @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {
-            self.question_column: "question",
-            self.context_column: "context",
-            self.answers_column: "answers",
-        }
 
-
+@register_task(TaskType.qa_abstractive_nq)
 @dataclass
-class QuestionAnsweringAbstractiveNQ(TaskTemplate):
-    # adaptive datasets: natural_question dataset
-    task_category: str = "question-answering-abstractive"
-    task: str = "question-answering-abstractive-nq"
+class QuestionAnsweringAbstractiveNQ(QuestionAnsweringAbstractive):
+    task: TaskType = TaskType.qa_abstractive_nq
     input_schema: ClassVar[Features] = Features(
         {
             "context": {
@@ -123,32 +120,11 @@ class QuestionAnsweringAbstractiveNQ(TaskTemplate):
     context_column: str = "context"
     answers_column: str = "answers"
 
-    @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {
-            self.question_column: "question",
-            self.context_column: "context",
-            self.answers_column: "answers",
-        }
 
-
+@register_task(TaskType.qa_hotpot)
 @dataclass
-class QuestionAnsweringHotpot(TaskTemplate):
-    # adapt datasets: hotpot
-    # `task` is not a ClassVar since we want it to be part
-    # of the `asdict` output for JSON serialization
-    task_category: str = "question-answering-hotpot"
-    task: str = "question-answering-hotpot"
-
-    # "supporting_facts": {
-    #     "title": supporting_titles,
-    #     "sent_id": supporting_sent_ids,
-    # },
-    # "context": {
-    #     "title": context_titles,
-    #     "sentences": context_sentences,
-    # },
-
+class QuestionAnsweringHotpot(QuestionAnsweringExtractive):
+    task: TaskType = TaskType.qa_hotpot
     input_schema: ClassVar[Features] = Features(
         {
             "question": Value("string"),
@@ -181,25 +157,15 @@ class QuestionAnsweringHotpot(TaskTemplate):
     answers_column: str = "answers"
     supporting_column: str = "supporting_facts"
 
-    @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {
-            self.question_column: "question",
-            self.context_column: "context",
-            self.answers_column: "answers",
-            self.supporting_column: "supporting_facts",
-        }
 
-
-class QuestionAnsweringDCQA(TaskTemplate):
+@register_task(TaskType.qa_dcqa)
+@dataclass
+class QuestionAnsweringDCQA(QuestionAnsweringExtractive):
     # adapt datasets: dcqa
-    # `task` is not a ClassVar since we want it to be part
-    # of the `asdict` output for JSON serialization
     question_column: str = "question"
     context_column: str = "context"
     answers_column: str = "answer"
-    task_category: str = "question-answering-dcqa"
-    task: str = "question-answering-dcqa"
+    task: TaskType = TaskType.qa_dcqa
     input_schema: ClassVar[Features] = Features(
         {
             "question": Value("string"),
@@ -217,58 +183,13 @@ class QuestionAnsweringDCQA(TaskTemplate):
         }
     )
 
-    @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {
-            self.question_column: "question",
-            self.context_column: "context",
-            self.answers_column: "answer",
-        }
 
-
+@register_task(TaskType.qa_multiple_choice)
 @dataclass
-class MultipleChoiceQA(TaskTemplate):
-    # `task` is not a ClassVar since we want it to be part
-    # of the `asdict` output for JSON serialization
-    task_category: str = "multiple-choice-qa"
-    task: str = "multiple-choice-qa"
-    input_schema: ClassVar[Features] = Features(
-        {
-            "context": Value("string"),
-            "question": Value("string"),
-            "choices": Sequence(Value("string")),
-        }
-    )
-    label_schema: ClassVar[Features] = Features(
-        {
-            "answers": Sequence(
-                {
-                    "label": ClassLabel,
-                }
-            ),
-        }
-    )
-    context_column: str = "context"
-    question_column: str = "question"
-    choice_column: str = "choices"
-    answers_column: str = "answers"
-
-    @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {
-            self.context_column: "context",
-            self.question_column: "question",
-            self.choice_column: "choices",
-            self.answers_column: "answers",
-        }
-
-
-@dataclass
-class QuestionAnsweringMultipleChoices(TaskTemplate):
+class QuestionAnsweringMultipleChoice(QuestionAnswering):
     # `task` is not a ClassVar since we want it to be part of
     # the `asdict` output for JSON serialization
-    task_category: str = "question-answering-multiple-choices"
-    task: str = "question-answering-multiple-choices-with-context"
+    task: TaskType = TaskType.qa_multiple_choice
     input_schema: ClassVar[Features] = Features(
         {
             "question": Value("string"),
@@ -289,22 +210,13 @@ class QuestionAnsweringMultipleChoices(TaskTemplate):
     answers_column: str = "answers"
     options_column: str = "options"
 
-    @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {
-            self.question_column: "question",
-            self.context_column: "context",
-            self.answers_column: "answers",
-            self.options_column: "options",
-        }
 
-
+@register_task(TaskType.qa_multiple_choice_qasc)
 @dataclass
-class QuestionAnsweringMultipleChoicesQASC(TaskTemplate):
+class QuestionAnsweringMultipleChoiceQASC(QuestionAnsweringMultipleChoice):
     # `task` is not a ClassVar since we want it to be part of
     # the `asdict` output for JSON serialization
-    task_category: str = "question-answering-multiple-choices"
-    task: str = "question-answering-multiple-choices-with-context-qasc"
+    task: TaskType = TaskType.qa_multiple_choice_qasc
     input_schema: ClassVar[Features] = Features(
         {
             "question": Value("string"),
@@ -329,22 +241,11 @@ class QuestionAnsweringMultipleChoicesQASC(TaskTemplate):
     answers_column: str = "answers"
     options_column: str = "options"
 
-    @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {
-            self.question_column: "question",
-            self.context_column: "context",
-            self.answers_column: "answers",
-            self.options_column: "options",
-        }
 
-
+@register_task(TaskType.qa_multiple_choice_without_context)
 @dataclass
-class QuestionAnsweringMultipleChoicesWithoutContext(TaskTemplate):
-    # `task` is not a ClassVar since we want it to be part of
-    # the `asdict` output for JSON serialization
-    task_category: str = "question-answering-multiple-choices"
-    task: str = "question-answering-multiple-choices-without-context"
+class QuestionAnsweringMultipleChoiceWithoutContext(QuestionAnsweringMultipleChoice):
+    task: TaskType = TaskType.qa_multiple_choice_without_context
     input_schema: ClassVar[Features] = Features(
         {"question": Value("string"), "options": Sequence(Value("string"))}
     )
@@ -359,11 +260,3 @@ class QuestionAnsweringMultipleChoicesWithoutContext(TaskTemplate):
     question_column: str = "question"
     answers_column: str = "answers"
     options_column: str = "options"
-
-    @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {
-            self.question_column: "question",
-            self.answers_column: "answers",
-            self.options_column: "options",
-        }

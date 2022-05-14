@@ -14,13 +14,9 @@
 # limitations under the License.
 """The COmmonsense Dataset Adversarially-authored by Humans (CODAH)"""
 
-
 import csv
-
 import datalabs
-
-from datalabs.tasks import QuestionAnsweringMultipleChoicesWithoutContext, \
-    QuestionAnsweringMultipleChoices
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @inproceedings{chen2019codah,
@@ -109,11 +105,10 @@ class Codah(datalabs.GeneratorBasedBuilder):
             homepage="https://github.com/Websail-NU/CODAH",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringMultipleChoices(
+                get_task(TaskType.qa_multiple_choice)(
                     question_column="question",
                     answers_column="answers",
                     options_column="options",
-                    task="question-answering-multiple-choices",
                 )
             ],
         )

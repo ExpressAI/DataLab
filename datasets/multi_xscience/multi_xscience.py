@@ -1,18 +1,10 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import Summarization, MultiDocSummarization
-from datalabs.tasks.summarization import _MDS_TEXT_COLUMN
 import gzip
+from datalabs import get_task, TaskType
+from datalabs.tasks.summarization import _MDS_TEXT_COLUMN
 
-# the following package are needed when more additional features are expected to be calculated
-from featurize.summarization import (
-    get_features_sample_level,
-    get_schema_of_sample_level_features,
-    )
-from datalabs.utils.more_features import (
-    get_feature_schemas,
-)
 
 
 
@@ -69,36 +61,30 @@ class MultiXScienceDataset(datalabs.GeneratorBasedBuilder):
             name="single-document",
             version=datalabs.Version("1.0.0"),
             description="MultiXScience dataset for summarization, single document summarization version",
-            task_templates=[Summarization(text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         ),
         MultiXScienceConfig(
             name="multi-document",
             version=datalabs.Version("1.0.0"),
             description="MultiXScience dataset for summarization, multi-document summarization version",
-            task_templates=[MultiDocSummarization(text_column=_MDS_TEXT_COLUMN, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.multi_doc_summarization)(
+                source_column=_MDS_TEXT_COLUMN,
+                reference_column=_ABSTRACT)]
         ),
     ]
     DEFAULT_CONFIG_NAME = "multi-document"
 
     def _info(self):
         # Should return a datalab.DatasetInfo object
-        features_dataset = {}
         if "single" in self.config.name:
-
-
             features_sample = datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
                     _ABSTRACT: datalabs.Value("string"),
                 }
             )
-            if self.feature_expanding:
-                features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                        get_schema_of_sample_level_features)
-
-
-
-
         else:
             features_sample = datalabs.Features(
                 {
@@ -109,7 +95,6 @@ class MultiXScienceDataset(datalabs.GeneratorBasedBuilder):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features_sample,
-            features_dataset=features_dataset,
             supervised_keys=None,
             homepage="https://github.com/yaolu/Multi-XScience",
             citation=_CITATION,
@@ -151,14 +136,8 @@ class MultiXScienceDataset(datalabs.GeneratorBasedBuilder):
                     _ARTICLE: text,
                     _ABSTRACT: summary,
                 }
+                yield id_, raw_feature_info
 
-                if not self.feature_expanding:
-                    yield id_, raw_feature_info
-                else:
-                    additional_feature_info = get_features_sample_level(raw_feature_info)
-                    raw_feature_info.update(additional_feature_info)
-                    # print(additional_feature_info)
-                    yield id_, raw_feature_info
 
 
             else:

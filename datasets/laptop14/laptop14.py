@@ -12,10 +12,9 @@
 # limitations under the License.
 
 import csv
-
 import datalabs
-from datalabs.tasks import AspectBasedSentimentClassification
-from datalabs import Dataset
+from datalabs import get_task, TaskType
+
 
 _DESCRIPTION = """\
 Laptop14 contains annotated reviews of laptop reviews. Each sample is labeled as positive,
@@ -61,8 +60,8 @@ class Laptop14(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["en"],
             task_templates=[
-                AspectBasedSentimentClassification(
-                    aspect_column="aspect",
+                get_task(TaskType.aspect_based_sentiment_classification)(
+                    span_column="aspect",
                     text_column="text",
                     label_column="label"
                 )]

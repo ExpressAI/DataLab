@@ -16,7 +16,7 @@
 import json
 
 import datalabs
-from datalabs.tasks import QuestionAnsweringExtractive
+from datalabs import get_task, TaskType
 
 
 _CITATION = """\
@@ -92,8 +92,10 @@ class Xquad(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=[self.config.lang],
             task_templates=[
-                QuestionAnsweringExtractive(
-                    question_column="question", context_column="context", answers_column="answers"
+                get_task(TaskType.qa_extractive)(
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers"
                 )
             ],
         )

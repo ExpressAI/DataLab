@@ -1,7 +1,9 @@
 """AESLC: Annotated Enron Subject Line Corpus."""
 import os
 import datalabs
-from datalabs.tasks import Summarization, MultiRefSummarization
+from datalabs import get_task, TaskType
+
+
 
 _CITATION = """\
 @inproceedings{zhang-tetreault-2019-email,
@@ -28,7 +30,12 @@ see: https://aclanthology.org/P19-1043.pdf
 _HOMEPAGE = "https://github.com/ryanzhumich/AESLC"
 _ARTICLE = "text"
 _ABSTRACT = "summaries"
-
+_LANGUAGES = ["en"]
+_TASK_TEMPLATES = [
+    get_task(TaskType.multi_ref_summarization)(
+        source_column=_ARTICLE,
+        reference_column=_ABSTRACT)
+]
 
 class AESLCConfig(datalabs.BuilderConfig):
     """BuilderConfig for AESLC."""
@@ -50,8 +57,7 @@ class AESLCDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="Email subject line generation Dataset.",
-            task_templates=[MultiRefSummarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=_TASK_TEMPLATES
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -69,11 +75,8 @@ class AESLCDataset(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             citation=_CITATION,
             version=self.VERSION,
-            languages=["en"],
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
-            ],
+            languages=_LANGUAGES,
+            task_templates=_TASK_TEMPLATES,
         )
 
     def _split_generators(self, dl_manager):

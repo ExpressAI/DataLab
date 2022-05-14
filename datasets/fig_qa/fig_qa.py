@@ -1,21 +1,12 @@
 import csv
 import datalabs
-from datalabs.tasks import QuestionAnsweringMultipleChoices
-from datalabs.operations.featurize.qa_multiple_choices import get_features_sample_level, get_schema_of_sample_level_features
-
+from datalabs import get_task, TaskType
 from datalabs.utils import private_utils
 from datalabs.utils.logging import get_logger
-from datalabs.utils.more_features import get_feature_arguments
 
 logger = get_logger(__name__)
 
-def infer_schema_dataset_level(sample_level_schema:dict):
 
-    dataset_level_schema = {}
-    for feature_name, value in sample_level_schema.items():
-        if isinstance(value, int) or isinstance(value, float):
-            dataset_level_schema[feature_name] = value
-    return dataset_level_schema
 
 _CITATION = """
 @inproceedings{liu2022figqa,
@@ -77,7 +68,7 @@ class FigQA(datalabs.GeneratorBasedBuilder):
     DEFAULT_CONFIG_NAME = "medium"
 
     def _info(self):
-        features_dataset = datalabs.Features()
+
         features_sample = datalabs.Features(
                 {
                     "id": datalabs.Value("string"),
@@ -94,32 +85,22 @@ class FigQA(datalabs.GeneratorBasedBuilder):
 
             )
 
-        if self.feature_expanding:
-            sample_level_schema = get_schema_of_sample_level_features()
-            dict_feature_argument = get_feature_arguments(sample_level_schema, field="", feature_level="sample_level")
-            additional_features = datalabs.Features(dict_feature_argument)
-            features_sample.update(additional_features)
-
-            dataset_level_schema = infer_schema_dataset_level(sample_level_schema)
-            dict_feature_argument = get_feature_arguments(dataset_level_schema, field="avg", feature_level="dataset_level")
-            features_dataset.update(datalabs.Features(dict_feature_argument))
-
         return datalabs.DatasetInfo(
             # This is the description that will appear on the datasets page.
             description=_DESCRIPTION,
             # datasets.features.FeatureConnectors
             features=features_sample,
-            features_dataset=features_dataset,
             supervised_keys=None,
             # Homepage of the dataset for documentation
             homepage="https://github.com/nightingal3/fig-qa",
             citation=_CITATION,
             languages=['en'],
             task_templates=[
-                QuestionAnsweringMultipleChoices(
-                    question_column="question", context_column="context", answers_column="answers",
-                    options_column="options",
-                    task="question-answering-multiple-choices-with-context",
+                get_task(TaskType.qa_multiple_choice)(
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
+                    options_column="options"
                 )
             ],
         )
@@ -191,11 +172,6 @@ class FigQA(datalabs.GeneratorBasedBuilder):
                             },
                 }
 
-                if not self.feature_expanding:
-                    yield id_, raw_feature_info
-                else:
-                    additional_feature_info = get_features_sample_level(raw_feature_info)
-                    raw_feature_info.update(additional_feature_info)
-                    # print(additional_feature_info)
-                    yield id_, raw_feature_info
+
+                yield id_, raw_feature_info
 

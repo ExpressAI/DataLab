@@ -17,9 +17,8 @@
 
 import csv
 import os
-
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 _DESCRIPTION = """
 Yahoo! Answers Topic Classification is text classification dataset. \
@@ -28,7 +27,7 @@ The Yahoo! Answers topic classification dataset is constructed using 10 largest 
 From all the answers and other meta-information, this dataset only used the best answer content and the main category information.
 """
 
-_URL = "https://drive.google.com/uc?export=download&id=0Bz8a_Dbh9Qhbd2JNdDBsQUdocVU"
+_URL = "https://drive.google.com/uc?export=download&id=0Bz8a_Dbh9Qhbd2JNdDBsQUdocVU&confirm=yes"
 
 _TOPICS = [
     "Society & Culture",
@@ -69,7 +68,9 @@ class YahooAnswersTopics(datalabs.GeneratorBasedBuilder):
                 },
             ),
             supervised_keys=None,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.topic_classification)(
+                text_column="text",
+                label_column="label")],
             homepage="https://github.com/LC-John/Yahoo-Answers-Topic-Classification-Dataset",
         )
 

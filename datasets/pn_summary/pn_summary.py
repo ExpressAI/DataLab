@@ -1,7 +1,7 @@
 """pn_summary: Persian Abstractive Text Summarization Dataset."""
 import os
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @article{pnSummary,
@@ -53,10 +53,10 @@ class PnSummaryDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="Persian Abstractive Text Summarization Dataset.",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
-        )
-    ]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
+        )]
     DEFAULT_CONFIG_NAME = "document"
 
     def _info(self):
@@ -74,10 +74,9 @@ class PnSummaryDataset(datalabs.GeneratorBasedBuilder):
             license=_LICENSE,
             version=self.VERSION,
             languages=["fa"],  # https://huggingface.co/languages#:~:text=57-,Persian,-fa
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
-            ],
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         )
 
     def _split_generators(self, dl_manager):

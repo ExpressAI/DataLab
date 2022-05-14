@@ -14,9 +14,8 @@
 
 
 import json
-
 import datalabs
-from datalabs.tasks import QuestionAnsweringMultipleChoices
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @article{lai2017large,
@@ -79,9 +78,11 @@ class Race(datalabs.GeneratorBasedBuilder):
             homepage="http://www.cs.cmu.edu/~glai1/data/race/",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringMultipleChoices(
-                    question_column="question", context_column="context", answers_column="answers", options_column="options",
-                    task="question-answering-multiple-choices-with-context",
+                get_task(TaskType.qa_multiple_choice)(
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
+                    options_column="options"
                 )
             ],
         )

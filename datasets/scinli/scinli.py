@@ -4,9 +4,8 @@
 
 import json
 import os
-
 import datalabs
-from datalabs.tasks import TextMatching
+from datalabs import get_task, TaskType
 import tqdm
 
 
@@ -49,15 +48,13 @@ class MultiNli(datalabs.GeneratorBasedBuilder):
         return datalabs.DatasetInfo(
             description = _DESCRIPTION,
             features=features_sample,
-            features_dataset=features_dataset,
             supervised_keys=None,
             languages=["en"],
             homepage="https://github.com/msadat3/SciNLI",
             citation=_CITATION,
-            task_templates=[TextMatching(
+            task_templates=[get_task(TaskType.natural_language_inference)(
                 text1_column="text1",
                 text2_column="text2",
-                task="natural-language-inference",
                 label_column="label"),
             ],
         )
@@ -93,5 +90,4 @@ class MultiNli(datalabs.GeneratorBasedBuilder):
                     "label": data["label"],
                 }
 
-                if not self.feature_expanding:
-                    yield id_, raw_feature_info
+                yield id_, raw_feature_info

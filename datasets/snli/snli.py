@@ -19,10 +19,8 @@
 
 import csv
 import os
-
 import datalabs
-from datalabs.tasks import TextMatching
-from datalabs.task_dataset import TextMatchingDataset
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @inproceedings{snli:emnlp2015,
@@ -66,10 +64,9 @@ class Snli(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://nlp.stanford.edu/projects/snli/",
             citation=_CITATION,
-            task_templates=[TextMatching(
+            task_templates=[get_task(TaskType.natural_language_inference)(
                 text1_column="text1",
                 text2_column="text2",
-                task = "natural-language-inference",
                 label_column="label"),
             ],
         )

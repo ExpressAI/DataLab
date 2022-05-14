@@ -7,7 +7,6 @@ import json
 import os
 import sys
 import traceback
-from typing import cast
 
 from datalabs import GeneratorBasedBuilder, load_dataset
 
@@ -20,9 +19,7 @@ SDK in jsonl format, in general one dataset per line.
 # datasets, but it's non-trivial, so we'll stick with this for now
 
 
-def get_splits(
-    dataset: str, sub_dataset: str | None
-) -> dict[str, int]:
+def get_splits(dataset: str, sub_dataset: str | None) -> dict[str, int]:
     """
     Get the splits for each dataset and sub_dataset.
     :param dataset: the name of the dataset
@@ -30,10 +27,8 @@ def get_splits(
     :param prev_data: previous data from the json file for caching
     :return: a list of split names
     """
-    sub_str = sub_dataset if sub_dataset is not None else "__NONE__"
-    print(
-        f"loading splits from datalab for {dataset}, {sub_dataset}", file=sys.stderr
-    )
+    # sub_str = sub_dataset if sub_dataset is not None else "__NONE__"
+    print(f"loading splits from datalab for {dataset}, {sub_dataset}", file=sys.stderr)
     loaded = load_dataset(dataset, sub_dataset)
     return {k: v.num_rows for k, v in loaded.items()}
 
@@ -83,7 +78,16 @@ def main():
     # trivia_qa is skipped due to https://github.com/ExpressAI/DataLab/issues/200
     # weibo4_moods is skipped because downloading stalled
     # wmt were too large and time consuming (for now)
-    skip_datasets = {"trivia_qa", "weibo4_moods", "wmt14", "wmt15", "wmt16", "wmt17", "wmt18", "wmt19"}
+    skip_datasets = {
+        "trivia_qa",
+        "weibo4_moods",
+        "wmt14",
+        "wmt15",
+        "wmt16",
+        "wmt17",
+        "wmt18",
+        "wmt19",
+    }
 
     out_stream = (
         sys.stdout if args.output_jsonl is None else open(args.output_jsonl, "w")
@@ -104,56 +108,68 @@ def main():
                 metadata = {}
                 for name, obj in inspect.getmembers(my_module):
                     if file_name in skip_datasets:
-                        print(json.dumps({f'{file_name}---__NONE__': "SKIPPED"}),
-                              file=out_stream)
+                        print(
+                            json.dumps({f"{file_name}---__NONE__": "SKIPPED"}),
+                            file=out_stream,
+                        )
                         break
                     elif name in abstract_members:
                         continue
 
                     if inspect.isclass(obj) and issubclass(obj, GeneratorBasedBuilder):
 
-                        config_names = [None] if len(obj.builder_configs) == 0 else [x for x in obj.builder_configs]
+                        config_names = (
+                            [None]
+                            if len(obj.builder_configs) == 0
+                            else [x for x in obj.builder_configs]
+                        )
 
                         for sub_dataset in config_names:
 
-                                dataset_id = f'{file_name}---{sub_dataset}'
+                            dataset_id = f"{file_name}---{sub_dataset}"
 
-                                # Use cached data if it exists
-                                if dataset_id in prev_data and isinstance(prev_data[dataset_id], dict):
-                                    print(
-                                        f"printing cached metadata for {file_name} {sub_dataset}",
-                                        file=sys.stderr)
-                                    print(json.dumps({dataset_id: prev_data[dataset_id]}),
-                                          file=out_stream)
-                                    continue
+                            # Use cached data if it exists
+                            if dataset_id in prev_data and isinstance(
+                                prev_data[dataset_id], dict
+                            ):
+                                print(
+                                    f"printing cached metadata "
+                                    f"for {file_name} {sub_dataset}",
+                                    file=sys.stderr,
+                                )
+                                print(
+                                    json.dumps({dataset_id: prev_data[dataset_id]}),
+                                    file=out_stream,
+                                )
+                                continue
 
-                                dataset = obj(name=sub_dataset)
+                            dataset = obj(name=sub_dataset)
 
-                                dataset_info = dataset._info()
-                                metadata["dataset_name"] = file_name
-                                metadata["dataset_class_name"] = name
-                                if sub_dataset:
-                                    metadata["sub_dataset"] = sub_dataset
-                                metadata["splits"] = get_splits(file_name, sub_dataset)
+                            dataset_info = dataset._info()
+                            metadata["dataset_name"] = file_name
+                            metadata["dataset_class_name"] = name
+                            if sub_dataset:
+                                metadata["sub_dataset"] = sub_dataset
+                            metadata["splits"] = get_splits(file_name, sub_dataset)
 
-                                metadata["languages"] = dataset_info.languages
-                                if dataset_info.task_templates is not None:
-                                    metadata["task_categories"] = (
-                                        [x.task_category for x in dataset_info.task_templates]
-                                    )
-                                    metadata["tasks"] = (
-                                        [x.task for x in dataset_info.task_templates]
-                                    )
+                            metadata["languages"] = dataset_info.languages
+                            if dataset_info.task_templates is not None:
+                                metadata["task_categories"] = [
+                                    x.task_category for x in dataset_info.task_templates
+                                ]
+                                metadata["tasks"] = [
+                                    x.task for x in dataset_info.task_templates
+                                ]
 
-                                print(f"printing metadata for {file_name} {sub_dataset}",
-                                      file=sys.stderr)
-                                print(json.dumps({dataset_id: metadata}),
-                                      file=out_stream)
-                                out_stream.flush()
+                            print(
+                                f"printing metadata for {file_name} {sub_dataset}",
+                                file=sys.stderr,
+                            )
+                            print(json.dumps({dataset_id: metadata}), file=out_stream)
+                            out_stream.flush()
             except Exception as e:  # noqa
                 traceback.print_exc()
-                print(json.dumps({f'{file_name}---__NONE__': "ERROR"}),
-                      file=out_stream)
+                print(json.dumps({f"{file_name}---__NONE__": "ERROR"}), file=out_stream)
 
 
 if __name__ == "__main__":

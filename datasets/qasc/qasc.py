@@ -13,11 +13,8 @@
 
 
 import json
-
-import datasets
-
 import datalabs
-from datalabs.tasks import QuestionAnsweringMultipleChoicesQASC
+from datalabs import get_task, TaskType
 
 
 
@@ -77,10 +74,11 @@ class Qasc(datalabs.GeneratorBasedBuilder):
             homepage="https://allenai.org/data/qasc",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringMultipleChoicesQASC(
-                    question_column="question", context_column="context", answers_column="answers",
-                    options_column="options",
-                    task="question-answering-multiple-choices-with-context-qasc",
+                get_task(TaskType.qa_multiple_choice_qasc)(
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
+                    options_column="options"
                 )
             ],
         )

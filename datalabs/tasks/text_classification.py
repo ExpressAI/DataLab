@@ -1,71 +1,111 @@
-# coding=utf-8
-# Copyright 2022 The HuggingFace Datasets, DataLab Authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 from dataclasses import dataclass
-from typing import ClassVar, Dict, Optional, Tuple
+from typing import ClassVar, Optional, Tuple
 
 from datalabs.enums import Metrics, PLMType, PromptShape, SignalType
 from datalabs.features import ClassLabel, Features, Value
 from datalabs.prompt import Prompt, PromptResult
-from datalabs.tasks.base import TaskTemplate
+from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 
 
+@register_task(TaskType.text_classification)
 @dataclass
 class TextClassification(TaskTemplate):
-    # `task` is not a ClassVar since we want it to be part
-    # of the `asdict` output for JSON serialization
-    task_category: str = "text-classification"
-    task: str = "text-classification"
-    input_schema: ClassVar[Features] = Features({"text": Value("string")})
-    # TODO(lewtun): Find a more elegant approach without descriptors.
-    label_schema: ClassVar[Features] = Features({"labels": ClassLabel})
+    task: TaskType = TaskType.text_classification
     text_column: str = "text"
     label_column: str = "label"
     labels: Optional[Tuple[str]] = None
 
+    def set_labels(self, labels):
+        self.__dict__["labels"] = tuple(labels)
+        self.__dict__["label_schema"] = self.label_schema.copy()
+        self.label_schema["labels"] = ClassLabel(names=labels)
+
     def __post_init__(self):
+        self.task_categories = [
+            task_cls.get_task() for task_cls in self.get_task_parents()
+        ]
+
+        self.input_schema: ClassVar[Features] = Features(
+            {
+                self.text_column: Value("string"),
+            }
+        )
+        self.label_schema: ClassVar[Features] = Features(
+            {self.label_column: ClassLabel}
+        )
+
         if self.labels:
             if len(self.labels) != len(set(self.labels)):
                 raise ValueError("Labels must be unique")
             # Cast labels to tuple to allow hashing
-            # self.__dict__["labels"] = tuple(sorted(self.labels))
-
-            self.__dict__["labels"] = self.labels
+            self.__dict__["labels"] = tuple(self.labels)
             self.__dict__["label_schema"] = self.label_schema.copy()
             self.label_schema["labels"] = ClassLabel(names=self.labels)
 
-    @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {
-            self.text_column: "text",
-            self.label_column: "labels",
-        }
+
+@register_task(TaskType.sentiment_classification)
+@dataclass
+class SentimentClassification(TextClassification):
+    task: TaskType = TaskType.sentiment_classification
+    text_column: str = "text"
+    label_column: str = "label"
 
 
+@register_task(TaskType.emotion_classification)
+@dataclass
+class EmotionClassification(TextClassification):
+    task: TaskType = TaskType.emotion_classification
+    text_column: str = "text"
+    label_column: str = "label"
+
+
+@register_task(TaskType.hatespeech_identification)
+@dataclass
+class HatespeechIdentification(TextClassification):
+    task: TaskType = TaskType.hatespeech_identification
+    text_column: str = "text"
+    label_column: str = "label"
+
+
+@register_task(TaskType.question_classification)
+@dataclass
+class QuestionClassification(TextClassification):
+    task: TaskType = TaskType.question_classification
+    text_column: str = "text"
+    label_column: str = "label"
+
+
+@register_task(TaskType.spam_identification)
+@dataclass
+class SpamClassification(TextClassification):
+    task: TaskType = TaskType.spam_identification
+    text_column: str = "text"
+    label_column: str = "label"
+
+
+@register_task(TaskType.intent_classification)
+@dataclass
+class IntentClassification(TextClassification):
+    task: TaskType = TaskType.intent_classification
+    text_column: str = "text"
+    label_column: str = "label"
+
+
+@register_task(TaskType.grammatical_judgment)
+@dataclass
+class GrammaticalJudgment(TextClassification):
+    task: TaskType = TaskType.grammatical_judgment
+    text_column: str = "text"
+    label_column: str = "label"
+
+
+@register_task(TaskType.topic_classification)
 @dataclass
 class TopicClassification(TextClassification):
-    # `task` is not a ClassVar since we want it to be part
-    # of the `asdict` output for JSON serialization
-    task_category: str = "topic-classification"
-    task: str = "topic-classification"
-    input_schema: ClassVar[Features] = Features({"text": Value("string")})
-    label_schema: ClassVar[Features] = Features({"labels": ClassLabel})
+    task: TaskType = TaskType.topic_classification
     text_column: str = "text"
-    label_column: str = "labels"
-    labels: Optional[Tuple[str]] = None
+    label_column: str = "label"
 
-    # dataset = load_dataset("ag_news")
-    # dataset["test"]._info.promp
     results = [
         PromptResult(value=0.0, plm="bert-base-uncased", metric=Metrics.accuracy.value),
         PromptResult(

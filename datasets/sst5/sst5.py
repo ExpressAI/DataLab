@@ -13,10 +13,8 @@
 
 
 import csv
-
 import datalabs
-from datalabs.tasks import TextClassification
-from datalabs import Dataset
+from datalabs import get_task, TaskType
 
 _DESCRIPTION = """\
 The Stanford Sentiment Treebank is a corpus with fully labeled parse trees that allows 
@@ -72,7 +70,9 @@ class SST5(datalabs.GeneratorBasedBuilder):
             homepage="https://nlp.stanford.edu/sentiment/",
             citation=_CITATION,
             languages=["en"],
-            task_templates=[TextClassification(text_column="text", label_column="label", task="sentiment-classification")],
+            task_templates=[get_task(TaskType.sentiment_classification)(
+                text_column="text",
+                label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

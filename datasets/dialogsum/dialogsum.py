@@ -1,7 +1,7 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import Summarization, DialogSummarization
+from datalabs import get_task, TaskType
 
 # the following package are needed when more additional features are expected to be calculated
 from featurize.summarization import (
@@ -62,15 +62,15 @@ class DialogSumDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="DialogSum dataset for summarization, single document summarization version",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE, reference_column=_ABSTRACT)]
         ),
         DialogSumConfig(
             name="dialogue",
             version=datalabs.Version("1.0.0"),
             description="DialogSum dataset for summarization, dialogue summarization version",
-            task_templates=[DialogSummarization(
-                text_column="dialogue", summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.dialog_summarization)(
+                source_column="dialogue", reference_column=_ABSTRACT)]
         ),
     ]
     DEFAULT_CONFIG_NAME = "dialogue"

@@ -1,7 +1,7 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs import get_task, TaskType
 from tqdm import tqdm
 
 # the following package are needed when more additional features are expected to be calculated
@@ -74,7 +74,7 @@ class ASAPReviewDataset(datalabs.GeneratorBasedBuilder):
             languages=["en"],
             homepage="https://github.com/neulab/ReviewAdvisor",
             citation=_CITATION,
-            task_templates=[Summarization(text_column="text", summary_column="review")]
+            task_templates=[get_task(TaskType.summarization)(source_column="text", reference_column="review")]
         )
 
     def _split_generators(self, dl_manager):

@@ -15,7 +15,7 @@
 
 import csv
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 _DESCRIPTION = """\
 This dataset contains more than 2 million reviews and scores for 28 films. 
@@ -46,7 +46,8 @@ class DOUBANMOVIE(datalabs.GeneratorBasedBuilder):
             homepage="https://github.com/SophonPlus/ChineseNlpCorpus/blob/master/datasets/dmsc_v2/intro.ipynb",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.sentiment_classification)(
+                text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

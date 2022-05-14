@@ -17,9 +17,8 @@
 
 import csv
 import os
-
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 
 _CITATION = """\
@@ -44,7 +43,7 @@ _HOMEPAGE = "https://www.yelp.com/dataset"
 _LICENSE = "https://s3-media3.fl.yelpcdn.com/assets/srv0/engineering_pages/bea5c1e92bf3/assets/vendor/yelp-dataset-agreement.pdf"
 
 _URLs = {
-    "yelp_review_full": "https://drive.google.com/uc?export=download&id=0Bz8a_Dbh9QhbZlU4dXhHTFhZQU0",
+    "yelp_review_full": "https://drive.google.com/uc?export=download&id=0Bz8a_Dbh9QhbZlU4dXhHTFhZQU0&confirm=yes",
 }
 
 
@@ -93,7 +92,9 @@ class YelpReviewFull(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             license=_LICENSE,
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.sentiment_classification)(
+                text_column="text",
+                label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

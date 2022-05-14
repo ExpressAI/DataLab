@@ -16,13 +16,11 @@
 """Text Classification dataset."""
 
 import csv
-
 import datalabs
-from datalabs.tasks import TextClassification
-from featurize.general import get_features_sample_level
-from aggregate.text_classification import get_features_dataset_level
-from datalabs.utils.more_features import prefix_dict_key, get_feature_arguments
+from datalabs import get_task, TaskType
 from datalabs import PLMType, SettingType, SignalType
+
+
 
 _DESCRIPTION = """\
  Movie-review data for use in sentiment-analysis experiments. Available are collections 
@@ -63,21 +61,6 @@ _TEST_DOWNLOAD_URL = "https://drive.google.com/uc?id=15NYovF4uOv8whePrcpKcLRxs2N
 
 
 
-def infer_schema_dataset_level(sample_level_schema:dict):
-
-    dataset_level_schema = {}
-    for feature_name, value in sample_level_schema.items():
-        if isinstance(value, int) or isinstance(value, float):
-            dataset_level_schema[feature_name] = value
-    return dataset_level_schema
-
-
-
-
-
-EXPAND = False
-FIELD = "text"
-
 class MR(datalabs.GeneratorBasedBuilder):
     """Movie Review Dataset."""
 
@@ -86,21 +69,11 @@ class MR(datalabs.GeneratorBasedBuilder):
         features_dataset = {}
         features_sample = datalabs.Features(
                 {
-                     FIELD: datalabs.Value("string"),
+                    "text": datalabs.Value("string"),
                     "label": datalabs.features.ClassLabel(names=["positive", "negative"]),
                 }
             )
 
-        if EXPAND:
-            sample_level_schema = get_features_sample_level("This is a test sample")
-            dict_feature_argument = get_feature_arguments(sample_level_schema, field=FIELD, feature_level="sample_level")
-            additional_features = datalabs.Features(dict_feature_argument)
-            features_sample.update(additional_features)
-
-
-            dataset_level_schema = infer_schema_dataset_level(sample_level_schema)
-            dict_feature_argument = get_feature_arguments(dataset_level_schema, field="avg" + "_" + FIELD, feature_level="dataset_level")
-            features_dataset = datalabs.Features(dict_feature_argument)
 
 
 
@@ -110,7 +83,8 @@ class MR(datalabs.GeneratorBasedBuilder):
             features_dataset=features_dataset, # dont' forget this
             homepage="http://www.cs.cornell.edu/people/pabo/movie-review-data/",
             citation=_CITATION,
-            task_templates=[TextClassification(text_column=FIELD, label_column="label", task="sentiment-classification")],
+            task_templates=[get_task(TaskType.sentiment_classification)(
+                text_column="text", label_column="label")],
             prompts=[datalabs.Prompt(template="{text}, Overall it is a [mask] movie.",
                                      answers={"0":"positive","1":"negative"},
                                      supported_plm_types=["masked-language-model"], # PLMType.masked_language_model.value == "masked-language-model"
@@ -148,12 +122,8 @@ class MR(datalabs.GeneratorBasedBuilder):
                 label = textualize_label[label]
                 text = text
 
-                raw_feature_info = {FIELD: text, "label": label}
+                raw_feature_info = {"text": text, "label": label}
 
-                if not EXPAND:
-                    yield id_, raw_feature_info
-                else:
-                    additional_feature_info = prefix_dict_key(get_features_sample_level(text), FIELD)
-                    raw_feature_info.update(additional_feature_info)
-                    yield id_, raw_feature_info
+
+                yield id_, raw_feature_info
 

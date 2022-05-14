@@ -1,44 +1,28 @@
-# coding=utf-8
-# Copyright 2022 The HuggingFace Datasets, DataLab Authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 from dataclasses import dataclass
-from typing import ClassVar, Dict
+from typing import ClassVar
 
 from datalabs.features import Features, Value
 from datalabs.features.features import Sequence
-from datalabs.tasks.base import TaskTemplate
+from datalabs.tasks.base import register_task, TaskType
+from datalabs.tasks.conditional_generation import (
+    ConditionalGeneration,
+    GuidedConditionalGeneration,
+)
 
 _MDS_TEXT_COLUMN = "texts"
 
 
+@register_task(TaskType.summarization)
 @dataclass
-class Summarization(TaskTemplate):
-    # `task` is not a ClassVar since we want it to
-    # be part of the `asdict` output for JSON serialization
-    task_category: str = "summarization"
-    task: str = "summarization"
-    input_schema: ClassVar[Features] = Features({"text": Value("string")})
-    label_schema: ClassVar[Features] = Features({"summary": Value("string")})
-    text_column: str = "text"
-    summary_column: str = "summary"
-
-    @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {self.text_column: "text", self.summary_column: "summary"}
+class Summarization(ConditionalGeneration):
+    task: TaskType = TaskType.summarization
+    source_column: str = "text"
+    reference_column: str = "summary"
 
 
+@register_task(TaskType.multi_doc_summarization)
 @dataclass
-class MultiDocSummarization(TaskTemplate):
+class MultiDocSummarization(Summarization):
     """Multi-doc summarization task.
     data format: {
         "texts": List[str], (multiple documents)
@@ -46,22 +30,16 @@ class MultiDocSummarization(TaskTemplate):
         }
     """
 
-    # `task` is not a ClassVar since we want it to be part
-    # of the `asdict` output for JSON serialization
-    task_category: str = "multi_doc_summarization"
-    task: str = "multi_doc_summarization"
+    task: TaskType = TaskType.multi_doc_summarization
     input_schema: ClassVar[Features] = Features({"texts": Sequence(Value("string"))})
     label_schema: ClassVar[Features] = Features({"summary": Value("string")})
-    text_column: str = "texts"
-    summary_column: str = "summary"
-
-    @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {self.text_column: "texts", self.summary_column: "summary"}
+    source_column: str = "texts"
+    reference_column: str = "summary"
 
 
+@register_task(TaskType.dialog_summarization)
 @dataclass
-class DialogSummarization(TaskTemplate):
+class DialogSummarization(Summarization):
     """Dialogue summarization task.
     data format: {
         "dialogue": {
@@ -72,10 +50,7 @@ class DialogSummarization(TaskTemplate):
         }
     """
 
-    # `task` is not a ClassVar since we want it to be part of
-    # the `asdict` output for JSON serialization
-    task_category: str = "dialog_summarization"
-    task: str = "dialog_summarization"
+    task: TaskType = TaskType.dialog_summarization
     input_schema: ClassVar[Features] = Features(
         {
             "dialogue": Sequence(
@@ -84,16 +59,13 @@ class DialogSummarization(TaskTemplate):
         }
     )
     label_schema: ClassVar[Features] = Features({"summary": Sequence(Value("string"))})
-    text_column: str = "dialogue"
-    summary_column: str = "summary"
-
-    @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {self.text_column: "dialogue", self.summary_column: "summary"}
+    source_column: str = "dialogue"
+    reference_column: str = "summary"
 
 
+@register_task(TaskType.query_summarization)
 @dataclass
-class QuerySummarization(TaskTemplate):
+class QuerySummarization(Summarization, GuidedConditionalGeneration):
     """Query-based summarization task.
     data format: {
         "text": str,
@@ -102,29 +74,19 @@ class QuerySummarization(TaskTemplate):
         }
     """
 
-    # `task` is not a ClassVar since we want it to be part of
-    # the `asdict` output for JSON serialization
-    task_category: str = "query_summarization"
-    task: str = "query_summarization"
+    task: TaskType = TaskType.query_summarization
     input_schema: ClassVar[Features] = Features(
         {"text": Value("string"), "query": Value("string")}
     )
     label_schema: ClassVar[Features] = Features({"summary": Value("string")})
-    text_column: str = "text"
-    summary_column: str = "summary"
-    query_column: str = "query"
-
-    @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {
-            self.text_column: "text",
-            self.summary_column: "summary",
-            self.query_column: "query",
-        }
+    source_column: str = "text"
+    reference_column: str = "summary"
+    guidance_column: str = "query"
 
 
+@register_task(TaskType.multi_ref_summarization)
 @dataclass
-class MultiRefSummarization(TaskTemplate):
+class MultiRefSummarization(Summarization):
     """Multi-reference summarization task.
     data format: {
         "text": str,
@@ -132,17 +94,10 @@ class MultiRefSummarization(TaskTemplate):
         }
     """
 
-    # `task` is not a ClassVar since we want it to be part
-    # of the `asdict` output for JSON serialization
-    task_category: str = "multi_ref_summarization"
-    task: str = "multi_ref_summarization"
+    task: TaskType = TaskType.multi_ref_summarization
     input_schema: ClassVar[Features] = Features({"text": Value("string")})
     label_schema: ClassVar[Features] = Features(
         {"summaries": Sequence(Value("string"))}
     )
-    text_column: str = "text"
-    summary_column: str = "summaries"
-
-    @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {self.text_column: "text", self.summary_column: "summaries"}
+    source_column: str = "text"
+    reference_column: str = "summaries"

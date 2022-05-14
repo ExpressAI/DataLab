@@ -18,7 +18,8 @@
 import os
 
 import datalabs
-from datalabs.tasks import MachineTranslation
+from datalabs import get_task, TaskType
+
 
 _CITATION = """\
 @inproceedings{cettoloEtAl:EAMT2012,
@@ -107,8 +108,7 @@ class IWSLT217(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=self.config.pair.split('-'),
             task_templates=[
-                MachineTranslation(
-                    task="machine-translation",
+                get_task(TaskType.machine_translation)(
                     translation_column="translation",
                     lang_sub_columns=self.config.pair.split('-'),
                 )

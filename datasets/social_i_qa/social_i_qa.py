@@ -14,9 +14,9 @@
 
 import json
 import os
-
 import datalabs
-from datalabs.tasks import QuestionAnsweringMultipleChoices
+from datalabs import get_task, TaskType
+
 
 
 # TODO(social_i_qa): BibTeX citation
@@ -73,10 +73,11 @@ class SocialIQa(datalabs.GeneratorBasedBuilder):
             homepage="https://leaderboard.allenai.org/socialiqa/submissions/get-started",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringMultipleChoices(
-                    question_column="question", context_column="context", answers_column="answers",
+                get_task(TaskType.qa_multiple_choice)(
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                     options_column="options",
-                    task="question-answering-multiple-choices-with-context",
                 )
             ],
         )

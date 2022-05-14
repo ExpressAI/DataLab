@@ -17,9 +17,8 @@
 
 import json
 import os
-
 import datalabs
-from datalabs.tasks import QuestionAnsweringExtractive
+from datalabs import get_task, TaskType
 
 
 
@@ -39,7 +38,7 @@ WikiHop is open-domain and based on Wikipedia articles; the goal is to recover W
 The goal is to answer text understanding queries by combining multiple facts that are spread across different documents.
 """
 
-_URL = "https://drive.google.com/uc?export=download&id=1ytVZ4AhubFDOEL7o7XrIRIyhU8g9wvKA"
+_URL = "https://drive.google.com/uc?export=download&id=1ytVZ4AhubFDOEL7o7XrIRIyhU8g9wvKA&confirm=yes"
 
 
 class WikiHopConfig(datalabs.BuilderConfig):
@@ -96,8 +95,10 @@ class WikiHop(datalabs.GeneratorBasedBuilder):
             homepage="http://qangaroo.cs.ucl.ac.uk/",
             citation=_CITATION,
             task_templates=[
-                QuestionAnsweringExtractive(
-                    question_column="question", context_column="context", answers_column="answers"
+                get_task(TaskType.qa_extractive)(
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers"
                 )
             ],
         )

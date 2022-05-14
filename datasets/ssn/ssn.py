@@ -2,17 +2,10 @@
 import os
 import json
 import datalabs
-from datalabs.tasks import Summarization, MultiDocSummarization
+from datalabs import get_task, TaskType
 from datalabs.tasks.summarization import _MDS_TEXT_COLUMN
 
-# the following package are needed when more additional features are expected to be calculated
-from featurize.summarization import (
-    get_features_sample_level,
-    get_schema_of_sample_level_features,
-)
-from datalabs.utils.more_features import (
-    get_feature_schemas,
-)
+
 
 _CITATION = """\
 @article{An_Zhong_Chen_Wang_Qiu_Huang_2021, 
@@ -81,36 +74,40 @@ class SSNDataset(datalabs.GeneratorBasedBuilder):
             name="transductive-document",
             version=datalabs.Version("1.0.0"),
             description="SSN dataset for scientific multi-document summarization, single document version. Transductive: during training, models can access to all the nodes and edges in the whole dataset including papers (excluding abstracts) in the test set.",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         ),
         SSNConfig(
             name="transductive-multidoc",
             version=datalabs.Version("1.0.0"),
             description="SSN dataset for scientific multi-document summarization, multi-document version. Inductive: papers in the test set are from a totally new graph which means all test nodes cannot be used during training.",
-            task_templates=[MultiDocSummarization(
-                text_column=_MDS_TEXT_COLUMN, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.multi_doc_summarization)(
+                source_column=_MDS_TEXT_COLUMN,
+                reference_column=_ABSTRACT)]
         ),
         SSNConfig(
             name="inductive-document",
             version=datalabs.Version("1.0.0"),
             description="SSN dataset for scientific multi-document summarization, single document version. Transductive: during training, models can access to all the nodes and edges in the whole dataset including papers (excluding abstracts) in the test set.",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT)]
         ),
         SSNConfig(
             name="inductive-multidoc",
             version=datalabs.Version("1.0.0"),
             description="SSN dataset for scientific multi-document summarization, multi-document version. Inductive: papers in the test set are from a totally new graph which means all test nodes cannot be used during training.",
-            task_templates=[MultiDocSummarization(
-                text_column=_MDS_TEXT_COLUMN, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.multi_doc_summarization)(
+                source_column=_MDS_TEXT_COLUMN,
+                reference_column=_ABSTRACT)]
         )
     ]
     DEFAULT_CONFIG_NAME = "transductive-document"
 
     def _info(self):
         # Should return a datalab.DatasetInfo object
-        features_dataset = {}
+
 
         if "document" in self.config.name:
             features_sample = datalabs.Features(
@@ -119,9 +116,7 @@ class SSNDataset(datalabs.GeneratorBasedBuilder):
                     _ABSTRACT: datalabs.Value("string"),
                 }
             )
-            if self.feature_expanding:
-                features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                        get_schema_of_sample_level_features)
+
         elif "multidoc" in self.config.name:
             features_sample = datalabs.Features(
                 {
@@ -136,7 +131,6 @@ class SSNDataset(datalabs.GeneratorBasedBuilder):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features_sample,
-            features_dataset=features_dataset,
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
@@ -204,12 +198,9 @@ class SSNDataset(datalabs.GeneratorBasedBuilder):
                     _ARTICLE: data["introduction"] + " " + " ".join(data["ref_abstracts"]).strip(),
                     _ABSTRACT: data["summary"]
                 }
-                if not self.feature_expanding:
-                    yield id_, raw_feature_info
-                else:
-                    additional_feature_info = get_features_sample_level(raw_feature_info)
-                    raw_feature_info.update(additional_feature_info)
-                    yield id_, raw_feature_info
+
+                yield id_, raw_feature_info
+
         elif "multidoc" in self.config.name:
             for id_, data in enumerate(datas):
                 raw_feature_info = {

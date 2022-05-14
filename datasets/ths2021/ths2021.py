@@ -15,7 +15,7 @@
 
 import csv
 import datalabs
-from datalabs.tasks import TextMatching
+from datalabs import get_task, TaskType
 
 _DESCRIPTION = """\
 This data set contains sentence-pairs from customer service conversations from multiple fields, which can be used for text matching tasks.
@@ -45,11 +45,10 @@ class THS2021(datalabs.GeneratorBasedBuilder):
             homepage='http://contest.aicubes.cn/#/detail?topicId=23',
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[TextMatching(
+            task_templates=[get_task(TaskType.paraphrase_identification)(
                 text1_column="text1",
                 text2_column="text2",
-                label_column="label",
-                task="natural-language-inference"),
+                label_column="label"),
             ],
         )
 

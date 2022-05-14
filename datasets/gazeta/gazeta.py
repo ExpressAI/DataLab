@@ -2,7 +2,7 @@
 import os
 import json
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @InProceedings{Gusev2020gazeta,
@@ -53,8 +53,8 @@ class GazetaDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("2.0.0"),
             description="Dataset for Automatic Summarization of Russian News.",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE, reference_column=_ABSTRACT)]
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -73,10 +73,8 @@ class GazetaDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=["ru"],  # https://huggingface.co/languages#:~:text=319-,Russian,-ru
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
-            ],
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE, reference_column=_ABSTRACT)],
         )
 
     def _split_generators(self, dl_manager):

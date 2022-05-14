@@ -1,16 +1,25 @@
 from dataclasses import dataclass
-from typing import ClassVar, Dict
+from typing import ClassVar
 
 from datalabs.features import Features, Value
-from datalabs.tasks.base import TaskTemplate
+from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 
 
+@register_task(TaskType.semantic_parsing)
 @dataclass
 class SemanticParsing(TaskTemplate):
-    # `task` is not a ClassVar since we want it to be
-    # part of the `asdict` output for JSON serialization
-    task_category: str = "semantic-parsing"
-    task: str = "text-to-sql"
+    task: TaskType = TaskType.semantic_parsing
+
+    def __post_init__(self):
+        self.task_categories = [
+            task_cls.get_task() for task_cls in self.get_task_parents()
+        ]
+
+
+@register_task(TaskType.text_to_sql)
+@dataclass
+class TexttoSQL(SemanticParsing):
+    task: TaskType = TaskType.text_to_sql
     # task_category: str = "sql-generation-spider"
     # task: str = "sql-generation-spider"
     # input_schema: ClassVar[Features] =
@@ -25,11 +34,6 @@ class SemanticParsing(TaskTemplate):
     "question_toks": datalabs.features.Sequence(datalabs.Value("string")),
     """
     input_schema: ClassVar[Features] = Features({"question": Value("string")})
-
     label_schema: ClassVar[Features] = Features({"query": Value("string")})
     question_column: str = "question"
     query_column: str = "query"
-
-    @property
-    def column_mapping(self) -> Dict[str, str]:
-        return {self.question_column: "question", self.query_column: "query"}

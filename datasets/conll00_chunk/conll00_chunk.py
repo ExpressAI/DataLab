@@ -18,8 +18,7 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import SequenceLabeling
-from datalabs.task_dataset import SequenceLabelingDataset
+from datalabs import get_task, TaskType
 logger = datalabs.logging.get_logger(__name__)
 
 _CITATION = """\
@@ -38,9 +37,6 @@ Constructed in CoNLL-2000 shared task: dividing text into syntactically related 
 _HOMEPAGE = "https://www.clips.uantwerpen.be/conll2000/chunking/"
 _LICENSE = "Available for research use"
 _URL = "https://datalab-hub.s3.amazonaws.com/chunk/conll00.zip"
-
-
-
 
 
 
@@ -75,7 +71,7 @@ class Conll00Chunk(datalabs.GeneratorBasedBuilder):
             license=_LICENSE,
             languages=['en'],
             version=self.VERSION,
-            task_templates=[SequenceLabeling(task="chunking",
+            task_templates=[get_task(TaskType.chunking)(
                                              tokens_column="tokens",
                                              tags_column="tags")],
         )

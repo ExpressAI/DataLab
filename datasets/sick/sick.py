@@ -13,9 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
-
 import datalabs
-from datalabs.tasks import TextMatching
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @inproceedings{marelli-etal-2014-sick,
@@ -71,10 +70,9 @@ class SICK(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="http://marcobaroni.org/composes/sick.html",
             citation=_CITATION,
-            task_templates=[TextMatching(
+            task_templates=[get_task(TaskType.natural_language_inference)(
                 text1_column="text1",
                 text2_column="text2",
-                task="natural-language-inference",
                 label_column="label"),
             ],
         )

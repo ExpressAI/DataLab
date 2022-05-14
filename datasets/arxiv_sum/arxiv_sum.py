@@ -1,7 +1,7 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs import get_task, TaskType
 
 _CITATION = None
 _DESCRIPTION = """
@@ -49,9 +49,9 @@ class ArxivSumConfig(datalabs.BuilderConfig):
 class ArxivSumDataset(datalabs.GeneratorBasedBuilder):
     """ArxivSummarization Dataset."""
 
-    _TRAIN_FILE = "https://huggingface.co/datalab/ccdv/arxiv-summarization/resolve/main/train.zip"
-    _VAL_FILE = "https://huggingface.co/datalab/ccdv/arxiv-summarization/resolve/main/val.zip"
-    _TEST_FILE = "https://huggingface.co/datalab/ccdv/arxiv-summarization/resolve/main/test.zip"
+    _TRAIN_FILE = "https://huggingface.co/datasets/ccdv/arxiv-summarization/resolve/main/train.zip"
+    _VAL_FILE = "https://huggingface.co/datasets/ccdv/arxiv-summarization/resolve/main/val.zip"
+    _TEST_FILE = "https://huggingface.co/datasets/ccdv/arxiv-summarization/resolve/main/test.zip"
     BUILDER_CONFIGS = [
         ArxivSumConfig(
             name="section",
@@ -80,9 +80,10 @@ class ArxivSumDataset(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://github.com/armancohan/long-summarization",
             citation=_CITATION,
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
+            languages=["en"],
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT),
             ],
         )
 

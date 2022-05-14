@@ -18,7 +18,7 @@
 import json
 import os
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs import get_task, TaskType
 
 
 _CITATION = """\
@@ -128,11 +128,11 @@ class Xlsum(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             license=_LICENSE,
             version=self.VERSION,
-            languages=[_LANGUAGES[self.config.name]],
-            task_templates=[Summarization(
-                text_column="text",
-                summary_column="summary"),
+            task_templates=[get_task(TaskType.summarization)(
+                source_column="text",
+                reference_column="summary")
             ],
+            languages=[_LANGUAGES[self.config.name]],
         )
 
     def _split_generators(self, dl_manager):

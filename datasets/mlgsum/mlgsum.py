@@ -1,7 +1,7 @@
 """MLGSum: multiligual summarization dataset"""
 import os
 import datalabs
-from datalabs.tasks import Summarization
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @inproceedings{wang-etal-2021-contrastive,
@@ -59,8 +59,8 @@ class MLGSumDataset(datalabs.GeneratorBasedBuilder):
             name=l,
             version=datalabs.Version("1.0.0"),
             description=f"MLGSum Dataset for multiligual summarization, {l} split",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE, reference_column=_ABSTRACT)]
         ) for l in ["de", "en", "es", "fr", "hi", "id", "pt", "ru", "tr", "uk", "vi", "zh"]
     ])
     DEFAULT_CONFIG_NAME = "en"
@@ -79,9 +79,9 @@ class MLGSumDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=[self.config.name],
-            task_templates=[Summarization(
-                text_column=_ARTICLE,
-                summary_column=_ABSTRACT),
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE,
+                reference_column=_ABSTRACT),
             ],
         )
 

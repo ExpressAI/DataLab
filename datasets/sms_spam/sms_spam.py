@@ -18,9 +18,8 @@
 
 
 import os
-
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 
 
 _CITATION = """\
@@ -62,7 +61,9 @@ class SmsSpam(datalabs.GeneratorBasedBuilder):
             ),
             homepage="http://archive.ics.uci.edu/ml/datalab/SMS+Spam+Collection",
             citation=_CITATION,
-            task_templates=[TextClassification(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.spam_identification)(
+                text_column="text",
+                label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

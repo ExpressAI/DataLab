@@ -2,16 +2,9 @@
 import os
 import json
 import datalabs
-from datalabs.tasks import Summarization, DialogSummarization
+from datalabs import get_task, TaskType
 
-# the following package are needed when more additional features are expected to be calculated
-from featurize.summarization import (
-    get_features_sample_level,
-    get_schema_of_sample_level_features,
-)
-from datalabs.utils.more_features import (
-    get_feature_schemas,
-)
+
 
 _CITATION = """\
 @inproceedings{lin-etal-2021-csds,
@@ -72,36 +65,36 @@ class CSDSDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="CSDS dataset for Chinese customer service summarization, single document version",
-            task_templates=[Summarization(
-                text_column=_ARTICLE, summary_column=_ABSTRACT)]
+            task_templates=[get_task(TaskType.summarization)(
+                source_column=_ARTICLE, reference_column=_ABSTRACT)]
         ),
         CSDSConfig(
             name="usersumm",
             version=datalabs.Version("1.0.0"),
             description="CSDS dataset for Chinese customer service summarization, dialogue summarization version, target is the user summary.",
-            task_templates=[DialogSummarization(
-                text_column="dialogue", summary_column="user_summary")]
+            task_templates=[get_task(TaskType.dialog_summarization)(
+                source_column="dialogue",
+                reference_column="user_summary")]
         ),
         CSDSConfig(
             name="agentsumm",
             version=datalabs.Version("1.0.0"),
             description="CSDS dataset for Chinese customer service summarization, dialogue summarization version, target is the agent summary.",
-            task_templates=[DialogSummarization(
-                text_column="dialogue", summary_column="agent_summary")]
+            task_templates=[get_task(TaskType.dialog_summarization)(
+                source_column="dialogue", reference_column="agent_summary")]
         ),
         CSDSConfig(
             name="finalsumm",
             version=datalabs.Version("1.0.0"),
             description="CSDS dataset for Chinese customer service summarization, dialogue summarization version, target is the final summary.",
-            task_templates=[DialogSummarization(
-                text_column="dialogue", summary_column="final_summary")]
+            task_templates=[get_task(TaskType.dialog_summarization)(
+                source_column="dialogue", reference_column="final_summary")]
         ),
     ]
     DEFAULT_CONFIG_NAME = "document"
 
     def _info(self):
-        # Should return a datalab.DatasetInfo object
-        features_dataset = {}
+
 
         if self.config.name == "document":
             features_sample = datalabs.Features(
@@ -110,9 +103,6 @@ class CSDSDataset(datalabs.GeneratorBasedBuilder):
                     _ABSTRACT: datalabs.Value("string"),
                 }
             )
-            if self.feature_expanding:
-                features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                        get_schema_of_sample_level_features)
         elif self.config.name == "usersumm":
             features_sample = datalabs.Features({
                 "dialogue": datalabs.Sequence(datalabs.Features({
@@ -141,7 +131,6 @@ class CSDSDataset(datalabs.GeneratorBasedBuilder):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features_sample,
-            features_dataset=features_dataset,
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,

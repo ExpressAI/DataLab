@@ -15,9 +15,8 @@
 import json
 import textwrap
 import os
-
 import datalabs
-from datalabs.tasks import QuestionAnsweringExtractive
+from datalabs import get_task, TaskType
 
 
 # TODO(tydiqa): BibTeX citation
@@ -99,8 +98,10 @@ class Tydiqa(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=[self.config.name],
             task_templates=[
-                QuestionAnsweringExtractive(
-                    question_column="question", context_column="context", answers_column="answers"
+                get_task(TaskType.qa_extractive)(
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers"
                 )
             ],
         )

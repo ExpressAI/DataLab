@@ -18,8 +18,7 @@
 
 import datalabs
 import os
-from datalabs.tasks import SequenceLabeling
-from datalabs.task_dataset import SequenceLabelingDataset
+from datalabs import get_task, TaskType
 
 logger = datalabs.logging.get_logger(__name__)
 
@@ -83,11 +82,6 @@ class Conll2003(datalabs.GeneratorBasedBuilder):
     """Conll2003 dataset."""
 
 
-    # def __init__(self,*args, **kwargs):
-    #     super(Conll2003, self).__init__(*args, **kwargs)
-    #     self.dataset_class = SequenceLabelingDataset
-
-
     BUILDER_CONFIGS = [
         Conll2003Config(name="pos",
                         version=datalabs.Version("1.0.0"),
@@ -143,8 +137,8 @@ class Conll2003(datalabs.GeneratorBasedBuilder):
                                 "WP$",
                                 "WRB",
                             ],
-                        task_templates=[SequenceLabeling(tokens_column="tokens", tags_column="tags",
-                                                         task="part-of-speech")]
+                        task_templates=[get_task(TaskType.part_of_speech)(
+                            tokens_column="tokens", tags_column="tags")]
                         ),
         Conll2003Config(name="ner",
                         version=datalabs.Version("1.0.0"),
@@ -162,8 +156,8 @@ class Conll2003(datalabs.GeneratorBasedBuilder):
                                 "B-MISC",
                                 "I-MISC",
                             ],
-                        task_templates=[SequenceLabeling(tokens_column="tokens", tags_column="tags",
-                                                         task="named-entity-recognition")]
+                        task_templates=[get_task(TaskType.named_entity_recognition)
+                                        (tokens_column="tokens", tags_column="tags")]
                         ),
         Conll2003Config(name="chunking",
                         version=datalabs.Version("1.0.0"),
@@ -195,8 +189,8 @@ class Conll2003(datalabs.GeneratorBasedBuilder):
                                 "B-VP",
                                 "I-VP",
                             ],
-                        task_templates=[SequenceLabeling(tokens_column="tokens", tags_column="tags",
-                                                         task="text-chunking")]
+                        task_templates=[get_task(TaskType.chunking)(
+                            tokens_column="tokens", tags_column="tags")]
                         ),
     ]
     # DEFAULT_CONFIG_NAME = "ner"
