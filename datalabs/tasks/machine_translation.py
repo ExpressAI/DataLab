@@ -27,8 +27,6 @@ class MachineTranslation(TaskTemplate):
                 task_cls.get_task() for task_cls in self.get_task_parents()
             ]
 
-
-
     @property
     def column_mapping(self) -> Dict[str, str]:
         return {

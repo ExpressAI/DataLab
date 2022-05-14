@@ -25,12 +25,10 @@ class SpanRelationPrediction(TaskTemplate):
 
     relations: Optional[Tuple[str]] = None
 
-
     def set_labels(self, labels):
         self.__dict__["relations"] = tuple(labels)
         self.__dict__["label_schema"] = self.label_schema.copy()
-        self.label_schema["relations"] = ClassLabel(names=relations)
-
+        self.label_schema["relations"] = ClassLabel(names=labels)
 
     def __post_init__(self):
         if self.relations:

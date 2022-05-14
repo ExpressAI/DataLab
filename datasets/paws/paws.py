@@ -16,7 +16,7 @@
 
 import csv
 import datalabs
-from datalabs.tasks import TextMatching
+from datalabs import get_task, TaskType
 
 _CITATION = '''\
 @inproceedings{yang-etal-2019-paws,
@@ -65,10 +65,9 @@ class PAWS(datalabs.GeneratorBasedBuilder):
             homepage='https://aclanthology.org/D19-1382',
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[TextMatching(
+            task_templates=[get_task(TaskType.paraphrase_identification)(
                 text1_column="text1",
                 text2_column="text2",
-                task="natural-language-inference",
                 label_column="label"),
             ],
         )

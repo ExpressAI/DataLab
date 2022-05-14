@@ -20,7 +20,6 @@ class SequenceLabeling(TaskTemplate):
         self.__dict__["label_schema"] = self.label_schema.copy()
         self.label_schema["labels"] = ClassLabel(names=labels)
 
-
     def __post_init__(self):
 
         self.task_categories = [

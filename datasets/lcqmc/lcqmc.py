@@ -14,7 +14,7 @@
 
 import csv
 import datalabs
-from datalabs.tasks import TextMatching
+from datalabs import get_task, TaskType
 
 _CITATION = '''\
 @inproceedings{liu-etal-2018-lcqmc,
@@ -65,10 +65,9 @@ class LCQMC(datalabs.GeneratorBasedBuilder):
             homepage='https://aclanthology.org/C18-1166',
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[TextMatching(
+            task_templates=[get_task(TaskType.paraphrase_identification)(
                 text1_column="text1",
                 text2_column="text2",
-                task="natural-language-inference",
                 label_column="label"),
             ],
         )

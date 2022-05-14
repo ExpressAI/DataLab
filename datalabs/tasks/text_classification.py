@@ -75,7 +75,6 @@ class QuestionClassification(TextClassification):
     label_column: str = "label"
 
 
-
 @register_task(TaskType.spam_identification)
 @dataclass
 class SpamClassification(TextClassification):
@@ -91,14 +90,13 @@ class IntentClassification(TextClassification):
     text_column: str = "text"
     label_column: str = "label"
 
+
 @register_task(TaskType.grammatical_judgment)
 @dataclass
 class GrammaticalJudgment(TextClassification):
     task: TaskType = TaskType.grammatical_judgment
     text_column: str = "text"
     label_column: str = "label"
-
-
 
 
 @register_task(TaskType.topic_classification)

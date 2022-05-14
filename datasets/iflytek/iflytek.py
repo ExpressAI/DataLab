@@ -15,7 +15,8 @@
 
 import json
 import datalabs
-from datalabs.tasks import TopicClassification
+from datalabs import get_task, TaskType
+
 
 
 _DESCRIPTION = """\
@@ -47,7 +48,7 @@ class IFLYTEK(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label_des": datalabs.features.ClassLabel(names=[
+                    "label": datalabs.features.ClassLabel(names=[
                         "打车",
                         "地图导航",
                         "免费WIFI",
@@ -173,7 +174,9 @@ class IFLYTEK(datalabs.GeneratorBasedBuilder):
             homepage="",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[TopicClassification(text_column="text", label_column="label", task="topic-classification")],
+            task_templates=[get_task(TaskType.topic_classification)(
+                text_column="text",
+                label_column="label")],
         )
 
     def _split_generators(self, dl_manager):
