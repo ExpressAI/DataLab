@@ -106,7 +106,6 @@ class Ai2Arc(datalabs.GeneratorBasedBuilder):
                     question_column="question",
                     answers_column="answers",
                     options_column="options",
-                    task="question-answering-multiple-choices-without-context",
                 )
             ],
         )

@@ -29,8 +29,12 @@ def get_splits(dataset: str, sub_dataset: str | None) -> dict[str, int]:
     """
     # sub_str = sub_dataset if sub_dataset is not None else "__NONE__"
     print(f"loading splits from datalab for {dataset}, {sub_dataset}", file=sys.stderr)
-    loaded = load_dataset(dataset, sub_dataset)
+    loaded = load_dataset("../datasets/" + dataset, sub_dataset)
     return {k: v.num_rows for k, v in loaded.items()}
+
+
+def get_value(list_enum):
+    return [x.value for x in list_enum]
 
 
 def main():
@@ -155,8 +159,10 @@ def main():
                             metadata["languages"] = dataset_info.languages
                             if dataset_info.task_templates is not None:
                                 metadata["task_categories"] = [
-                                    x.task_category for x in dataset_info.task_templates
+                                    get_value(x.task_categories)
+                                    for x in dataset_info.task_templates
                                 ]
+                                print(metadata["task_categories"])
                                 metadata["tasks"] = [
                                     x.task for x in dataset_info.task_templates
                                 ]
@@ -174,3 +180,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+    # python get_dataset_info.py --previous_jsonl
+    # dataset_info.jsonl --output_jsonl new.jsonl
