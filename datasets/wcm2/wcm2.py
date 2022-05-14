@@ -106,6 +106,7 @@ class WCM2(datalabs.GeneratorBasedBuilder):
             task_templates = [get_task(TaskType.topic_classification)(
             text_column="text",
             label_column="label")],
+            languages=[self.config.name],
         )
 
     def _split_generators(self, dl_manager):

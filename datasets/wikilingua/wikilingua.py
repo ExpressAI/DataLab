@@ -112,11 +112,11 @@ class WikiLinguaDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             license=_LICENSE,
-            languages=[self.config.name],
             task_templates=[get_task(TaskType.summarization)(
                 source_column=_ARTICLE,
-                reference_column=_ABSTRACT),
-            ],
+                reference_column=_ABSTRACT)],
+            languages=self.config.name.split('-'),
+
         )
 
     def _split_generators(self, dl_manager):

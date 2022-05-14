@@ -125,6 +125,7 @@ class MasakhaNER(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[get_task(TaskType.named_entity_recognition)
                             (tokens_column="tokens", tags_column="tags")]
+            languages=[self.config.language],
         )
 
     def _split_generators(self, dl_manager):

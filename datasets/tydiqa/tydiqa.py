@@ -96,6 +96,7 @@ class Tydiqa(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://github.com/google-research-datasets/tydiqa",
             citation=_CITATION,
+            languages=[self.config.name],
             task_templates=[
                 get_task(TaskType.qa_extractive)(
                     question_column="question",

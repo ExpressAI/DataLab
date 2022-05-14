@@ -13,11 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import csv
 import json
-import os
 import datalabs
-import zipfile
 from pydantic import FilePath
 import requests
 from datalabs import get_task, TaskType

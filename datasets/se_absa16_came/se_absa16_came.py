@@ -5,19 +5,18 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
-
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 import csv
 import datalabs
-from datalabs import get_task, TaskType
+from datalabs.tasks import TextClassification
 
 _DESCRIPTION = """\
 The task type of this dataset is Aspect-level Sentiment Classification, and the task definition is as follows: 
@@ -61,10 +60,10 @@ _CITATION = """\
 
 _LICENSE = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/SE-ABSA16/License.pdf"
 
-_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/SE-ABSA16/SE-ABSA16-PHNS-train.tsv"
-# _TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/SE-ABSA16/SE-ABSA16-PHNS-test.tsv"
+_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/SE-ABSA16/SE-ABSA16-CAME-train.tsv"
+# _TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/SE-ABSA16/SE-ABSA16-CAME-test.tsv"
 
-class SEABSA16PHNS(datalabs.GeneratorBasedBuilder):
+class SEABSA16CAME(datalabs.GeneratorBasedBuilder):
     def _info(self):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
@@ -77,7 +76,7 @@ class SEABSA16PHNS(datalabs.GeneratorBasedBuilder):
             homepage="https://aclanthology.org/S16-1002",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.sentiment_classification)(text_column="text", label_column="label")],
+            task_templates=[TextClassification(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):
