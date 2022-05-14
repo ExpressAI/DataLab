@@ -29,8 +29,12 @@ def get_splits(dataset: str, sub_dataset: str | None) -> dict[str, int]:
     """
     # sub_str = sub_dataset if sub_dataset is not None else "__NONE__"
     print(f"loading splits from datalab for {dataset}, {sub_dataset}", file=sys.stderr)
-    loaded = load_dataset(dataset, sub_dataset)
+    loaded = load_dataset("../datasets/" + dataset, sub_dataset)
     return {k: v.num_rows for k, v in loaded.items()}
+
+
+def get_value(list_enum):
+    return [x.value for x in list_enum]
 
 
 def main():
@@ -94,6 +98,7 @@ def main():
     )
     for file_name in sorted(os.listdir(dir_datasets)):
         print(f"---- {file_name} ----", file=sys.stderr)
+        sub_dataset_current = None
         if (
             not file_name.endswith(".py")
             and not file_name.endswith(".md")
@@ -125,6 +130,7 @@ def main():
                         )
 
                         for sub_dataset in config_names:
+                            sub_dataset_current = sub_dataset
 
                             dataset_id = f"{file_name}---{sub_dataset}"
 
@@ -155,8 +161,10 @@ def main():
                             metadata["languages"] = dataset_info.languages
                             if dataset_info.task_templates is not None:
                                 metadata["task_categories"] = [
-                                    x.task_category for x in dataset_info.task_templates
+                                    get_value(x.task_categories)
+                                    for x in dataset_info.task_templates
                                 ]
+                                print(metadata["task_categories"])
                                 metadata["tasks"] = [
                                     x.task for x in dataset_info.task_templates
                                 ]
@@ -169,8 +177,13 @@ def main():
                             out_stream.flush()
             except Exception as e:  # noqa
                 traceback.print_exc()
-                print(json.dumps({f"{file_name}---__NONE__": "ERROR"}), file=out_stream)
+                print(
+                    json.dumps({f"{file_name}---{sub_dataset_current}": "ERROR"}),
+                    file=out_stream,
+                )
 
 
 if __name__ == "__main__":
     main()
+    # python get_dataset_info.py --previous_jsonl
+    # dataset_info.jsonl --output_jsonl new.jsonl
