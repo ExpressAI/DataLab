@@ -92,3 +92,5 @@ from datalabs.splits import (
 )
 from datalabs.tasks import get_task, TaskType
 from datalabs.utils import *
+
+SCRIPTS_VERSION = "master" if _version.parse(__version__).is_devrelease else __version__
