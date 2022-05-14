@@ -14,8 +14,7 @@
 import csv
 
 import datalabs
-from datalabs.tasks import TextClassification
-from datalabs import Dataset
+from datalabs import get_task, TaskType
 
 _DESCRIPTION = """\
 The QC question classification dataset involves six different question types.
@@ -51,7 +50,9 @@ class QC(datalabs.GeneratorBasedBuilder):
             homepage="https://aclanthology.org/C02-1150.pdf",
             citation=_CITATION,
             languages=["en"],
-            task_templates=[TextClassification(text_column="text", label_column="label", task="question-classification")],
+            task_templates=[get_task(TaskType.question_classification)(
+                text_column="text",
+                label_column="label")],
         )
 
     def _split_generators(self, dl_manager):
