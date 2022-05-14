@@ -15,7 +15,7 @@
 
 import json
 import datalabs
-from datalabs.tasks import TextMatching
+from datalabs import get_task, TaskType
 
 _DESCRIPTION = """\
 BUSTM: XiaoBu Dialogue Short Text Matching, a Dialog short text semantic matching data set, from XiaoBu.
@@ -58,11 +58,10 @@ class BUSTM(datalabs.GeneratorBasedBuilder):
             homepage='https://github.com/CLUEbenchmark/FewCLUE',
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[TextMatching(
+            task_templates=[get_task(TaskType.paraphrase_identification)(
                 text1_column="text1",
                 text2_column="text2",
-                label_column="label",
-                task="natural-language-inference"),
+                label_column="label"),
             ],
         )
 
