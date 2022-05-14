@@ -98,6 +98,7 @@ def main():
     )
     for file_name in sorted(os.listdir(dir_datasets)):
         print(f"---- {file_name} ----", file=sys.stderr)
+        sub_dataset_current = None
         if (
             not file_name.endswith(".py")
             and not file_name.endswith(".md")
@@ -129,6 +130,7 @@ def main():
                         )
 
                         for sub_dataset in config_names:
+                            sub_dataset_current = sub_dataset
 
                             dataset_id = f"{file_name}---{sub_dataset}"
 
@@ -175,7 +177,10 @@ def main():
                             out_stream.flush()
             except Exception as e:  # noqa
                 traceback.print_exc()
-                print(json.dumps({f"{file_name}---__NONE__": "ERROR"}), file=out_stream)
+                print(
+                    json.dumps({f"{file_name}---{sub_dataset_current}": "ERROR"}),
+                    file=out_stream,
+                )
 
 
 if __name__ == "__main__":

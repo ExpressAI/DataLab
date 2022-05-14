@@ -124,15 +124,15 @@ class DontStopPretraining(datalabs.GeneratorBasedBuilder):
                 "USED-FOR",
             ],
         ),
-        DontStopPretrainingConfig(
-            name='ag',
-            label_classes=[
-                "1",
-                "2",
-                "3",
-                "4",
-            ],
-        ),
+        # DontStopPretrainingConfig(
+        #     name='ag',
+        #     label_classes=[
+        #         "1",
+        #         "2",
+        #         "3",
+        #         "4",
+        #     ],
+        # ),
         DontStopPretrainingConfig(
             name='hyperpartisan_news',
             label_classes=[

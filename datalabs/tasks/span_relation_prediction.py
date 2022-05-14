@@ -31,6 +31,11 @@ class SpanRelationPrediction(TaskTemplate):
         self.label_schema["relations"] = ClassLabel(names=labels)
 
     def __post_init__(self):
+
+        self.task_categories = [
+            task_cls.get_task() for task_cls in self.get_task_parents()
+        ]
+
         if self.relations:
             if len(self.relations) != len(set(self.relations)):
                 raise ValueError("Relations labels must be unique")
