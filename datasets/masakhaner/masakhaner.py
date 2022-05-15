@@ -124,7 +124,7 @@ class MasakhaNER(datalabs.GeneratorBasedBuilder):
             homepage="https://www.aclweb.org/anthology/W03-0419/",
             citation=_CITATION,
             task_templates=[get_task(TaskType.named_entity_recognition)
-                            (tokens_column="tokens", tags_column="tags")]
+                            (tokens_column="tokens", tags_column="tags")],
             languages=[self.config.language],
         )
 
