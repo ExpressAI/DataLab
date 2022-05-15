@@ -164,7 +164,6 @@ def main():
                                     get_value(x.task_categories)
                                     for x in dataset_info.task_templates
                                 ]
-                                print(metadata["task_categories"])
                                 metadata["tasks"] = [
                                     x.task for x in dataset_info.task_templates
                                 ]
