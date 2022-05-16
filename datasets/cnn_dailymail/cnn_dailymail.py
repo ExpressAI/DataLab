@@ -306,19 +306,12 @@ class CnnDailymail(datalabs.GeneratorBasedBuilder):
         ]
 
     def _generate_examples(self, files):
-        for (i, p) in enumerate(files):
+        for p in files:
             article, highlights = _get_art_abs(p, self.config.version)
             if not article or not highlights:
                 continue
             fname = os.path.basename(p)
-            if i < 10:
-                print("###############")
-                print(article)
-                print()
-                print(highlights)
-                
-            if i > 12000:
-                break
+            
             yield fname, {
                 _ARTICLE: article,
                 _HIGHLIGHTS: highlights,
