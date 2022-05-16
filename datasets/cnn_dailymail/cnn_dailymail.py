@@ -99,8 +99,8 @@ def custom_download(url, path):
             url+f"&confirm={response}"])
 
 
-_HIGHLIGHTS = "text"
-_ARTICLE = "summary"
+_HIGHLIGHTS = "summary"
+_ARTICLE = "text"
 
 
 _SUPPORTED_VERSIONS = [
@@ -306,11 +306,19 @@ class CnnDailymail(datalabs.GeneratorBasedBuilder):
         ]
 
     def _generate_examples(self, files):
-        for p in files:
+        for (i, p) in enumerate(files):
             article, highlights = _get_art_abs(p, self.config.version)
             if not article or not highlights:
                 continue
             fname = os.path.basename(p)
+            if i < 10:
+                print("###############")
+                print(article)
+                print()
+                print(highlights)
+                
+            if i > 12000:
+                break
             yield fname, {
                 _ARTICLE: article,
                 _HIGHLIGHTS: highlights,
