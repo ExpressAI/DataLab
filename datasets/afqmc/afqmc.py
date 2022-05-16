@@ -3,6 +3,7 @@ import datalabs
 import os
 from datalabs import get_task, TaskType
 
+
 _CITATION = '''
 @inproceedings {xu-etal-2020-clue,
  title = "{CLUE}: A {C}hinese Language Understanding Evaluation Benchmark",
