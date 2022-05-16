@@ -26,6 +26,14 @@ class ConditionalGeneration(TaskTemplate):
             )
 
 
+@register_task(TaskType.opinion_target_extraction)
+@dataclass
+class OpinionTargetExtraction(ConditionalGeneration):
+    task: TaskType = TaskType.opinion_target_extraction
+    source_column: str = "source"
+    reference_column: str = "reference"
+
+
 @register_task(TaskType.guided_conditional_generation)
 @dataclass
 class GuidedConditionalGeneration(ConditionalGeneration):

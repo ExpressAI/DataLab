@@ -46,6 +46,7 @@ class TaskType(str, Enum):
     word_segmentation = "word-segmentation"
     chunking = "chunking"
     part_of_speech = "part-of-speech"
+    opinion_target_extraction = "opinion-target-extraction"
     semantic_parsing = "semantic-parsing"
     text_to_sql = "text-to-sql"
     span_relation_prediction = "span-relation-prediction"
