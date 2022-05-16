@@ -70,4 +70,3 @@ class PartofSpeech(SequenceLabeling):
     task: TaskType = TaskType.part_of_speech
     tokens_column: str = "tokens"
     tags_column: str = "tags"
-
