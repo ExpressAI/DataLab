@@ -60,6 +60,13 @@ def main():
         type=str,
         default=None,
     )
+    parser.add_argument(
+        "--datasets",
+        help="specify datasets to search",
+        nargs="+",
+        type=str,
+        required=False,
+    )
     args = parser.parse_args()
 
     prev_data = {}
@@ -96,7 +103,8 @@ def main():
     out_stream = (
         sys.stdout if args.output_jsonl is None else open(args.output_jsonl, "w")
     )
-    for file_name in sorted(os.listdir(dir_datasets)):
+    all_datasets = args.datasets or sorted(os.listdir(dir_datasets))
+    for file_name in all_datasets:
         print(f"---- {file_name} ----", file=sys.stderr)
         sub_dataset_current = None
         if (
