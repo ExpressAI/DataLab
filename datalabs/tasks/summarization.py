@@ -103,21 +103,26 @@ class MultiRefSummarization(Summarization):
     reference_column: str = "summaries"
 
 
-
 @register_task(TaskType.opinion_summarization)
 @dataclass
 class OpinionSummarization(Summarization, GuidedConditionalGeneration):
-    """ Opinion summarization task.
+    """Opinion summarization task.
     data format: {
-        "texts": List[str], # list of reviews 
+        "texts": List[str], # list of reviews
         "aspect": str, # aspect of the summary, optional
         "summaries": List[str], # list of summaries, optional
         }
     """
-    # `task` is not a ClassVar since we want it to be part of the `asdict` output for JSON serialization
+
+    # `task` is not a ClassVar since we want it to be part of the `asdict`
+    # output for JSON serialization
     task: TaskType = TaskType.opinion_summarization
-    input_schema: ClassVar[Features] = Features({"texts": Sequence(Value("string")), "query": Value("string")})
-    label_schema: ClassVar[Features] = Features({"summaries": Sequence(Value("string"))})
+    input_schema: ClassVar[Features] = Features(
+        {"texts": Sequence(Value("string")), "query": Value("string")}
+    )
+    label_schema: ClassVar[Features] = Features(
+        {"summaries": Sequence(Value("string"))}
+    )
     source_column: str = "texts"
     reference_column: str = "summaries"
     aspect_column: str = "aspect"
