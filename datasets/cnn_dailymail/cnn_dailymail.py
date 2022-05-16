@@ -99,8 +99,8 @@ def custom_download(url, path):
             url+f"&confirm={response}"])
 
 
-_HIGHLIGHTS = "text"
-_ARTICLE = "summary"
+_HIGHLIGHTS = "summary"
+_ARTICLE = "text"
 
 
 _SUPPORTED_VERSIONS = [
@@ -311,6 +311,7 @@ class CnnDailymail(datalabs.GeneratorBasedBuilder):
             if not article or not highlights:
                 continue
             fname = os.path.basename(p)
+            
             yield fname, {
                 _ARTICLE: article,
                 _HIGHLIGHTS: highlights,
