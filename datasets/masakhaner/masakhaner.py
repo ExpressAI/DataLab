@@ -48,6 +48,7 @@ African languages. This repository corresponds to version 2.0.
 """
 
 _SUPPORTED_LANGUAGES = [
+    'bam',
     'bbj',
     'ewe',
     'fon',
