@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import ClassVar, Optional, Tuple
 
 from datalabs.features import ClassLabel, Features, Value
+from datalabs.features.features import Sequence
 from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 
 
@@ -61,3 +62,20 @@ class ParaphraseIdentification(TextPairClassification):
     text1_column: str = "text1"
     text2_column: str = "text2"
     label_column: str = "label"
+
+'''
+@register_task(TaskType.keyword_recognition)
+@dataclass
+class KeywordRecognition(TextPairClassification):
+    task: TaskType = TaskType.keyword_recognition
+    input_schema: ClassVar[Features] = Features({
+        "text1_column": Value("string"), 
+        "text2_column": Sequence(Value("string")),
+    })
+    label_schema: ClassVar[Features] = Features({
+        "label_column": ClassLabel
+    })
+    text1_column: str = "text1"
+    text2_column: str = "text2"
+    label_column: str = "label"
+'''

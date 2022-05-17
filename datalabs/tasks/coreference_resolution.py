@@ -28,6 +28,11 @@ class CoreferenceResolution(TaskTemplate):
     label_column: str = "label"
     labels: Optional[Tuple[str]] = None
 
+    def set_labels(self, labels):
+        self.__dict__["labels"] = tuple(self.labels)
+        self.__dict__["label_schema"] = self.label_schema.copy()
+        self.label_schema["labels"] = ClassLabel(names=self.labels)
+
     def __post_init__(self):
         self.task_categories = ["span-relation-prediction"]  # TODO(Pengfei)
 

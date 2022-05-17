@@ -20,7 +20,7 @@ from datalabs import get_task, TaskType
 
 _DESCRIPTION = """\
 The evaluation object extraction task aims to automatically extract the evaluation objects contained in a given review text. 
-This task is one of the basic tasks in sentiment analysis, and the dataset covers data scraped on Baidu.
+This task is one of the basic tasks in sentiment analysis, and the dataset covers data scraped on Dianping.
 For more information, please refer to https://www.luge.ai/#/luge/dataDetail?id=19. 
 """
 
@@ -42,16 +42,16 @@ _CITATION = """\
 }
 """
 
-_LICENSE = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/conditional_generation/cote/COTE-BD/License.pdf"
+_LICENSE = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/conditional_generation/cote/COTE-DP/License.pdf"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/conditional_generation/cote/COTE-BD/train.tsv"
-# _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/conditional_generation/cote/COTE-BD/test.tsv"
+_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/conditional_generation/cote/COTE-DP/train.tsv"
+# _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/conditional_generation/cote/COTE-DP/test.tsv"
 
 _OPINION = "opinion"
 _TARGET = "target"
 
 
-class COTE_BD(datalabs.GeneratorBasedBuilder):
+class COTE_DP(datalabs.GeneratorBasedBuilder):
 
     def _info(self):
         return datalabs.DatasetInfo(
@@ -87,7 +87,8 @@ class COTE_BD(datalabs.GeneratorBasedBuilder):
             header = 0
             for id_, line in enumerate(csv_reader):
                 if header > 0:
-                    _TARGET, _OPINION = line
-                    yield id_, {'opinion': _OPINION, 'target': _TARGET}
+                    if len(line) == 2:
+                        _TARGET, _OPINION = line
+                        yield id_, {'opinion': _OPINION, 'target': _TARGET}
                 header = header + 1
 
