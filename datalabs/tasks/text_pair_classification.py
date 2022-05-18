@@ -34,7 +34,9 @@ class TextPairClassification(TaskTemplate):
             )
         if self.label_schema is None:
             self.label_schema: ClassVar[Features] = Features(
-                {self.label_column: ClassLabel}
+                {
+                    self.label_column: ClassLabel
+                }
             )
 
         if self.labels:
@@ -68,13 +70,17 @@ class ParaphraseIdentification(TextPairClassification):
 @dataclass
 class KeywordRecognition(TextPairClassification):
     task: TaskType = TaskType.keyword_recognition
-    input_schema: ClassVar[Features] = Features({
-        "text1_column": Value("string"), 
-        "text2_column": Sequence(Value("string")),
-    })
-    label_schema: ClassVar[Features] = Features({
-        "label_column": ClassLabel
-    })
+
     text1_column: str = "text1"
     text2_column: str = "text2"
     label_column: str = "label"
+    labels: Optional[Tuple[str]] = None
+
+    input_schema: ClassVar[Features] = Features({
+        "text1": Value("string"), 
+        "text2": Sequence(Value("string")),
+    })
+    label_schema: ClassVar[Features] = Features({
+        "label": ClassLabel
+    })
+    

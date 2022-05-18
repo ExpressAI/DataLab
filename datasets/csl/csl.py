@@ -118,7 +118,7 @@ class CSL(datalabs.GeneratorBasedBuilder):
             for id_, line in enumerate(f.readlines()):
                 line = json.loads(line.strip())
                 text1 = line['abst']
-                text2 = line['keywords']
+                text2 = line['keyword']
                 label = line['label']
                 if label == ("0" or "1"):
                     yield id_, {'text1': text1, 'text2': text2, 'label': label}
