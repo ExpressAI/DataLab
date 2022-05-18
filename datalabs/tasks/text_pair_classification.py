@@ -63,7 +63,7 @@ class ParaphraseIdentification(TextPairClassification):
     text2_column: str = "text2"
     label_column: str = "label"
 
-'''
+
 @register_task(TaskType.keyword_recognition)
 @dataclass
 class KeywordRecognition(TextPairClassification):
@@ -78,4 +78,3 @@ class KeywordRecognition(TextPairClassification):
     text1_column: str = "text1"
     text2_column: str = "text2"
     label_column: str = "label"
-'''
