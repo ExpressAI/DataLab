@@ -22,7 +22,6 @@ class CoreferenceResolution(TaskTemplate):
 
     label_schema: ClassVar[Features] = Features({"label": ClassLabel})
 
-
     text_column: str = "text"
     pronoun_column: str = "pronoun"
     pronoun_idx_column: str = "pronoun_idx"
@@ -32,7 +31,7 @@ class CoreferenceResolution(TaskTemplate):
     labels: Optional[Tuple[str]] = None
 
     def set_labels(self, labels):
-        self.__dict__["labels"] = tuple(self.labels)
+        self.__dict__["labels"] = tuple(labels)
         self.__dict__["label_schema"] = self.label_schema.copy()
         self.label_schema["labels"] = ClassLabel(names=labels)
 

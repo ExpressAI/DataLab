@@ -17,6 +17,8 @@ import json
 import datalabs
 from datalabs import get_task, TaskType
 
+logger = datalabs.logging.get_logger(__name__)
+
 _DESCRIPTION = """\
 The DuReaderchecklist dataset is a single-chapter, extractive reading comprehension dataset.
 Given a question (q), a chapter (p) and its title (t), the system needs to judge 
@@ -84,18 +86,17 @@ class DuReaderChecklist(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                    "question": {
-                        "question_text": datalabs.Value("string"), 
-                        "question_type": datalabs.Value("string")
-                    },
+                    "id": datalabs.Value("string"),
+                    "question": datalabs.Value("string"),
                     "context": datalabs.Value("string"),
                     "title": datalabs.Value("string"),
-                    
-                    "answers": {
-                        "is_impossible": datalabs.ClassLabel(names=["true", "false"]),
-                        "answer_text": datalabs.Value("string"),
-                        "answer_start": datalabs.Value("int32"),
-                    }
+                    "answers":
+                        {
+                            "text": datalabs.features.Sequence(datalabs.Value("string")),
+                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
+                        },
+                    "is_impossible":datalabs.Value("string"),
+                    "type":datalabs.Value("string"),
                 }
             ),
             supervised_keys=None,
@@ -103,10 +104,9 @@ class DuReaderChecklist(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages = ["zh"],
             task_templates=[
-                get_task(TaskType.qa_dureader_checklist)(
+                get_task(TaskType.qa_extractive)(
                     question_column = "question",
                     context_column = "context",
-                    title_column = "title",
                     answers_column = "answers",
                 )
             ],
@@ -126,22 +126,33 @@ class DuReaderChecklist(datalabs.GeneratorBasedBuilder):
         ]
 
     def _generate_examples(self, filepath):
-        """This function returns the examples."""
-
+        """This function returns the examples in the raw (text) form."""
+        logger.info("generating examples from = %s", filepath)
+        key = 0
         with open(filepath, encoding="utf-8") as f:
-            file = json.load(f)
-            data = file["data"][0]["paragraphs"]
-            for id_, line in enumerate(data):
-                qas, context, title = line["qas"][0], line["context"], line["title"] 
-                question_type, question_text, answers = qas["type"], qas["question"], qas["answers"][0]
-                is_impossible = qas["is_impossible"]
-                if is_impossible == ("true" or "false"):
-                    answer_text, answer_start = answers["text"], int(answers["answer_start"])
-                    question = {"question_text": question_text, "question_type": question_type}
-                    answers = {"is_impossible": is_impossible, "answer_text": answer_text, "answer_start": answer_start}
-                    yield(id_, {"question": question, "context": context, "title": title, "answers": answers})
+            squad = json.load(f)
+            for article in squad["data"]:
+                title = article.get("title", "")
+                for paragraph in article["paragraphs"]:
+                    context = paragraph["context"]  # do not strip leading blank spaces GH-2585
+                    for qa in paragraph["qas"]:
+                        answer_starts = [answer["answer_start"] for answer in qa["answers"]]
+                        answers = [answer["text"] for answer in qa["answers"]]
 
 
-
+                        yield key, {
+                            "title": title,
+                            "context": context,
+                            "question": qa["question"],
+                            "id": qa["id"],
+                            "answers": {
+                                "answer_start": answer_starts,
+                                "text": answers,
+                            },
+                            "is_impossible":qa["is_impossible"],
+                            "type":qa["type"],
+                            # "answers":answer_list,
+                        }
+                        key += 1
 
             
