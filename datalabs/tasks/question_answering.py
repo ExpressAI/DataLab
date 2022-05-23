@@ -260,33 +260,3 @@ class QuestionAnsweringMultipleChoiceWithoutContext(QuestionAnsweringMultipleCho
     question_column: str = "question"
     answers_column: str = "answers"
     options_column: str = "options"
-
-@register_task(TaskType.qa_dureader_checklist)
-@dataclass
-class QADuReaderchecklist(QuestionAnsweringExtractive):
-    # adapt datasets: dureader_checklist
-    question_column: str = "question"
-    context_column: str = "context"
-    title_column: str = "title"
-    answers_column: str = "answers"
-
-    task: TaskType = TaskType.qa_dureader_checklist
-    input_schema: ClassVar[Features] = Features(
-        {
-            "question": {
-                "question_text": Value("string"), 
-                "question_type": Value("string")
-            },
-            "context": Value("string"),
-            "title": Value("string"),
-        }
-    )
-    label_schema: ClassVar[Features] = Features(
-        {
-            "answers": {
-                "is_impossible": ClassLabel(names=["true", "false"]),
-                "answer_text": Value("string"),
-                "answer_start": Value("int32"),
-            }
-        }
-    )
