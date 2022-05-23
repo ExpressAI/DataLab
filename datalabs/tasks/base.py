@@ -40,6 +40,7 @@ class TaskType(str, Enum):
     qa_dcqa = "qa-dcqa"
     qa_multiple_choice = "qa-multiple-choice"
     qa_multiple_choice_qasc = "qa-multiple-choice-qasc"
+    qa_multiple_choice_c3 = "qa-multiple-choice-c3"
     qa_multiple_choice_without_context = "qa-multiple-choice-without-context"
     qa_dureader_checklist = "qa_dureader_checklist"
     sequence_labeling = "sequence-labeling"

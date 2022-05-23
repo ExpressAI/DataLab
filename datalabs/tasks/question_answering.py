@@ -241,6 +241,29 @@ class QuestionAnsweringMultipleChoiceQASC(QuestionAnsweringMultipleChoice):
     answers_column: str = "answers"
     options_column: str = "options"
 
+@register_task(TaskType.qa_multiple_choice_c3)
+@dataclass
+class QuestionAnsweringMultipleChoiceC3(QuestionAnsweringMultipleChoice):
+    task: TaskType = TaskType.qa_multiple_choice_c3
+    input_schema: ClassVar[Features] = Features(
+        {
+            "question": Value("string"),
+            "options": Sequence(Value("string")),
+            "context": Sequence(Value("string")),
+        }
+    )
+    label_schema: ClassVar[Features] = Features(
+        {
+            "answers": {
+                "text": Value("string"),
+                "option_index": Value("int32"),
+            }
+        }
+    )
+    question_column: str = "question"
+    context_column: str = "context"
+    answers_column: str = "answers"
+    options_column: str = "options"
 
 @register_task(TaskType.qa_multiple_choice_without_context)
 @dataclass
