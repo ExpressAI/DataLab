@@ -41,6 +41,7 @@ class TaskType(str, Enum):
     qa_multiple_choice = "qa-multiple-choice"
     qa_multiple_choice_qasc = "qa-multiple-choice-qasc"
     qa_multiple_choice_without_context = "qa-multiple-choice-without-context"
+    qa_dureader_checklist = "qa_dureader_checklist"
     sequence_labeling = "sequence-labeling"
     named_entity_recognition = "named-entity-recognition"
     word_segmentation = "word-segmentation"
@@ -70,6 +71,7 @@ class TaskType(str, Enum):
     text_pair_classification = "text-pair-classification"
     natural_language_inference = "natural-language-inference"
     paraphrase_identification = "paraphrase-identification"
+    keyword_recognition = "keyword_recognition"
     opinion_summarization = "opinion-summarization"
 
     @staticmethod
