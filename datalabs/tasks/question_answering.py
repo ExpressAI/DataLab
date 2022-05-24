@@ -241,6 +241,7 @@ class QuestionAnsweringMultipleChoiceQASC(QuestionAnsweringMultipleChoice):
     answers_column: str = "answers"
     options_column: str = "options"
 
+
 @register_task(TaskType.qa_multiple_choice_c3)
 @dataclass
 class QuestionAnsweringMultipleChoiceC3(QuestionAnsweringMultipleChoice):
@@ -264,6 +265,7 @@ class QuestionAnsweringMultipleChoiceC3(QuestionAnsweringMultipleChoice):
     context_column: str = "context"
     answers_column: str = "answers"
     options_column: str = "options"
+
 
 @register_task(TaskType.qa_multiple_choice_without_context)
 @dataclass
