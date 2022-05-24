@@ -65,8 +65,8 @@ and is a classification task (given two sentences, predict one of three labels).
 """
 
 VERSION = datalabs.Version("1.0.0", "")
-_DEV_DATA_URL = "https://raw.githubusercontent.com/nala-cub/AmericasNLI/main/dev.tsv"
-_TEST_DATA_URL = "https://raw.githubusercontent.com/nala-cub/AmericasNLI/main/test.tsv"
+_DEV_DATA_URL = "https://raw.githubusercontent.com/abteen/americasnli/main/data/anli_final/dev/anli.dev.tsv"
+_TEST_DATA_URL = "https://raw.githubusercontent.com/abteen/americasnli/main/data/anli_final/test/anli.test.tsv"
 
 _LANGUAGES = ("aym", "bzd", "cni", "gn", "hch", "nah", "oto", "quy", "shp", "tar")
 
@@ -136,7 +136,7 @@ class AmericasNLI(datalabs.GeneratorBasedBuilder):
             # No default supervised_keys (as we have to pass both premise
             # and hypothesis as input).
             supervised_keys=None,
-            homepage="https://github.com/nala-cub/AmericasNLI",
+            homepage="https://github.com/abteen/AmericasNLI",
             citation=_CITATION,
             languages=languages,
             task_templates=[get_task(TaskType.natural_language_inference)(
