@@ -35,22 +35,13 @@ and availability of training data. Among these are many under-studied languages,
 Niger-Congo languages Swahili and Yoruba, spoken in Africa.
 """
 
-_TYDIQA_LANG = {
-    "arabic": "ar",
-    "bengali": "bn",
-    "english": "en",
-    "finnish": "fi",
-    "indonesian": "id",
-    "korean": "ko",
-    "russian": "ru",
-    "swahili": "sw",
-    "telugu": "te"
-}
-_XNLI_LANG = ["ar", "bg", "de", "el", "en", "es", "fr", "hi", "ru", "sw", "th", "tr", "ur", "vi", "zh"]
-_MLQA_LANG = ["ar", "de", "vi", "zh", "en", "es", "hi"]
-_XQUAD_LANG = ["ar", "de", "vi", "zh", "en", "es", "hi", "el", "ru", "th", "tr"]
-_PAWSX_LANG = ["de", "en", "es", "fr", "ja", "ko", "zh"]
-_BUCC_LANG = ["de", "fr", "zh", "ru"]
+# Dictionaries of languages should have ISO 639-3 first, then code used by dataset file
+_TYDIQA_LANG = {'ara': 'arabic', 'ben': 'bengali', 'eng': 'english', 'fin': 'finnish', 'ind': 'indonesian', 'kor': 'korean', 'rus': 'russian', 'swa': 'swahili', 'tel': 'telugu'}
+_XNLI_LANG = {'ara': 'ar', 'bul': 'bg', 'deu': 'de', 'ell': 'el', 'eng': 'en', 'spa': 'es', 'fra': 'fr', 'hin': 'hi', 'rus': 'ru', 'swa': 'sw', 'tha': 'th', 'tur': 'tr', 'urd': 'ur', 'vie': 'vi', 'cmn': 'zh'}
+_MLQA_LANG = {'ara': 'ar', 'deu': 'de', 'vie': 'vi', 'cmn': 'zh', 'eng': 'en', 'spa': 'es', 'hin': 'hi'}
+_XQUAD_LANG = {'ara': 'ar', 'deu': 'de', 'vie': 'vi', 'cmn': 'zh', 'eng': 'en', 'spa': 'es', 'hin': 'hi', 'ell': 'el', 'rus': 'ru', 'tha': 'th', 'tur': 'tr'}
+_PAWSX_LANG = {'deu': 'de', 'eng': 'en', 'spa': 'es', 'fra': 'fr', 'jpn': 'ja', 'kor': 'ko', 'cmn': 'zh'}
+_BUCC_LANG = {'deu': 'de', 'fra': 'fr', 'cmn': 'zh', 'rus': 'ru'}
 _TATOEBA_LANG = [
     "afr",
     "ara",
@@ -91,102 +82,61 @@ _TATOEBA_LANG = [
 ]
 
 _UD_POS_LANG = {
-    "Afrikaans": "afs",
-    "Arabic": "ara",
-    "Basque": "eus",
-    "Bulgarian": "bul",
-    "Dutch": "nld",
-    "English": "eng",
-    "Estonian": "est",
-    "Finnish": "fin",
-    "French": "fra",
-    "German": "deu",
-    "Greek": "ell",
-    "Hebrew": "heb",
-    "Hindi": "hin",
-    "Hungarian": "hun",
-    "Indonesian": "ind",
-    "Italian": "ita",
-    "Japanese": "jpn",
-    "Kazakh": "kaz",
-    "Korean": "kor",
-    "Chinese": "cmn",
-    "Marathi": "mar",
-    "Persian": "fas",
-    "Portuguese": "por",
-    "Russian": "rus",
-    "Spanish": "spanish",
-    "Tagalog": "tgl",
-    "Tamil": "tam",
-    "Telugu": "tel",
-    "Thai": "tha",
-    "Turkish": "tur",
-    "Urdu": "urd",
-    "Vietnamese": "vie",
-    "Yoruba": "yor",
+    "afs": "Afrikaans",
+    "ara": "Arabic",
+    "eus": "Basque",
+    "bul": "Bulgarian",
+    "nld": "Dutch",
+    "eng": "English",
+    "est": "Estonian",
+    "fin": "Finnish",
+    "fra": "French",
+    "deu": "German",
+    "ell": "Greek",
+    "heb": "Hebrew",
+    "hin": "Hindi",
+    "hun": "Hungarian",
+    "ind": "Indonesian",
+    "ita": "Italian",
+    "jpn": "Japanese",
+    "kaz": "Kazakh",
+    "kor": "Korean",
+    "cmn": "Chinese",
+    "mar": "Marathi",
+    "fas": "Persian",
+    "por": "Portuguese",
+    "rus": "Russian",
+    "spa": "Spanish",
+    "tgl": "Tagalog",
+    "tam": "Tamil",
+    "tel": "Telugu",
+    "tha": "Thai",
+    "tur": "Turkish",
+    "urd": "Urdu",
+    "vie": "Vietnamese",
+    "yor": "Yoruba",
 }
-_PAN_X_LANG = [
-    "af",
-    "ar",
-    "bg",
-    "bn",
-    "de",
-    "el",
-    "en",
-    "es",
-    "et",
-    "eu",
-    "fa",
-    "fi",
-    "fr",
-    "he",
-    "hi",
-    "hu",
-    "id",
-    "it",
-    "ja",
-    "jv",
-    "ka",
-    "kk",
-    "ko",
-    "ml",
-    "mr",
-    "ms",
-    "my",
-    "nl",
-    "pt",
-    "ru",
-    "sw",
-    "ta",
-    "te",
-    "th",
-    "tl",
-    "tr",
-    "ur",
-    "vi",
-    "yo",
-    "zh",
-]
+_PAN_X_LANG = {'afr': 'af', 'ara': 'ar', 'bul': 'bg', 'ben': 'bn', 'deu': 'de', 'ell': 'el', 'eng': 'en', 'spa': 'es', 'est': 'et', 'eus': 'eu', 'fas': 'fa', 'fin': 'fi', 'fra': 'fr', 'heb': 'he', 'hin': 'hi', 'hun': 'hu', 'ind': 'id', 'ita': 'it', 'jpn': 'ja', 'jav': 'jv', 'kat': 'ka', 'kaz': 'kk', 'kor': 'ko', 'mal': 'ml', 'mar': 'mr', 'msa': 'ms', 'mya': 'my', 'nld': 'nl', 'por': 'pt', 'rus': 'ru', 'swa': 'sw', 'tam': 'ta', 'tel': 'te', 'tha': 'th', 'tgl': 'tl', 'tur': 'tr', 'urd': 'ur', 'vie': 'vi', 'yor': 'yo', 'cmn': 'zh'}
 
-_NAMES = ["SQuAD"]
-for lang in _TYDIQA_LANG.values():
-    _NAMES.append(f"tydiqa.{lang}")
-for lang in _XNLI_LANG:
-    _NAMES.append(f"XNLI.{lang}")
-for lang in _PAN_X_LANG:
-    _NAMES.append(f"PAN-X.{lang}")
-for lang in _MLQA_LANG:
-    _NAMES.append(f"MLQA.{lang}")
-for lang in _XQUAD_LANG:
-    _NAMES.append(f"XQuAD.{lang}")
-for lang in _BUCC_LANG:
-    _NAMES.append(f"bucc18.{lang}")
-for lang in _PAWSX_LANG:
-    _NAMES.append(f"PAWS-X.{lang}")
-for lang in _TATOEBA_LANG:
-    _NAMES.append(f"tatoeba.{lang}")
-for lang, lang_code in _UD_POS_LANG.items():
-    _NAMES.append(f"udpos.{lang}")
+_NAMES = ['SQuAD.eng']
+for lang3 in _TYDIQA_LANG.keys():
+    _NAMES.append(f"tydiqa.{lang3}")
+for lang3 in _XNLI_LANG.keys():
+    _NAMES.append(f"XNLI.{lang3}")
+for lang3 in _PAN_X_LANG.keys():
+    _NAMES.append(f"PAN-X.{lang3}")
+for lang3 in _MLQA_LANG.keys():
+    _NAMES.append(f"MLQA.{lang3}")
+for lang3 in _XQUAD_LANG.keys():
+    _NAMES.append(f"XQuAD.{lang3}")
+for lang3 in _BUCC_LANG.keys():
+    _NAMES.append(f"bucc18.{lang3}")
+for lang3 in _PAWSX_LANG.keys():
+    _NAMES.append(f"PAWS-X.{lang3}")
+for lang3 in _TATOEBA_LANG:
+    _NAMES.append(f"tatoeba.{lang3}")
+for lang3 in _UD_POS_LANG.keys():
+    _NAMES.append(f"udpos.{lang3}")
 
 _DESCRIPTIONS = {
     "tydiqa": textwrap.dedent(
@@ -585,7 +535,8 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
 
         if self.config.name.startswith("MLQA"):
             mlqa_downloaded_files = dl_manager.download_and_extract(self.config.data_url)
-            language = self.config.name.split(".")[-1]
+            lang3 = self.config.name.split(".")[-1]
+            lang2 = _MLQA_LANG[lang3]
             return [
                 datalabs.SplitGenerator(
                     name=datalabs.Split.TEST,
@@ -593,7 +544,7 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                     gen_kwargs={
                         "filepath": os.path.join(
                             os.path.join(mlqa_downloaded_files, "MLQA_V1/test"),
-                            f"test-context-{language}-question-{language}.json",
+                            f"test-context-{lang2}-question-{lang2}.json",
                         )
                     },
                 ),
@@ -603,15 +554,16 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                     gen_kwargs={
                         "filepath": os.path.join(
                             os.path.join(mlqa_downloaded_files, "MLQA_V1/dev"),
-                            f"dev-context-{language}-question-{language}.json",
+                            f"dev-context-{lang2}-question-{lang2}.json",
                         )
                     },
                 ),
             ]
 
         if self.config.name.startswith("XQuAD"):
-            lang = self.config.name.split(".")[1]
-            xquad_downloaded_file = dl_manager.download_and_extract(self.config.data_url + f"xquad.{lang}.json")
+            lang3 = self.config.name.split(".")[1]
+            lang2 = _XQUAD_LANG[lang3]
+            xquad_downloaded_file = dl_manager.download_and_extract(self.config.data_url + f"xquad.{lang2}.json")
             return [
                 datalabs.SplitGenerator(
                     name=datalabs.Split.VALIDATION,
@@ -622,10 +574,10 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
         if self.config.name.startswith("PAWS-X"):
             return PawsxParser.split_generators(dl_manager=dl_manager, config=self.config)
         elif self.config.name.startswith("tatoeba"):
-            lang = self.config.name.split(".")[1]
+            lang3 = self.config.name.split(".")[1]
 
-            tatoeba_source_data = dl_manager.download_and_extract(self.config.data_url + f"tatoeba.{lang}-eng.{lang}")
-            tatoeba_eng_data = dl_manager.download_and_extract(self.config.data_url + f"tatoeba.{lang}-eng.eng")
+            tatoeba_source_data = dl_manager.download_and_extract(self.config.data_url + f"tatoeba.{lang3}-eng.{lang3}")
+            tatoeba_eng_data = dl_manager.download_and_extract(self.config.data_url + f"tatoeba.{lang3}-eng.eng")
             return [
                 datalabs.SplitGenerator(
                     name=datalabs.Split.VALIDATION,
@@ -634,12 +586,13 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                 ),
             ]
         if self.config.name.startswith("bucc18"):
-            lang = self.config.name.split(".")[1]
+            lang3 = self.config.name.split(".")[1]
+            lang2 = _BUCC_LANG[lang3]
             bucc18_dl_test_archive = dl_manager.download(
-                self.config.data_url + f"bucc2018-{lang}-en.training-gold.tar.bz2"
+                self.config.data_url + f"bucc2018-{lang2}-en.training-gold.tar.bz2"
             )
             bucc18_dl_dev_archive = dl_manager.download(
-                self.config.data_url + f"bucc2018-{lang}-en.sample-gold.tar.bz2"
+                self.config.data_url + f"bucc2018-{lang2}-en.sample-gold.tar.bz2"
             )
             return [
                 datalabs.SplitGenerator(
@@ -654,7 +607,7 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
         if self.config.name.startswith("udpos"):
             return UdposParser.split_generators(dl_manager=dl_manager, config=self.config)
 
-        if self.config.name == "SQuAD":
+        if self.config.name.startswith("SQuAD"):
 
             urls_to_download = {
                 "train": self.config.data_url + "train-v1.1.json",
@@ -680,7 +633,7 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
         """Yields examples."""
         # TODO(xtreme): Yields (key, example) tuples from the dataset
 
-        if self.config.name.startswith("MLQA") or self.config.name == "SQuAD":
+        if self.config.name.startswith("MLQA") or self.config.name.startswith("SQuAD"):
             with open(filepath, encoding="utf-8") as f:
                 data = json.load(f)
                 for article in data["data"]:
@@ -707,7 +660,8 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                                 },
                             }
         elif self.config.name.startswith("tydiqa"):
-            language = self.config.name.split('.')[-1]
+            lang3 = self.config.name.split('.')[-1]
+            langfull = _TYDIQA_LANG[lang3]
             with open(filepath, encoding="utf-8") as f:
                 data = json.load(f)
                 for article in data["data"]:
@@ -716,9 +670,8 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                         context = paragraph["context"].strip()
                         for qa in paragraph["qas"]:
                             id_ = qa["id"]
-                            examp_lang = id_.split('-')[0]
-                            examp_lang_code = _TYDIQA_LANG[examp_lang]
-                            if examp_lang_code == language:
+                            examp_langfull = id_.split('-')[0]
+                            if examp_langfull == langfull:
                                 question = qa["question"].strip()
 
                                 answer_starts = [answer["answer_start"] for answer in qa["answers"]]
@@ -737,15 +690,16 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                                     },
                                 }
         elif self.config.name.startswith("XNLI"):
-            language = self.config.name.split('.')[-1]
+            lang3 = self.config.name.split('.')[-1]
+            lang2 = _XNLI_LANG[lang3]
             with open(filepath, encoding="utf-8") as f:
                 data = csv.DictReader(f, delimiter="\t")
                 for id_, row in enumerate(data):
-                    if row["language"] == language:
+                    if row["language"] == lang2:
                         yield id_, {
                             "sentence1": row["sentence1"],
                             "sentence2": row["sentence2"],
-                            "language": row["language"],
+                            "language": lang3,
                             "gold_label": row["gold_label"],
                         }
         elif self.config.name.startswith("PAWS-X"):
@@ -775,8 +729,11 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                                 },
                             }
         elif self.config.name.startswith("bucc18"):
-            lang = self.config.name.split(".")[1]
-            data_dir = f"bucc2018/{lang}-en"
+            lang3 = self.config.name.split(".")[1]
+            lang2 = _BUCC_LANG[lang3]
+            lang2to3 = {v: k for k, v in _BUCC_LANG.items()}
+            lang2to3['en'] = 'eng'
+            data_dir = f"bucc2018/{lang2}-en"
             for path, file in filepath:
                 if path.startswith(data_dir):
                     csv_content = [line.decode("utf-8") for line in file]
@@ -792,8 +749,8 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                 yield id_, {
                     "source_sentence": source_sent,
                     "answers": [target_sent],
-                    "source_lang": pair[0],
-                    "target_lang": pair[1],
+                    "source_lang": lang2to3[pair[0].split('-')[0]],
+                    "target_lang": lang2to3[pair[1].split('-')[0]],
                 }
         elif self.config.name.startswith("tatoeba"):
             source_file = filepath[0]
@@ -846,8 +803,9 @@ class PanxParser:
     @staticmethod
     def split_generators(dl_manager=None, config=None):
         data_dir = dl_manager.download_and_extract(config.data_url)
-        lang = config.name.split(".")[1]
-        archive = os.path.join(data_dir, lang + ".tar.gz")
+        lang3 = config.name.split(".")[1]
+        lang2 = _PAN_X_LANG[lang3]
+        archive = os.path.join(data_dir, lang2 + ".tar.gz")
         split_filenames = {
             datalabs.Split.TRAIN: "train",
             datalabs.Split.VALIDATION: "dev",
@@ -866,6 +824,7 @@ class PanxParser:
 
     @staticmethod
     def generate_examples(filepath=None, filename=None):
+        lang2to3 = {v: k for k, v in _PAN_X_LANG.items()}
         idx = 1
         for path, file in filepath:
             if path.endswith(filename):
@@ -889,7 +848,7 @@ class PanxParser:
                         # pan-x data is tab separated
                         splits = line.split("\t")
                         # strip out en: prefix
-                        langs.append(splits[0][:2])
+                        langs.append(lang2to3[splits[0][:2]])
                         tokens.append(splits[0][3:])
                         if len(splits) > 1:
                             ner_tags.append(splits[-1].replace("\n", ""))
@@ -922,10 +881,10 @@ class PawsxParser:
 
     @staticmethod
     def split_generators(dl_manager=None, config=None):
-        lang = config.name.split(".")[1]
+        lang3 = config.name.split(".")[1]
         archive = dl_manager.download(config.data_url)
         split_filenames = {
-            datalabs.Split.TRAIN: "translated_train.tsv" if lang != "en" else "train.tsv",
+            datalabs.Split.TRAIN: "translated_train.tsv" if lang3 != "eng" else "train.tsv",
             datalabs.Split.VALIDATION: "dev_2k.tsv",
             datalabs.Split.TEST: "test_2k.tsv",
         }
@@ -939,9 +898,10 @@ class PawsxParser:
 
     @staticmethod
     def generate_examples(config=None, filepath=None, filename=None):
-        lang = config.name.split(".")[1]
+        lang3 = config.name.split(".")[1]
+        lang2 = _PAWSX_LANG[lang3]
         for path, file in filepath:
-            if f"/{lang}/" in path and path.endswith(filename):
+            if f"/{lang2}/" in path and path.endswith(filename):
                 lines = (line.decode("utf-8").replace('\\t', '\t') for line in file)
                 # skip header
                 next(lines)
@@ -1003,22 +963,24 @@ class UdposParser:
             )
             for split in split_names
         }
-        lang = config.name.split(".")[1]
-        if lang in ["Tagalog", "Thai", "Yoruba"]:
+        lang3 = config.name.split(".")[1]
+        langfull = _UD_POS_LANG[lang3]
+        if lang3 in ["tgl", "tha", "yor"]:
             return [split_generators["test"]]
-        elif lang == "Kazakh":
+        elif lang3 == "kaz":
             return [split_generators["train"], split_generators["test"]]
         else:
             return [split_generators["train"], split_generators["validation"], split_generators["test"]]
 
     @staticmethod
     def generate_examples(config=None, filepath=None, split=None):
-        lang = config.name.split(".")[1]
+        lang3 = config.name.split(".")[1]
+        langfull = _UD_POS_LANG[lang3]
         idx = 0
         for path, file in filepath:
-            if f"_{lang}" in path and split in path and path.endswith(".conllu"):
+            if f"_{langfull}" in path and split in path and path.endswith(".conllu"):
                 # For lang other than [see below], we exclude Arabic-NYUAD which does not contains any words, only _
-                if lang in ["Kazakh", "Tagalog", "Thai", "Yoruba"] or "NYUAD" not in path:
+                if lang3 in ["kaz", "tgl", "tha", "yor"] or "NYUAD" not in path:
                     lines = (line.decode("utf-8") for line in file)
                     data = csv.reader(lines, delimiter="\t", quoting=csv.QUOTE_NONE)
                     tokens = []
