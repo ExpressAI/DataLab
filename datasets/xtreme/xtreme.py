@@ -175,9 +175,8 @@ for lang in _XNLI_LANG:
     _NAMES.append(f"XNLI.{lang}")
 for lang in _PAN_X_LANG:
     _NAMES.append(f"PAN-X.{lang}")
-for lang1 in _MLQA_LANG:
-    for lang2 in _MLQA_LANG:
-        _NAMES.append(f"MLQA.{lang1}.{lang2}")
+for lang in _MLQA_LANG:
+    _NAMES.append(f"MLQA.{lang}")
 for lang in _XQUAD_LANG:
     _NAMES.append(f"XQuAD.{lang}")
 for lang in _BUCC_LANG:
@@ -586,8 +585,7 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
 
         if self.config.name.startswith("MLQA"):
             mlqa_downloaded_files = dl_manager.download_and_extract(self.config.data_url)
-            l1 = self.config.name.split(".")[1]
-            l2 = self.config.name.split(".")[2]
+            language = self.config.name.split(".")[-1]
             return [
                 datalabs.SplitGenerator(
                     name=datalabs.Split.TEST,
@@ -595,7 +593,7 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                     gen_kwargs={
                         "filepath": os.path.join(
                             os.path.join(mlqa_downloaded_files, "MLQA_V1/test"),
-                            f"test-context-{l1}-question-{l2}.json",
+                            f"test-context-{language}-question-{language}.json",
                         )
                     },
                 ),
@@ -605,7 +603,7 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                     gen_kwargs={
                         "filepath": os.path.join(
                             os.path.join(mlqa_downloaded_files, "MLQA_V1/dev"),
-                            f"dev-context-{l1}-question-{l2}.json",
+                            f"dev-context-{language}-question-{language}.json",
                         )
                     },
                 ),
@@ -910,6 +908,7 @@ class PawsxParser:
 
     features = datalabs.Features(
         {
+            "id": datalabs.Value("int32"),
             "sentence1": datalabs.Value("string"),
             "sentence2": datalabs.Value("string"),
             "label": datalabs.features.ClassLabel(
@@ -943,16 +942,20 @@ class PawsxParser:
         lang = config.name.split(".")[1]
         for path, file in filepath:
             if f"/{lang}/" in path and path.endswith(filename):
-                lines = (line.decode("utf-8") for line in file)
-                data = csv.reader(lines, delimiter="\t")
-                next(data)  # skip header
-                for id_, row in enumerate(data):
+                lines = (line.decode("utf-8").replace('\\t', '\t') for line in file)
+                # skip header
+                next(lines)
+                for id_, line in enumerate(lines):
+                    row = line.split('\t')
                     if len(row) == 4:
                         yield id_, {
+                            "id": int(row[0]),
                             "sentence1": row[1],
                             "sentence2": row[2],
                             "label": row[3],
                         }
+                    else:
+                        raise ValueError(f'Invalid row: {row}')
 
 
 class UdposParser:
