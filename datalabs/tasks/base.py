@@ -11,6 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import annotations
+
 import abc
 import dataclasses
 from dataclasses import dataclass, field
@@ -74,6 +76,7 @@ class TaskType(str, Enum):
     paraphrase_identification = "paraphrase-identification"
     keyword_recognition = "keyword_recognition"
     opinion_summarization = "opinion-summarization"
+    retrieval = "retrieval"
 
     @staticmethod
     def list():
@@ -123,5 +126,5 @@ def register_task(task: TaskType):
     return register_task_fn
 
 
-def get_task(task: TaskType) -> TaskTemplate:
+def get_task(task: TaskType) -> Type[TaskTemplate]:
     return TASK_REGISTRY[task]
