@@ -34,6 +34,8 @@ and availability of training data. Among these are many under-studied languages,
 (spoken in southern India, Sri Lanka, and Singapore), Telugu and Malayalam (spoken mainly in southern India), and the
 Niger-Congo languages Swahili and Yoruba, spoken in Africa.
 """
+
+_XNLI_LANG = ["ar", "bg", "de", "el", "en", "es", "fr", "hi", "ru", "sw", "th", "tr", "ur", "vi", "zh"]
 _MLQA_LANG = ["ar", "de", "vi", "zh", "en", "es", "hi"]
 _XQUAD_LANG = ["ar", "de", "vi", "zh", "en", "es", "hi", "el", "ru", "th", "tr"]
 _PAWSX_LANG = ["de", "en", "es", "fr", "ja", "ko", "zh"]
@@ -155,7 +157,9 @@ _PAN_X_LANG = [
     "zh",
 ]
 
-_NAMES = ["XNLI", "tydiqa", "SQuAD"]
+_NAMES = ["tydiqa", "SQuAD"]
+for lang in _XNLI_LANG:
+    _NAMES.append(f"XNLI.{lang}")
 for lang in _PAN_X_LANG:
     _NAMES.append(f"PAN-X.{lang}")
 for lang1 in _MLQA_LANG:
@@ -484,7 +488,7 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                 text2_column="sentence2",
                 label_column="label"
             )
-        elif self.config.name == "XNLI":
+        elif self.config.name.startswith("XNLI"):
             features["gold_label"] = datalabs.features.ClassLabel(
                 names=[
                     "entailment",
@@ -553,7 +557,7 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                     gen_kwargs={"filepath": dl_dir["dev"]},
                 ),
             ]
-        if self.config.name == "XNLI":
+        if self.config.name.startswith("XNLI"):
             dl_dir = dl_manager.download_and_extract(self.config.data_url)
             data_dir = os.path.join(dl_dir, "XNLI-1.0")
             return [
@@ -691,16 +695,18 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                                     "text": answers,
                                 },
                             }
-        if self.config.name == "XNLI":
+        if self.config.name.startswith("XNLI"):
+            language = self.config.name.split('.')[-1]
             with open(filepath, encoding="utf-8") as f:
                 data = csv.DictReader(f, delimiter="\t")
                 for id_, row in enumerate(data):
-                    yield id_, {
-                        "sentence1": row["sentence1"],
-                        "sentence2": row["sentence2"],
-                        "language": row["language"],
-                        "gold_label": row["gold_label"],
-                    }
+                    if row["language"] == language:
+                        yield id_, {
+                            "sentence1": row["sentence1"],
+                            "sentence2": row["sentence2"],
+                            "language": row["language"],
+                            "gold_label": row["gold_label"],
+                        }
         if self.config.name.startswith("PAWS-X"):
             yield from PawsxParser.generate_examples(config=self.config, filepath=filepath, **kwargs)
         if self.config.name.startswith("XQuAD"):
