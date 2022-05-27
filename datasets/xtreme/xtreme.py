@@ -289,8 +289,22 @@ _CITATIONS = {
             year={2018}
           }"""
     ),
-    "bucc18": textwrap.dedent(""""""),
-    "udpos": textwrap.dedent(""""""),
+    "bucc18": textwrap.dedent("""\
+        @inproceedings{zweigenbaum2018overview,
+          title={Overview of the third BUCC shared task: Spotting parallel sentences in comparable corpora},
+          author={Zweigenbaum, Pierre and Sharoff, Serge and Rapp, Reinhard},
+          booktitle={Proceedings of 11th Workshop on Building and Using Comparable Corpora},
+          pages={39--42},
+          year={2018}
+        }"""),
+    "udpos": textwrap.dedent("""\
+        @inproceedings{nivre2016universal,
+          title={Universal dependencies v1: A multilingual treebank collection},
+          author={Nivre, Joakim and De Marneffe, Marie-Catherine and Ginter, Filip and Goldberg, Yoav and Hajic, Jan and Manning, Christopher D and McDonald, Ryan and Petrov, Slav and Pyysalo, Sampo and Silveira, Natalia and others},
+          booktitle={Proceedings of the Tenth International Conference on Language Resources and Evaluation (LREC'16)},
+          pages={1659--1666},
+          year={2016}
+        }"""),
     "SQuAD": textwrap.dedent(
         """\
         @article{2016arXiv160605250R,
