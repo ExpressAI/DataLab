@@ -35,6 +35,17 @@ and availability of training data. Among these are many under-studied languages,
 Niger-Congo languages Swahili and Yoruba, spoken in Africa.
 """
 
+_TYDIQA_LANG = {
+    "arabic": "ar",
+    "bengali": "bn",
+    "english": "en",
+    "finnish": "fi",
+    "indonesian": "id",
+    "korean": "ko",
+    "russian": "ru",
+    "swahili": "sw",
+    "telugu": "te"
+}
 _XNLI_LANG = ["ar", "bg", "de", "el", "en", "es", "fr", "hi", "ru", "sw", "th", "tr", "ur", "vi", "zh"]
 _MLQA_LANG = ["ar", "de", "vi", "zh", "en", "es", "hi"]
 _XQUAD_LANG = ["ar", "de", "vi", "zh", "en", "es", "hi", "el", "ru", "th", "tr"]
@@ -157,7 +168,9 @@ _PAN_X_LANG = [
     "zh",
 ]
 
-_NAMES = ["tydiqa", "SQuAD"]
+_NAMES = ["SQuAD"]
+for lang in _TYDIQA_LANG.values():
+    _NAMES.append(f"tydiqa.{lang}")
 for lang in _XNLI_LANG:
     _NAMES.append(f"XNLI.{lang}")
 for lang in _PAN_X_LANG:
@@ -537,7 +550,7 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
-        if self.config.name == "tydiqa":
+        if self.config.name.startswith("tydiqa"):
             train_url = "v1.1/tydiqa-goldp-v1.1-train.json"
             dev_url = "v1.1/tydiqa-goldp-v1.1-dev.json"
             urls_to_download = {
@@ -669,7 +682,7 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
         """Yields examples."""
         # TODO(xtreme): Yields (key, example) tuples from the dataset
 
-        if self.config.name == "tydiqa" or self.config.name.startswith("MLQA") or self.config.name == "SQuAD":
+        if self.config.name.startswith("MLQA") or self.config.name == "SQuAD":
             with open(filepath, encoding="utf-8") as f:
                 data = json.load(f)
                 for article in data["data"]:
@@ -695,7 +708,37 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                                     "text": answers,
                                 },
                             }
-        if self.config.name.startswith("XNLI"):
+        elif self.config.name.startswith("tydiqa"):
+            language = self.config.name.split('.')[-1]
+            with open(filepath, encoding="utf-8") as f:
+                data = json.load(f)
+                for article in data["data"]:
+                    title = article.get("title", "").strip()
+                    for paragraph in article["paragraphs"]:
+                        context = paragraph["context"].strip()
+                        for qa in paragraph["qas"]:
+                            id_ = qa["id"]
+                            examp_lang = id_.split('-')[0]
+                            examp_lang_code = _TYDIQA_LANG[examp_lang]
+                            if examp_lang_code == language:
+                                question = qa["question"].strip()
+
+                                answer_starts = [answer["answer_start"] for answer in qa["answers"]]
+                                answers = [answer["text"].strip() for answer in qa["answers"]]
+
+                                # Features currently used are "context", "question", and "answers".
+                                # Others are extracted here for the ease of future expansions.
+                                yield id_, {
+                                    "title": title,
+                                    "context": context,
+                                    "question": question,
+                                    "id": id_,
+                                    "answers": {
+                                        "answer_start": answer_starts,
+                                        "text": answers,
+                                    },
+                                }
+        elif self.config.name.startswith("XNLI"):
             language = self.config.name.split('.')[-1]
             with open(filepath, encoding="utf-8") as f:
                 data = csv.DictReader(f, delimiter="\t")
@@ -707,9 +750,9 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                             "language": row["language"],
                             "gold_label": row["gold_label"],
                         }
-        if self.config.name.startswith("PAWS-X"):
+        elif self.config.name.startswith("PAWS-X"):
             yield from PawsxParser.generate_examples(config=self.config, filepath=filepath, **kwargs)
-        if self.config.name.startswith("XQuAD"):
+        elif self.config.name.startswith("XQuAD"):
             with open(filepath, encoding="utf-8") as f:
                 xquad = json.load(f)
                 for article in xquad["data"]:
@@ -733,7 +776,7 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                                     "text": answers,
                                 },
                             }
-        if self.config.name.startswith("bucc18"):
+        elif self.config.name.startswith("bucc18"):
             lang = self.config.name.split(".")[1]
             data_dir = f"bucc2018/{lang}-en"
             for path, file in filepath:
@@ -754,7 +797,7 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                     "source_lang": pair[0],
                     "target_lang": pair[1],
                 }
-        if self.config.name.startswith("tatoeba"):
+        elif self.config.name.startswith("tatoeba"):
             source_file = filepath[0]
             target_file = filepath[1]
             source_sentences = []
@@ -772,10 +815,12 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                     "source_lang": source_file.split(".")[-1],
                     "target_lang": "eng",
                 }
-        if self.config.name.startswith("udpos"):
+        elif self.config.name.startswith("udpos"):
             yield from UdposParser.generate_examples(config=self.config, filepath=filepath, **kwargs)
-        if self.config.name.startswith("PAN-X"):
+        elif self.config.name.startswith("PAN-X"):
             yield from PanxParser.generate_examples(filepath=filepath, **kwargs)
+        else:
+            raise ValueError(f"Bad config name {self.config.name}")
 
 
 class PanxParser:
