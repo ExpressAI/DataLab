@@ -14,6 +14,8 @@ from datalabs.tasks import (
     summarization,
     text_classification,
     text_pair_classification,
+    cloze,
+    text_editing,
 )
 from datalabs.tasks.base import (
     get_task,
@@ -38,6 +40,8 @@ __all__ = [
     "summarization",
     "text_classification",
     "text_pair_classification",
+    "cloze",
+    "text_editing",
     "TaskTemplate",
     "TaskType",
     "get_task",
