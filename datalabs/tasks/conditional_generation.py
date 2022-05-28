@@ -34,6 +34,14 @@ class OpinionTargetExtraction(ConditionalGeneration):
     reference_column: str = "reference"
 
 
+@register_task(TaskType.essay_writing)
+@dataclass
+class EssayWriting(ConditionalGeneration):
+    task: TaskType = TaskType.essay_writing
+    source_column: str = "source"
+    reference_column: str = "reference"
+
+
 @register_task(TaskType.guided_conditional_generation)
 @dataclass
 class GuidedConditionalGeneration(ConditionalGeneration):

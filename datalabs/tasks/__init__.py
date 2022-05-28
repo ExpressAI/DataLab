@@ -1,6 +1,7 @@
 from typing import Optional
 
 from datalabs.tasks import (
+    cloze,
     conditional_generation,
     coreference_resolution,
     kg_prediction,
@@ -13,6 +14,7 @@ from datalabs.tasks import (
     span_text_classification,
     summarization,
     text_classification,
+    text_editing,
     text_pair_classification,
 )
 from datalabs.tasks.base import (
@@ -38,6 +40,8 @@ __all__ = [
     "summarization",
     "text_classification",
     "text_pair_classification",
+    "cloze",
+    "text_editing",
     "TaskTemplate",
     "TaskType",
     "get_task",
