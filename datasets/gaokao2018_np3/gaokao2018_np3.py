@@ -245,7 +245,7 @@ class Gaokao2018NP3(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "text": Value("string"),
-                    "corrected_text": Value("string"),
+                    # "corrected_text": Value("string"),
                     "edits": Sequence(
                         {
                             "start_idx": Value("int32"),
@@ -412,7 +412,7 @@ class Gaokao2018NP3(datalabs.GeneratorBasedBuilder):
                     # reading data
                     original = data["original"]
                     edits = data["edits"]
-                    corrected = data["corrected"]
+                    # corrected = data["corrected"]
                     # print(edits)
 
                     # for idy, edit in enumerate(edits):
@@ -422,7 +422,7 @@ class Gaokao2018NP3(datalabs.GeneratorBasedBuilder):
                     #         print(correction)
                     yield id_, {
                         "text": original,
-                        "corrected_text": corrected,
+                        # "corrected_text": corrected,
                         "edits": edits,
                     }
 
