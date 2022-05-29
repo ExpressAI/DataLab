@@ -19,11 +19,11 @@ TBC
 _GLUE_DESCRIPTION = """\
 Gaokao is a benchmark that can track how well we make
 progress towards human-level AI. This dataset includes
-English exam paper from 2018 National Paper-I.
+English exam paper from 2019 National Paper-I.
 """
 
 
-class Gaokao2018NP1Config(datalabs.BuilderConfig):
+class Gaokao2019NP1Config(datalabs.BuilderConfig):
     """BuilderConfig for Gaokao Benchmark."""
 
     def __init__(
@@ -49,7 +49,7 @@ class Gaokao2018NP1Config(datalabs.BuilderConfig):
             of the label and processing it to the form required by the label feature
           **kwargs: keyword arguments forwarded to super.
         """
-        super(Gaokao2018NP1Config, self).__init__(version
+        super(Gaokao2019NP1Config, self).__init__(version
                                                   =datalabs.Version("1.0.0", ""),
                                                   **kwargs)
 
@@ -62,17 +62,17 @@ class Gaokao2018NP1Config(datalabs.BuilderConfig):
         self.task_templates = task_templates
 
 
-class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
+class Gaokao2019NP1(datalabs.GeneratorBasedBuilder):
     """Gaokao Benchmark for Evaluation Human-level AI"""
 
     BUILDER_CONFIGS = [
-        Gaokao2018NP1Config(
+        Gaokao2019NP1Config(
             name="listening",
             description=textwrap.dedent(
                 """\
             Based on the listening materials, choose the right answer from the given options"""
             ),
-            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1/processed_listening.jsonl",
+            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2019_np1/processed_listening.jsonl",
             data_dir=None,
             citation=textwrap.dedent(
                 """\
@@ -99,14 +99,14 @@ class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
                 answers_column="answer",
             )],
         ),
-        Gaokao2018NP1Config(
+        Gaokao2019NP1Config(
             name="cloze-multiple-choice",
             description=textwrap.dedent(
                 """\
             Given the context, choose the right answer to fill in
             the blank from the given options"""
             ),
-            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1/processed_cloze_choice.jsonl",
+            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2019_np1/processed_cloze_choice.jsonl",
             data_dir=None,
             citation=textwrap.dedent(
                 """\
@@ -131,14 +131,14 @@ class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
                 question_column="question_mark",
                 answers_column="answer")],
         ),
-        Gaokao2018NP1Config(
+        Gaokao2019NP1Config(
             name="cloze-hint",
             description=textwrap.dedent(
                 """\
             Given the context and hint, write down the correct
             answer to fill in the blank."""
             ),
-            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1/processed_cloze_hint.jsonl",
+            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2019_np1/processed_cloze_hint.jsonl",
             data_dir=None,
             citation=textwrap.dedent(
                 """\
@@ -160,14 +160,14 @@ class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
                 question_column="question_mark",
                 answers_column="answers")],
         ),
-        Gaokao2018NP1Config(
+        Gaokao2019NP1Config(
             name="reading-multiple-choice",
             description=textwrap.dedent(
                 """\
             Based on the text, choose the correct option from the
             given choices to answer the question"""
             ),
-            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1/processed_reading_mc.jsonl",
+            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2019_np1/processed_reading_mc.jsonl",
             data_dir=None,
             citation=textwrap.dedent(
                 """\
@@ -193,14 +193,14 @@ class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
                 answers_column="answers",
             )],
         ),
-        Gaokao2018NP1Config(
+        Gaokao2019NP1Config(
             name="reading-cloze",
             description=textwrap.dedent(
                 """\
             ased on the context, choose the best option from the given choices to fill in the blank
                 """
             ),
-            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1/processed_reading_dependent_cloze.jsonl",
+            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2019_np1/processed_reading_dependent_cloze.jsonl",
             data_dir=None,
             citation=textwrap.dedent(
                 """\
@@ -226,7 +226,7 @@ class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
                 answers_column="answers",
             )],
         ),
-        Gaokao2018NP1Config(
+        Gaokao2019NP1Config(
             name="writing-grammar",
             description=textwrap.dedent(
                 """\
@@ -234,7 +234,7 @@ class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
             total, each involving the addition, modification or deletion of a word.
             Please correct them"""
             ),
-            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1/processed_gec_edits.jsonl",
+            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2019_np1/processed_gec_edits.jsonl",
             data_dir=None,
             citation=textwrap.dedent(
                 """\
@@ -259,13 +259,13 @@ class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
                 reference_column="edits",
             )],
         ),
-        Gaokao2018NP1Config(
+        Gaokao2019NP1Config(
             name="writing-essay",
             description=textwrap.dedent(
                 """\
             Write an article based on the question and requirements"""
             ),
-            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1/processed_writing.jsonl",
+            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2019_np1/processed_writing.jsonl",
             data_dir=None,
             citation=textwrap.dedent(
                 """\
