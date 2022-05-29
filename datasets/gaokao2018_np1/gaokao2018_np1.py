@@ -72,7 +72,7 @@ class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
                 """\
             Based on the listening materials, choose the right answer from the given options"""
             ),
-            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1/processed_listening.jsonl",
+            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1_revised/processed_listening.jsonl",
             data_dir=None,
             citation=textwrap.dedent(
                 """\
@@ -106,7 +106,7 @@ class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
             Given the context, choose the right answer to fill in
             the blank from the given options"""
             ),
-            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1/processed_cloze_choice.jsonl",
+            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1_revised/processed_cloze_choice.jsonl",
             data_dir=None,
             citation=textwrap.dedent(
                 """\
@@ -138,7 +138,7 @@ class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
             Given the context and hint, write down the correct
             answer to fill in the blank."""
             ),
-            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1/processed_cloze_hint.jsonl",
+            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1_revised/processed_cloze_hint.jsonl",
             data_dir=None,
             citation=textwrap.dedent(
                 """\
@@ -167,7 +167,7 @@ class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
             Based on the text, choose the correct option from the
             given choices to answer the question"""
             ),
-            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1/processed_reading_mc.jsonl",
+            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1_revised/processed_reading_mc.jsonl",
             data_dir=None,
             citation=textwrap.dedent(
                 """\
@@ -200,7 +200,7 @@ class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
             ased on the context, choose the best option from the given choices to fill in the blank
                 """
             ),
-            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1/processed_reading_dependent_cloze.jsonl",
+            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1_revised/processed_reading_dependent_cloze.jsonl",
             data_dir=None,
             citation=textwrap.dedent(
                 """\
@@ -234,7 +234,7 @@ class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
             total, each involving the addition, modification or deletion of a word.
             Please correct them"""
             ),
-            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1/processed_gec_edits.jsonl",
+            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1_revised/processed_gec_edits.jsonl",
             data_dir=None,
             citation=textwrap.dedent(
                 """\
@@ -265,7 +265,7 @@ class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
                 """\
             Write an article based on the question and requirements"""
             ),
-            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1/processed_writing.jsonl",
+            data_url="https://datalab-hub.s3.amazonaws.com/gaokao/english/gaokao2018_np1_revised/processed_writing.jsonl",
             data_dir=None,
             citation=textwrap.dedent(
                 """\
