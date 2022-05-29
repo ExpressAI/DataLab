@@ -27,9 +27,9 @@ class Cloze(ConditionalGeneration):
                 {
                     self.reference_column: Sequence(
                         {
-                            "start_index": Value("int32"),
-                            "end_index": Value("int32"),
-                            "transformations": Sequence(Value("string")),
+                            "start_idx": Value("int32"),
+                            "end_idx": Value("int32"),
+                            "corrections": Sequence(Value("string")),
                         }
                     )
                 }

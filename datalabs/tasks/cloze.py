@@ -3,6 +3,10 @@ from typing import ClassVar
 
 from datalabs.features import Features, Sequence, Value
 from datalabs.tasks.base import register_task, TaskTemplate, TaskType
+from datalabs.tasks.question_answering import (
+    QuestionAnsweringAbstractive,
+    QuestionAnsweringMultipleChoice,
+)
 
 
 @register_task(TaskType.cloze)
@@ -10,7 +14,8 @@ from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 class Cloze(TaskTemplate):
     task: TaskType = TaskType.cloze
     context_column: str = "context"
-    answer_column: str = "answer"
+    question_column: str = "question_mark"
+    answers_column: str = "answers"
 
     def __post_init__(self):
         self.task_categories = [
@@ -19,41 +24,40 @@ class Cloze(TaskTemplate):
 
         if self.input_schema is None:
             self.input_schema: ClassVar[Features] = Features(
-                {self.context_column: Value("string")}
+                {
+                    self.context_column: Value("string"),
+                    self.question_column: Value("string"),
+                }
             )
         if self.label_schema is None:
             self.label_schema: ClassVar[Features] = Features(
-                {self.answer_column: Value("string")}
+                {self.answers_column: Sequence(Value("string"))}
             )
 
 
 @register_task(TaskType.cloze_multiple_choice)
 @dataclass
-class ClozeMultipleChoice(Cloze):
+class ClozeMultipleChoice(QuestionAnsweringMultipleChoice):
     task: TaskType = TaskType.cloze_multiple_choice
     context_column: str = "context"
     options_column: str = "options"
-    answer_column: str = "answer"
-
-    input_schema: ClassVar[Features] = Features(
-        {
-            "context": Value("string"),
-            "options": Sequence(Value("string")),
-        }
-    )
+    question_column: str = "question_mark"
+    answers_column: str = "answers"
 
 
 @register_task(TaskType.cloze_hint)
 @dataclass
-class ClozeHint(Cloze):
+class ClozeHint(QuestionAnsweringAbstractive):
     task: TaskType = TaskType.cloze_hint
     context_column: str = "context"
+    question_column: str = "question_mark"
     hint_column: str = "hint"
-    answer_column: str = "answer"
+    answers_column: str = "answers"
 
     input_schema: ClassVar[Features] = Features(
         {
+            "context": Value("string"),
             "hint": Value("string"),
-            "answer": Value("string"),
+            "question_mark": Value("string"),
         }
     )
