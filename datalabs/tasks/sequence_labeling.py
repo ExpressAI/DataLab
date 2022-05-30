@@ -70,33 +70,3 @@ class PartOfSpeech(SequenceLabeling):
     task: TaskType = TaskType.part_of_speech
     tokens_column: str = "tokens"
     tags_column: str = "tags"
-
-@register_task(TaskType.event_extraction)
-@dataclass
-class EventExtraction(SequenceLabeling):
-    task: TaskType = TaskType.event_extraction
-
-    input_schema: ClassVar[Features] = Features(
-        {
-            "source": {
-                "text": Value("string"),
-                "level1": Value("string"),
-                "level2": Value("string"),
-                "level3": Value("string"),
-            }
-        }
-    )
-    label_schema: ClassVar[Features] = Features(
-        {
-            "tags": Sequence({
-                    "start": Value("int32"), 
-                    "end": Value("int32"),  
-                    "type": Value("string"),
-                    "entity": Value("string"),
-                })
-            
-        }
-    )
-
-    tokens_column: str = "source"
-    tags_column: str = "tags"

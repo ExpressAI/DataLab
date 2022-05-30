@@ -109,6 +109,6 @@ class CCKS2021Fin(datalabs.GeneratorBasedBuilder):
                     start, end, type, entity = attribute["start"], attribute["end"], attribute["type"], attribute["entity"]
                     attribute = {"start": start, "end": end, "type": type, "entity": entity}
                     reference.append(attribute)
-                source = {"text":text, "level1":level1, "level1":level2, "level1":level3}
+                source = {"text":text, "level1":level1, "level2":level2, "level3":level3}
                 if len(reference) > 0:
                     yield id_, {'source': source, 'reference': reference}
