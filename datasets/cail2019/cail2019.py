@@ -50,13 +50,13 @@ class CAIL2019(datalabs.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
         CAIL2019Config(
-            name="Triple Text Matching",
+            name="triple_text_matching",
             version=datalabs.Version("1.0.0"),
-            description="Triple Text Matching",
+            description="triple_text_matching",
         ),
     ]
 
-    DEFAULT_CONFIG_NAME = "Triple Text Matching"
+    DEFAULT_CONFIG_NAME = "triple_text_matching"
 
     def _info(self):
 

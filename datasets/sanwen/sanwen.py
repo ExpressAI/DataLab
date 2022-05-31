@@ -50,13 +50,13 @@ class SanWen(datalabs.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
         SanWenConfig(
-            name="Relation Extraction",
+            name="relation_extraction",
             version=datalabs.Version("1.0.0"),
-            description="Relation Extraction",
+            description="relation_extraction",
         ),
     ]
 
-    DEFAULT_CONFIG_NAME = "Relation Extraction"
+    DEFAULT_CONFIG_NAME = "relation_extraction"
 
     def _info(self):
 
@@ -64,20 +64,32 @@ class SanWen(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                    "head": datalabs.Value("string"),
-                    "link": datalabs.Value("string"),
-                    "tail": datalabs.Value("string"),
+                    "span1": datalabs.Value("string"),
+                    "span2": datalabs.Value("string"),
                     "text": datalabs.Value("string"),
+                    "relation": datalabs.features.ClassLabel(names=[
+                        "unknown",
+                        "Create",
+                        "Use",
+                        "Near",
+                        "Social",
+                        "Located",
+                        "Ownership",
+                        "General-Special",
+                        "Family",
+                        "Part-Whole",
+                    ])
                 }
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.kg_link_tail_prediction)(
-                head_column = "head",
-                link_column = "link",
-                tail_column = "tail",
+            task_templates=[get_task(TaskType.span_relation_prediction)(
+                text_column = "text",
+                span1_column = "span1",
+                span2_column = "span2",
+                label_column = "relation",
             ),
             ],
         )
@@ -96,9 +108,22 @@ class SanWen(datalabs.GeneratorBasedBuilder):
 
     def _generate_examples(self, filepath):
 
+        relations = [
+            "unknown",
+            "Create",
+            "Use",
+            "Near",
+            "Social",
+            "Located",
+            "Ownership",
+            "General-Special",
+            "Family",
+            "Part-Whole"]
+
         with open(filepath, encoding="utf-8") as txt_file:
             txt_file = csv.reader(txt_file, delimiter='\t')
             for id_, row in enumerate(txt_file):
                 if len(row) == 4:
-                    head, tail, link, text = row
-                    yield id_, {"head": head, "tail":tail, "link": link, "text": text}
+                    span1, span2, relation, text = row
+                    if relation in relations:
+                        yield id_, {"text": text, "span1":span1, "span2": span2, "relation": relation}

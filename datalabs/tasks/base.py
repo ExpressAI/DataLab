@@ -76,6 +76,7 @@ class TaskType(str, Enum):
     paraphrase_identification = "paraphrase-identification"
     keyword_recognition = "keyword_recognition"
     triple_text_matching = "triple_text_matching"
+    text_matching_multiple_choice = "text_matching_multiple_choice"
     opinion_summarization = "opinion-summarization"
     retrieval = "retrieval"
     cloze = "cloze"

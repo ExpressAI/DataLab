@@ -19,7 +19,7 @@ from datalabs import get_task, TaskType
 from datalabs.features.features import Sequence
 
 _DESCRIPTION = """\
-CCKS2021_fin is an event element extraction dataset in the financial field, which is used for event extraction tasks. 
+CCKS2021_fin_ee is an event element extraction dataset in the financial field, which is used for event extraction tasks. 
 The task goal is to extract some of the 13 elements of an event based on the given description text and text type.
 """
 
@@ -35,23 +35,23 @@ _TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extrac
 _HOMEPAGE = "https://www.biendata.xyz/competition/ccks_2021_task6_1"
 
 
-class CCKS2021FinConfig(datalabs.BuilderConfig):
+class CCKS2021FinEEConfig(datalabs.BuilderConfig):
     
     def __init__(self, **kwargs):
 
-        super(CCKS2021FinConfig, self).__init__(**kwargs)
+        super(CCKS2021FinEEConfig, self).__init__(**kwargs)
 
-class CCKS2021Fin(datalabs.GeneratorBasedBuilder):
+class CCKS2021FinEE(datalabs.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
-        CCKS2021FinConfig(
-            name="Event Extraction",
+        CCKS2021FinEEConfig(
+            name="event_element_extraction",
             version=datalabs.Version("1.0.0"),
-            description="Event Extraction",
+            description="event_element_extraction",
         ),
     ]
 
-    DEFAULT_CONFIG_NAME = "Event Extraction"
+    DEFAULT_CONFIG_NAME = "event_element_extraction"
 
     def _info(self):
 
