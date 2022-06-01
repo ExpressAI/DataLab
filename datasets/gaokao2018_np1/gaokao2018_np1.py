@@ -154,7 +154,7 @@ class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
                     "answers": Value("string"),
 
                 }),
-            task_templates=[get_task(TaskType.cloze_hint)(
+            task_templates=[get_task(TaskType.cloze_generative)(
                 context_column="context",
                 hint_column="hint",
                 question_column="question_mark",
