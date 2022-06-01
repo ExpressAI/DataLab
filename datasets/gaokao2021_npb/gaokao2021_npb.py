@@ -245,7 +245,7 @@ class Gaokao2021NPB(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "text": Value("string"),
-                    "corrected_text": Value("string"),
+                    # "corrected_text": Value("string"),
                     "edits": Sequence(
                         {
                             "start_idx": Value("int32"),
