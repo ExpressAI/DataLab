@@ -4,6 +4,7 @@ from datalabs.tasks import (
     cloze,
     conditional_generation,
     coreference_resolution,
+    event_extraction,
     kg_prediction,
     machine_translation,
     question_answering,
@@ -29,6 +30,7 @@ from datalabs.utils.logging import get_logger
 __all__ = [
     "conditional_generation",
     "coreference_resolution",
+    "event_extraction",
     "kg_prediction",
     "machine_translation",
     "question_answering",

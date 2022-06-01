@@ -14,17 +14,24 @@
 # limitations under the License.
 
 import json
+
+from click import argument
 import datalabs
 from datalabs import get_task, TaskType
 from datalabs.features.features import Sequence
 
 _DESCRIPTION = """\
-CCKS2021_fin_ee is an event element extraction dataset in the financial field, which is used for event extraction tasks. 
-The task goal is to extract some of the 13 elements of an event based on the given description text and text type.
+CCKS2021_fin_ea is an event arguments extraction dataset in the financial field, which is used for event extraction tasks. 
+The task goal is to extract some of the 13 arguments of an event based on the given description text and text type.
 """
 
 _CITATION = """\
-For more information, please refer to http://sigkg.cn/ccks2021/?page_id=13.
+@misc{
+title={CCKS2021金融领域篇章级事件元素抽取数据集},
+url={https://tianchi.aliyun.com/dataset/dataDetail?dataId=110904},
+author={Tianchi},
+year={2021},
+}
 """
 
 _LICENSE = "NA"
@@ -35,23 +42,23 @@ _TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extrac
 _HOMEPAGE = "https://www.biendata.xyz/competition/ccks_2021_task6_1"
 
 
-class CCKS2021FinEEConfig(datalabs.BuilderConfig):
+class CCKS2021FinEAConfig(datalabs.BuilderConfig):
     
     def __init__(self, **kwargs):
 
-        super(CCKS2021FinEEConfig, self).__init__(**kwargs)
+        super(CCKS2021FinEAConfig, self).__init__(**kwargs)
 
-class CCKS2021FinEE(datalabs.GeneratorBasedBuilder):
+class CCKS2021FinEA(datalabs.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
-        CCKS2021FinEEConfig(
-            name="event_element_extraction",
+        CCKS2021FinEAConfig(
+            name="event_arguments_extraction",
             version=datalabs.Version("1.0.0"),
-            description="event_element_extraction",
+            description="event_arguments_extraction",
         ),
     ]
 
-    DEFAULT_CONFIG_NAME = "event_element_extraction"
+    DEFAULT_CONFIG_NAME = "event_arguments_extraction"
 
     def _info(self):
 
@@ -59,18 +66,17 @@ class CCKS2021FinEE(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                    "source": 
-                        {
-                            "text": datalabs.Value("string"),
-                            "level1": datalabs.Value("string"),
-                            "level2": datalabs.Value("string"),
-                            "level3": datalabs.Value("string"),
-                        },
-                    "reference": datalabs.features.Sequence(
+                    "text": datalabs.Value("string"),
+                    "event_type": {
+                        "level1": datalabs.Value("string"),
+                        "level2": datalabs.Value("string"),
+                        "level3": datalabs.Value("string"),
+                    },
+                    "arguments": datalabs.features.Sequence(
                         {
                             "start": datalabs.Value("int32"), 
                             "end": datalabs.Value("int32"),  
-                            "type": datalabs.Value("string"),
+                            "role": datalabs.Value("string"),
                             "entity": datalabs.Value("string"),
                         }
                     ),
@@ -81,9 +87,9 @@ class CCKS2021FinEE(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["zh"],
             task_templates=[
-                get_task(TaskType.event_extraction)(
-                    source_column = "source",
-                    reference_column = "reference",
+                get_task(TaskType.event_arguments_extraction)(
+                    text_column = "text",
+                    event_column = "arguments",
                 ),
             ],
         )
@@ -104,11 +110,11 @@ class CCKS2021FinEE(datalabs.GeneratorBasedBuilder):
             for id_, line in enumerate(txt_file):
                 line = json.loads(line)
                 text, level1, level2, level3, attributes = line["text"], line["level1"], line["level2"], line["level3"], line["attributes"]
-                reference = []
-                for attribute in attributes:
-                    start, end, type, entity = attribute["start"], attribute["end"], attribute["type"], attribute["entity"]
-                    attribute = {"start": start, "end": end, "type": type, "entity": entity}
-                    reference.append(attribute)
-                source = {"text":text, "level1":level1, "level2":level2, "level3":level3}
-                if len(reference) > 0:
-                    yield id_, {'source': source, 'reference': reference}
+                event_type = {"level1":level1, "level2":level2, "level3":level3}
+                if len(attributes) > 0:
+                    arguments = []
+                    for attribute in attributes:
+                        argument = {}
+                        argument["start"], argument["end"], argument["role"], argument["entity"] = attribute["start"], attribute["end"], attribute["type"], attribute["entity"]
+                        arguments.append(argument)
+                    yield id_, {'text': text, 'event_type': event_type, 'arguments': arguments}
