@@ -64,10 +64,9 @@ class CAIL2019(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                    "text0": datalabs.Value("string"),
                     "text1": datalabs.Value("string"),
-                    "text2": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["1","2"]),
+                    "text2": datalabs.features.Sequence(datalabs.Value("string")),
+                    "label": datalabs.features.ClassLabel(names=["0", "1"]),
                 }
             ),
             supervised_keys=None,
@@ -76,7 +75,6 @@ class CAIL2019(datalabs.GeneratorBasedBuilder):
             languages=["zh"],
             task_templates=[
                 get_task(TaskType.triple_text_matching)(
-                    text0_column = "text0",
                     text1_column = "text1",
                     text2_column = "text2",
                     label_column = "label",
@@ -97,17 +95,15 @@ class CAIL2019(datalabs.GeneratorBasedBuilder):
         ]
 
     def _generate_examples(self, filepath):
-
+        labels = {
+            "B": "0",
+            "C": "1",
+        }
         with open(filepath, encoding="utf-8") as f:
             for id_, line in enumerate(f):
                 line = json.loads(line)
-                text0 = line["A"]
-                text1 = line["B"]
-                text2 = line["C"]
+                text1 = line["A"].rstrip()
+                text2 = [line["B"].rstrip(), line["C"].rstrip()]
                 label = line["label"]
-                if label == "B":
-                    label = "1"
-                elif label == "C":
-                    label = "2"
-                if label == ("1" or "2"):
-                    yield id_, {"text0":text0, "text1": text1, "text2": text2, "label": label}
+                if label in labels:
+                    yield id_, {"text1": text1, "text2": text2, "label": labels[label]}

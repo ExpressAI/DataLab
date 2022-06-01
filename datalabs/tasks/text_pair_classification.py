@@ -87,7 +87,6 @@ class KeywordRecognition(TextPairClassification):
 class TripleTextMatching(TextPairClassification):
     task: TaskType = TaskType.triple_text_matching
 
-    text0_column: str = "text0"
     text1_column: str = "text1"
     text2_column: str = "text2"
     label_column: str = "label"
@@ -95,9 +94,8 @@ class TripleTextMatching(TextPairClassification):
 
     input_schema: ClassVar[Features] = Features(
         {
-            "text0": Value("string"),
             "text1": Value("string"),
-            "text2": Value("string"),
+            "text2": Sequence(Value("string")),
         }
     )
     label_schema: ClassVar[Features] = Features({"label": ClassLabel})
