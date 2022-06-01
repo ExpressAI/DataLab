@@ -82,24 +82,6 @@ class KeywordRecognition(TextPairClassification):
     )
     label_schema: ClassVar[Features] = Features({"label": ClassLabel})
 
-@register_task(TaskType.triple_text_matching)
-@dataclass
-class TripleTextMatching(TextPairClassification):
-    task: TaskType = TaskType.triple_text_matching
-
-    text1_column: str = "text1"
-    text2_column: str = "text2"
-    label_column: str = "label"
-    labels: Optional[Tuple[str]] = None
-
-    input_schema: ClassVar[Features] = Features(
-        {
-            "text1": Value("string"),
-            "text2": Sequence(Value("string")),
-        }
-    )
-    label_schema: ClassVar[Features] = Features({"label": ClassLabel})
-
 @register_task(TaskType.text_matching_multiple_choice)
 @dataclass
 class TextMatchingMultipleChoice(TextPairClassification):

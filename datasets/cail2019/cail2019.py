@@ -50,13 +50,13 @@ class CAIL2019(datalabs.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
         CAIL2019Config(
-            name="triple_text_matching",
+            name="text_matching_multiple_choice",
             version=datalabs.Version("1.0.0"),
-            description="triple_text_matching",
+            description="text_matching_multiple_choice",
         ),
     ]
 
-    DEFAULT_CONFIG_NAME = "triple_text_matching"
+    DEFAULT_CONFIG_NAME = "text_matching_multiple_choice"
 
     def _info(self):
 
@@ -64,8 +64,8 @@ class CAIL2019(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                    "text1": datalabs.Value("string"),
-                    "text2": datalabs.features.Sequence(datalabs.Value("string")),
+                    "text": datalabs.Value("string"),
+                    "options": datalabs.features.Sequence(datalabs.Value("string")),
                     "label": datalabs.features.ClassLabel(names=["0", "1"]),
                 }
             ),
@@ -74,9 +74,9 @@ class CAIL2019(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["zh"],
             task_templates=[
-                get_task(TaskType.triple_text_matching)(
-                    text1_column = "text1",
-                    text2_column = "text2",
+                get_task(TaskType.text_matching_multiple_choice)(
+                    text_column = "text",
+                    options_column = "options",
                     label_column = "label",
                 ),
             ],
@@ -102,8 +102,8 @@ class CAIL2019(datalabs.GeneratorBasedBuilder):
         with open(filepath, encoding="utf-8") as f:
             for id_, line in enumerate(f):
                 line = json.loads(line)
-                text1 = line["A"].rstrip()
-                text2 = [line["B"].rstrip(), line["C"].rstrip()]
+                text = line["A"].rstrip()
+                options = [line["B"].rstrip(), line["C"].rstrip()]
                 label = line["label"]
                 if label in labels:
-                    yield id_, {"text1": text1, "text2": text2, "label": labels[label]}
+                    yield id_, {"text": text, "options": options, "label": labels[label]}
