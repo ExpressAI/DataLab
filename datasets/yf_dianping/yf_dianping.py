@@ -16,7 +16,7 @@
 
 import csv
 import datalabs
-from datalabs.tasks import TextClassification
+from datalabs import get_task, TaskType
 import os
 
 _DESCRIPTION = """\
@@ -67,7 +67,8 @@ class YFDIANPING(datalabs.GeneratorBasedBuilder):
             homepage="https://doi.org/10.1145/2488388.2488520",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[TextClassification(text_column="title", label_column="rating")],
+            task_templates=[get_task(TaskType.question_classification)(
+                text_column="title", label_column="rating")],
         )
 
     def _split_generators(self, dl_manager):
