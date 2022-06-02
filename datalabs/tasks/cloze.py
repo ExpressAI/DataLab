@@ -45,10 +45,10 @@ class ClozeMultipleChoice(QuestionAnsweringMultipleChoice):
     answers_column: str = "answers"
 
 
-@register_task(TaskType.cloze_hint)
+@register_task(TaskType.cloze_generative)
 @dataclass
-class ClozeHint(QuestionAnsweringAbstractive):
-    task: TaskType = TaskType.cloze_hint
+class ClozeGenerative(QuestionAnsweringAbstractive):
+    task: TaskType = TaskType.cloze_generative
     context_column: str = "context"
     question_column: str = "question_mark"
     hint_column: str = "hint"
