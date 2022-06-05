@@ -284,12 +284,11 @@ class Glue(datalabs.GeneratorBasedBuilder):
             ),
             url="http://ixa2.si.ehu.es/stswiki/index.php/STSbenchmark",
             process_label=np.float32,
-            # task_templates=[TextMatching(
-            #     text1_column="text1",
-            #     text2_column="text2",
-            #     task="natural-language-inference",
-            #     label_column="label"),
-            # ],
+            task_templates=[get_task(TaskType.text_similarity)(
+                text1_column="text1",
+                text2_column="text2",
+                label_column="label"),
+            ],
         ),
         GlueConfig(
             name="mnli",

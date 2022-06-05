@@ -74,6 +74,7 @@ class TaskType(str, Enum):
     natural_language_inference = "natural-language-inference"
     paraphrase_identification = "paraphrase-identification"
     keyword_recognition = "keyword_recognition"
+    text_similarity="text_similarity"
     opinion_summarization = "opinion-summarization"
     retrieval = "retrieval"
     cloze = "cloze"
