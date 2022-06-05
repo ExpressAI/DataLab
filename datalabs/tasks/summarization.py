@@ -121,3 +121,23 @@ class OpinionSummarization(Summarization, GuidedConditionalGeneration):
     source_column: str = "texts"
     reference_column: str = "summaries"
     aspect_column: str = "aspect"
+
+@register_task(TaskType.multi_ref_query_summarization)
+@dataclass
+class MultiRefQuerySummarization(Summarization, GuidedConditionalGeneration):
+    """Multi-Reference Query-based summarization task.
+    data format: {
+        "text": str,
+        "query": str,
+        "summaries": List[str],
+        }
+    """
+
+    task: TaskType = TaskType.multi_ref_query_summarization
+    input_schema: ClassVar[Features] = Features(
+        {"text": Value("string"), "query": Value("string")}
+    )
+    label_schema: ClassVar[Features] = Features({"summaries": Sequence(Value("string"))})
+    source_column: str = "text"
+    reference_column: str = "summaries"
+    guidance_column: str = "query"

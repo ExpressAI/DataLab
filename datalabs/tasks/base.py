@@ -70,6 +70,7 @@ class TaskType(str, Enum):
     natural_language_inference = "natural-language-inference"
     paraphrase_identification = "paraphrase-identification"
     opinion_summarization = "opinion-summarization"
+    multi_ref_query_summarization = "multi-ref-query-summarization",
 
     @staticmethod
     def list():
