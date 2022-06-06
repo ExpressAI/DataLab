@@ -67,7 +67,7 @@ class ParaphraseIdentification(TextPairClassification):
 @register_task(TaskType.text_similarity)
 @dataclass
 class TextSimilarity(TextPairClassification):
-    task: TaskType =TaskType.text_similarity
+    task: TaskType = TaskType.text_similarity
     text1_column: str = "text1"
     text2_column: str = "text2"
     label_column: str = "label"
