@@ -15,6 +15,7 @@ from datalabs.tasks import (
     summarization,
     text_classification,
     text_editing,
+    multilabel_classification,
     text_pair_classification,
 )
 from datalabs.tasks.base import (
@@ -39,6 +40,7 @@ __all__ = [
     "span_text_classification",
     "summarization",
     "text_classification",
+    'multilabel_classification',
     "text_pair_classification",
     "cloze",
     "text_editing",
