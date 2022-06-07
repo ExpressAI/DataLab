@@ -62,9 +62,9 @@ class DuReaderRobust(datalabs.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
         DuReaderRobustConfig(
-            name="Reading Comprehension",
+            name="reading_comprehension",
             version=datalabs.Version("1.0.0"),
-            description="Reading Comprehension",
+            description="reading_comprehension",
         ),
     ]
     

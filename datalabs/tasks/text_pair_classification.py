@@ -99,3 +99,11 @@ class TextMatchingMultipleChoice(TextPairClassification):
         }
     )
     label_schema: ClassVar[Features] = Features({"label": ClassLabel})
+
+@register_task(TaskType.question_answering_classification)
+@dataclass
+class QuestionAnsweringClassification(TextPairClassification):
+    task: TaskType = TaskType.question_answering_classification
+    text1_column: str = "text1"
+    text2_column: str = "text2"
+    label_column: str = "label"
