@@ -1,9 +1,7 @@
 from dataclasses import dataclass
 from typing import ClassVar, Optional, Tuple
 
-from datalabs.enums import Metrics, PLMType, PromptShape, SignalType
 from datalabs.features import ClassLabel, Features, Sequence, Value
-from datalabs.prompt import Prompt, PromptResult
 from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 
 
@@ -30,7 +28,9 @@ class MultilabelClassification(TaskTemplate):
                 self.text_column: Value("string"),
             }
         )
-        self.label_schema: ClassVar[Features] = Features({self.label_column: Sequence(ClassLabel)})
+        self.label_schema: ClassVar[Features] = Features(
+            {self.label_column: Sequence(ClassLabel)}
+        )
 
         if self.labels:
             if len(self.labels) != len(set(self.labels)):
@@ -39,4 +39,3 @@ class MultilabelClassification(TaskTemplate):
             self.__dict__["labels"] = tuple(self.labels)
             self.__dict__["label_schema"] = self.label_schema.copy()
             self.label_schema["labels"] = ClassLabel(names=self.labels)
-
