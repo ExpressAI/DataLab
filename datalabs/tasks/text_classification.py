@@ -67,6 +67,26 @@ class HatespeechIdentification(TextClassification):
     label_column: str = "label"
 
 
+@register_task(TaskType.toxicity_identification)
+@dataclass
+class ToxicityIdentification(TextClassification):
+    task: TaskType = TaskType.toxicity_identification
+    text_column: str = "text"
+    label_column: str = "label"
+
+@register_task(TaskType.multi_toxicity_identification)
+@dataclass
+class MultiToxicityIdentification(TextClassification):
+    task: TaskType = TaskType.multi_toxicity_identification
+    text_column: str = "text"
+    label_column: str = "toxicity"
+    severe_toxicity_column: str = "severe_toxicity"
+    obscene_column: str = "obscene"
+    threat_column: str = "threat"
+    insult_column: str = "insult"
+    identity_attack_column: str = "identity_attack"
+    sexual_explicit_column: str = "sexual_explicit"
+
 @register_task(TaskType.question_classification)
 @dataclass
 class QuestionClassification(TextClassification):

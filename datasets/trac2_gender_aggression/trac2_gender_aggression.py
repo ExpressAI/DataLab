@@ -61,7 +61,7 @@ class TRAC2AggressionPred(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             # License for the dataset if available
             # license=_LICENSE,
-            task_templates=[get_task(TaskType.hatespeech_identification)(text_column="text", label_column="label")],
+            task_templates=[get_task(TaskType.toxicity_identification)(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):

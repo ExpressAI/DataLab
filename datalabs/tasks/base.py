@@ -66,6 +66,8 @@ class TaskType(str, Enum):
     emotion_classification = "emotion-classification"
     intent_classification = "intent-classification"
     hatespeech_identification = "hatespeech-identification"
+    toxicity_identification = "toxicity-identification"
+    multi_toxicity_identification = "multi-toxicity-identification"
     spam_identification = "spam-identification"
     grammatical_judgment = "grammatical-judgment"
     question_classification = "question-classification"
