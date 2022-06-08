@@ -75,7 +75,6 @@ class Couplet(datalabs.GeneratorBasedBuilder):
         with open(infilepath, encoding="utf-8") as fin, open(outfilepath, encoding="utf-8") as fout:
             sources=fin.readlines()
             references=fout.readlines()
-            print(len(sources),'***',len(references))
             assert len(sources)==len(references)
             for id_, line in enumerate(sources):
                 source = line.strip()
