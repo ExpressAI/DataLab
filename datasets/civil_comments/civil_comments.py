@@ -99,7 +99,6 @@ class CivilComments(datalabs.GeneratorBasedBuilder):
             homepage="https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/data",
             citation=_CITATION,
             task_templates=[get_task(TaskType.multi_toxicity_identification)(text_column="text",
-                                                                             # label_column="label",
                                                                              label_column="toxicity",
                                                                              severe_toxicity_column="severe_toxicity",
                                                                             obscene_column="obscene",
@@ -109,16 +108,6 @@ class CivilComments(datalabs.GeneratorBasedBuilder):
                                                                             sexual_explicit_column="sexual_explicit",
                                                                              )],
         )
-
-    # task: TaskType = TaskType.multi_toxicity_identification
-    # text_column: str = "text"
-    # toxicity_column: str = "toxicity"
-    # severe_toxicity_column: str = "severe_toxicity"
-    # obscene_column: str = "obscene"
-    # threat_column: str = "threat"
-    # insult_column: str = "insult"
-    # identity_attack_column: str = "identity_attack"
-    # sexual_explicit_column: str = "sexual_explicit"
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
