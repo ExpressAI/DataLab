@@ -16,8 +16,6 @@ import csv
 import os
 
 import datalabs
-
-# from datalabs.tasks import QuestionAnsweringMultipleChoicesWithoutContext
 from datalabs import get_task, TaskType
 
 
