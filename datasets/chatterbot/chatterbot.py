@@ -60,10 +60,10 @@ class Chatterbot(datalabs.GeneratorBasedBuilder):
         train_validation_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
 
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_validation_path,'split':'train'})
+            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_validation_path})
         ]
 
-    def _generate_examples(self, filepath,split):
+    def _generate_examples(self, filepath):
         """This function returns the examples."""
 
         with open(filepath, encoding="utf-8") as f:
