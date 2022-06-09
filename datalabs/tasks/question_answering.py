@@ -285,3 +285,19 @@ class QuestionAnsweringMultipleChoiceWithoutContext(QuestionAnsweringMultipleCho
     question_column: str = "question"
     answers_column: str = "answers"
     options_column: str = "options"
+
+@register_task(TaskType.qa_open_domain)
+@dataclass
+class QuestionAnsweringOpenDomain(QuestionAnswering):
+    task: TaskType = TaskType.qa_open_domain
+    input_schema: ClassVar[Features] = Features(
+        {
+            "question": Value("string"), 
+            "query": Value("string"),
+        }
+    )
+    label_schema: ClassVar[Features] = Features({"answers": Sequence(Value("string"))})
+
+    question_column: str = "question"
+    answers_column: str = "answers"
+    context_column: str = "query"

@@ -21,7 +21,7 @@ class SpanRelationPrediction(TaskTemplate):
     text_column: str = "text"
     span1_column: str = "span1"
     span2_column: str = "span2"
-    relation_column: str = "relation"
+    label_column: str = "relation"
 
     relations: Optional[Tuple[str]] = None
 
