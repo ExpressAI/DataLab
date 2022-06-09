@@ -81,3 +81,29 @@ class KeywordRecognition(TextPairClassification):
         }
     )
     label_schema: ClassVar[Features] = Features({"label": ClassLabel})
+
+@register_task(TaskType.text_matching_multiple_choice)
+@dataclass
+class TextMatchingMultipleChoice(TextPairClassification):
+    task: TaskType = TaskType.text_matching_multiple_choice
+
+    text_column: str = "text"
+    options_column: str = "options"
+    label_column: str = "label"
+    labels: Optional[Tuple[str]] = None
+
+    input_schema: ClassVar[Features] = Features(
+        {
+            "text": Value("string"),
+            "options": Sequence(Value("string")),
+        }
+    )
+    label_schema: ClassVar[Features] = Features({"label": ClassLabel})
+
+@register_task(TaskType.question_answering_classification)
+@dataclass
+class QuestionAnsweringClassification(TextPairClassification):
+    task: TaskType = TaskType.question_answering_classification
+    text1_column: str = "text1"
+    text2_column: str = "text2"
+    label_column: str = "label"
