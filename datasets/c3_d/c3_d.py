@@ -90,7 +90,7 @@ class C3d(datalabs.GeneratorBasedBuilder):
             languages = ["zh"],
             task_templates=[
                 get_task(TaskType.qa_multiple_choice_c3)(
-                    question_column = "context",
+                    question_column = "question",
                     context_column = "context",
                     answers_column = "answers",
                     options_column = "options",

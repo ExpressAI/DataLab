@@ -32,7 +32,6 @@ IN_TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/conditiona
 OUT_TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/conditional_generation/couplets/test/out.txt"
 
 class Couplet(datalabs.GeneratorBasedBuilder):
-    """AdvertiseGen is a Dataset containing content and summary."""
 
     def _info(self):
 
@@ -75,6 +74,7 @@ class Couplet(datalabs.GeneratorBasedBuilder):
         with open(infilepath, encoding="utf-8") as fin, open(outfilepath, encoding="utf-8") as fout:
             sources=fin.readlines()
             references=fout.readlines()
+           
             assert len(sources)==len(references)
             for id_, line in enumerate(sources):
                 source = line.strip()
