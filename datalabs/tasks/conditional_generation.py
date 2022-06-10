@@ -34,36 +34,6 @@ class OpinionTargetExtraction(ConditionalGeneration):
     reference_column: str = "reference"
 
 
-@register_task(TaskType.event_extraction)
-@dataclass
-class EventExtraction(ConditionalGeneration):
-    task: TaskType = TaskType.event_extraction
-    source_column: str = "source"
-    reference_column: str = "reference"
-    input_schema: ClassVar[Features] = Features(
-        {
-            "source": {
-                "text": Value("string"),
-                "level1": Value("string"),
-                "level2": Value("string"),
-                "level3": Value("string"),
-            }
-        }
-    )
-    label_schema: ClassVar[Features] = Features(
-        {
-            "reference": Sequence(
-                {
-                    "start": Value("int32"),
-                    "end": Value("int32"),
-                    "type": Value("string"),
-                    "entity": Value("string"),
-                }
-            )
-        }
-    )
-
-
 @register_task(TaskType.essay_writing)
 @dataclass
 class EssayWriting(ConditionalGeneration):
@@ -87,6 +57,35 @@ class GuidedConditionalGeneration(ConditionalGeneration):
         if self.input_schema is None:
             self.input_schema: ClassVar[Features] = Features(
                 {"source": Value("string"), "guidance": Value("string")}
+            )
+        if self.label_schema is None:
+            self.label_schema: ClassVar[Features] = Features(
+                {"reference": Value("string")}
+            )
+
+
+@register_task(TaskType.single_turn_dialogue)
+@dataclass
+class SingleTurnDialogue(ConditionalGeneration):
+    task: TaskType = TaskType.single_turn_dialogue
+    source_column: str = "source"
+    reference_column: str = "reference"
+
+
+@register_task(TaskType.multi_turn_dialogue)
+@dataclass
+class MultiTurnDialogue(ConditionalGeneration):
+    task: TaskType = TaskType.multi_turn_dialogue
+    source_column: str = "source"
+    reference_column: str = "reference"
+
+    def __post_init__(self):
+        self.task_categories = [
+            task_cls.get_task() for task_cls in self.get_task_parents()
+        ]
+        if self.input_schema is None:
+            self.input_schema: ClassVar[Features] = Features(
+                {"source": Sequence(Value("string"))}
             )
         if self.label_schema is None:
             self.label_schema: ClassVar[Features] = Features(

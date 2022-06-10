@@ -47,7 +47,7 @@ class Chatterbot(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages = ["zh"],
             task_templates=[
-                get_task(TaskType.conditional_generation)(
+                get_task(TaskType.single_turn_dialogue)(
                     source_column="source", reference_column="reference"
                 )
             ],

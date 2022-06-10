@@ -18,26 +18,18 @@ import datalabs
 from datalabs import get_task, TaskType
 
 _DESCRIPTION = """\
-A QA dataset for Chinese chit chat.
+Qingyun Corpus.
 """
 
 _CITATION = """\
-    @misc{
-    kai-chou yang_2019,
-    title={PTT-Gossiping-Corpus},
-    url={https://www.kaggle.com/dsv/676336},
-    DOI={10.34740/DVS/676336},
-    publisher={Kaggle},
-    author={Kai-Chou Yang},
-    year={2019}
-}
+
 """
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/Gossiping-Chinese-Corpus/ptt.tsv"
+_TRAIN_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/qingyun/qingyun.tsv"
 
-class Gossiping_Chinese_Corpus(datalabs.GeneratorBasedBuilder):
+class Qingyun(datalabs.GeneratorBasedBuilder):
 
     VERSION = datalabs.Version("1.0.0")
     def _info(self):
@@ -51,7 +43,7 @@ class Gossiping_Chinese_Corpus(datalabs.GeneratorBasedBuilder):
                 }
             ),
             supervised_keys=None,
-            homepage="https://www.kaggle.com/datasets/zake7749/pttgossipingcorpus",
+            homepage="https://github.com/codemayq/chinese_chatbot_corpus",
             citation=_CITATION,
             languages = ["zh"],
             task_templates=[
