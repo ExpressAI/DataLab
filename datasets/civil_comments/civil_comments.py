@@ -64,6 +64,27 @@ dataset is released under CC0, as is the underlying comment text.
 _DOWNLOAD_URL = "https://storage.googleapis.com/jigsaw-unintended-bias-in-toxicity-classification/civil_comments.zip"
 
 
+
+
+class CivilCommentsConfig(datalabs.BuilderConfig):
+    """BuilderConfig for CivilComments"""
+
+    def __init__(self,
+                 text_column=None,
+                 label_column=None,
+                 task_templates = None,
+                 **kwargs):
+        """BuilderConfig for CivilComments.
+
+        Args:
+          **kwargs: keyword arguments forwarded to super.
+        """
+        super(CivilCommentsConfig, self).__init__(**kwargs)
+        self.text_column = text_column
+        self.label_column = label_column
+        self.task_templates = task_templates
+
+
 class CivilComments(datalabs.GeneratorBasedBuilder):
     """Classification and tagging of 2M comments on news sites.
     This version of the CivilComments Dataset provides access to the primary
@@ -78,6 +99,17 @@ class CivilComments(datalabs.GeneratorBasedBuilder):
 
     VERSION = datalabs.Version("0.9.0")
 
+    BUILDER_CONFIGS = [
+        CivilCommentsConfig(name=key,
+                        version=datalabs.Version("1.0.0"),
+                        description="toxicity classicifation",
+                        text_column="text",
+                        label_column="label",
+                        task_templates = [get_task(TaskType.toxicity_identification)(text_column="text", label_column="label")],
+                        )
+        for key in ["toxicity", "severe_toxicity", "obscene", "threat", "insult", "identity_attack", "sexual_explicit"]
+    ]
+
     def _info(self):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
@@ -85,28 +117,14 @@ class CivilComments(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "toxicity": datalabs.Value("float32"),
-                    "severe_toxicity": datalabs.Value("float32"),
-                    "obscene": datalabs.Value("float32"),
-                    "threat": datalabs.Value("float32"),
-                    "insult": datalabs.Value("float32"),
-                    "identity_attack": datalabs.Value("float32"),
-                    "sexual_explicit": datalabs.Value("float32"),
+                    "label": datalabs.Value("float32"),
                 }
             ),
             # The supervised_keys version is very impoverished.
             supervised_keys=("text", "toxicity"),
             homepage="https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/data",
             citation=_CITATION,
-            task_templates=[get_task(TaskType.multi_toxicity_identification)(text_column="text",
-                                                                             label_column="toxicity",
-                                                                             severe_toxicity_column="severe_toxicity",
-                                                                            obscene_column="obscene",
-                                                                            threat_column="threat",
-                                                                            insult_column="insult",
-                                                                            identity_attack_column="identity_attack",
-                                                                            sexual_explicit_column="sexual_explicit",
-                                                                             )],
+            task_templates=[get_task(TaskType.toxicity_identification)(text_column="text", label_column="label")],
         )
 
     def _split_generators(self, dl_manager):
@@ -115,25 +133,24 @@ class CivilComments(datalabs.GeneratorBasedBuilder):
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
-                gen_kwargs={"filename": os.path.join(dl_path, "train.csv"), "toxicity_label": "target"},
+                gen_kwargs={"filename": os.path.join(dl_path, "train.csv"),
+                            },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 gen_kwargs={
                     "filename": os.path.join(dl_path, "test_public_expanded.csv"),
-                    "toxicity_label": "toxicity",
                 },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 gen_kwargs={
                     "filename": os.path.join(dl_path, "test_private_expanded.csv"),
-                    "toxicity_label": "toxicity",
                 },
             ),
         ]
 
-    def _generate_examples(self, filename, toxicity_label):
+    def _generate_examples(self, filename):
         """Yields examples.
         Each example contains a text input and then seven annotation labels.
         Args:
@@ -146,11 +163,17 @@ class CivilComments(datalabs.GeneratorBasedBuilder):
         with open(filename, encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
+                # print('row: ',row.keys())
                 example = {}
                 example["text"] = row["comment_text"]
-                example["toxicity"] = float(row[toxicity_label])
-                for label in ["severe_toxicity", "obscene", "threat", "insult", "identity_attack", "sexual_explicit"]:
-                    example[label] = float(row[label])
+                label_name = self.config.name
+                if self.config.name =="toxicity":
+                    label_name = "target"
+                    if label_name not in row:
+                        label_name = "toxicity"
+                        # print('label_name: ',label_name)
+                        # print('row: ', row)
+                example["label"] = float(row[label_name])
                 yield row["id"], example
 
 
