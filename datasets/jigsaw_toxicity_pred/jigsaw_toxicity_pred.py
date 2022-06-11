@@ -37,10 +37,41 @@ _URL = "https://s3.amazonaws.com/datalab-hub/toxicity_detection/jigsaw_toxicity_
 _LICENSE = 'The "Toxic Comment Classification" dataset is released under CC0, with the underlying comment text being governed by Wikipedia\'s CC-SA-3.0.'
 
 
+
+class JigsawToxicityPredConfig(datalabs.BuilderConfig):
+    """BuilderConfig for JigsawToxicityPred"""
+
+    def __init__(self,
+                 text_column=None,
+                 label_column=None,
+                 task_templates = None,
+                 **kwargs):
+        """BuilderConfig for JigsawToxicityPred.
+
+        Args:
+          **kwargs: keyword arguments forwarded to super.
+        """
+        super(JigsawToxicityPredConfig, self).__init__(**kwargs)
+        self.text_column = text_column
+        self.label_column = label_column
+        self.task_templates = task_templates
+
+
 class JigsawToxicityPred(datalabs.GeneratorBasedBuilder):
     """This is a dataset of comments from Wikipedia’s talk page edits which have been labeled by human raters for toxic behavior."""
 
     VERSION = datalabs.Version("1.1.0")
+    BUILDER_CONFIGS = [
+        JigsawToxicityPredConfig(name=key,
+                            version=datalabs.Version("1.0.0"),
+                            description="JigsawToxicity predict",
+                            text_column="text",
+                            label_column="label",
+                            task_templates=[
+                                get_task(TaskType.toxicity_identification)(text_column="text", label_column="label")],
+                            )
+        for key in ["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]
+    ]
 
     def _info(self):
 
@@ -50,14 +81,8 @@ class JigsawToxicityPred(datalabs.GeneratorBasedBuilder):
             # This defines the different columns of the dataset and their types
             features=datalabs.Features(
                 {
-                    "comment_text": datalabs.Value("string"),
-                    # "toxic": datalabs.ClassLabel(names=["false", "true"]),
+                    "text": datalabs.Value("string"),
                     "label": datalabs.ClassLabel(names=["false", "true"]),
-                    "severe_toxic": datalabs.ClassLabel(names=["false", "true"]),
-                    "obscene": datalabs.ClassLabel(names=["false", "true"]),
-                    "threat": datalabs.ClassLabel(names=["false", "true"]),
-                    "insult": datalabs.ClassLabel(names=["false", "true"]),
-                    "identity_hate": datalabs.ClassLabel(names=["false", "true"]),
                 }
             ),
             # If there's a common (input, target) tuple from the features,
@@ -76,12 +101,6 @@ class JigsawToxicityPred(datalabs.GeneratorBasedBuilder):
         # This method is tasked with downloading/extracting the data and defining the splits depending on the configuration
         # If several configurations are possible (listed in BUILDER_CONFIGS), the configuration selected by the user is in self.config.name
         data_dir = dl_manager.download_and_extract(_URL)
-
-
-        # if not os.path.exists(data_dir):
-        #     raise FileNotFoundError(
-        #         f"{data_dir} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('jigsaw_toxicity_pred', data_dir=...)`. Manual download instructions: {self.manual_download_instructions}"
-        #     )
 
         return [
             datalabs.SplitGenerator(
@@ -117,12 +136,20 @@ class JigsawToxicityPred(datalabs.GeneratorBasedBuilder):
 
         for _, row in df4.iterrows():
             example = {}
-            example["comment_text"] = row["comment_text"]
+            example["text"] = row["comment_text"]
+            # example[label] = int(row[label])
+            example["label"] = row[self.config.name]
 
-            for label in ["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]:
-                if row[label] != -1:
-                    if label =="toxic":
-                        example["label"] = int(row[label])
-                    else:
-                        example[label] = int(row[label])
-            yield (row["id"], example)
+            yield row["id"], example
+
+
+
+            # example["comment_text"] = row["comment_text"]
+
+            # for label in ["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]:
+            #     if row[label] != -1:
+            #         if label =="toxic":
+            #             example["label"] = int(row[label])
+            #         else:
+            #             example[label] = int(row[label])
+            # yield (row["id"], example)
