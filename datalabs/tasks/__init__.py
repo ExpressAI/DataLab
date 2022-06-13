@@ -1,14 +1,14 @@
 from typing import Optional
 
 from datalabs.tasks import (
-    cloze,
     conditional_generation,
     coreference_resolution,
-    event_extraction,
+    dialogue,
     kg_prediction,
     machine_translation,
     multilabel_classification,
     question_answering,
+    ranking,
     retrieval,
     semantic_parsing,
     sequence_labeling,
@@ -31,7 +31,6 @@ from datalabs.utils.logging import get_logger
 __all__ = [
     "conditional_generation",
     "coreference_resolution",
-    "event_extraction",
     "kg_prediction",
     "machine_translation",
     "question_answering",
@@ -41,10 +40,12 @@ __all__ = [
     "span_relation_prediction",
     "span_text_classification",
     "summarization",
+    "ranking",
     "text_classification",
     "multilabel_classification",
     "text_pair_classification",
-    "cloze",
+    "span_prediction" "cloze",
+    "dialogue",
     "text_editing",
     "TaskTemplate",
     "TaskType",

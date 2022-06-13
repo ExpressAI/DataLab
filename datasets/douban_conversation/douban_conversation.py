@@ -33,14 +33,20 @@ class DoubanConversaion(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                "Context": datalabs.features.Sequence(datalabs.Value("string")),
-                "Utterance": datalabs.Value("string"),
-                "Label": datalabs.Value("int32") 
+                "context": datalabs.features.Sequence(datalabs.Value("string")),
+                "utterance": datalabs.Value("string"),
+                "label": datalabs.Value("int32") 
                 }
             ),
             supervised_keys=None,
             homepage="https://github.com/MarkWuNLP/MultiTurnResponseSelection",
             citation=_CITATION,
+            languages = ["zh"],
+            task_templates=[
+                get_task(TaskType.retrieval_based_dialogue)(
+                    context_column="context", utterance_column="utterance",label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -64,7 +70,7 @@ class DoubanConversaion(datalabs.GeneratorBasedBuilder):
             for id_, row in enumerate(f):
                 line=row.strip().split('\t')
                 yield id_, {
-                    "Context": line[1:-1],
-                    "Utterance": line[-1],
-                    "Label":int(line[0])
+                    "context": line[1:-1],
+                    "utterance": line[-1],
+                    "label":int(line[0])
                 }

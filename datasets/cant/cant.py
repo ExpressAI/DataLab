@@ -95,6 +95,7 @@ class Cant(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://competitions.codalab.org/competitions/30451",
             citation=_CITATION,
+            languages = ["zh"],
             task_templates=[
                 get_task(TaskType.qa_multiple_choice_c3)(
                     question_column="question",
