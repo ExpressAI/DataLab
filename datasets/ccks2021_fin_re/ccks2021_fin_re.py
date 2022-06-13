@@ -81,7 +81,7 @@ class CCKS2021FinRE(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["zh"],
             task_templates=[
-                get_task(TaskType.event_relation_extraction)(
+                get_task(TaskType.event_relation_extraction_causality)(
                     text_column = "text",
                     event_column = "relation",
                 ),

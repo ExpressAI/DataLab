@@ -64,9 +64,12 @@ class CAIL2019(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                    "text": datalabs.Value("string"),
+                    "question": datalabs.Value("string"),
                     "options": datalabs.features.Sequence(datalabs.Value("string")),
-                    "label": datalabs.features.ClassLabel(names=["0", "1"]),
+                    "answers": {
+                        "text": datalabs.Value("string"),
+                        "option_index": datalabs.Value("int32"),
+                    }
                 }
             ),
             supervised_keys=None,
@@ -74,10 +77,10 @@ class CAIL2019(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["zh"],
             task_templates=[
-                get_task(TaskType.text_matching_multiple_choice)(
-                    text_column = "text",
+                get_task(TaskType.qa_multiple_choice_without_context)(
+                    question_column = "question",
                     options_column = "options",
-                    label_column = "label",
+                    answers_column = "answers",
                 ),
             ],
         )
@@ -96,14 +99,17 @@ class CAIL2019(datalabs.GeneratorBasedBuilder):
 
     def _generate_examples(self, filepath):
         labels = {
-            "B": "0",
-            "C": "1",
+            "B": 0,
+            "C": 1,
         }
         with open(filepath, encoding="utf-8") as f:
             for id_, line in enumerate(f):
                 line = json.loads(line)
-                text = line["A"].rstrip()
+                question = line["A"].rstrip()
                 options = [line["B"].rstrip(), line["C"].rstrip()]
                 label = line["label"]
                 if label in labels:
-                    yield id_, {"text": text, "options": options, "label": labels[label]}
+                    option_index = labels[label]
+                    text = options[option_index]
+                    answers = {"text": text, "option_index": option_index}
+                    yield id_, {"question": question, "options": options, "answers": answers}

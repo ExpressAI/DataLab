@@ -106,7 +106,7 @@ class CCKS2019Fin(datalabs.GeneratorBasedBuilder):
             task_templates=[
                 get_task(TaskType.event_entity_extraction)(
                     text_column = "text",
-                    event_column = "event_entity",
+                    entity_column = "event_entity",
                 ),
             ],
         )
