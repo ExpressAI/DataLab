@@ -72,7 +72,7 @@ class NLPCC2017DBQA(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages = ["zh"],
             task_templates=[
-                get_task(TaskType.question_answering_classification)(
+                get_task(TaskType.question_answering_matching)(
                     text1_column = "question",
                     text2_column = "answer",
                     label_column = "label",

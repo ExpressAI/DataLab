@@ -357,3 +357,30 @@ class QuestionAnsweringExtractiveDureader(QuestionAnsweringExtractive):
         "answer_docs": Sequence(Value("int32")),
     })
 
+@register_task(TaskType.qa_multiple_choice_nlpec)
+@dataclass
+class QuestionAnsweringMultipleChoiceNLPEC(QuestionAnsweringMultipleChoice):
+    task: TaskType = TaskType.qa_multiple_choice_nlpec
+    input_schema: ClassVar[Features] = Features(
+        {
+            "question_type": Value("string"),
+            "question": Value("string"),
+            "question_s": Value("string"),
+            "options": Sequence(Value("string")),
+            "options_s": Sequence(Value("string")),
+            "context": Sequence(Value("string")),
+            "context_s": Sequence(Value("string")),
+        }
+    )
+    label_schema: ClassVar[Features] = Features(
+        {
+            "answers": {
+                "text": Value("string"),
+                "option_index": Value("int32"),
+            }
+        }
+    )
+    question_column: str = "question"
+    context_column: str = "context"
+    answers_column: str = "answers"
+    options_column: str = "options"

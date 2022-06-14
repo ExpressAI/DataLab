@@ -61,3 +61,22 @@ class ClozeGenerative(QuestionAnsweringAbstractive):
             "question_mark": Value("string"),
         }
     )
+
+@register_task(TaskType.cloze_documents)
+@dataclass
+class ClozeDocuments(QuestionAnsweringAbstractive):
+    task: TaskType = TaskType.cloze_documents
+    context_column: str = "documents"
+    question_column: str = "question"
+    answers_column: str = "answers"
+
+    input_schema: ClassVar[Features] = Features(
+        {
+            "documents": Sequence(Value("string")),
+            "documents_tokens": Sequence(Sequence(Value("string"))),
+            "question": Value("string"),
+            "question_tokens": Sequence(Value("string")),
+        }
+    )
+
+    label_schema: ClassVar[Features] = Features({"answers": Value("string")})
