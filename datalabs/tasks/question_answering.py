@@ -392,4 +392,3 @@ class QuestionAnsweringMultipleChoiceNLPEC(QuestionAnsweringMultipleChoice):
     context_column: str = "context"
     answers_column: str = "answers"
     options_column: str = "options"
-

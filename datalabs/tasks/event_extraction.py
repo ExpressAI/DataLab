@@ -34,7 +34,6 @@ class EventEntityExtraction(EventExtraction):
     entity_column: str = "event_entity"
 
 
-
 @register_task(TaskType.event_arguments_extraction)
 @dataclass
 class EventArgumentsExtraction(EventExtraction):
@@ -56,7 +55,6 @@ class EventArgumentsExtraction(EventExtraction):
 
     text_column: str = "text"
     event_column: str = "arguments"
-
 
 
 @register_task(TaskType.event_relation_extraction_causality)
@@ -114,5 +112,3 @@ class EntityRelationExtraction(EventExtraction):
 
     text_column: str = "text"
     event_column: str = "relation"
-
-

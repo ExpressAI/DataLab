@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import ClassVar
 
-from datalabs.features import Features, Value
+from datalabs.features import Features, Sequence, Value
 from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 
 
@@ -34,7 +34,6 @@ class OpinionTargetExtraction(ConditionalGeneration):
     reference_column: str = "reference"
 
 
- 
 @register_task(TaskType.event_extraction)
 @dataclass
 class EventExtraction(ConditionalGeneration):
@@ -65,7 +64,6 @@ class EventExtraction(ConditionalGeneration):
     )
 
 
- 
 @register_task(TaskType.essay_writing)
 @dataclass
 class EssayWriting(ConditionalGeneration):
