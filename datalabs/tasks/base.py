@@ -58,6 +58,7 @@ class TaskType(str, Enum):
     event_entity_extraction = "event_entity_extraction"
     event_arguments_extraction = "event_arguments_extraction"
     event_relation_extraction_causality = "event_relation_extraction_causality"
+    entity_relation_extraction = "entity_relation_extraction"
     semantic_parsing = "semantic-parsing"
     text_to_sql = "text-to-sql"
     span_relation_prediction = "span-relation-prediction"

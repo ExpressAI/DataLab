@@ -13,9 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import csv
-
-from pkg_resources import yield_lines
 import datalabs
 from datalabs import get_task, TaskType
 
