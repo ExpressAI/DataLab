@@ -80,10 +80,13 @@ class CMRC2019(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                    "id": datalabs.Value("string"),
                     "context": datalabs.Value("string"),
+                    "question_mark": datalabs.Value("string"),
                     "options": datalabs.features.Sequence(datalabs.Value("string")),
-                    "answers": datalabs.features.Sequence(datalabs.Value("int32")),
+                    "answers": {
+                        "text": datalabs.Value("string"),
+                        "option_index": datalabs.Value("int32"),
+                    }
                 }
             ),
             supervised_keys=None,
@@ -92,10 +95,10 @@ class CMRC2019(datalabs.GeneratorBasedBuilder):
             languages=["zh"],
             task_templates=[
                 get_task(TaskType.cloze_multiple_choice)(
-                    question_column="id",
-                    context_column="context",
-                    options_column="options",
-                    answers_column="answers",
+                    question_column = "question_mark",
+                    context_column = "context",
+                    options_column = "options",
+                    answers_column = "answers",
                 )
             ],
         )
@@ -127,15 +130,13 @@ class CMRC2019(datalabs.GeneratorBasedBuilder):
             file = json.load(f)
             data = file["data"]
             for article in data:
-                id = article["context_id"]
                 context = article["context"]
                 options = article["choices"]
                 answers = article["answers"]
-
-                yield count, {
-                    "id": id,
-                    "context": context,
-                    "options": options,
-                    "answers": answers,
-                }
-                count = count + 1
+                for i in range(len(answers)-1):
+                    question_mark = 'BLANK' + str(i+1)
+                    option_index = answers[i]
+                    text = options[option_index]
+                    answers_new = {"text": text, "option_index": option_index}
+                    yield count, {"question_mark": question_mark, "context": context, "options": options, "answers": answers_new}
+                    count = count + 1

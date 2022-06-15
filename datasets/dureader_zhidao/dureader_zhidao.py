@@ -126,10 +126,8 @@ class DuReaderZhidao(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["zh"],
             task_templates=[
-                get_task(TaskType.qa_extractive)(
-                    question_column="question",
-                    context_column="documents",
-                    answers_column="answers",
+                get_task(TaskType.qa_extractive_dureader)(
+                    question_column="question", context_column="documents", answers_column="answers"
                 )
             ],
         )

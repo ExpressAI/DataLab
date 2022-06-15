@@ -95,8 +95,11 @@ class DuReaderYesNo(datalabs.GeneratorBasedBuilder):
                         }
                     ),
                     "question": datalabs.Value("string"),
-                    "answer": datalabs.Value("string"),
-                    "yesno_answer": datalabs.Value("string"),
+                    "answers": {
+                        "text": datalabs.Value("string"),
+                        "yesno_answer": datalabs.Value("string"),
+                    }
+                    
                 }
             ),
             supervised_keys=None,
@@ -104,10 +107,8 @@ class DuReaderYesNo(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["zh"],
             task_templates=[
-                get_task(TaskType.qa_extractive)(
-                    question_column="question",
-                    context_column="documents",
-                    answers_column="answer",
+                get_task(TaskType.qa_bool_dureader)(
+                    question_column="question", context_column="documents", answers_column="answers"
                 )
             ],
         )
@@ -132,15 +133,10 @@ class DuReaderYesNo(datalabs.GeneratorBasedBuilder):
         with open(filepath, encoding="utf-8") as f:
             for id_, line in enumerate(f.readlines()):
                 line = json.loads(line)
-                documents, question, answer, yesno_answer = (
-                    line["documents"],
-                    line["question"],
-                    line["answer"],
-                    line["yesno_answer"],
-                )
+                documents, question, text, yesno_answer = line["documents"], line["question"], line["answer"], line["yesno_answer"]
+                answers = {"text": text, "yesno_answer": yesno_answer}
                 yield id_, {
                     "documents": documents,
                     "question": question,
-                    "answer": answer,
-                    "yesno_answer": yesno_answer,
+                    "answers": answers,
                 }

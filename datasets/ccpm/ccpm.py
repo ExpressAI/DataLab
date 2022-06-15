@@ -73,9 +73,12 @@ class CCPM(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                    "text": datalabs.Value("string"),
+                    "question": datalabs.Value("string"),
                     "options": datalabs.features.Sequence(datalabs.Value("string")),
-                    "label": datalabs.features.ClassLabel(names=["0", "1", "2", "3"]),
+                    "answers": {
+                        "text": datalabs.Value("string"),
+                        "option_index": datalabs.Value("int32"),
+                    }
                 }
             ),
             supervised_keys=None,
@@ -83,10 +86,10 @@ class CCPM(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["zh"],
             task_templates=[
-                get_task(TaskType.text_matching_multiple_choice)(
-                    text_column="text",
-                    options_column="options",
-                    label_column="label",
+                get_task(TaskType.qa_multiple_choice_without_context)(
+                    question_column = "question",
+                    options_column = "options",
+                    answers_column = "answers",
                 ),
             ],
         )
@@ -110,9 +113,7 @@ class CCPM(datalabs.GeneratorBasedBuilder):
         with open(filepath, encoding="utf-8") as file:
             for id_, line in enumerate(file):
                 line = json.loads(line)
-                text, options, label = (
-                    line["translation"],
-                    line["choices"],
-                    line["answer"],
-                )
-                yield id_, {"text": text, "options": options, "label": label}
+                question, options, option_index = line["translation"], line["choices"], line["answer"]
+                text = options[option_index]
+                answers = {"text": text, "option_index": option_index}
+                yield id_, {"question": question, "options": options, "answers": answers}

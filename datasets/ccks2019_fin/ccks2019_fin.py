@@ -106,8 +106,8 @@ class CCKS2019Fin(datalabs.GeneratorBasedBuilder):
             languages=["zh"],
             task_templates=[
                 get_task(TaskType.event_entity_extraction)(
-                    text_column="text",
-                    event_column="event_entity",
+                    text_column = "text",
+                    entity_column = "event_entity",
                 ),
             ],
         )

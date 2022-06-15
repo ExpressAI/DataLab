@@ -79,9 +79,9 @@ class DuReaderRobust(datalabs.GeneratorBasedBuilder):
                     "question": datalabs.Value("string"),
                     "context": datalabs.Value("string"),
                     "answers": {
-                        "text": datalabs.Value("string"),
-                        "answer_start": datalabs.Value("int32"),
-                    },
+                        "text": datalabs.features.Sequence(datalabs.Value("string")),
+                        "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
+                    }
                 }
             ),
             supervised_keys=None,
@@ -122,11 +122,20 @@ class DuReaderRobust(datalabs.GeneratorBasedBuilder):
             for id_, line in enumerate(data):
                 qas, context = line["qas"][0], line["context"]
                 question, answers = qas["question"], qas["answers"][0]
-                answer_text, answer_start = answers["text"], int(
-                    answers["answer_start"]
-                )
-                answers = {"text": answer_text, "answer_start": answer_start}
-                yield (
-                    id_,
-                    {"question": question, "context": context, "answers": answers},
-                )
+                if isinstance(answers["text"],list):
+                    text = answers["text"]
+                else:
+                    text = []
+                    text.append(answers["text"])
+                if isinstance(answers["answer_start"],list):
+                    answer_start = answers["answer_start"]
+                else: 
+                    answer_start = []
+                    answer_start.append(answers["answer_start"])
+                answers = {"text": text, "answer_start": answer_start}
+                yield(id_, {"question": question, "context": context, "answers": answers})
+
+
+
+
+            
