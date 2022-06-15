@@ -87,9 +87,13 @@ class TaskType(str, Enum):
     keyword_recognition = "keyword-recognition"
     text_similarity = "text-similarity"
     multilabel_classification = "multilabel-classification"
-    text_matching_multiple_choice = "text_matching_multiple_choice"
     question_answering_matching = "question_answering_matching"
     opinion_summarization = "opinion-summarization"
+    single_turn_dialogue = "single-turn-dialogue"
+    ranking = "ranking"
+    retrieval_based_dialogue = "retrieval-based-dialogue"
+    span_prediction = "span-prediction"
+    ner_span_prediction = "ner-span-prediction"
     retrieval = "retrieval"
     cloze = "cloze"
     cloze_multiple_choice = "cloze-multiple-choice"
@@ -98,6 +102,9 @@ class TaskType(str, Enum):
     text_editing = "text-editing"
     grammatical_error_correction = "grammatical-error-correction"
     essay_writing = "essay-writing"
+    dialogue = "dialogue"
+    knowledge_driven_dialogue = "knowledge-driven-dialogue"
+    task_oriented_dialogue = "task-oriented-dialogue"
 
     @staticmethod
     def list():

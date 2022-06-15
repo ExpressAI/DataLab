@@ -92,3 +92,11 @@ class GuidedConditionalGeneration(ConditionalGeneration):
             self.label_schema: ClassVar[Features] = Features(
                 {"reference": Value("string")}
             )
+
+
+@register_task(TaskType.single_turn_dialogue)
+@dataclass
+class SingleTurnDialogue(ConditionalGeneration):
+    task: TaskType = TaskType.single_turn_dialogue
+    source_column: str = "source"
+    reference_column: str = "reference"
