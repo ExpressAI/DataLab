@@ -72,6 +72,7 @@ class TaskType(str, Enum):
     intent_classification = "intent-classification"
     hatespeech_identification = "hatespeech-identification"
     spam_identification = "spam-identification"
+    codeswitch_identification = "codeswitch-identification"
     grammatical_judgment = "grammatical-judgment"
     question_classification = "question-classification"
     topic_classification = "topic-classification"

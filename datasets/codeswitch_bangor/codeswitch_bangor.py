@@ -79,7 +79,7 @@ class CodeSwitchBangor(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["en", "es"],
             task_templates=[
-                get_task(TaskType.sentiment_classification)(
+                get_task(TaskType.codeswitch_identification)(
                     text_column="text", label_column="label"
                 )
             ],
