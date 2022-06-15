@@ -67,10 +67,10 @@ class HatespeechIdentification(TextClassification):
     label_column: str = "label"
 
 
-@register_task(TaskType.codeswitch_identification)
+@register_task(TaskType.next_token_classification)
 @dataclass
-class CodeswitchIdentification(TextClassification):
-    task: TaskType = TaskType.codeswitch_identification
+class NextTokenClassification(TextClassification):
+    task: TaskType = TaskType.next_token_classification
     text_column: str = "text"
     label_column: str = "label"
 

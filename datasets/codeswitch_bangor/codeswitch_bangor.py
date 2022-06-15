@@ -71,7 +71,7 @@ class CodeSwitchBangor(datalabs.GeneratorBasedBuilder):
                     "desc_sentence": datalabs.Value("string"),
                     "desc_partner": datalabs.Value("string"),
                     "label": datalabs.features.ClassLabel(
-                        names=["positive", "negative"]
+                        names=["code-switch", "monolingual"]
                     ),
                 }
             ),
@@ -79,7 +79,7 @@ class CodeSwitchBangor(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["en", "es"],
             task_templates=[
-                get_task(TaskType.codeswitch_identification)(
+                get_task(TaskType.next_token_classification)(
                     text_column="text", label_column="label"
                 )
             ],
@@ -108,7 +108,7 @@ class CodeSwitchBangor(datalabs.GeneratorBasedBuilder):
         """Generate Codeswtich classification examples."""
 
         # map the label into textual string
-        textualize_label = {"1": "positive", "0": "negative"}
+        textualize_label = {"1": "code-switch", "0": "monolingual"}
 
         with open(filepath, encoding="utf-8") as csv_file:
             csv_reader = csv.reader(csv_file, delimiter="\t")
