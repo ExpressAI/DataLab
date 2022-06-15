@@ -1,5 +1,6 @@
 """QBSUM:  A large-scale query-based document summarization dataset from real-world applications"""
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -57,18 +58,24 @@ class QBSUMConfig(datalabs.BuilderConfig):
 
 class QBSUMDataset(datalabs.GeneratorBasedBuilder):
     """QBSUM Dataset."""
+
     _TRAIN_URL = _gdrive_url("1JN70GGAluMdSm9B6PqoI5v7RV6M714FN")
     _VAL_URL = _gdrive_url("18ZiVBSo2VBSiYuiKffjF23dXgIOf-A9v")
     _TEST_URL = _gdrive_url("1S1TEuz-8TyRJ-8x8Xwo0rdpxFktVlJYI")
-    BUILDER_CONFIGS = [QBSUMConfig(
+    BUILDER_CONFIGS = [
+        QBSUMConfig(
             name="query-based",
             version=datalabs.Version("1.0.0"),
             description=f"QBSUM Dataset for query-based summarization",
-            task_templates=[get_task(TaskType.query_summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT,
-                guidance_column=_KEY)]
-        )]
+            task_templates=[
+                get_task(TaskType.query_summarization)(
+                    source_column=_ARTICLE,
+                    reference_column=_ABSTRACT,
+                    guidance_column=_KEY,
+                )
+            ],
+        )
+    ]
     DEFAULT_CONFIG_NAME = "query-based"
 
     def _info(self):
@@ -86,10 +93,13 @@ class QBSUMDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=[self.config.name],
-            task_templates=[get_task(TaskType.query_summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT,
-                guidance_column=_KEY)]
+            task_templates=[
+                get_task(TaskType.query_summarization)(
+                    source_column=_ARTICLE,
+                    reference_column=_ABSTRACT,
+                    guidance_column=_KEY,
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -98,13 +108,16 @@ class QBSUMDataset(datalabs.GeneratorBasedBuilder):
         test_path = dl_manager.download(self._TEST_URL)
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"f_path": train_path},
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"f_path": train_path},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION, gen_kwargs={"f_path": val_path},
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"f_path": val_path},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST, gen_kwargs={"f_path": test_path},
+                name=datalabs.Split.TEST,
+                gen_kwargs={"f_path": test_path},
             ),
         ]
 
@@ -129,7 +142,11 @@ class QBSUMDataset(datalabs.GeneratorBasedBuilder):
                         article.append(x[1])
                         if x[2] == "Y":
                             summary.append(x[1])
-                    yield cnt, {_ARTICLE: " ".join(article), _ABSTRACT: " ".join(summary), _KEY: query}
+                    yield cnt, {
+                        _ARTICLE: " ".join(article),
+                        _ABSTRACT: " ".join(summary),
+                        _KEY: query,
+                    }
                     cnt += 1
                     buffer = [line]
         if len(buffer) > 0:
@@ -139,6 +156,8 @@ class QBSUMDataset(datalabs.GeneratorBasedBuilder):
                 article.append(x[1])
                 if x[2] == "Y":
                     summary.append(x[1])
-            yield cnt, {_ARTICLE: " ".join(article), _ABSTRACT: " ".join(summary), _KEY: query}
-
-                
+            yield cnt, {
+                _ARTICLE: " ".join(article),
+                _ABSTRACT: " ".join(summary),
+                _KEY: query,
+            }

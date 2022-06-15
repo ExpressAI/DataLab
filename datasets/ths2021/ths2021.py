@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import csv
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -26,9 +27,11 @@ _CITATION = """\
 For more information, please refer to http://contest.aicubes.cn/#/detail?topicId=23. 
 """
 
-_LICENSE = 'NA'
+_LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/ths2021/train.tsv"
+_TRAIN_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/ths2021/train.tsv"
+)
 # _TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/ths2021/test.tsv"
 
 
@@ -36,37 +39,40 @@ class THS2021(datalabs.GeneratorBasedBuilder):
     def _info(self):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalabs.Features({
-                'text1': datalabs.Value('string'),
-                'text2': datalabs.Value('string'),
-                'label': datalabs.features.ClassLabel(names=['0', '1'])
-            }),
+            features=datalabs.Features(
+                {
+                    "text1": datalabs.Value("string"),
+                    "text2": datalabs.Value("string"),
+                    "label": datalabs.features.ClassLabel(names=["0", "1"]),
+                }
+            ),
             supervised_keys=None,
-            homepage='http://contest.aicubes.cn/#/detail?topicId=23',
+            homepage="http://contest.aicubes.cn/#/detail?topicId=23",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.paraphrase_identification)(
-                text1_column="text1",
-                text2_column="text2",
-                label_column="label"),
+            task_templates=[
+                get_task(TaskType.paraphrase_identification)(
+                    text1_column="text1", text2_column="text2", label_column="label"
+                ),
             ],
         )
 
     def _split_generators(self, dl_manager):
-        
+
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 
-
     def _generate_examples(self, filepath):
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter = '\t')
+            csv_reader = csv.reader(csv_file, delimiter="\t")
             for id_, row in enumerate(csv_reader):
                 if len(row) == 3:
                     label, text1, text2 = row
                     label = int(label)
-                    yield id_, {'text1': text1, 'text2': text2, 'label': label}
+                    yield id_, {"text1": text1, "text2": text2, "label": label}

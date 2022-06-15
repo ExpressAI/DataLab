@@ -15,6 +15,7 @@
 
 import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -65,7 +66,9 @@ class PubmedSumDataset(datalabs.GeneratorBasedBuilder):
     """PubmedSum Dataset."""
 
     _TRAIN_FILE = "https://huggingface.co/datasets/ccdv/pubmed-summarization/resolve/main/train.zip"
-    _VAL_FILE = "https://huggingface.co/datasets/ccdv/pubmed-summarization/resolve/main/val.zip"
+    _VAL_FILE = (
+        "https://huggingface.co/datasets/ccdv/pubmed-summarization/resolve/main/val.zip"
+    )
     _TEST_FILE = "https://huggingface.co/datasets/ccdv/pubmed-summarization/resolve/main/test.zip"
     BUILDER_CONFIGS = [
         PubmedSumConfig(
@@ -95,9 +98,10 @@ class PubmedSumDataset(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://github.com/armancohan/long-summarization",
             citation=_CITATION,
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT),
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                ),
             ],
         )
 
@@ -133,6 +137,8 @@ class PubmedSumDataset(datalabs.GeneratorBasedBuilder):
                 if self.config.name == "document":
                     article = data["article_text"]
                 else:
-                    article = [item.strip() for sublist in data["sections"] for item in sublist]
+                    article = [
+                        item.strip() for sublist in data["sections"] for item in sublist
+                    ]
                 abstract = data["abstract_text"]
-                yield id_, {"text": ' '.join(article), "summary": ' '.join(abstract)}
+                yield id_, {"text": " ".join(article), "summary": " ".join(abstract)}

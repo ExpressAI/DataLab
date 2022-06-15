@@ -50,7 +50,9 @@ internal double quote is escaped by 2 double quotes (""). There are no new lines
 
 _HOMEPAGE = "https://wiki.dbpedia.org/develop/datasets"
 
-_LICENSE = "Creative Commons Attribution-ShareAlike 3.0 and the GNU Free Documentation License"
+_LICENSE = (
+    "Creative Commons Attribution-ShareAlike 3.0 and the GNU Free Documentation License"
+)
 
 _URLs = {
     "dbpedia_14": "https://drive.google.com/uc?export=download&id=0Bz8a_Dbh9QhbQ2Vic1kxMmZZQ1k&confirm=yes",
@@ -76,7 +78,9 @@ class DBpedia14(datalabs.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
         DBpedia14Config(
-            name="dbpedia_14", version=VERSION, description="DBpedia 2014 Ontology Classification Dataset."
+            name="dbpedia_14",
+            version=VERSION,
+            description="DBpedia 2014 Ontology Classification Dataset.",
         ),
     ]
 
@@ -112,7 +116,11 @@ class DBpedia14(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             license=_LICENSE,
             citation=_CITATION,
-            task_templates=[get_task(TaskType.topic_classification)(text_column="text", label_column="label")],
+            task_templates=[
+                get_task(TaskType.topic_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -129,7 +137,10 @@ class DBpedia14(datalabs.GeneratorBasedBuilder):
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
-                gen_kwargs={"filepath": os.path.join(data_dir, "dbpedia_csv/test.csv"), "split": "test"},
+                gen_kwargs={
+                    "filepath": os.path.join(data_dir, "dbpedia_csv/test.csv"),
+                    "split": "test",
+                },
             ),
         ]
 

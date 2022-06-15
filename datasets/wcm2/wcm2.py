@@ -15,8 +15,9 @@
 
 
 """XL-Sum abstractive summarization dataset."""
-import os
 import csv
+import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -46,7 +47,9 @@ For more information, please refer to https://arxiv.org/pdf/2202.13558.pdf
 """
 _HOMEPAGE = "https://github.com/ymcui/Chinese-Minority-PLM"
 _TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/wcm2/train/train.tsv"
-_VALIDATION_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/wcm2/dev/dev.tsv"
+_VALIDATION_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/wcm2/dev/dev.tsv"
+)
 
 _TEST_DOWNLOAD_URL = {
     "bo": "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/wcm2/test/bo.tsv",
@@ -74,7 +77,9 @@ class WCM2Config(datalabs.BuilderConfig):
             Args:
                 **kwargs: keyword arguments forwarded to super.
             """
-            super(WCM2Config, self).__init__(version=datalabs.Version("2.0.0", ""), **kwargs)
+            super(WCM2Config, self).__init__(
+                version=datalabs.Version("2.0.0", ""), **kwargs
+            )
 
 
 class WCM2(datalabs.GeneratorBasedBuilder):
@@ -82,8 +87,7 @@ class WCM2(datalabs.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
         datalabs.BuilderConfig(
-            name="{}".format(lang),
-            version=datalabs.Version("2.0.0")
+            name="{}".format(lang), version=datalabs.Version("2.0.0")
         )
         for lang in _LANGUAGES
     ]
@@ -95,56 +99,84 @@ class WCM2(datalabs.GeneratorBasedBuilder):
                 {
                     "text": datalabs.Value("string"),
                     "label": datalabs.features.ClassLabel(
-                        names=["Art", "Geography","History", "Nature", "Science", "Personage", "Technology",
-                                                  "Education", "Economy", "Health"]),
-        }
-        ),
-            supervised_keys = None,
-            homepage = _HOMEPAGE,
-            citation = _CITATION,
-            version = self.VERSION,
-            task_templates = [get_task(TaskType.topic_classification)(
-            text_column="text",
-            label_column="label")],
+                        names=[
+                            "Art",
+                            "Geography",
+                            "History",
+                            "Nature",
+                            "Science",
+                            "Personage",
+                            "Technology",
+                            "Education",
+                            "Economy",
+                            "Health",
+                        ]
+                    ),
+                }
+            ),
+            supervised_keys=None,
+            homepage=_HOMEPAGE,
+            citation=_CITATION,
+            version=self.VERSION,
+            task_templates=[
+                get_task(TaskType.topic_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
             languages=[self.config.name],
         )
 
     def _split_generators(self, dl_manager):
-            """Returns SplitGenerators."""
-            lang = str(self.config.name)
+        """Returns SplitGenerators."""
+        lang = str(self.config.name)
 
-            train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
-            print(f"train_path: \t{train_path}")
-            validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-            print(f"validation_path: \t{validation_path}")
-            test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL[lang])
-            print(f"test_path: \t{test_path}")
+        train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
+        print(f"train_path: \t{train_path}")
+        validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        print(f"validation_path: \t{validation_path}")
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL[lang])
+        print(f"test_path: \t{test_path}")
 
-            return [
-                datalabs.SplitGenerator(name=datalabs.Split.TRAIN,gen_kwargs={"filepath": train_path, },),
-                datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path,},),
-                datalabs.SplitGenerator(name=datalabs.Split.TEST,gen_kwargs={"filepath": test_path, }, )
-                   ]
+        return [
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={
+                    "filepath": train_path,
+                },
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={
+                    "filepath": validation_path,
+                },
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
+                gen_kwargs={
+                    "filepath": test_path,
+                },
+            ),
+        ]
 
     def _generate_examples(self, filepath):
-            """Generate WCMv2 examples."""
-            # map the label into textual string
-            textualize_label = {
-                "0": "Art",
-                "1": "Geography",
-                "2": "History",
-                "3": "Nature",
-                "4": "Science",
-                "5": "Personage",
-                "6": "Technology",
-                "7": "Education",
-                "8": "Economy",
-                "9": "Health"
-            }
+        """Generate WCMv2 examples."""
+        # map the label into textual string
+        textualize_label = {
+            "0": "Art",
+            "1": "Geography",
+            "2": "History",
+            "3": "Nature",
+            "4": "Science",
+            "5": "Personage",
+            "6": "Technology",
+            "7": "Education",
+            "8": "Economy",
+            "9": "Health",
+        }
 
-            with open(filepath, encoding="utf-8") as csv_file:
-                csv_reader = csv.reader(csv_file, delimiter='\t')
-                for id_, row in enumerate(csv_reader):
-                    text, label = row
-                    label = textualize_label[label]
-                    yield id_, {"text": text, "label": label}
+        with open(filepath, encoding="utf-8") as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter="\t")
+            for id_, row in enumerate(csv_reader):
+                text, label = row
+                label = textualize_label[label]
+                yield id_, {"text": text, "label": label}

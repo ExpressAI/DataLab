@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -64,11 +65,12 @@ _VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/questio
 
 _HOMEPAGE = "https://github.com/baidu/DuReader/tree/master/DuReader-Checklist"
 
-class DuReaderChecklistConfig(datalabs.BuilderConfig):
 
+class DuReaderChecklistConfig(datalabs.BuilderConfig):
     def __init__(self, **kwargs):
 
         super(DuReaderChecklistConfig, self).__init__(**kwargs)
+
 
 class DuReaderChecklist(datalabs.GeneratorBasedBuilder):
 
@@ -90,38 +92,42 @@ class DuReaderChecklist(datalabs.GeneratorBasedBuilder):
                     "question": datalabs.Value("string"),
                     "context": datalabs.Value("string"),
                     "title": datalabs.Value("string"),
-                    "answers":
-                        {
-                            "text": datalabs.features.Sequence(datalabs.Value("string")),
-                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
-                        },
-                    "is_impossible":datalabs.Value("string"),
-                    "type":datalabs.Value("string"),
+                    "answers": {
+                        "text": datalabs.features.Sequence(datalabs.Value("string")),
+                        "answer_start": datalabs.features.Sequence(
+                            datalabs.Value("int32")
+                        ),
+                    },
+                    "is_impossible": datalabs.Value("string"),
+                    "type": datalabs.Value("string"),
                 }
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            languages = ["zh"],
+            languages=["zh"],
             task_templates=[
                 get_task(TaskType.qa_extractive)(
-                    question_column = "question",
-                    context_column = "context",
-                    answers_column = "answers",
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                 )
             ],
         )
-
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 
@@ -134,11 +140,14 @@ class DuReaderChecklist(datalabs.GeneratorBasedBuilder):
             for article in squad["data"]:
                 title = article.get("title", "")
                 for paragraph in article["paragraphs"]:
-                    context = paragraph["context"]  # do not strip leading blank spaces GH-2585
+                    context = paragraph[
+                        "context"
+                    ]  # do not strip leading blank spaces GH-2585
                     for qa in paragraph["qas"]:
-                        answer_starts = [answer["answer_start"] for answer in qa["answers"]]
+                        answer_starts = [
+                            answer["answer_start"] for answer in qa["answers"]
+                        ]
                         answers = [answer["text"] for answer in qa["answers"]]
-
 
                         yield key, {
                             "title": title,
@@ -149,10 +158,8 @@ class DuReaderChecklist(datalabs.GeneratorBasedBuilder):
                                 "answer_start": answer_starts,
                                 "text": answers,
                             },
-                            "is_impossible":qa["is_impossible"],
-                            "type":qa["type"],
+                            "is_impossible": qa["is_impossible"],
+                            "type": qa["type"],
                             # "answers":answer_list,
                         }
                         key += 1
-
-            

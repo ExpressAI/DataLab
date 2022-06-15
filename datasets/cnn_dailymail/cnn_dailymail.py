@@ -18,9 +18,10 @@
 
 import hashlib
 import os
-import datalabs
-import tempfile
 import subprocess
+import tempfile
+
+import datalabs
 from datalabs import get_task, TaskType
 
 logger = datalabs.logging.get_logger(__name__)
@@ -87,16 +88,36 @@ _DL_URLS_GDRIVE = {
 # _ARTICLE = "text"
 def custom_download(url, path):
     with tempfile.TemporaryDirectory() as tmpdir:
-        response = subprocess.check_output([
-            "wget", "--save-cookies", os.path.join(tmpdir, "cookies.txt"), 
-            f"{url}", "-O-"])
+        response = subprocess.check_output(
+            [
+                "wget",
+                "--save-cookies",
+                os.path.join(tmpdir, "cookies.txt"),
+                f"{url}",
+                "-O-",
+            ]
+        )
         with open(os.path.join(tmpdir, "response.txt"), "w") as f:
             f.write(response.decode("utf-8"))
-        response = subprocess.check_output(["sed", "-rn", 's/.*confirm=([0-9A-Za-z_]+).*/\\1/p', os.path.join(tmpdir, "response.txt")])
+        response = subprocess.check_output(
+            [
+                "sed",
+                "-rn",
+                "s/.*confirm=([0-9A-Za-z_]+).*/\\1/p",
+                os.path.join(tmpdir, "response.txt"),
+            ]
+        )
         response = response.decode("utf-8")
-        subprocess.check_output([
-            "wget", "--load-cookies", os.path.join(tmpdir, "cookies.txt"), "-O", path,
-            url+f"&confirm={response}"])
+        subprocess.check_output(
+            [
+                "wget",
+                "--load-cookies",
+                os.path.join(tmpdir, "cookies.txt"),
+                "-O",
+                path,
+                url + f"&confirm={response}",
+            ]
+        )
 
 
 _HIGHLIGHTS = "summary"
@@ -192,7 +213,18 @@ def _subset_filenames(dl_paths, split):
 DM_SINGLE_CLOSE_QUOTE = "\u2019"  # unicode
 DM_DOUBLE_CLOSE_QUOTE = "\u201d"
 # acceptable ways to end a sentence
-END_TOKENS = [".", "!", "?", "...", "'", "`", '"', DM_SINGLE_CLOSE_QUOTE, DM_DOUBLE_CLOSE_QUOTE, ")"]
+END_TOKENS = [
+    ".",
+    "!",
+    "?",
+    "...",
+    "'",
+    "`",
+    '"',
+    DM_SINGLE_CLOSE_QUOTE,
+    DM_DOUBLE_CLOSE_QUOTE,
+    ")",
+]
 
 
 def _read_text_file(text_file):
@@ -277,11 +309,11 @@ class CnnDailymail(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://github.com/abisee/cnn-dailymail",
             citation=_CITATION,
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_HIGHLIGHTS),
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_HIGHLIGHTS
+                ),
             ],
-
         )
 
     def _vocab_text_gen(self, paths):
@@ -290,18 +322,27 @@ class CnnDailymail(datalabs.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         dl_paths = dl_manager.download_and_extract(_DL_URLS)
-        dl_paths.update(dl_manager.extract(dl_manager.download_custom(_DL_URLS_GDRIVE, custom_download)))
+        dl_paths.update(
+            dl_manager.extract(
+                dl_manager.download_custom(_DL_URLS_GDRIVE, custom_download)
+            )
+        )
         train_files = _subset_filenames(dl_paths, datalabs.Split.TRAIN)
         # Generate shared vocabulary
 
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"files": train_files}),
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION,
-                gen_kwargs={"files": _subset_filenames(dl_paths, datalabs.Split.VALIDATION)},
+                name=datalabs.Split.TRAIN, gen_kwargs={"files": train_files}
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST, gen_kwargs={"files": _subset_filenames(dl_paths, datalabs.Split.TEST)}
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={
+                    "files": _subset_filenames(dl_paths, datalabs.Split.VALIDATION)
+                },
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
+                gen_kwargs={"files": _subset_filenames(dl_paths, datalabs.Split.TEST)},
             ),
         ]
 
@@ -311,7 +352,7 @@ class CnnDailymail(datalabs.GeneratorBasedBuilder):
             if not article or not highlights:
                 continue
             fname = os.path.basename(p)
-            
+
             yield fname, {
                 _ARTICLE: article,
                 _HIGHLIGHTS: highlights,

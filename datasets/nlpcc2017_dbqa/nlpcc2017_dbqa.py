@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import csv
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -34,17 +35,24 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/NLPCC2017DBQA/train.txt"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/NLPCC2017DBQA/dev.txt"
-_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/NLPCC2017DBQA/test.txt"
+_TRAIN_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/NLPCC2017DBQA/train.txt"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/NLPCC2017DBQA/dev.txt"
+)
+_TEST_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/NLPCC2017DBQA/test.txt"
+)
 
 _HOMEPAGE = "http://tcci.ccf.org.cn/conference/2017/taskdata.php"
 
-class NLPCC2017DBQAConfig(datalabs.BuilderConfig):
 
+class NLPCC2017DBQAConfig(datalabs.BuilderConfig):
     def __init__(self, **kwargs):
 
         super(NLPCC2017DBQAConfig, self).__init__(**kwargs)
+
 
 class NLPCC2017DBQA(datalabs.GeneratorBasedBuilder):
 
@@ -55,58 +63,60 @@ class NLPCC2017DBQA(datalabs.GeneratorBasedBuilder):
             description="open_domain_question_answering",
         ),
     ]
-    
+
     def _info(self):
 
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                    "question": datalabs.Value("string"), 
+                    "question": datalabs.Value("string"),
                     "answer": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=['0', '1']),
+                    "label": datalabs.features.ClassLabel(names=["0", "1"]),
                 }
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            languages = ["zh"],
+            languages=["zh"],
             task_templates=[
                 get_task(TaskType.question_answering_classification)(
-                    text1_column = "question",
-                    text2_column = "answer",
-                    label_column = "label",
+                    text1_column="question",
+                    text2_column="answer",
+                    label_column="label",
                 )
             ],
         )
-
 
     def _split_generators(self, dl_manager):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
-        
+
         with open(filepath, encoding="utf-8") as file:
-            csv_reader = csv.reader(file, delimiter = '\t')
+            csv_reader = csv.reader(file, delimiter="\t")
             for id_, row in enumerate(csv_reader):
                 if len(row) == 3:
                     label, question, answer = row
                     label = int(label)
                     if label == (0 or 1):
-                        yield id_, {'question': question, 'answer': answer, 'label': label}
-
-                    
-
-
-
-
-            
+                        yield id_, {
+                            "question": question,
+                            "answer": answer,
+                            "label": label,
+                        }

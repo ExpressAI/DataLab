@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -31,8 +32,8 @@ OUT_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/conditio
 IN_TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/conditional_generation/couplets/test/in.txt"
 OUT_TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/conditional_generation/couplets/test/out.txt"
 
-class Couplet(datalabs.GeneratorBasedBuilder):
 
+class Couplet(datalabs.GeneratorBasedBuilder):
     def _info(self):
 
         return datalabs.DatasetInfo(
@@ -46,7 +47,7 @@ class Couplet(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://github.com/v-zich/couplet-clean-dataset",
             citation=_CITATION,
-            languages = ["zh"],
+            languages=["zh"],
             task_templates=[
                 get_task(TaskType.conditional_generation)(
                     source_column="source", reference_column="reference"
@@ -54,33 +55,35 @@ class Couplet(datalabs.GeneratorBasedBuilder):
             ],
         )
 
-        
-
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         in_train_path = dl_manager.download_and_extract(IN_TRAIN_DOWNLOAD_URL)
         out_train_path = dl_manager.download_and_extract(OUT_TRAIN_DOWNLOAD_URL)
         in_test_path = dl_manager.download_and_extract(IN_TEST_DOWNLOAD_URL)
         out_test_path = dl_manager.download_and_extract(OUT_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"infilepath": in_train_path,"outfilepath":out_train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"infilepath": in_test_path,"outfilepath":out_test_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"infilepath": in_train_path, "outfilepath": out_train_path},
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
+                gen_kwargs={"infilepath": in_test_path, "outfilepath": out_test_path},
+            ),
         ]
 
-    def _generate_examples(self, infilepath,outfilepath):
+    def _generate_examples(self, infilepath, outfilepath):
         """This function returns the examples."""
 
-        with open(infilepath, encoding="utf-8") as fin, open(outfilepath, encoding="utf-8") as fout:
-            sources=fin.readlines()
-            references=fout.readlines()
-           
-            assert len(sources)==len(references)
+        with open(infilepath, encoding="utf-8") as fin, open(
+            outfilepath, encoding="utf-8"
+        ) as fout:
+            sources = fin.readlines()
+            references = fout.readlines()
+
+            assert len(sources) == len(references)
             for id_, line in enumerate(sources):
                 source = line.strip()
                 reference = references[id_]
                 yield id_, {"source": source, "reference": reference}
-                
-
-
-            

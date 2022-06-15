@@ -17,9 +17,9 @@
 
 import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
-
 
 # logger = datasets.logging.get_logger(__name__)
 
@@ -62,7 +62,9 @@ class Spider(datalabs.GeneratorBasedBuilder):
                 "query": datalabs.Value("string"),
                 "question": datalabs.Value("string"),
                 "query_toks": datalabs.features.Sequence(datalabs.Value("string")),
-                "query_toks_no_value": datalabs.features.Sequence(datalabs.Value("string")),
+                "query_toks_no_value": datalabs.features.Sequence(
+                    datalabs.Value("string")
+                ),
                 "question_toks": datalabs.features.Sequence(datalabs.Value("string")),
             }
         )
@@ -75,8 +77,7 @@ class Spider(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 get_task(TaskType.text_to_sql)(
-                    question_column="question",
-                    query_column="query"
+                    question_column="question", query_column="query"
                 )
             ],
         )
@@ -88,13 +89,17 @@ class Spider(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={
-                    "data_filepath": os.path.join(downloaded_filepath, "spider/train_spider.json"),
+                    "data_filepath": os.path.join(
+                        downloaded_filepath, "spider/train_spider.json"
+                    ),
                 },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 gen_kwargs={
-                    "data_filepath": os.path.join(downloaded_filepath, "spider/dev.json"),
+                    "data_filepath": os.path.join(
+                        downloaded_filepath, "spider/dev.json"
+                    ),
                 },
             ),
         ]

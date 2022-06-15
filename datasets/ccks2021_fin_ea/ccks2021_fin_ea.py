@@ -16,6 +16,7 @@
 import json
 
 from click import argument
+
 import datalabs
 from datalabs import get_task, TaskType
 from datalabs.features.features import Sequence
@@ -43,10 +44,10 @@ _HOMEPAGE = "https://www.biendata.xyz/competition/ccks_2021_task6_1"
 
 
 class CCKS2021FinEAConfig(datalabs.BuilderConfig):
-    
     def __init__(self, **kwargs):
 
         super(CCKS2021FinEAConfig, self).__init__(**kwargs)
+
 
 class CCKS2021FinEA(datalabs.GeneratorBasedBuilder):
 
@@ -74,8 +75,8 @@ class CCKS2021FinEA(datalabs.GeneratorBasedBuilder):
                     },
                     "arguments": datalabs.features.Sequence(
                         {
-                            "start": datalabs.Value("int32"), 
-                            "end": datalabs.Value("int32"),  
+                            "start": datalabs.Value("int32"),
+                            "end": datalabs.Value("int32"),
                             "role": datalabs.Value("string"),
                             "entity": datalabs.Value("string"),
                         }
@@ -88,8 +89,8 @@ class CCKS2021FinEA(datalabs.GeneratorBasedBuilder):
             languages=["zh"],
             task_templates=[
                 get_task(TaskType.event_arguments_extraction)(
-                    text_column = "text",
-                    event_column = "arguments",
+                    text_column="text",
+                    event_column="arguments",
                 ),
             ],
         )
@@ -98,9 +99,11 @@ class CCKS2021FinEA(datalabs.GeneratorBasedBuilder):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
@@ -109,12 +112,32 @@ class CCKS2021FinEA(datalabs.GeneratorBasedBuilder):
         with open(filepath, encoding="utf-8") as txt_file:
             for id_, line in enumerate(txt_file):
                 line = json.loads(line)
-                text, level1, level2, level3, attributes = line["text"], line["level1"], line["level2"], line["level3"], line["attributes"]
-                event_type = {"level1":level1, "level2":level2, "level3":level3}
+                text, level1, level2, level3, attributes = (
+                    line["text"],
+                    line["level1"],
+                    line["level2"],
+                    line["level3"],
+                    line["attributes"],
+                )
+                event_type = {"level1": level1, "level2": level2, "level3": level3}
                 if len(attributes) > 0:
                     arguments = []
                     for attribute in attributes:
                         argument = {}
-                        argument["start"], argument["end"], argument["role"], argument["entity"] = attribute["start"], attribute["end"], attribute["type"], attribute["entity"]
+                        (
+                            argument["start"],
+                            argument["end"],
+                            argument["role"],
+                            argument["entity"],
+                        ) = (
+                            attribute["start"],
+                            attribute["end"],
+                            attribute["type"],
+                            attribute["entity"],
+                        )
                         arguments.append(argument)
-                    yield id_, {'text': text, 'event_type': event_type, 'arguments': arguments}
+                    yield id_, {
+                        "text": text,
+                        "event_type": event_type,
+                        "arguments": arguments,
+                    }

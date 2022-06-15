@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -49,16 +50,19 @@ _CITATION = """\
 _LICENSE = "NA"
 
 _TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/CMRC2019/train.json"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/CMRC2019/dev.json"
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/CMRC2019/dev.json"
+)
 _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/CMRC2019/trial.json"
 
 _HOMEPAGE = "https://hfl-rc.com/cmrc2019/"
 
-class CMRC2019Config(datalabs.BuilderConfig):
 
+class CMRC2019Config(datalabs.BuilderConfig):
     def __init__(self, **kwargs):
 
         super(CMRC2019Config, self).__init__(**kwargs)
+
 
 class CMRC2019(datalabs.GeneratorBasedBuilder):
 
@@ -85,28 +89,33 @@ class CMRC2019(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            languages = ["zh"],
+            languages=["zh"],
             task_templates=[
                 get_task(TaskType.cloze_multiple_choice)(
-                    question_column = "id",
-                    context_column = "context",
-                    options_column = "options",
-                    answers_column = "answers",
+                    question_column="id",
+                    context_column="context",
+                    options_column="options",
+                    answers_column="answers",
                 )
             ],
         )
-
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
@@ -123,5 +132,10 @@ class CMRC2019(datalabs.GeneratorBasedBuilder):
                 options = article["choices"]
                 answers = article["answers"]
 
-                yield count, {"id": id, "context": context, "options": options, "answers": answers}
+                yield count, {
+                    "id": id,
+                    "context": context,
+                    "options": options,
+                    "answers": answers,
+                }
                 count = count + 1

@@ -18,9 +18,9 @@
 
 
 import collections
+from contextlib import ExitStack
 import csv
 import os
-from contextlib import ExitStack
 
 import datalabs
 from datalabs import get_task, TaskType
@@ -53,7 +53,23 @@ labels).
 _TRAIN_DATA_URL = "https://dl.fbaipublicfiles.com/XNLI/XNLI-MT-1.0.zip"
 _TESTVAL_DATA_URL = "https://dl.fbaipublicfiles.com/XNLI/XNLI-1.0.zip"
 
-_LANGUAGES = ("ar", "bg", "de", "el", "en", "es", "fr", "hi", "ru", "sw", "th", "tr", "ur", "vi", "zh")
+_LANGUAGES = (
+    "ar",
+    "bg",
+    "de",
+    "el",
+    "en",
+    "es",
+    "fr",
+    "hi",
+    "ru",
+    "sw",
+    "th",
+    "tr",
+    "ur",
+    "vi",
+    "zh",
+)
 
 
 class XnliConfig(datalabs.BuilderConfig):
@@ -106,7 +122,9 @@ class Xnli(datalabs.GeneratorBasedBuilder):
                     "hypothesis": datalabs.TranslationVariableLanguages(
                         languages=_LANGUAGES,
                     ),
-                    "label": datalabs.ClassLabel(names=["entailment", "neutral", "contradiction"]),
+                    "label": datalabs.ClassLabel(
+                        names=["entailment", "neutral", "contradiction"]
+                    ),
                 }
             )
             languages = _LANGUAGES
@@ -115,7 +133,9 @@ class Xnli(datalabs.GeneratorBasedBuilder):
                 {
                     "premise": datalabs.Value("string"),
                     "hypothesis": datalabs.Value("string"),
-                    "label": datalabs.ClassLabel(names=["entailment", "neutral", "contradiction"]),
+                    "label": datalabs.ClassLabel(
+                        names=["entailment", "neutral", "contradiction"]
+                    ),
                 }
             )
             languages = [self.config.language]
@@ -128,10 +148,12 @@ class Xnli(datalabs.GeneratorBasedBuilder):
             homepage="https://www.nyu.edu/projects/bowman/xnli/",
             citation=_CITATION,
             languages=languages,
-            task_templates=[get_task(TaskType.natural_language_inference)(
-                text1_column="premise",
-                text2_column="hypothesis",
-                label_column="label"),
+            task_templates=[
+                get_task(TaskType.natural_language_inference)(
+                    text1_column="premise",
+                    text2_column="hypothesis",
+                    label_column="label",
+                ),
             ],
         )
 
@@ -149,18 +171,25 @@ class Xnli(datalabs.GeneratorBasedBuilder):
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={
                     "filepaths": [
-                        os.path.join(train_dir, f"multinli.train.{lang}.tsv") for lang in self.config.languages
+                        os.path.join(train_dir, f"multinli.train.{lang}.tsv")
+                        for lang in self.config.languages
                     ],
                     "data_format": "XNLI-MT",
                 },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
-                gen_kwargs={"filepaths": [os.path.join(testval_dir, "xnli.test.tsv")], "data_format": "XNLI"},
+                gen_kwargs={
+                    "filepaths": [os.path.join(testval_dir, "xnli.test.tsv")],
+                    "data_format": "XNLI",
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
-                gen_kwargs={"filepaths": [os.path.join(testval_dir, "xnli.dev.tsv")], "data_format": "XNLI"},
+                gen_kwargs={
+                    "filepaths": [os.path.join(testval_dir, "xnli.dev.tsv")],
+                    "data_format": "XNLI",
+                },
             ),
         ]
 
@@ -170,19 +199,35 @@ class Xnli(datalabs.GeneratorBasedBuilder):
         if self.config.language == "all_languages":
             if data_format == "XNLI-MT":
                 with ExitStack() as stack:
-                    files = [stack.enter_context(open(filepath, encoding="utf-8")) for filepath in filepaths]
-                    readers = [csv.DictReader(file, delimiter="\t", quoting=csv.QUOTE_NONE) for file in files]
+                    files = [
+                        stack.enter_context(open(filepath, encoding="utf-8"))
+                        for filepath in filepaths
+                    ]
+                    readers = [
+                        csv.DictReader(file, delimiter="\t", quoting=csv.QUOTE_NONE)
+                        for file in files
+                    ]
                     for row_idx, rows in enumerate(zip(*readers)):
                         yield row_idx, {
-                            "premise": {lang: row["premise"] for lang, row in zip(self.config.languages, rows)},
-                            "hypothesis": {lang: row["hypo"] for lang, row in zip(self.config.languages, rows)},
-                            "label": rows[0]["label"].replace("contradictory", "contradiction"),
+                            "premise": {
+                                lang: row["premise"]
+                                for lang, row in zip(self.config.languages, rows)
+                            },
+                            "hypothesis": {
+                                lang: row["hypo"]
+                                for lang, row in zip(self.config.languages, rows)
+                            },
+                            "label": rows[0]["label"].replace(
+                                "contradictory", "contradiction"
+                            ),
                         }
             else:
                 rows_per_pair_id = collections.defaultdict(list)
                 for filepath in filepaths:
                     with open(filepath, encoding="utf-8") as f:
-                        reader = csv.DictReader(f, delimiter="\t", quoting=csv.QUOTE_NONE)
+                        reader = csv.DictReader(
+                            f, delimiter="\t", quoting=csv.QUOTE_NONE
+                        )
                         for row in reader:
                             rows_per_pair_id[row["pairID"]].append(row)
 
@@ -198,18 +243,24 @@ class Xnli(datalabs.GeneratorBasedBuilder):
             if data_format == "XNLI-MT":
                 for file_idx, filepath in enumerate(filepaths):
                     file = open(filepath, encoding="utf-8")
-                    reader = csv.DictReader(file, delimiter="\t", quoting=csv.QUOTE_NONE)
+                    reader = csv.DictReader(
+                        file, delimiter="\t", quoting=csv.QUOTE_NONE
+                    )
                     for row_idx, row in enumerate(reader):
                         key = str(file_idx) + "_" + str(row_idx)
                         yield key, {
                             "premise": row["premise"],
                             "hypothesis": row["hypo"],
-                            "label": row["label"].replace("contradictory", "contradiction"),
+                            "label": row["label"].replace(
+                                "contradictory", "contradiction"
+                            ),
                         }
             else:
                 for filepath in filepaths:
                     with open(filepath, encoding="utf-8") as f:
-                        reader = csv.DictReader(f, delimiter="\t", quoting=csv.QUOTE_NONE)
+                        reader = csv.DictReader(
+                            f, delimiter="\t", quoting=csv.QUOTE_NONE
+                        )
                         for row in reader:
                             if row["language"] == self.config.language:
                                 yield row["pairID"], {

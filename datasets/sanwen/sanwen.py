@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import csv
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -33,15 +34,20 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/relation_extraction/SanWen/train.txt"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/relation_extraction/SanWen/valid.txt"
-_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/relation_extraction/SanWen/test.txt"
+_TRAIN_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/relation_extraction/SanWen/train.txt"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/relation_extraction/SanWen/valid.txt"
+)
+_TEST_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/relation_extraction/SanWen/test.txt"
+)
 
 _HOMEPAGE = "https://github.com/lancopku/Chinese-Literature-NER-RE-Dataset"
 
 
 class SanWenConfig(datalabs.BuilderConfig):
-
     def __init__(self, **kwargs):
         super(SanWenConfig, self).__init__(**kwargs)
 
@@ -67,30 +73,33 @@ class SanWen(datalabs.GeneratorBasedBuilder):
                     "span1": datalabs.Value("string"),
                     "span2": datalabs.Value("string"),
                     "text": datalabs.Value("string"),
-                    "relation": datalabs.features.ClassLabel(names=[
-                        "unknown",
-                        "Create",
-                        "Use",
-                        "Near",
-                        "Social",
-                        "Located",
-                        "Ownership",
-                        "General-Special",
-                        "Family",
-                        "Part-Whole",
-                    ])
+                    "relation": datalabs.features.ClassLabel(
+                        names=[
+                            "unknown",
+                            "Create",
+                            "Use",
+                            "Near",
+                            "Social",
+                            "Located",
+                            "Ownership",
+                            "General-Special",
+                            "Family",
+                            "Part-Whole",
+                        ]
+                    ),
                 }
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.span_relation_prediction)(
-                text_column = "text",
-                span1_column = "span1",
-                span2_column = "span2",
-                label_column = "relation",
-            ),
+            task_templates=[
+                get_task(TaskType.span_relation_prediction)(
+                    text_column="text",
+                    span1_column="span1",
+                    span2_column="span2",
+                    label_column="relation",
+                ),
             ],
         )
 
@@ -99,11 +108,17 @@ class SanWen(datalabs.GeneratorBasedBuilder):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
@@ -118,12 +133,18 @@ class SanWen(datalabs.GeneratorBasedBuilder):
             "Ownership",
             "General-Special",
             "Family",
-            "Part-Whole"]
+            "Part-Whole",
+        ]
 
         with open(filepath, encoding="utf-8") as txt_file:
-            txt_file = csv.reader(txt_file, delimiter='\t')
+            txt_file = csv.reader(txt_file, delimiter="\t")
             for id_, row in enumerate(txt_file):
                 if len(row) == 4:
                     span1, span2, relation, text = row
                     if relation in relations:
-                        yield id_, {"text": text, "span1":span1, "span2": span2, "relation": relation}
+                        yield id_, {
+                            "text": text,
+                            "span1": span1,
+                            "span2": span2,
+                            "relation": relation,
+                        }

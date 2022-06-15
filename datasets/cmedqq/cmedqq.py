@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -30,49 +31,66 @@ _CITATION = """\
 }
 """
 
-_LICENSE = "NA" 
+_LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/cMedQQ/train.txt"
-_VALIDATION_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/cMedQQ/dev.txt"
-_TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/cMedQQ/test.txt"
+_TRAIN_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/cMedQQ/train.txt"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/cMedQQ/dev.txt"
+)
+_TEST_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/cMedQQ/test.txt"
+)
 
 
 class cMedQQ(datalabs.GeneratorBasedBuilder):
     def _info(self):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalabs.Features({
-                'text1': datalabs.Value('string'),
-                'text2': datalabs.Value('string'),
-                'label': datalabs.features.ClassLabel(names=['0', '1']),
-            }),
+            features=datalabs.Features(
+                {
+                    "text1": datalabs.Value("string"),
+                    "text2": datalabs.Value("string"),
+                    "label": datalabs.features.ClassLabel(names=["0", "1"]),
+                }
+            ),
             supervised_keys=None,
-            homepage='https://github.com/alibaba-research/ChineseBLUE',
+            homepage="https://github.com/alibaba-research/ChineseBLUE",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.paraphrase_identification)(
-                text1_column="text1",
-                text2_column="text2",
-                label_column="label"),
+            task_templates=[
+                get_task(TaskType.paraphrase_identification)(
+                    text1_column="text1", text2_column="text2", label_column="label"
+                ),
             ],
         )
 
     def _split_generators(self, dl_manager):
-        
+
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
-
     def _generate_examples(self, filepath):
-        
+
         with open(filepath, encoding="utf-8") as f:
             for id_, row in enumerate(f):
-                example=row.strip().split('\t')
-           
-                yield id_, {'text1': example[1], 'text2': example[2], 'label': example[0]}
+                example = row.strip().split("\t")
+
+                yield id_, {
+                    "text1": example[1],
+                    "text2": example[2],
+                    "label": example[0],
+                }

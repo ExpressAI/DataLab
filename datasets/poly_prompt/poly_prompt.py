@@ -19,7 +19,6 @@ import textwrap
 
 import datalabs
 
-
 # TODO(PolyPrompt): BibTeX citation
 _CITATION = """
 """
@@ -29,17 +28,20 @@ _DESCRIPTION = """\
 PolyPrompt
 """
 TASK2LANGS = {
-        "xquad": "en,es,de,el,ru,tr,ar,vi,th,zh,hi".split(","),
-        "tydiqa": "en,ar,bn,fi,id,ko,ru,sw,te".split(","),
-        "mlqa": "en,es,de,ar,hi,vi,zh".split(","),
-        "marc": "en,de,es,fr,ja,zh".split(","),
-        "mldoc": "en,de,es,fr,ja,zh,it,ru".split(","),
-        "pawsx": "de,en,es,fr,ja,ko,zh".split(","),
-        "xnli": "ar,bg,de,el,en,es,fr,hi,ru,sw,th,tr,ur,vi,zh".split(","),
-        "panx": "ar,he,vi,id,jv,ms,tl,eu,ml,ta,te,af,nl,en,de,el,bn,hi,mr,ur,fa,fr,it,pt,es,bg,ru,ja,ka,ko,th,sw,yo,my,zh,kk,tr,et,fi,hu".split(","),
-        "xlsum": "en,ar,vi,ko,es,zh,ru,fr,tr,hi,id,fa,pt,mr,th,az,bn,np,sr,sw,ta,te,ur,cy,am,my,gu,ha,ig,pa,si,yo".split(','),
+    "xquad": "en,es,de,el,ru,tr,ar,vi,th,zh,hi".split(","),
+    "tydiqa": "en,ar,bn,fi,id,ko,ru,sw,te".split(","),
+    "mlqa": "en,es,de,ar,hi,vi,zh".split(","),
+    "marc": "en,de,es,fr,ja,zh".split(","),
+    "mldoc": "en,de,es,fr,ja,zh,it,ru".split(","),
+    "pawsx": "de,en,es,fr,ja,ko,zh".split(","),
+    "xnli": "ar,bg,de,el,en,es,fr,hi,ru,sw,th,tr,ur,vi,zh".split(","),
+    "panx": "ar,he,vi,id,jv,ms,tl,eu,ml,ta,te,af,nl,en,de,el,bn,hi,mr,ur,fa,fr,it,pt,es,bg,ru,ja,ka,ko,th,sw,yo,my,zh,kk,tr,et,fi,hu".split(
+        ","
+    ),
+    "xlsum": "en,ar,vi,ko,es,zh,ru,fr,tr,hi,id,fa,pt,mr,th,az,bn,np,sr,sw,ta,te,ur,cy,am,my,gu,ha,ig,pa,si,yo".split(
+        ","
+    ),
 }
-
 
 
 _TASKS = ["xquad", "tydiqa", "mlqa", "marc", "mldoc", "pawsx", "xnli"]
@@ -70,9 +72,11 @@ _DESCRIPTIONS = {
     ),
     "marc": textwrap.dedent(
         """MARC (Multilingual Amazon Reviews Corpus) is a multilingual text classification dataset with 6 different languages. 
-        Here, we use the binarized classification task that is defined by Keung et al. (2020)."""),
+        Here, we use the binarized classification task that is defined by Keung et al. (2020)."""
+    ),
     "mldoc": textwrap.dedent(
-        """MLDOC is a multilingual document classification dataset with six topic categories."""),
+        """MLDOC is a multilingual document classification dataset with six topic categories."""
+    ),
     "xnli": textwrap.dedent(
         """
           The Cross-lingual Natural Language Inference (XNLI) corpus is a crowd-sourced collection of 5,000 test and 2,500 dev 
@@ -99,7 +103,7 @@ _DESCRIPTIONS = {
 }
 _CITATIONS = {
     "tydiqa": textwrap.dedent(
-            """\
+        """\
             @article{tydiqa,
               title   = {TyDi QA: A Benchmark for Information-Seeking Question Answering in Typologically Diverse Languages},
               author  = {Jonathan H. Clark and Eunsol Choi and Michael Collins and Dan Garrette and Tom Kwiatkowski and Vitaly Nikolaev and Jennimaria Palomaki}
@@ -128,7 +132,7 @@ _CITATIONS = {
           journal={arXiv preprint arXiv:1910.07475},
           year={2019}"""
     ),
-    "marc":textwrap.dedent(
+    "marc": textwrap.dedent(
         """\
             @article{keung2020multilingual,
               title={The multilingual Amazon reviews corpus},
@@ -183,14 +187,14 @@ _CITATIONS = {
     }"""
     ),
     "panx": textwrap.dedent(
-            """\
+        """\
                 @article{pan-x,
                 title={Massively Multilingual Sentence Embeddings for Zero-Shot Cross-Lingual Transfer and Beyond},
                 author={Xiaoman, Pan and Boliang, Zhang and Jonathan, May and Joel, Nothman and Kevin, Knight and Heng, Ji},
                 volume={Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers}
                 year={2017}
               }"""
-        ),
+    ),
 }
 
 _TEXT_FEATURES = {
@@ -253,6 +257,7 @@ _DATA_URLS = {
     "xnli": "https://s3.amazonaws.com/datalab-hub/poly_prompt/xnli/xnli.zip",
 }
 
+
 class PolyPromptConfig(datalabs.BuilderConfig):
     """BuilderConfig for Break"""
 
@@ -265,7 +270,9 @@ class PolyPromptConfig(datalabs.BuilderConfig):
             label_classes
             **kwargs: keyword arguments forwarded to super.
         """
-        super(PolyPromptConfig, self).__init__(version=datalabs.Version("2.0.0", ""), **kwargs)
+        super(PolyPromptConfig, self).__init__(
+            version=datalabs.Version("2.0.0", ""), **kwargs
+        )
         self.text_features = text_features
         self.data_url = data_url
         self.citation = citation
@@ -288,14 +295,15 @@ class PolyPrompt(datalabs.GeneratorBasedBuilder):
     ]
 
     def _info(self):
-        features = {text_feature: datalabs.Value("string") for text_feature in self.config.text_features.keys()}
+        features = {
+            text_feature: datalabs.Value("string")
+            for text_feature in self.config.text_features.keys()
+        }
         return datalabs.DatasetInfo(
             # This is the description that will appear on the datasets page.
             description=self.config.description + "\n" + _DESCRIPTION,
-            features=datalabs.Features(
-                features
-            ),
-            languages=[self.config.name.split('.')[-1]],
+            features=datalabs.Features(features),
+            languages=[self.config.name.split(".")[-1]],
             supervised_keys=None,
             # Homepage of the dataset for documentation
             citation=self.config.citation + "\n" + _CITATION,
@@ -308,31 +316,43 @@ class PolyPrompt(datalabs.GeneratorBasedBuilder):
         task_downloaded_files = dl_manager.download_and_extract(self.config.data_url)
 
         TRAIN = datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN,
-                # These kwargs will be passed to _generate_examples
-                gen_kwargs={"filepath": os.path.join(task_downloaded_files,f"{task}/train-{lang}.json")},
-            )
+            name=datalabs.Split.TRAIN,
+            # These kwargs will be passed to _generate_examples
+            gen_kwargs={
+                "filepath": os.path.join(
+                    task_downloaded_files, f"{task}/train-{lang}.json"
+                )
+            },
+        )
         TEST = datalabs.SplitGenerator(
-                name=datalabs.Split.TEST,
-                # These kwargs will be passed to _generate_examples
-                gen_kwargs={"filepath": os.path.join(task_downloaded_files, f"{task}/test-{lang}.json")},
-            )
-        RETURNS = [TRAIN,TEST]
-        if task not in ['xquad', 'mlqa']:
+            name=datalabs.Split.TEST,
+            # These kwargs will be passed to _generate_examples
+            gen_kwargs={
+                "filepath": os.path.join(
+                    task_downloaded_files, f"{task}/test-{lang}.json"
+                )
+            },
+        )
+        RETURNS = [TRAIN, TEST]
+        if task not in ["xquad", "mlqa"]:
             VALIDATION = datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 # These kwargs will be passed to _generate_examples
-                gen_kwargs={"filepath": os.path.join(task_downloaded_files, f"{task}/dev-{lang}.json")},
+                gen_kwargs={
+                    "filepath": os.path.join(
+                        task_downloaded_files, f"{task}/dev-{lang}.json"
+                    )
+                },
             )
-            RETURNS = [TRAIN, VALIDATION,TEST]
+            RETURNS = [TRAIN, VALIDATION, TEST]
 
         return RETURNS
 
     def _generate_examples(self, filepath=None, **kwargs):
         """Yields examples."""
         # TODO(PolyPrompt): Yields (key, example) tuples from the dataset
-        task = self.config.name.split('.')[0]
-        lang = self.config.name.split('.')[1]
+        task = self.config.name.split(".")[0]
+        lang = self.config.name.split(".")[1]
         with open(filepath, encoding="utf-8") as f:
             samples = json.load(f)
             feat_dics = _TEXT_FEATURES[task]
@@ -343,4 +363,3 @@ class PolyPrompt(datalabs.GeneratorBasedBuilder):
                 for kfeat, ori_feat in feat_dics.items():
                     data[kfeat] = sample[ori_feat]
                 yield id_, data
-

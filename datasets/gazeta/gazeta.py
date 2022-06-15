@@ -1,6 +1,7 @@
 """Gazeta: Dataset for Automatic Summarization of Russian News."""
-import os
 import json
+import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -46,6 +47,7 @@ class GazetaConfig(datalabs.BuilderConfig):
 
 class GazetaDataset(datalabs.GeneratorBasedBuilder):
     """Gazeta Dataset."""
+
     _FILE_ID = "https://www.dropbox.com/s/lb50mk5jujjjqbi/gazeta_jsonl_v2.tar.gz?dl=1"
 
     BUILDER_CONFIGS = [
@@ -53,8 +55,11 @@ class GazetaDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("2.0.0"),
             description="Dataset for Automatic Summarization of Russian News.",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE, reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -72,9 +77,14 @@ class GazetaDataset(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             citation=_CITATION,
             version=self.VERSION,
-            languages=["ru"],  # https://huggingface.co/languages#:~:text=319-,Russian,-ru
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE, reference_column=_ABSTRACT)],
+            languages=[
+                "ru"
+            ],  # https://huggingface.co/languages#:~:text=319-,Russian,-ru
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -82,18 +92,15 @@ class GazetaDataset(datalabs.GeneratorBasedBuilder):
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
-                gen_kwargs={
-                    "f_path": os.path.join(f_path, "gazeta_train.jsonl")}
+                gen_kwargs={"f_path": os.path.join(f_path, "gazeta_train.jsonl")},
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
-                gen_kwargs={
-                    "f_path": os.path.join(f_path, "gazeta_val.jsonl")}
+                gen_kwargs={"f_path": os.path.join(f_path, "gazeta_val.jsonl")},
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
-                gen_kwargs={
-                    "f_path": os.path.join(f_path, "gazeta_test.jsonl")}
+                gen_kwargs={"f_path": os.path.join(f_path, "gazeta_test.jsonl")},
             ),
         ]
 
@@ -109,8 +116,5 @@ class GazetaDataset(datalabs.GeneratorBasedBuilder):
             datas.append((article, summary))
 
         for id_, (article, summary) in enumerate(datas):
-            raw_feature_info = {
-                _ARTICLE: article,
-                _ABSTRACT: summary
-            }
+            raw_feature_info = {_ARTICLE: article, _ABSTRACT: summary}
             yield id_, raw_feature_info
