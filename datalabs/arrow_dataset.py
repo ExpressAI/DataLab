@@ -972,6 +972,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                     if func._type in ["Editing", "Featurizing", "OperationFunction"]:
                         return func(sample[func.processed_fields[0]])
                     elif func._type == "Preprocessing":
+                        # print(func.processed_fields[0])
                         task = self._info.task_templates[0].task
                         language = self._info.languages[0]
                         func.resources = {"task_type": task, "language": language}
