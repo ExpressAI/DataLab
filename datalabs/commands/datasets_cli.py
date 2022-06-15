@@ -23,9 +23,8 @@ from datalabs.utils.logging import set_verbosity_info
 
 
 def main():
-    parser = ArgumentParser(
-        "HuggingFace Datasets CLI tool", usage="datalab-cli <command> [<args>]"
-    )
+    parser = ArgumentParser("DataLabs CLI tool",
+                            usage="datalab-cli <command> [<args>]")
     commands_parser = parser.add_subparsers(help="datalab-cli command helpers")
     set_verbosity_info()
 
