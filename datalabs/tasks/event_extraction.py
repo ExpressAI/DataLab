@@ -40,14 +40,18 @@ class EventArgumentsExtraction(EventExtraction):
     task: TaskType = TaskType.event_arguments_extraction
 
     input_schema: ClassVar[Features] = Features({"text": Value("string")})
-    label_schema: ClassVar[Features] = Features({"arguments": Sequence(
-        { 
-            "start": Value("int32"), 
-            "end": Value("int32"), 
-            "role": Value("string"),
-            "entity": Value("string"),
+    label_schema: ClassVar[Features] = Features(
+        {
+            "arguments": Sequence(
+                {
+                    "start": Value("int32"),
+                    "end": Value("int32"),
+                    "role": Value("string"),
+                    "entity": Value("string"),
+                }
+            )
         }
-    )})
+    )
 
     text_column: str = "text"
     event_column: str = "arguments"
@@ -59,42 +63,52 @@ class EventRelationExtraction(EventExtraction):
     task: TaskType = TaskType.event_relation_extraction_causality
 
     input_schema: ClassVar[Features] = Features({"text": Value("string")})
-    label_schema: ClassVar[Features] = Features({"relation": {
-        "reason_type": Sequence(Value("string")),
-        "reason_region": Sequence(Value("string")),
-        "reason_industry": Sequence(Value("string")),
-        "reason_product": Sequence(Value("string")),
-        "result_type": Sequence(Value("string")),
-        "result_region": Sequence(Value("string")),
-        "result_industry": Sequence(Value("string")),
-        "result_product": Sequence(Value("string")),
-    }})
+    label_schema: ClassVar[Features] = Features(
+        {
+            "relation": {
+                "reason_type": Sequence(Value("string")),
+                "reason_region": Sequence(Value("string")),
+                "reason_industry": Sequence(Value("string")),
+                "reason_product": Sequence(Value("string")),
+                "result_type": Sequence(Value("string")),
+                "result_region": Sequence(Value("string")),
+                "result_industry": Sequence(Value("string")),
+                "result_product": Sequence(Value("string")),
+            }
+        }
+    )
 
     text_column: str = "text"
     event_column: str = "relation"
+
 
 @register_task(TaskType.entity_relation_extraction)
 @dataclass
-class EventRelationExtraction(EventExtraction):
+class EntityRelationExtraction(EventExtraction):
     task: TaskType = TaskType.entity_relation_extraction
 
     input_schema: ClassVar[Features] = Features({"text": Value("string")})
-    label_schema: ClassVar[Features] = Features({
-        "relation": {
-            "predicate": Sequence(Value("string")),
-            "subject": Sequence(Value("string")),
-            "subject_type": Sequence(Value("string")),
-            "object": Sequence({
-                "@value": Value("string"),
-                "inWork": Value("string"),
-            }),
-            "object_type": Sequence({
-                "@value": Value("string"),
-                "inWork": Value("string"),
-            })
+    label_schema: ClassVar[Features] = Features(
+        {
+            "relation": {
+                "predicate": Sequence(Value("string")),
+                "subject": Sequence(Value("string")),
+                "subject_type": Sequence(Value("string")),
+                "object": Sequence(
+                    {
+                        "@value": Value("string"),
+                        "inWork": Value("string"),
+                    }
+                ),
+                "object_type": Sequence(
+                    {
+                        "@value": Value("string"),
+                        "inWork": Value("string"),
+                    }
+                ),
+            }
         }
-    })
+    )
 
     text_column: str = "text"
     event_column: str = "relation"
-

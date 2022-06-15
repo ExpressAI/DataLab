@@ -329,6 +329,7 @@ class TopicClassification(TextClassification):
     ]
     prompts = {x.id: x for x in prompts_raw}
 
+
 @register_task(TaskType.question_answering_classification)
 @dataclass
 class QuestionAnsweringClassification(TextClassification):

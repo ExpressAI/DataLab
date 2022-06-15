@@ -297,29 +297,35 @@ class QuestionAnsweringOpenDomain(QuestionAnswering):
     question_column: str = "question"
     answers_column: str = "answers"
 
+
 @register_task(TaskType.qa_bool_dureader)
 @dataclass
 class QuestionAnsweringBoolDureader(QuestionAnswering):
     task: TaskType = TaskType.qa_bool_dureader
     input_schema: ClassVar[Features] = Features(
         {
-            "documents": Sequence({
-                "title": Value("string"),
-                "paragraphs": Sequence(Value("string")),
-            }),
+            "documents": Sequence(
+                {
+                    "title": Value("string"),
+                    "paragraphs": Sequence(Value("string")),
+                }
+            ),
             "question": Value("string"),
         }
     )
-    label_schema: ClassVar[Features] = Features({
-        "answers":{
-                    "text": Value("string"),
-                    "yesno_answer": Value("string"),
+    label_schema: ClassVar[Features] = Features(
+        {
+            "answers": {
+                "text": Value("string"),
+                "yesno_answer": Value("string"),
+            }
         }
-    })
+    )
 
     question_column: str = "question"
     answers_column: str = "answers"
     context_column: str = "documents"
+
 
 @register_task(TaskType.qa_extractive_dureader)
 @dataclass
@@ -338,9 +344,7 @@ class QuestionAnsweringExtractiveDureader(QuestionAnsweringExtractive):
                     "title": Value("string"),
                     "segmented_title": Sequence(Value("string")),
                     "paragraphs": Sequence(Value("string")),
-                    "segmented_paragraphs": Sequence(
-                        Sequence(Value("string"))
-                    ),
+                    "segmented_paragraphs": Sequence(Sequence(Value("string"))),
                 }
             ),
             "question": Value("string"),
@@ -349,14 +353,17 @@ class QuestionAnsweringExtractiveDureader(QuestionAnsweringExtractive):
             "fact_or_opinion": Value("string"),
         }
     )
-    label_schema: ClassVar[Features] = Features({
-        "answers": Sequence(Value("string")),
-        "segmented_answers": Sequence(Sequence(Value("string"))),
-        "fake_answers": Sequence(Value("string")),
-        "answer_spans": Sequence(Sequence(Value("int32"))),
-        "match_scores": Sequence(Value("float")),
-        "answer_docs": Sequence(Value("int32")),
-    })
+    label_schema: ClassVar[Features] = Features(
+        {
+            "answers": Sequence(Value("string")),
+            "segmented_answers": Sequence(Sequence(Value("string"))),
+            "fake_answers": Sequence(Value("string")),
+            "answer_spans": Sequence(Sequence(Value("int32"))),
+            "match_scores": Sequence(Value("float")),
+            "answer_docs": Sequence(Value("int32")),
+        }
+    )
+
 
 @register_task(TaskType.qa_multiple_choice_nlpec)
 @dataclass

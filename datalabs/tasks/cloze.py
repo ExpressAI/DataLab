@@ -62,6 +62,7 @@ class ClozeGenerative(QuestionAnsweringAbstractive):
         }
     )
 
+
 @register_task(TaskType.cloze_documents)
 @dataclass
 class ClozeDocuments(QuestionAnsweringAbstractive):
