@@ -93,8 +93,8 @@ class CodeSwitchBangor(datalabs.GeneratorBasedBuilder):
 
         # map the label into textual string
         textualize_label = {
+            "0": "negative",
             "1": "positive",
-            "0": "negative"
         }
 
         with open(filepath, encoding="utf-8") as csv_file:
