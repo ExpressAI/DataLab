@@ -59,11 +59,11 @@ LANG_URLS = {
 
 
 
-ALL_URLS = {
-    "train": "https://drive.google.com/uc?export=download&id=16M6bglY6ttiMcYximOkQ5jKX12KyRYxL",
-    "dev": "https://drive.google.com/uc?export=download&id=18SNCH2uQ7PBKAeOWgyRlWS_QmbJi3oDj",
-    "test": "https://drive.google.com/uc?export=download&id=18iyLut6C6SVu3cZFlocBGtarFgQ03qzn",
-}
+# ALL_URLS = {
+#     "train": "https://drive.google.com/uc?export=download&id=16M6bglY6ttiMcYximOkQ5jKX12KyRYxL",
+#     "dev": "https://drive.google.com/uc?export=download&id=18SNCH2uQ7PBKAeOWgyRlWS_QmbJi3oDj",
+#     "test": "https://drive.google.com/uc?export=download&id=18iyLut6C6SVu3cZFlocBGtarFgQ03qzn",
+# }
 
 
 class SdqaConfig(datalabs.BuilderConfig):
@@ -130,8 +130,6 @@ class Sdqa(datalabs.GeneratorBasedBuilder):
         # TODO(squad_v2): Downloads the data and defines the splits
         # dl_manager is a datalab.download.DownloadManager that can be used to
         # download and extract URLs
-        # urls_to_download = _URLS
-        # downloaded_files = dl_manager.download_and_extract(urls_to_download)
 
         # return [
         #     datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
@@ -141,7 +139,6 @@ class Sdqa(datalabs.GeneratorBasedBuilder):
 
         lang = str(self.config.name)
         url =LANG_URLS[lang]
-        # url = _URL.format(lang, self.VERSION.version_str[:-2])
         data_dir = dl_manager.download_and_extract(url)
         return [
             datalabs.SplitGenerator(
