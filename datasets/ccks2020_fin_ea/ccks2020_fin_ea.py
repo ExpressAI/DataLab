@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ast import arguments
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 from datalabs.features.features import Sequence
@@ -42,10 +42,10 @@ _HOMEPAGE = "https://www.biendata.xyz/competition/ccks_2020_4_2"
 
 
 class CCKS2020FinEAConfig(datalabs.BuilderConfig):
-    
     def __init__(self, **kwargs):
 
         super(CCKS2020FinEAConfig, self).__init__(**kwargs)
+
 
 class CCKS2020FinEA(datalabs.GeneratorBasedBuilder):
 
@@ -69,6 +69,8 @@ class CCKS2020FinEA(datalabs.GeneratorBasedBuilder):
                     "event_type": datalabs.Value("string"),
                     "arguments": datalabs.features.Sequence(
                         { 
+                            "start": datalabs.Value("int32"), 
+                            "end": datalabs.Value("int32"),
                             "role": datalabs.Value("string"),
                             "entity": datalabs.Value("string"),
                         }
@@ -81,8 +83,8 @@ class CCKS2020FinEA(datalabs.GeneratorBasedBuilder):
             languages=["zh"],
             task_templates=[
                 get_task(TaskType.event_arguments_extraction)(
-                    text_column = "text",
-                    event_column = "arguments",
+                    text_column="text",
+                    event_column="arguments",
                 ),
             ],
         )
@@ -91,9 +93,11 @@ class CCKS2020FinEA(datalabs.GeneratorBasedBuilder):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
@@ -106,9 +110,10 @@ class CCKS2020FinEA(datalabs.GeneratorBasedBuilder):
                 event_type = events["event_type"]
                 del events["event_type"]
                 del events["event_id"]
-                role = []
-                entity = []
+                arguments = []
                 for key in events:
-                    role.append(key)
-                    entity.append(events[key])
-                yield id_,{"text": text, "event_type": event_type, "arguments": {"role": role, "entity": entity}}
+                    role = key
+                    entity = events[key]
+                    argument = {"start": -1, "end": -1, "role": role, "entity": entity}
+                    arguments.append(argument)
+                yield id_,{"text": text, "event_type": event_type, "arguments": arguments}

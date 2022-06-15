@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -37,18 +38,22 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CCPM/train.jsonl"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CCPM/valid.jsonl"
+_TRAIN_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CCPM/train.jsonl"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CCPM/valid.jsonl"
+)
 # _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CCPM/test_public.jsonl"
 
 _HOMEPAGE = "https://github.com/THUNLP-AIPoet/CCPM"
 
 
 class CCPMConfig(datalabs.BuilderConfig):
-    
     def __init__(self, **kwargs):
 
         super(CCPMConfig, self).__init__(**kwargs)
+
 
 class CCPM(datalabs.GeneratorBasedBuilder):
 
@@ -68,9 +73,12 @@ class CCPM(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                    "text": datalabs.Value("string"),
+                    "question": datalabs.Value("string"),
                     "options": datalabs.features.Sequence(datalabs.Value("string")),
-                    "label": datalabs.features.ClassLabel(names=['0', '1', '2', '3'])
+                    "answers": {
+                        "text": datalabs.Value("string"),
+                        "option_index": datalabs.Value("int32"),
+                    }
                 }
             ),
             supervised_keys=None,
@@ -78,10 +86,10 @@ class CCPM(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["zh"],
             task_templates=[
-                get_task(TaskType.text_matching_multiple_choice)(
-                    text_column = "text",
+                get_task(TaskType.qa_multiple_choice_without_context)(
+                    question_column = "question",
                     options_column = "options",
-                    label_column = "label",
+                    answers_column = "answers",
                 ),
             ],
         )
@@ -92,8 +100,12 @@ class CCPM(datalabs.GeneratorBasedBuilder):
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 
@@ -101,5 +113,7 @@ class CCPM(datalabs.GeneratorBasedBuilder):
         with open(filepath, encoding="utf-8") as file:
             for id_, line in enumerate(file):
                 line = json.loads(line)
-                text, options, label= line["translation"], line["choices"], line["answer"]
-                yield id_, {"text": text, "options": options, "label": label}
+                question, options, option_index = line["translation"], line["choices"], line["answer"]
+                text = options[option_index]
+                answers = {"text": text, "option_index": option_index}
+                yield id_, {"question": question, "options": options, "answers": answers}

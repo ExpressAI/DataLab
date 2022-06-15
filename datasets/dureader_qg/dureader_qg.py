@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -52,6 +53,7 @@ _VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/questio
 
 _HOMEPAGE = "https://aclanthology.org/2021.acl-short.120"
 
+
 class DuReaderQG(datalabs.GeneratorBasedBuilder):
     """DuReaderQG is a Dataset containing contexts, answers and questions."""
 
@@ -59,20 +61,17 @@ class DuReaderQG(datalabs.GeneratorBasedBuilder):
         datalabs.BuilderConfig(
             name="question_answering",
             version=datalabs.Version("1.0.0"),
-            description=
-                """
+            description="""
                 An answer should be generated according to the given context and question.
-                """
+                """,
         ),
         datalabs.BuilderConfig(
             name="question_generation",
             version=datalabs.Version("1.0.0"),
-            description=
-                """
+            description="""
                     An question should be generated according to the given context and answer.
-                """
+                """,
         ),
-
     ]
     DEFAULT_CONFIG_NAME = "question_generation"
 
@@ -91,10 +90,12 @@ class DuReaderQG(datalabs.GeneratorBasedBuilder):
                 supervised_keys=None,
                 homepage=_HOMEPAGE,
                 citation=_CITATION,
-                languages = ["zh"],
+                languages=["zh"],
                 task_templates=[
                     get_task(TaskType.qa_extractive)(
-                        question_column="question", context_column="context", answers_column="answer"
+                        question_column="question",
+                        context_column="context",
+                        answers_column="answer",
                     )
                 ],
             )
@@ -112,10 +113,12 @@ class DuReaderQG(datalabs.GeneratorBasedBuilder):
                 supervised_keys=None,
                 homepage=_HOMEPAGE,
                 citation=_CITATION,
-                languages = ["zh"],
+                languages=["zh"],
                 task_templates=[
                     get_task(TaskType.guided_conditional_generation)(
-                        source_column="context", guidance_column="answer", reference_column="question", 
+                        source_column="context",
+                        guidance_column="answer",
+                        reference_column="question",
                     )
                 ],
             )
@@ -124,10 +127,14 @@ class DuReaderQG(datalabs.GeneratorBasedBuilder):
         """Returns SplitGenerators."""
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
@@ -140,12 +147,17 @@ class DuReaderQG(datalabs.GeneratorBasedBuilder):
                     context = line["context"]
                     question = line["question"]
                     answer = line["answer"]
-                    yield id_, {"context": context, "question": question, "answer": answer}
+                    yield id_, {
+                        "context": context,
+                        "question": question,
+                        "answer": answer,
+                    }
                 else:
                     source = line["context"]
                     guidance = line["answer"]
                     reference = line["question"]
-                    yield id_, {"source": source, "guidance": guidance, "reference": reference}
-
-
-            
+                    yield id_, {
+                        "source": source,
+                        "guidance": guidance,
+                        "reference": reference,
+                    }

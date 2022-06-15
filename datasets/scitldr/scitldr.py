@@ -1,5 +1,6 @@
 """SciTldr: Extreme Summarization of Scientific Documents."""
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -52,28 +53,34 @@ class SciTldrConfig(datalabs.BuilderConfig):
 
 class SciTldrDataset(datalabs.GeneratorBasedBuilder):
     """SciTldr Dataset."""
+
     _FILE_ID = {
         "train": "https://raw.githubusercontent.com/allenai/scitldr/master/SciTLDR-Data/SciTLDR-FullText/train.jsonl",
         "dev": "https://raw.githubusercontent.com/allenai/scitldr/master/SciTLDR-Data/SciTLDR-FullText/dev.jsonl",
-        "test": "https://raw.githubusercontent.com/allenai/scitldr/master/SciTLDR-Data/SciTLDR-FullText/test.jsonl"}
+        "test": "https://raw.githubusercontent.com/allenai/scitldr/master/SciTLDR-Data/SciTLDR-FullText/test.jsonl",
+    }
 
     BUILDER_CONFIGS = [
         SciTldrConfig(
             name="tldr-auth",
             version=datalabs.Version("1.0.0"),
             description="Scientific document summarization dataset. TLDR-auth: TLDRs written from the perspective of the authors.",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         ),
         SciTldrConfig(
             name="tldr-pr",
             version=datalabs.Version("1.0.0"),
             description="Scientific document summarization dataset. TLDR-pr: TLDRs written from the perspective of the peer reviewers.",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
-        )
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
+        ),
     ]
     DEFAULT_CONFIG_NAME = "tldr-auth"
 
@@ -102,9 +109,10 @@ class SciTldrDataset(datalabs.GeneratorBasedBuilder):
             license=_LICENSE,
             version=self.VERSION,
             languages=["en"],
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT),
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                ),
             ],
         )
 
@@ -115,16 +123,13 @@ class SciTldrDataset(datalabs.GeneratorBasedBuilder):
 
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN,
-                gen_kwargs={"f_path": train_f_path}
+                name=datalabs.Split.TRAIN, gen_kwargs={"f_path": train_f_path}
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION,
-                gen_kwargs={"f_path": dev_f_path}
+                name=datalabs.Split.VALIDATION, gen_kwargs={"f_path": dev_f_path}
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST,
-                gen_kwargs={"f_path": test_f_path}
+                name=datalabs.Split.TEST, gen_kwargs={"f_path": test_f_path}
             ),
         ]
 
@@ -139,13 +144,12 @@ class SciTldrDataset(datalabs.GeneratorBasedBuilder):
             if self.config.name == "tldr-auth":
                 summary = data["target"][0].strip()  # datalabs.Value("string")
             elif self.config.name == "tldr-pr":
-                summary = data["target"][1:]  # datalabs.Sequence(datalabs.Value("string"))
+                summary = data["target"][
+                    1:
+                ]  # datalabs.Sequence(datalabs.Value("string"))
 
             datas.append((article, summary))
 
         for id_, (article, summary) in enumerate(datas):
-            raw_feature_info = {
-                _ARTICLE: article,
-                _ABSTRACT: summary
-            }
+            raw_feature_info = {_ARTICLE: article, _ABSTRACT: summary}
             yield id_, raw_feature_info

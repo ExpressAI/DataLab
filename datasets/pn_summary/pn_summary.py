@@ -1,5 +1,6 @@
 """pn_summary: Persian Abstractive Text Summarization Dataset."""
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -46,6 +47,7 @@ class PnSummaryConfig(datalabs.BuilderConfig):
 
 class PnSummaryDataset(datalabs.GeneratorBasedBuilder):
     """PnSummary Dataset."""
+
     _FILE_ID = "16OgJ_OrfzUF_i3ftLjFn9kpcyoi7UJeO"
 
     BUILDER_CONFIGS = [
@@ -53,10 +55,13 @@ class PnSummaryDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="Persian Abstractive Text Summarization Dataset.",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
-        )]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
+        )
+    ]
     DEFAULT_CONFIG_NAME = "document"
 
     def _info(self):
@@ -73,10 +78,14 @@ class PnSummaryDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             license=_LICENSE,
             version=self.VERSION,
-            languages=["fa"],  # https://huggingface.co/languages#:~:text=57-,Persian,-fa
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            languages=[
+                "fa"
+            ],  # https://huggingface.co/languages#:~:text=57-,Persian,-fa
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -85,18 +94,15 @@ class PnSummaryDataset(datalabs.GeneratorBasedBuilder):
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
-                gen_kwargs={
-                    "f_path": os.path.join(f_path, "pn_summary/train.csv")}
+                gen_kwargs={"f_path": os.path.join(f_path, "pn_summary/train.csv")},
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
-                gen_kwargs={
-                    "f_path": os.path.join(f_path, "pn_summary/dev.csv")}
+                gen_kwargs={"f_path": os.path.join(f_path, "pn_summary/dev.csv")},
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
-                gen_kwargs={
-                    "f_path": os.path.join(f_path, "pn_summary/test.csv")}
+                gen_kwargs={"f_path": os.path.join(f_path, "pn_summary/test.csv")},
             ),
         ]
 
@@ -112,8 +118,5 @@ class PnSummaryDataset(datalabs.GeneratorBasedBuilder):
             datas.append((article, summary))
 
         for id_, (article, summary) in enumerate(datas):
-            raw_feature_info = {
-                _ARTICLE: article,
-                _ABSTRACT: summary
-            }
+            raw_feature_info = {_ARTICLE: article, _ABSTRACT: summary}
             yield id_, raw_feature_info

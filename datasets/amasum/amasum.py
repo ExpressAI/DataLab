@@ -1,7 +1,8 @@
 """AmaSum: abstractive opinion summarization dataset."""
-import os
-import datalabs
 import json
+import os
+
+import datalabs
 from datalabs import get_task, TaskType
 from datalabs.tasks.summarization import _MDS_TEXT_COLUMN
 
@@ -48,6 +49,7 @@ class AmaSumConfig(datalabs.BuilderConfig):
 
 class AmaSumDataset(datalabs.GeneratorBasedBuilder):
     """AmaSum Dataset."""
+
     _FILE_URL = "https://abrazinskas.s3.eu-west-1.amazonaws.com/downloads/projects/selsum/data/raw_min_10_max_100_revs.zip"
 
     BUILDER_CONFIGS = [
@@ -57,8 +59,9 @@ class AmaSumDataset(datalabs.GeneratorBasedBuilder):
             description="Abstractive opinion summarization dataset, verdict reference version.",
             task_templates=[
                 get_task(TaskType.multi_doc_summarization)(
-                    source_column=_MDS_TEXT_COLUMN,
-                    reference_column=_ABSTRACT)]
+                    source_column=_MDS_TEXT_COLUMN, reference_column=_ABSTRACT
+                )
+            ],
         ),
         AmaSumConfig(
             name="pros-ref",
@@ -66,8 +69,9 @@ class AmaSumDataset(datalabs.GeneratorBasedBuilder):
             description="Abstractive opinion summarization dataset, pros reference version.",
             task_templates=[
                 get_task(TaskType.multi_doc_summarization)(
-                    source_column=_MDS_TEXT_COLUMN,
-                    reference_column=_ABSTRACT)]
+                    source_column=_MDS_TEXT_COLUMN, reference_column=_ABSTRACT
+                )
+            ],
         ),
         AmaSumConfig(
             name="cons-ref",
@@ -75,9 +79,10 @@ class AmaSumDataset(datalabs.GeneratorBasedBuilder):
             description="Abstractive opinion summarization dataset, cons reference version.",
             task_templates=[
                 get_task(TaskType.multi_doc_summarization)(
-                    source_column=_MDS_TEXT_COLUMN,
-                    reference_column=_ABSTRACT)]
-        )
+                    source_column=_MDS_TEXT_COLUMN, reference_column=_ABSTRACT
+                )
+            ],
+        ),
     ]
     DEFAULT_CONFIG_NAME = "verdict-ref"
 
@@ -108,17 +113,26 @@ class AmaSumDataset(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={
-                    "f_path": os.path.join(f_path, "min_10_max_100_revs_filt_complete/train")}
+                    "f_path": os.path.join(
+                        f_path, "min_10_max_100_revs_filt_complete/train"
+                    )
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 gen_kwargs={
-                    "f_path": os.path.join(f_path, "min_10_max_100_revs_filt_complete/valid")}
+                    "f_path": os.path.join(
+                        f_path, "min_10_max_100_revs_filt_complete/valid"
+                    )
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 gen_kwargs={
-                    "f_path": os.path.join(f_path, "min_10_max_100_revs_filt_complete/test")}
+                    "f_path": os.path.join(
+                        f_path, "min_10_max_100_revs_filt_complete/test"
+                    )
+                },
             ),
         ]
 
@@ -137,7 +151,13 @@ class AmaSumDataset(datalabs.GeneratorBasedBuilder):
             cons_summaries = " ".join(data["website_summaries"][0]["cons"])  # str
 
             datas.append(
-                {"texts": texts, "verdict": verdict_summaries, "cons": cons_summaries, "pros": pros_summaries})
+                {
+                    "texts": texts,
+                    "verdict": verdict_summaries,
+                    "cons": cons_summaries,
+                    "pros": pros_summaries,
+                }
+            )
 
         for id_, data in enumerate(datas):
 
@@ -148,8 +168,5 @@ class AmaSumDataset(datalabs.GeneratorBasedBuilder):
             elif self.config.name == "cons-ref":
                 summary = data["cons"]
 
-            raw_feature_info = {
-                _MDS_TEXT_COLUMN: data["texts"],
-                _ABSTRACT: summary
-            }
+            raw_feature_info = {_MDS_TEXT_COLUMN: data["texts"], _ABSTRACT: summary}
             yield id_, raw_feature_info

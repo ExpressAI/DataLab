@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import csv
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -71,10 +72,10 @@ _HOMEPAGE = "https://www.biendata.xyz/competition/ccks_2019_4"
 
 
 class CCKS2019FinConfig(datalabs.BuilderConfig):
-    
     def __init__(self, **kwargs):
 
         super(CCKS2019FinConfig, self).__init__(**kwargs)
+
 
 class CCKS2019Fin(datalabs.GeneratorBasedBuilder):
 
@@ -106,7 +107,7 @@ class CCKS2019Fin(datalabs.GeneratorBasedBuilder):
             task_templates=[
                 get_task(TaskType.event_entity_extraction)(
                     text_column = "text",
-                    event_column = "event_entity",
+                    entity_column = "event_entity",
                 ),
             ],
         )
@@ -115,16 +116,22 @@ class CCKS2019Fin(datalabs.GeneratorBasedBuilder):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
     def _generate_examples(self, filepath):
 
         with open(filepath, encoding="utf-8") as f:
-            csv_file = csv.reader(f, delimiter=',')
+            csv_file = csv.reader(f, delimiter=",")
             for id_, line in enumerate(csv_file):
                 text, event_type, event_entity = line[1], line[2], line[3]
-                yield id_, {'text': text, 'event_type': event_type, 'event_entity': event_entity}
+                yield id_, {
+                    "text": text,
+                    "event_type": event_type,
+                    "event_entity": event_entity,
+                }

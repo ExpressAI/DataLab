@@ -14,11 +14,12 @@
 # limitations under the License.
 
 
-
 import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
+
 logger = datalabs.logging.get_logger(__name__)
 
 _CITATION = """\
@@ -30,17 +31,20 @@ Weibo_Named Entity Recognition
 _HOMEPAGE = "https://github.com/OYE93/Chinese-NLP-Corpus/"
 _LICENSE = "Available for research use"
 
-_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/ner/Weibo/weiboNER_2nd_conll.train"
-_VALIDATION_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/ner/Weibo/weiboNER_2nd_conll.dev"
-_TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/ner/Weibo/weiboNER_2nd_conll.test"
+_TRAIN_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/ner/Weibo/weiboNER_2nd_conll.train"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/ner/Weibo/weiboNER_2nd_conll.dev"
+)
+_TEST_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/ner/Weibo/weiboNER_2nd_conll.test"
+)
 
 
 class WeiboNER(datalabs.GeneratorBasedBuilder):
 
-
     VERSION = datalabs.Version("1.0.0")
-
-
 
     def _info(self):
         return datalabs.DatasetInfo(
@@ -51,21 +55,24 @@ class WeiboNER(datalabs.GeneratorBasedBuilder):
                     "tokens": datalabs.Sequence(datalabs.Value("string")),
                     "tags": datalabs.Sequence(
                         datalabs.features.ClassLabel(
-                            names=['O','B-PER.NAM','I-PER.NAM',
-                            'B-PER.NOM',
-                            'I-PER.NOM',
-                            'B-LOC.NAM',
-                            'I-LOC.NAM',
-                            'B-LOC.NOM',
-                            'I-LOC.NOM',
-                            'B-GPE.NAM',
-                            'I-GPE.NAM',
-                            'B-GPE.NOM',
-                            'I-GPE.NOM',
-                            'B-ORG.NOM',
-                            'I-ORG.NOM',
-                            'B-ORG.NAM',
-                            'I-ORG.NAM'
+                            names=[
+                                "O",
+                                "B-PER.NAM",
+                                "I-PER.NAM",
+                                "B-PER.NOM",
+                                "I-PER.NOM",
+                                "B-LOC.NAM",
+                                "I-LOC.NAM",
+                                "B-LOC.NOM",
+                                "I-LOC.NOM",
+                                "B-GPE.NAM",
+                                "I-GPE.NAM",
+                                "B-GPE.NOM",
+                                "I-GPE.NOM",
+                                "B-ORG.NOM",
+                                "I-ORG.NOM",
+                                "B-ORG.NAM",
+                                "I-ORG.NAM",
                             ]
                         )
                     ),
@@ -75,24 +82,32 @@ class WeiboNER(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             citation=_CITATION,
             license=_LICENSE,
-            languages=['zh'],
+            languages=["zh"],
             version=self.VERSION,
-            task_templates=[get_task(TaskType.named_entity_recognition)
-                                        (tokens_column="tokens", tags_column="tags")],
+            task_templates=[
+                get_task(TaskType.named_entity_recognition)(
+                    tokens_column="tokens", tags_column="tags"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
-        
+
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
-        
 
     def _generate_examples(self, filepath):
         logger.info("⏳ Generating examples from = %s", filepath)
@@ -103,19 +118,21 @@ class WeiboNER(datalabs.GeneratorBasedBuilder):
 
             for row in f:
                 row = row.strip()
-                if row!="":
-                    
-                    span_list = row.split('\t')
-                    token = ''.join(list(span_list[0])[:-1])
-                    label= span_list[-1]
+                if row != "":
+
+                    span_list = row.split("\t")
+                    token = "".join(list(span_list[0])[:-1])
+                    label = span_list[-1]
                     current_tokens.append(token)
                     current_labels.append(label)
-                else:  
+                else:
                     # New sentence
                     if not current_tokens:
-                   
+
                         continue
-                    assert len(current_tokens) == len(current_labels), "mismatch between len of tokens & labels"
+                    assert len(current_tokens) == len(
+                        current_labels
+                    ), "mismatch between len of tokens & labels"
                     sentence = (
                         sentence_counter,
                         {
@@ -128,7 +145,7 @@ class WeiboNER(datalabs.GeneratorBasedBuilder):
                     current_tokens = []
                     current_labels = []
                     yield sentence
-   
+
             if current_tokens:
                 yield sentence_counter, {
                     "id": str(sentence_counter),

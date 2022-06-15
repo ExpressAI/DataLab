@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -36,11 +37,17 @@ _CITATION = """\
 }
 """
 
-_LICENSE = "NA" 
+_LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/bustm/train.json"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/bustm/dev.json"
-_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/bustm/test.json"
+_TRAIN_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/bustm/train.json"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/bustm/dev.json"
+)
+_TEST_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/bustm/test.json"
+)
 # _TEST_UNLABELED_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/bustm/test_unlabeled.json"
 # _UNLABELED_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/bustm/unlabeled.json"
 
@@ -49,39 +56,50 @@ class BUSTM(datalabs.GeneratorBasedBuilder):
     def _info(self):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalabs.Features({
-                'text1': datalabs.Value('string'),
-                'text2': datalabs.Value('string'),
-                'label': datalabs.features.ClassLabel(names=['0', '1']),
-            }),
+            features=datalabs.Features(
+                {
+                    "text1": datalabs.Value("string"),
+                    "text2": datalabs.Value("string"),
+                    "label": datalabs.features.ClassLabel(names=["0", "1"]),
+                }
+            ),
             supervised_keys=None,
-            homepage='https://github.com/CLUEbenchmark/FewCLUE',
+            homepage="https://github.com/CLUEbenchmark/FewCLUE",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.paraphrase_identification)(
-                text1_column="text1",
-                text2_column="text2",
-                label_column="label"),
+            task_templates=[
+                get_task(TaskType.paraphrase_identification)(
+                    text1_column="text1", text2_column="text2", label_column="label"
+                ),
             ],
         )
 
     def _split_generators(self, dl_manager):
-        
+
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
-
     def _generate_examples(self, filepath):
-        
+
         with open(filepath, encoding="utf-8") as f:
             for id_, line in enumerate(f.readlines()):
                 line = json.loads(line.strip())
-                text1, text2, label = line['sentence1'], line['sentence2'], line['label']
+                text1, text2, label = (
+                    line["sentence1"],
+                    line["sentence2"],
+                    line["label"],
+                )
                 if label == ("0" or "1"):
-                    yield id_, {'text1': text1, 'text2': text2, 'label': label}
+                    yield id_, {"text1": text1, "text2": text2, "label": label}

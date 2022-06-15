@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -40,10 +41,10 @@ _HOMEPAGE = "https://www.biendata.xyz/competition/ccks_2021_task6_2"
 
 
 class CCKS2021FinREConfig(datalabs.BuilderConfig):
-    
     def __init__(self, **kwargs):
 
         super(CCKS2021FinREConfig, self).__init__(**kwargs)
+
 
 class CCKS2021FinRE(datalabs.GeneratorBasedBuilder):
 
@@ -65,15 +66,31 @@ class CCKS2021FinRE(datalabs.GeneratorBasedBuilder):
                 {
                     "text": datalabs.Value("string"),
                     "relation": {
-                        "reason_type": datalabs.features.Sequence(datalabs.Value("string")),
-                        "reason_region": datalabs.features.Sequence(datalabs.Value("string")),
-                        "reason_industry": datalabs.features.Sequence(datalabs.Value("string")),
-                        "reason_product": datalabs.features.Sequence(datalabs.Value("string")),
-                        "result_type": datalabs.features.Sequence(datalabs.Value("string")),
-                        "result_region": datalabs.features.Sequence(datalabs.Value("string")),
-                        "result_industry": datalabs.features.Sequence(datalabs.Value("string")),
-                        "result_product": datalabs.features.Sequence(datalabs.Value("string")),
-                    }
+                        "reason_type": datalabs.features.Sequence(
+                            datalabs.Value("string")
+                        ),
+                        "reason_region": datalabs.features.Sequence(
+                            datalabs.Value("string")
+                        ),
+                        "reason_industry": datalabs.features.Sequence(
+                            datalabs.Value("string")
+                        ),
+                        "reason_product": datalabs.features.Sequence(
+                            datalabs.Value("string")
+                        ),
+                        "result_type": datalabs.features.Sequence(
+                            datalabs.Value("string")
+                        ),
+                        "result_region": datalabs.features.Sequence(
+                            datalabs.Value("string")
+                        ),
+                        "result_industry": datalabs.features.Sequence(
+                            datalabs.Value("string")
+                        ),
+                        "result_product": datalabs.features.Sequence(
+                            datalabs.Value("string")
+                        ),
+                    },
                 }
             ),
             supervised_keys=None,
@@ -81,7 +98,7 @@ class CCKS2021FinRE(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["zh"],
             task_templates=[
-                get_task(TaskType.event_relation_extraction)(
+                get_task(TaskType.event_relation_extraction_causality)(
                     text_column = "text",
                     event_column = "relation",
                 ),
@@ -92,9 +109,11 @@ class CCKS2021FinRE(datalabs.GeneratorBasedBuilder):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
@@ -104,8 +123,16 @@ class CCKS2021FinRE(datalabs.GeneratorBasedBuilder):
             for id_, line in enumerate(txt_file):
                 line = json.loads(line)
                 text, result = line["text"], line["result"][0]
-                relation = {"reason_type":[], "reason_region":[], "reason_industry":[], "reason_product":[], 
-                            "result_type":[], "result_region":[], "result_industry":[], "result_product":[]}
+                relation = {
+                    "reason_type": [],
+                    "reason_region": [],
+                    "reason_industry": [],
+                    "reason_product": [],
+                    "result_type": [],
+                    "result_region": [],
+                    "result_industry": [],
+                    "result_product": [],
+                }
                 for key in result:
                     relation[key].extend(result[key].split(","))
-                yield id_, {'text': text, 'relation': relation}
+                yield id_, {"text": text, "relation": relation}

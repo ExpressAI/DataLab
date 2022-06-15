@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -44,19 +45,26 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/chid/train.json"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/chid/dev.json"
-_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/chid/test.json"
+_TRAIN_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/chid/train.json"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/chid/dev.json"
+)
+_TEST_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/chid/test.json"
+)
 # _TEST_UNLABELED_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/chid/test_unlabeled.json"
 # _UNLABELED_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/chid/unlabeled.json"
 
 _HOMEPAGE = "https://github.com/CLUEbenchmark/CLUE"
 
-class ChIdConfig(datalabs.BuilderConfig):
 
+class ChIdConfig(datalabs.BuilderConfig):
     def __init__(self, **kwargs):
 
         super(ChIdConfig, self).__init__(**kwargs)
+
 
 class ChId(datalabs.GeneratorBasedBuilder):
 
@@ -76,37 +84,41 @@ class ChId(datalabs.GeneratorBasedBuilder):
                 {
                     "content": datalabs.Value("string"),
                     "options": datalabs.features.Sequence(datalabs.Value("string")),
-                    "answers":
-                        {
-                            "text": datalabs.Value("string"),
-                            "option_index": datalabs.Value("int32"),
-                        },
+                    "answers": {
+                        "text": datalabs.Value("string"),
+                        "option_index": datalabs.Value("int32"),
+                    },
                 }
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            languages = ["zh"],
+            languages=["zh"],
             task_templates=[
                 get_task(TaskType.qa_multiple_choice_without_context)(
-                    question_column = "content",
-                    answers_column = "answers",
-                    options_column = "options",
+                    question_column="content",
+                    answers_column="answers",
+                    options_column="options",
                 )
             ],
         )
-
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
@@ -119,11 +131,17 @@ class ChId(datalabs.GeneratorBasedBuilder):
             for line in f.readlines():
                 line = json.loads(line)
                 if len(line) == 4:
-                    id, options, content, option_index = line['id'], line['candidates'], line['content'], line['answer']
+                    id, options, content, option_index = (
+                        line["id"],
+                        line["candidates"],
+                        line["content"],
+                        line["answer"],
+                    )
                     option_index = int(option_index)
                     text = options[option_index]
                     yield key, {
-                        'content': content, 'options': options, 
+                        "content": content,
+                        "options": options,
                         "answers": {
                             "text": text,
                             "option_index": option_index,

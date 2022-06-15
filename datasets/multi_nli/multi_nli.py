@@ -19,6 +19,7 @@
 
 import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -63,15 +64,23 @@ class MultiNli(datalabs.GeneratorBasedBuilder):
                     "promptID": datalabs.Value("int32"),
                     "pairID": datalabs.Value("string"),
                     "text1": datalabs.Value("string"),
-                    "premise_binary_parse": datalabs.Value("string"),  # parses in unlabeled binary-branching format
-                    "premise_parse": datalabs.Value("string"),  # sentence as parsed by the Stanford PCFG Parser 3.5.2
+                    "premise_binary_parse": datalabs.Value(
+                        "string"
+                    ),  # parses in unlabeled binary-branching format
+                    "premise_parse": datalabs.Value(
+                        "string"
+                    ),  # sentence as parsed by the Stanford PCFG Parser 3.5.2
                     "text2": datalabs.Value("string"),
-                    "hypothesis_binary_parse": datalabs.Value("string"),  # parses in unlabeled binary-branching format
+                    "hypothesis_binary_parse": datalabs.Value(
+                        "string"
+                    ),  # parses in unlabeled binary-branching format
                     "hypothesis_parse": datalabs.Value(
                         "string"
                     ),  # sentence as parsed by the Stanford PCFG Parser 3.5.2
                     "genre": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["entailment", "neutral", "contradiction"]),
+                    "label": datalabs.features.ClassLabel(
+                        names=["entailment", "neutral", "contradiction"]
+                    ),
                 }
             ),
             # No default supervised_keys (as we have to pass both premise
@@ -79,25 +88,39 @@ class MultiNli(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://www.nyu.edu/projects/bowman/multinli/",
             citation=_CITATION,
-            task_templates=[get_task(TaskType.natural_language_inference)(
-                text1_column="text1",
-                text2_column="text2",
-                label_column="label"),
+            task_templates=[
+                get_task(TaskType.natural_language_inference)(
+                    text1_column="text1", text2_column="text2", label_column="label"
+                ),
             ],
         )
 
     def _split_generators(self, dl_manager):
 
-        downloaded_dir = dl_manager.download_and_extract("https://cims.nyu.edu/~sbowman/multinli/multinli_1.0.zip")
+        downloaded_dir = dl_manager.download_and_extract(
+            "https://cims.nyu.edu/~sbowman/multinli/multinli_1.0.zip"
+        )
         mnli_path = os.path.join(downloaded_dir, "multinli_1.0")
         train_path = os.path.join(mnli_path, "multinli_1.0_train.jsonl")
-        matched_validation_path = os.path.join(mnli_path, "multinli_1.0_dev_matched.jsonl")
-        mismatched_validation_path = os.path.join(mnli_path, "multinli_1.0_dev_mismatched.jsonl")
+        matched_validation_path = os.path.join(
+            mnli_path, "multinli_1.0_dev_matched.jsonl"
+        )
+        mismatched_validation_path = os.path.join(
+            mnli_path, "multinli_1.0_dev_mismatched.jsonl"
+        )
 
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name="validation_matched", gen_kwargs={"filepath": matched_validation_path}),
-            datalabs.SplitGenerator(name="validation_mismatched", gen_kwargs={"filepath": mismatched_validation_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name="validation_matched",
+                gen_kwargs={"filepath": matched_validation_path},
+            ),
+            datalabs.SplitGenerator(
+                name="validation_mismatched",
+                gen_kwargs={"filepath": mismatched_validation_path},
+            ),
         ]
 
     def _generate_examples(self, filepath):

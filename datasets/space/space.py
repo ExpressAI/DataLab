@@ -1,10 +1,10 @@
 """SPACE, a large-scale opinion summarization benchmark"""
+import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
-import json
-from datalabs.features.features import Sequence
-from datalabs.features.features import Value
+from datalabs.features.features import Sequence, Value
 
 _CITATION = """\
 @article{angelidis-etal-2021-extractive,
@@ -38,8 +38,10 @@ _ABSTRACT = "summaries"
 _ARTICLE = "texts"
 _KEY = "aspect"
 
+
 def _gdrive_url(id):
     return f"https://drive.google.com/uc?id={id}&export=download&confirm=t"
+
 
 class SpaceConfig(datalabs.BuilderConfig):
     """BuilderConfig for Space."""
@@ -55,12 +57,21 @@ class SpaceConfig(datalabs.BuilderConfig):
 
 class SpaceDataset(datalabs.GeneratorBasedBuilder):
     """Space Dataset."""
-    BUILDER_CONFIGS = [SpaceConfig(
+
+    BUILDER_CONFIGS = [
+        SpaceConfig(
             name="opinion",
             version=datalabs.Version("1.0.0"),
             description=f"Space Dataset for unsuprvised opinion summarization",
-            task_templates=[get_task(TaskType.opinion_summarization)(
-                source_column=_ARTICLE, reference_column=_ABSTRACT, aspect_column=_KEY)])]
+            task_templates=[
+                get_task(TaskType.opinion_summarization)(
+                    source_column=_ARTICLE,
+                    reference_column=_ABSTRACT,
+                    aspect_column=_KEY,
+                )
+            ],
+        )
+    ]
     DEFAULT_CONFIG_NAME = "opinion"
 
     def _info(self):
@@ -78,24 +89,43 @@ class SpaceDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=[self.config.name],
-            task_templates=[get_task(TaskType.opinion_summarization)(
-                source_column=_ARTICLE, reference_column=_ABSTRACT, aspect_column=_KEY),
+            task_templates=[
+                get_task(TaskType.opinion_summarization)(
+                    source_column=_ARTICLE,
+                    reference_column=_ABSTRACT,
+                    aspect_column=_KEY,
+                ),
             ],
         )
 
     def _split_generators(self, dl_manager):
-        path = dl_manager.download_and_extract(_gdrive_url("1C6SaRQkas2B-9MolbwZbl0fuLgqdSKDT"))
+        path = dl_manager.download_and_extract(
+            _gdrive_url("1C6SaRQkas2B-9MolbwZbl0fuLgqdSKDT")
+        )
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"f_path": os.path.join(path, "space_train.json"), "f_id": None, "split": "train"},
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={
+                    "f_path": os.path.join(path, "space_train.json"),
+                    "f_id": None,
+                    "split": "train",
+                },
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION, gen_kwargs={"f_path": os.path.join(path, "space_summ.json"),
-                 "f_id": os.path.join(path, "space_summ_splits.txt"), "split": "val"},
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={
+                    "f_path": os.path.join(path, "space_summ.json"),
+                    "f_id": os.path.join(path, "space_summ_splits.txt"),
+                    "split": "val",
+                },
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST, gen_kwargs={"f_path": os.path.join(path, "space_summ.json"),
-                 "f_id": os.path.join(path, "space_summ_splits.txt"), "split": "test"},
+                name=datalabs.Split.TEST,
+                gen_kwargs={
+                    "f_path": os.path.join(path, "space_summ.json"),
+                    "f_id": os.path.join(path, "space_summ_splits.txt"),
+                    "split": "test",
+                },
             ),
         ]
 
@@ -126,5 +156,3 @@ class SpaceDataset(datalabs.GeneratorBasedBuilder):
                     for (k, v) in d["summaries"].items():
                         yield cnt, {_ARTICLE: reviews, _ABSTRACT: v, _KEY: k}
                         cnt += 1
-
-                

@@ -1,5 +1,6 @@
 """NCTB Bengali abstractive summarization dataset."""
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -65,14 +66,17 @@ class NCTBConfig(datalabs.BuilderConfig):
 
 class NCTBDataset(datalabs.GeneratorBasedBuilder):
     """NCTB Dataset."""
+
     BUILDER_CONFIGS = [
         NCTBConfig(
             name="document",
             version=datalabs.Version("1.0.0"),
             description="NCTB, An Abstractive Bengali Summarization Dataset.",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -90,10 +94,14 @@ class NCTBDataset(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             citation=_CITATION,
             version=self.VERSION,
-            languages=["bn"],  # Bengali: https://huggingface.co/languages#:~:text=51-,Bengali,-bn
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            languages=[
+                "bn"
+            ],  # Bengali: https://huggingface.co/languages#:~:text=51-,Bengali,-bn
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -104,7 +112,10 @@ class NCTBDataset(datalabs.GeneratorBasedBuilder):
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
-                gen_kwargs={"f_article_paths": f_article_paths, "f_summary_paths": f_summary_paths}
+                gen_kwargs={
+                    "f_article_paths": f_article_paths,
+                    "f_summary_paths": f_summary_paths,
+                },
             ),
         ]
 
@@ -119,8 +130,5 @@ class NCTBDataset(datalabs.GeneratorBasedBuilder):
             datas.append((article, summary))
 
         for id_, (article, summary) in enumerate(datas):
-            raw_feature_info = {
-                _ARTICLE: article,
-                _ABSTRACT: summary
-            }
+            raw_feature_info = {_ARTICLE: article, _ABSTRACT: summary}
             yield id_, raw_feature_info

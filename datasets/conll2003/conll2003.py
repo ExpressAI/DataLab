@@ -16,8 +16,9 @@
 # Lint as: python3
 """Introduction to the CoNLL-2003 Shared Task: Language-Independent Named Entity Recognition"""
 
-import datalabs
 import os
+
+import datalabs
 from datalabs import get_task, TaskType
 
 logger = datalabs.logging.get_logger(__name__)
@@ -60,12 +61,14 @@ _TEST_FILE = "test.txt"
 class Conll2003Config(datalabs.BuilderConfig):
     """BuilderConfig for Conll2003"""
 
-    def __init__(self,
-                 tokens_column=None,
-                 tags_column=None,
-                 label_classes = None,
-                 task_templates = None,
-                 **kwargs):
+    def __init__(
+        self,
+        tokens_column=None,
+        tags_column=None,
+        label_classes=None,
+        task_templates=None,
+        **kwargs
+    ):
         """BuilderConfig forConll2003.
 
         Args:
@@ -81,117 +84,126 @@ class Conll2003Config(datalabs.BuilderConfig):
 class Conll2003(datalabs.GeneratorBasedBuilder):
     """Conll2003 dataset."""
 
-
     BUILDER_CONFIGS = [
-        Conll2003Config(name="pos",
-                        version=datalabs.Version("1.0.0"),
-                        description="Part-of-Speech",
-                        tokens_column="tokens",
-                        tags_column="tags",
-                        label_classes=[
-                                '"',
-                                "''",
-                                "#",
-                                "$",
-                                "(",
-                                ")",
-                                ",",
-                                ".",
-                                ":",
-                                "``",
-                                "CC",
-                                "CD",
-                                "DT",
-                                "EX",
-                                "FW",
-                                "IN",
-                                "JJ",
-                                "JJR",
-                                "JJS",
-                                "LS",
-                                "MD",
-                                "NN",
-                                "NNP",
-                                "NNPS",
-                                "NNS",
-                                "NN|SYM",
-                                "PDT",
-                                "POS",
-                                "PRP",
-                                "PRP$",
-                                "RB",
-                                "RBR",
-                                "RBS",
-                                "RP",
-                                "SYM",
-                                "TO",
-                                "UH",
-                                "VB",
-                                "VBD",
-                                "VBG",
-                                "VBN",
-                                "VBP",
-                                "VBZ",
-                                "WDT",
-                                "WP",
-                                "WP$",
-                                "WRB",
-                            ],
-                        task_templates=[get_task(TaskType.part_of_speech)(
-                            tokens_column="tokens", tags_column="tags")]
-                        ),
-        Conll2003Config(name="ner",
-                        version=datalabs.Version("1.0.0"),
-                        description="Named Entity Recognition",
-                        tokens_column="tokens",
-                        tags_column="tags",
-                        label_classes=[
-                                "O",
-                                "B-PER",
-                                "I-PER",
-                                "B-ORG",
-                                "I-ORG",
-                                "B-LOC",
-                                "I-LOC",
-                                "B-MISC",
-                                "I-MISC",
-                            ],
-                        task_templates=[get_task(TaskType.named_entity_recognition)
-                                        (tokens_column="tokens", tags_column="tags")]
-                        ),
-        Conll2003Config(name="chunking",
-                        version=datalabs.Version("1.0.0"),
-                        description="Chunking",
-                        tokens_column="tokens",
-                        tags_column="tags",
-                        label_classes=[
-                                "O",
-                                "B-ADJP",
-                                "I-ADJP",
-                                "B-ADVP",
-                                "I-ADVP",
-                                "B-CONJP",
-                                "I-CONJP",
-                                "B-INTJ",
-                                "I-INTJ",
-                                "B-LST",
-                                "I-LST",
-                                "B-NP",
-                                "I-NP",
-                                "B-PP",
-                                "I-PP",
-                                "B-PRT",
-                                "I-PRT",
-                                "B-SBAR",
-                                "I-SBAR",
-                                "B-UCP",
-                                "I-UCP",
-                                "B-VP",
-                                "I-VP",
-                            ],
-                        task_templates=[get_task(TaskType.chunking)(
-                            tokens_column="tokens", tags_column="tags")]
-                        ),
+        Conll2003Config(
+            name="pos",
+            version=datalabs.Version("1.0.0"),
+            description="Part-of-Speech",
+            tokens_column="tokens",
+            tags_column="tags",
+            label_classes=[
+                '"',
+                "''",
+                "#",
+                "$",
+                "(",
+                ")",
+                ",",
+                ".",
+                ":",
+                "``",
+                "CC",
+                "CD",
+                "DT",
+                "EX",
+                "FW",
+                "IN",
+                "JJ",
+                "JJR",
+                "JJS",
+                "LS",
+                "MD",
+                "NN",
+                "NNP",
+                "NNPS",
+                "NNS",
+                "NN|SYM",
+                "PDT",
+                "POS",
+                "PRP",
+                "PRP$",
+                "RB",
+                "RBR",
+                "RBS",
+                "RP",
+                "SYM",
+                "TO",
+                "UH",
+                "VB",
+                "VBD",
+                "VBG",
+                "VBN",
+                "VBP",
+                "VBZ",
+                "WDT",
+                "WP",
+                "WP$",
+                "WRB",
+            ],
+            task_templates=[
+                get_task(TaskType.part_of_speech)(
+                    tokens_column="tokens", tags_column="tags"
+                )
+            ],
+        ),
+        Conll2003Config(
+            name="ner",
+            version=datalabs.Version("1.0.0"),
+            description="Named Entity Recognition",
+            tokens_column="tokens",
+            tags_column="tags",
+            label_classes=[
+                "O",
+                "B-PER",
+                "I-PER",
+                "B-ORG",
+                "I-ORG",
+                "B-LOC",
+                "I-LOC",
+                "B-MISC",
+                "I-MISC",
+            ],
+            task_templates=[
+                get_task(TaskType.named_entity_recognition)(
+                    tokens_column="tokens", tags_column="tags"
+                )
+            ],
+        ),
+        Conll2003Config(
+            name="chunking",
+            version=datalabs.Version("1.0.0"),
+            description="Chunking",
+            tokens_column="tokens",
+            tags_column="tags",
+            label_classes=[
+                "O",
+                "B-ADJP",
+                "I-ADJP",
+                "B-ADVP",
+                "I-ADVP",
+                "B-CONJP",
+                "I-CONJP",
+                "B-INTJ",
+                "I-INTJ",
+                "B-LST",
+                "I-LST",
+                "B-NP",
+                "I-NP",
+                "B-PP",
+                "I-PP",
+                "B-PRT",
+                "I-PRT",
+                "B-SBAR",
+                "I-SBAR",
+                "B-UCP",
+                "I-UCP",
+                "B-VP",
+                "I-VP",
+            ],
+            task_templates=[
+                get_task(TaskType.chunking)(tokens_column="tokens", tags_column="tags")
+            ],
+        ),
     ]
     # DEFAULT_CONFIG_NAME = "ner"
 
@@ -203,16 +215,14 @@ class Conll2003(datalabs.GeneratorBasedBuilder):
                     "id": datalabs.Value("string"),
                     "tokens": datalabs.Sequence(datalabs.Value("string")),
                     "tags": datalabs.Sequence(
-                        datalabs.features.ClassLabel(
-                            names=self.config.label_classes
-                        )
+                        datalabs.features.ClassLabel(names=self.config.label_classes)
                     ),
                 }
             ),
             supervised_keys=None,
             homepage="https://www.aclweb.org/anthology/W03-0419/",
             citation=_CITATION,
-            task_templates=self.config.task_templates
+            task_templates=self.config.task_templates,
         )
 
     def _split_generators(self, dl_manager):
@@ -225,9 +235,16 @@ class Conll2003(datalabs.GeneratorBasedBuilder):
         }
 
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": data_files["train"]}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": data_files["dev"]}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": data_files["test"]}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": data_files["train"]}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"filepath": data_files["dev"]},
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": data_files["test"]}
+            ),
         ]
 
     def _generate_examples(self, filepath):

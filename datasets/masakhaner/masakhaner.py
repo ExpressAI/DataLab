@@ -16,11 +16,10 @@
 # Lint as: python3
 """MasakhaNER: Named Entity Recognition for African Languages"""
 
-import datalabs
 import os
+
+import datalabs
 from datalabs import get_task, TaskType
-
-
 
 logger = datalabs.logging.get_logger(__name__)
 
@@ -48,25 +47,25 @@ African languages. This repository corresponds to version 2.0.
 """
 
 _SUPPORTED_LANGUAGES = [
-    'bam',
-    'bbj',
-    'ewe',
-    'fon',
-    'hau',
-    'ibo',
-    'kin',
-    'lug',
-    'mos',
-    'nya',
-    'pcm',
-    'sna',
-    'swa',
-    'tsn',
-    'twi',
-    'wol',
-    'xho',
-    'yor',
-    'zul',
+    "bam",
+    "bbj",
+    "ewe",
+    "fon",
+    "hau",
+    "ibo",
+    "kin",
+    "lug",
+    "mos",
+    "nya",
+    "pcm",
+    "sna",
+    "swa",
+    "tsn",
+    "twi",
+    "wol",
+    "xho",
+    "yor",
+    "zul",
 ]
 _LABEL_CLASSES = [
     "O",
@@ -124,22 +123,31 @@ class MasakhaNER(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://www.aclweb.org/anthology/W03-0419/",
             citation=_CITATION,
-            task_templates=[get_task(TaskType.named_entity_recognition)
-                            (tokens_column="tokens", tags_column="tags")],
+            task_templates=[
+                get_task(TaskType.named_entity_recognition)(
+                    tokens_column="tokens", tags_column="tags"
+                )
+            ],
             languages=[self.config.language],
         )
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
-        lang_url = f'{_BASE_URL}/{self.config.language}'
-        train_file = dl_manager.download(f'{lang_url}/train.txt')
-        dev_file = dl_manager.download(f'{lang_url}/dev.txt')
-        test_file = dl_manager.download(f'{lang_url}/test.txt')
+        lang_url = f"{_BASE_URL}/{self.config.language}"
+        train_file = dl_manager.download(f"{lang_url}/train.txt")
+        dev_file = dl_manager.download(f"{lang_url}/dev.txt")
+        test_file = dl_manager.download(f"{lang_url}/test.txt")
 
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_file}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": dev_file}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_file}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_file}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": dev_file}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_file}
+            ),
         ]
 
     def _generate_examples(self, filepath):

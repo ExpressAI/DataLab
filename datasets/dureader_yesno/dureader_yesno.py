@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -58,13 +59,16 @@ _TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_ans
 _VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_yesno/dev.json"
 # _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_yesno/test.json"
 
-_HOMEPAGE = "https://aistudio.baidu.com/aistudio/competition/detail/49/0/task-definition"
+_HOMEPAGE = (
+    "https://aistudio.baidu.com/aistudio/competition/detail/49/0/task-definition"
+)
+
 
 class DuReaderYesNoConfig(datalabs.BuilderConfig):
-    
     def __init__(self, **kwargs):
 
         super(DuReaderYesNoConfig, self).__init__(**kwargs)
+
 
 class DuReaderYesNo(datalabs.GeneratorBasedBuilder):
 
@@ -85,21 +89,26 @@ class DuReaderYesNo(datalabs.GeneratorBasedBuilder):
                     "documents": datalabs.features.Sequence(
                         {
                             "title": datalabs.Value("string"),
-                            "paragraphs": datalabs.features.Sequence(datalabs.Value("string")),
+                            "paragraphs": datalabs.features.Sequence(
+                                datalabs.Value("string")
+                            ),
                         }
                     ),
                     "question": datalabs.Value("string"),
-                    "answer": datalabs.Value("string"),
-                    "yesno_answer": datalabs.Value("string"),
+                    "answers": {
+                        "text": datalabs.Value("string"),
+                        "yesno_answer": datalabs.Value("string"),
+                    }
+                    
                 }
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            languages = ["zh"],
+            languages=["zh"],
             task_templates=[
-                get_task(TaskType.qa_extractive)(
-                    question_column="question", context_column="documents", answers_column="answer"
+                get_task(TaskType.qa_bool_dureader)(
+                    question_column="question", context_column="documents", answers_column="answers"
                 )
             ],
         )
@@ -108,10 +117,14 @@ class DuReaderYesNo(datalabs.GeneratorBasedBuilder):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
@@ -120,13 +133,10 @@ class DuReaderYesNo(datalabs.GeneratorBasedBuilder):
         with open(filepath, encoding="utf-8") as f:
             for id_, line in enumerate(f.readlines()):
                 line = json.loads(line)
-                documents, question, answer, yesno_answer = line["documents"], line["question"], line["answer"], line["yesno_answer"]
+                documents, question, text, yesno_answer = line["documents"], line["question"], line["answer"], line["yesno_answer"]
+                answers = {"text": text, "yesno_answer": yesno_answer}
                 yield id_, {
-                    "documents":documents,
+                    "documents": documents,
                     "question": question,
-                    "answer": answer,
-                    "yesno_answer": yesno_answer,
+                    "answers": answers,
                 }
-
-
-            

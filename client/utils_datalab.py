@@ -6,7 +6,8 @@ from datalabs import load_dataset
 from datalabs.operations.aggregate.text_classification import (
     get_features_dataset_level as get_features_dataset_level_text_classification,
 )
-from datalabs.operations.preprocess.general import tokenize
+
+# from datalabs.operations.preprocess.general import tokenize
 from datalabs.utils.more_features import get_features_dataset, prefix_dict_key
 
 
@@ -143,9 +144,9 @@ def get_info(
         #     continue
 
         # get sample-level advanced features
-        dataset[split_name] = dataset[split_name].apply(
-            tokenize, num_proc=multiprocessing.cpu_count(), mode="memory"
-        )
+        # dataset[split_name] = dataset[split_name].apply(
+        #     tokenize, num_proc=multiprocessing.cpu_count(), mode="memory"
+        # )
 
         dataset[split_name] = dataset[split_name].apply(
             feature_func, num_proc=multiprocessing.cpu_count(), mode="memory"
@@ -331,7 +332,7 @@ def generate_db_metadata_from_sdk(
     task_categories = []  #
     tasks = []  #
     for value in metadata["task_templates"]:
-        task_categories.append(value["task_category"])
+        task_categories.append(value["task_categories"][0])
         tasks.append(value["task"])
 
     split = {}  #

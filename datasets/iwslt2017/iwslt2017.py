@@ -20,7 +20,6 @@ import os
 import datalabs
 from datalabs import get_task, TaskType
 
-
 _CITATION = """\
 @inproceedings{cettoloEtAl:EAMT2012,
 Address = {Trento, Italy},
@@ -42,6 +41,7 @@ For each language pair, training and development sets are available through the 
 MULTI_URL = "https://phontron.com/download/2017-01-trnmted.tgz"
 BI_URL = "https://phontron.com/download/2017-01-trnted.tgz"
 
+
 class IWSLT2017Config(datalabs.BuilderConfig):
     """BuilderConfig for NewDataset"""
 
@@ -60,7 +60,12 @@ class IWSLT2017Config(datalabs.BuilderConfig):
 # XXX: Artificially removed DE from here, as it also exists within bilingual data
 MULTI_LANGUAGES = ["en", "it", "nl", "ro"]
 BI_LANGUAGES = ["ar", "de", "en", "fr", "ja", "ko", "zh"]
-MULTI_PAIRS = [f"{source}-{target}" for source in MULTI_LANGUAGES for target in MULTI_LANGUAGES if source != target]
+MULTI_PAIRS = [
+    f"{source}-{target}"
+    for source in MULTI_LANGUAGES
+    for target in MULTI_LANGUAGES
+    if source != target
+]
 BI_PAIRS = [
     f"{source}-{target}"
     for source in BI_LANGUAGES
@@ -97,7 +102,11 @@ class IWSLT217(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             # datalabs.features.FeatureConnectors
             features=datalabs.Features(
-                {"translation": datalabs.features.Translation(languages=self.config.pair.split("-"))}
+                {
+                    "translation": datalabs.features.Translation(
+                        languages=self.config.pair.split("-")
+                    )
+                }
             ),
             # If there's a common (input, target) tuple from the features,
             # specify them here. They'll be used if as_supervised=True in
@@ -106,11 +115,11 @@ class IWSLT217(datalabs.GeneratorBasedBuilder):
             # Homepage of the dataset for documentation
             homepage="https://sites.google.com/site/iwsltevaluation2017/TED-tasks",
             citation=_CITATION,
-            languages=self.config.pair.split('-'),
+            languages=self.config.pair.split("-"),
             task_templates=[
                 get_task(TaskType.machine_translation)(
                     translation_column="translation",
-                    lang_sub_columns=self.config.pair.split('-'),
+                    lang_sub_columns=self.config.pair.split("-"),
                 )
             ],
         )
@@ -122,7 +131,12 @@ class IWSLT217(datalabs.GeneratorBasedBuilder):
             dl_dir = dl_manager.download_and_extract(MULTI_URL)
             dl_dir = dl_manager.extract(
                 os.path.join(
-                    dl_dir, "2017-01-trnmted", "texts", "DeEnItNlRo", "DeEnItNlRo", "DeEnItNlRo-DeEnItNlRo.tgz"
+                    dl_dir,
+                    "2017-01-trnmted",
+                    "texts",
+                    "DeEnItNlRo",
+                    "DeEnItNlRo",
+                    "DeEnItNlRo-DeEnItNlRo.tgz",
                 )
             )
             data_dir = os.path.join(dl_dir, "DeEnItNlRo-DeEnItNlRo")
@@ -130,7 +144,14 @@ class IWSLT217(datalabs.GeneratorBasedBuilder):
         else:
             dl_dir = dl_manager.download_and_extract(BI_URL)
             dl_dir = dl_manager.extract(
-                os.path.join(dl_dir, "2017-01-trnted", "texts", source, target, f"{source}-{target}.tgz")
+                os.path.join(
+                    dl_dir,
+                    "2017-01-trnted",
+                    "texts",
+                    source,
+                    target,
+                    f"{source}-{target}.tgz",
+                )
             )
             data_dir = os.path.join(dl_dir, f"{source}-{target}")
             years = [2010, 2011, 2012, 2013, 2014, 2015]
@@ -221,5 +242,7 @@ class IWSLT217(datalabs.GeneratorBasedBuilder):
                             else:
                                 continue
 
-                        yield id_, {"translation": {source: source_row, target: target_row}}
+                        yield id_, {
+                            "translation": {source: source_row, target: target_row}
+                        }
                         id_ += 1

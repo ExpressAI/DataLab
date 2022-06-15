@@ -15,9 +15,10 @@
 
 
 import csv
+import os
+
 import datalabs
 from datalabs import get_task, TaskType
-import os
 
 _DESCRIPTION = """\
 The dataset contains 4.4 million reviews of 240,000 restaurants from Dianping, a Chinese life service review app. 
@@ -48,6 +49,7 @@ _LICENSE = "NA"
 
 _DATA_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/yf_dianping/ratings.zip"
 
+
 class YFDIANPING(datalabs.GeneratorBasedBuilder):
     def _info(self):
         return datalabs.DatasetInfo(
@@ -56,19 +58,30 @@ class YFDIANPING(datalabs.GeneratorBasedBuilder):
                 {
                     "user_id": datalabs.Value("string"),
                     "restaurant_id": datalabs.Value("string"),
-                    "rating": datalabs.features.ClassLabel(names=["Excellent","Good","Average","Fair","Poor"]),
-                    "rating_env": datalabs.features.ClassLabel(names=["Excellent","Good","Average","Fair","Poor"]),
-                    "rating_flavor": datalabs.features.ClassLabel(names=["Excellent","Good","Average","Fair","Poor"]),
-                    "rating_service": datalabs.features.ClassLabel(names=["Excellent","Good","Average","Fair","Poor"]),
+                    "rating": datalabs.features.ClassLabel(
+                        names=["Excellent", "Good", "Average", "Fair", "Poor"]
+                    ),
+                    "rating_env": datalabs.features.ClassLabel(
+                        names=["Excellent", "Good", "Average", "Fair", "Poor"]
+                    ),
+                    "rating_flavor": datalabs.features.ClassLabel(
+                        names=["Excellent", "Good", "Average", "Fair", "Poor"]
+                    ),
+                    "rating_service": datalabs.features.ClassLabel(
+                        names=["Excellent", "Good", "Average", "Fair", "Poor"]
+                    ),
                     "timestamp": datalabs.Value("string"),
-                    "comment": datalabs.Value("string")
+                    "comment": datalabs.Value("string"),
                 }
             ),
             homepage="https://doi.org/10.1145/2488388.2488520",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.question_classification)(
-                text_column="title", label_column="rating")],
+            task_templates=[
+                get_task(TaskType.question_classification)(
+                    text_column="title", label_column="rating"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -76,10 +89,10 @@ class YFDIANPING(datalabs.GeneratorBasedBuilder):
         data_dir = os.path.join(dl_dir, "")
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": os.path.join(data_dir, "ratings.csv")}
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"filepath": os.path.join(data_dir, "ratings.csv")},
             )
         ]
-       
 
     def _generate_examples(self, filepath):
 
@@ -93,19 +106,35 @@ class YFDIANPING(datalabs.GeneratorBasedBuilder):
             "2.0": "Fair",
             "3.0": "Average",
             "4.0": "Good",
-            "5.0": "Excellent"
+            "5.0": "Excellent",
         }
 
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader( (line.replace('\0','') for line in csv_file) , delimiter = ',')
+            csv_reader = csv.reader(
+                (line.replace("\0", "") for line in csv_file), delimiter=","
+            )
             id_actual = 0
             for id_, row in enumerate(csv_reader):
                 if id_ == 0:
                     continue
-                if len(row) !=8:
+                if len(row) != 8:
                     continue
-                user_id, restaurant_id, rating, rating_env, rating_flavor, rating_service, timestamp, comment = row
-                if str(rating) in textualize_label and str(rating_env) in textualize_label and str(rating_flavor) in textualize_label and str(rating_service) in textualize_label: 
+                (
+                    user_id,
+                    restaurant_id,
+                    rating,
+                    rating_env,
+                    rating_flavor,
+                    rating_service,
+                    timestamp,
+                    comment,
+                ) = row
+                if (
+                    str(rating) in textualize_label
+                    and str(rating_env) in textualize_label
+                    and str(rating_flavor) in textualize_label
+                    and str(rating_service) in textualize_label
+                ):
                     id_actual += 1
                     yield id_actual, {
                         "user_id": user_id,
@@ -115,6 +144,5 @@ class YFDIANPING(datalabs.GeneratorBasedBuilder):
                         "rating_flavor": textualize_label[str(rating_flavor)],
                         "rating_service": textualize_label[str(rating_service)],
                         "timestamp": timestamp,
-                        "comment": comment
+                        "comment": comment,
                     }
-

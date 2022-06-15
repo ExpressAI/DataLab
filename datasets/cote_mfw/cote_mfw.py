@@ -14,9 +14,9 @@
 # limitations under the License.
 
 import csv
+
 import datalabs
 from datalabs import get_task, TaskType
-
 
 _DESCRIPTION = """\
 The evaluation object extraction task aims to automatically extract the evaluation objects contained in a given review text. 
@@ -52,7 +52,6 @@ _TARGET = "target"
 
 
 class COTE_MFW(datalabs.GeneratorBasedBuilder):
-
     def _info(self):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
@@ -65,9 +64,10 @@ class COTE_MFW(datalabs.GeneratorBasedBuilder):
             supervised_keys=(_OPINION, _TARGET),
             homepage="https://proceedings.mlr.press/v95/li18d.html",
             citation=_CITATION,
-            task_templates=[get_task(TaskType.opinion_target_extraction)(
-                source_column=_OPINION,
-                reference_column=_TARGET),
+            task_templates=[
+                get_task(TaskType.opinion_target_extraction)(
+                    source_column=_OPINION, reference_column=_TARGET
+                ),
             ],
         )
 
@@ -76,19 +76,20 @@ class COTE_MFW(datalabs.GeneratorBasedBuilder):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 
     def _generate_examples(self, filepath=None):
         """Yields examples."""
         with open(filepath, encoding="utf-8") as f:
-            csv_reader = csv.reader(f, delimiter = '\t')
+            csv_reader = csv.reader(f, delimiter="\t")
             header = 0
             for id_, line in enumerate(csv_reader):
                 if header > 0:
                     if len(line) == 2:
                         _TARGET, _OPINION = line
-                        yield id_, {'opinion': _OPINION, 'target': _TARGET}
+                        yield id_, {"opinion": _OPINION, "target": _TARGET}
                 header = header + 1
-

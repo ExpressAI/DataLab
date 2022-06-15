@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -46,16 +47,21 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/c3/d-train.json"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/c3/d-dev.json"
+_TRAIN_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/c3/d-train.json"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/c3/d-dev.json"
+)
 
 _HOMEPAGE = "https://github.com/CLUEbenchmark/CLUE"
 
-class C3dConfig(datalabs.BuilderConfig):
 
+class C3dConfig(datalabs.BuilderConfig):
     def __init__(self, **kwargs):
 
         super(C3dConfig, self).__init__(**kwargs)
+
 
 class C3d(datalabs.GeneratorBasedBuilder):
 
@@ -77,36 +83,38 @@ class C3d(datalabs.GeneratorBasedBuilder):
                     "context": datalabs.features.Sequence(datalabs.Value("string")),
                     "question": datalabs.Value("string"),
                     "options": datalabs.features.Sequence(datalabs.Value("string")),
-                    "answers":
-                        {
-                            "text": datalabs.Value("string"),
-                            "option_index": datalabs.Value("int32"),
-                        },
+                    "answers": {
+                        "text": datalabs.Value("string"),
+                        "option_index": datalabs.Value("int32"),
+                    },
                 }
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            languages = ["zh"],
+            languages=["zh"],
             task_templates=[
                 get_task(TaskType.qa_multiple_choice_c3)(
-                    question_column = "question",
-                    context_column = "context",
-                    answers_column = "answers",
-                    options_column = "options",
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
+                    options_column="options",
                 )
             ],
         )
-
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
@@ -124,10 +132,13 @@ class C3d(datalabs.GeneratorBasedBuilder):
                     if options.index(text):
                         option_index = options.index(text)
                         yield key, {
-                            "id": id,"context": context, "question": question, "options": options, 
+                            "id": id,
+                            "context": context,
+                            "question": question,
+                            "options": options,
                             "answers": {
                                 "text": text,
                                 "option_index": option_index,
-                            }
+                            },
                         }
                         key = key + 1

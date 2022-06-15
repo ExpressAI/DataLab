@@ -13,6 +13,7 @@
 from __future__ import annotations
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -45,13 +46,11 @@ _CITATION = """\
 
 _BASE_URL = "https://allennlp.s3-us-west-2.amazonaws.com/dont_stop_pretraining/data"
 
+
 class DontStopPretrainingConfig(datalabs.BuilderConfig):
     """BuilderConfig for Conll2003"""
 
-    def __init__(self,
-                 name: str,
-                 label_classes: list[str],
-                 **kwargs):
+    def __init__(self, name: str, label_classes: list[str], **kwargs):
         """BuilderConfig for don't stop pretraining
 
         Args:
@@ -61,10 +60,11 @@ class DontStopPretrainingConfig(datalabs.BuilderConfig):
         self.name = name
         self.label_classes = label_classes
 
+
 class DontStopPretraining(datalabs.GeneratorBasedBuilder):
     BUILDER_CONFIGS = [
         DontStopPretrainingConfig(
-            name='chemprot',
+            name="chemprot",
             label_classes=[
                 "ACTIVATOR",
                 "AGONIST",
@@ -82,7 +82,7 @@ class DontStopPretraining(datalabs.GeneratorBasedBuilder):
             ],
         ),
         DontStopPretrainingConfig(
-            name='rct-20k',
+            name="rct-20k",
             label_classes=[
                 "BACKGROUND",
                 "CONCLUSIONS",
@@ -92,7 +92,7 @@ class DontStopPretraining(datalabs.GeneratorBasedBuilder):
             ],
         ),
         DontStopPretrainingConfig(
-            name='rct-sample',
+            name="rct-sample",
             label_classes=[
                 "BACKGROUND",
                 "CONCLUSIONS",
@@ -102,7 +102,7 @@ class DontStopPretraining(datalabs.GeneratorBasedBuilder):
             ],
         ),
         DontStopPretrainingConfig(
-            name='citation_intent',
+            name="citation_intent",
             label_classes=[
                 "Background",
                 "CompareOrContrast",
@@ -113,7 +113,7 @@ class DontStopPretraining(datalabs.GeneratorBasedBuilder):
             ],
         ),
         DontStopPretrainingConfig(
-            name='sciie',
+            name="sciie",
             label_classes=[
                 "COMPARE",
                 "CONJUNCTION",
@@ -134,21 +134,21 @@ class DontStopPretraining(datalabs.GeneratorBasedBuilder):
         #     ],
         # ),
         DontStopPretrainingConfig(
-            name='hyperpartisan_news',
+            name="hyperpartisan_news",
             label_classes=[
                 "false",
                 "true",
             ],
         ),
         DontStopPretrainingConfig(
-            name='imdb',
+            name="imdb",
             label_classes=[
                 "0",
                 "1",
             ],
         ),
         DontStopPretrainingConfig(
-            name='amazon',
+            name="amazon",
             label_classes=[
                 "helpful",
                 "unhelpful",
@@ -163,26 +163,44 @@ class DontStopPretraining(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=self.config.label_classes),
+                    "label": datalabs.features.ClassLabel(
+                        names=self.config.label_classes
+                    ),
                 }
             ),
             homepage="https://arxiv.org/abs/2004.10964",
             citation=_CITATION,
             languages=["en"],
-            task_templates=[get_task(TaskType.text_classification)(text_column="text", label_column="label")],
+            task_templates=[
+                get_task(TaskType.text_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
-        train_path = dl_manager.download_and_extract(f'{_BASE_URL}/{self.config.name}/train.jsonl')
+        train_path = dl_manager.download_and_extract(
+            f"{_BASE_URL}/{self.config.name}/train.jsonl"
+        )
         print(f"train_path: \t{train_path}")
-        dev_path = dl_manager.download_and_extract(f'{_BASE_URL}/{self.config.name}/dev.jsonl')
+        dev_path = dl_manager.download_and_extract(
+            f"{_BASE_URL}/{self.config.name}/dev.jsonl"
+        )
         print(f"dev_path: \t{dev_path}")
-        test_path = dl_manager.download_and_extract(f'{_BASE_URL}/{self.config.name}/test.jsonl')
+        test_path = dl_manager.download_and_extract(
+            f"{_BASE_URL}/{self.config.name}/test.jsonl"
+        )
         print(f"test_path: \t{test_path}")
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": dev_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": dev_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):

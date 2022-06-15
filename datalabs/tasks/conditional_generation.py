@@ -34,6 +34,38 @@ class OpinionTargetExtraction(ConditionalGeneration):
     reference_column: str = "reference"
 
 
+ 
+@register_task(TaskType.event_extraction)
+@dataclass
+class EventExtraction(ConditionalGeneration):
+    task: TaskType = TaskType.event_extraction
+    source_column: str = "source"
+    reference_column: str = "reference"
+    input_schema: ClassVar[Features] = Features(
+        {
+            "source": {
+                "text": Value("string"),
+                "level1": Value("string"),
+                "level2": Value("string"),
+                "level3": Value("string"),
+            }
+        }
+    )
+    label_schema: ClassVar[Features] = Features(
+        {
+            "reference": Sequence(
+                {
+                    "start": Value("int32"),
+                    "end": Value("int32"),
+                    "type": Value("string"),
+                    "entity": Value("string"),
+                }
+            )
+        }
+    )
+
+
+ 
 @register_task(TaskType.essay_writing)
 @dataclass
 class EssayWriting(ConditionalGeneration):
