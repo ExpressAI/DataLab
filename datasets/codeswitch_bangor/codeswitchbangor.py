@@ -13,9 +13,9 @@
 
 
 import csv
+
 import datalabs
 from datalabs import get_task, TaskType
-
 
 _DESCRIPTION = """\
 This corpus is created from the Bangor Miami Dataset from
@@ -48,9 +48,15 @@ _CITATION = """\
 }
 """
 
-_TRAIN_DOWNLOAD_URL = "https://drive.google.com/uc?id=1W3WSAQPaJeipwPahR903MhP8GR0woib0&export=download"
-_VALIDATION_DOWNLOAD_URL = "https://drive.google.com/uc?id=1px7iQi6ZbWI_8FhcZZfDqLu2GOVeUCoy&export=download"
-_TEST_DOWNLOAD_URL = "https://drive.google.com/uc?id=1NqO8gEf56_wQHHqy3E1KYTDDixN8CGf4&export=download"
+_TRAIN_DOWNLOAD_URL = (
+    "https://drive.google.com/uc?id=1W3WSAQPaJeipwPahR903MhP8GR0woib0&export=download"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "https://drive.google.com/uc?id=1px7iQi6ZbWI_8FhcZZfDqLu2GOVeUCoy&export=download"
+)
+_TEST_DOWNLOAD_URL = (
+    "https://drive.google.com/uc?id=1NqO8gEf56_wQHHqy3E1KYTDDixN8CGf4&export=download"
+)
 
 
 class CodeSwitchBangor(datalabs.GeneratorBasedBuilder):
@@ -64,15 +70,19 @@ class CodeSwitchBangor(datalabs.GeneratorBasedBuilder):
                     "desc_list": datalabs.Value("string"),
                     "desc_sentence": datalabs.Value("string"),
                     "desc_partner": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["positive", "negative"]),
+                    "label": datalabs.features.ClassLabel(
+                        names=["positive", "negative"]
+                    ),
                 }
             ),
             homepage="https://github.com/ostapen/Switch-and-Explain",
             citation=_CITATION,
             languages=["en", "es"],
-            task_templates=[get_task(TaskType.sentiment_classification)(
-                text_column="text",
-                label_column="label")],
+            task_templates=[
+                get_task(TaskType.sentiment_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -83,31 +93,33 @@ class CodeSwitchBangor(datalabs.GeneratorBasedBuilder):
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         print(f"test_path: \t{test_path}")
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
         """Generate Codeswtich classification examples."""
 
         # map the label into textual string
-        textualize_label = {
-            "0": "negative",
-            "1": "positive",
-        }
+        textualize_label = {"1": "positive", "0": "negative"}
 
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter='\t')
+            csv_reader = csv.reader(csv_file, delimiter="\t")
             header_cols = None
             for id_, row in enumerate(csv_reader):
                 if id_ == 0:
                     header_cols = row
                 else:
-                    row_dict = {h:r for h,r in zip(header_cols, row)}
+                    row_dict = {h: r for h, r in zip(header_cols, row)}
                     label = row_dict["label"]
                     # convert to text representation
                     row_dict["label"] = textualize_label[label]
 
-                    yield id_-1, row_dict
-
+                    yield id_ - 1, row_dict

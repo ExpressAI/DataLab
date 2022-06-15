@@ -19,6 +19,7 @@
 
 import csv
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -56,7 +57,9 @@ class Snli(datalabs.GeneratorBasedBuilder):
                 {
                     "text1": datalabs.Value("string"),
                     "text2": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["entailment", "neutral", "contradiction"]),
+                    "label": datalabs.features.ClassLabel(
+                        names=["entailment", "neutral", "contradiction"]
+                    ),
                 }
             ),
             # No default supervised_keys (as we have to pass both premise
@@ -64,10 +67,10 @@ class Snli(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://nlp.stanford.edu/projects/snli/",
             citation=_CITATION,
-            task_templates=[get_task(TaskType.natural_language_inference)(
-                text1_column="text1",
-                text2_column="text2",
-                label_column="label"),
+            task_templates=[
+                get_task(TaskType.natural_language_inference)(
+                    text1_column="text1", text2_column="text2", label_column="label"
+                ),
             ],
         )
 
@@ -76,13 +79,16 @@ class Snli(datalabs.GeneratorBasedBuilder):
         data_dir = os.path.join(dl_dir, "snli_1.0")
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST, gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_test.txt")}
+                name=datalabs.Split.TEST,
+                gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_test.txt")},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_dev.txt")}
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_dev.txt")},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_train.txt")}
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"filepath": os.path.join(data_dir, "snli_1.0_train.txt")},
             ),
         ]
 

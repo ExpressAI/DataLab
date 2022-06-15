@@ -18,11 +18,11 @@
 
 
 import json
-import textwrap
 import os
+import textwrap
+
 import datalabs
 from datalabs import get_task, TaskType
-
 
 logger = datalabs.logging.get_logger(__name__)
 
@@ -96,7 +96,9 @@ class Sdqa(datalabs.GeneratorBasedBuilder):
 
     # TODO(squad_v2): Set up version.
     BUILDER_CONFIGS = [
-        SdqaConfig(name="sdqa", version=datalabs.Version("1.0.0"), description="SDQA 1.0.0"),
+        SdqaConfig(
+            name="sdqa", version=datalabs.Version("1.0.0"), description="SDQA 1.0.0"
+        ),
     ]
 
     def _info(self):
@@ -111,11 +113,12 @@ class Sdqa(datalabs.GeneratorBasedBuilder):
                     "title": datalabs.Value("string"),
                     "context": datalabs.Value("string"),
                     "question": datalabs.Value("string"),
-                    "answers":
-                        {
-                            "text": datalabs.features.Sequence(datalabs.Value("string")),
-                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
-                        }
+                    "answers": {
+                        "text": datalabs.features.Sequence(datalabs.Value("string")),
+                        "answer_start": datalabs.features.Sequence(
+                            datalabs.Value("int32")
+                        ),
+                    }
                     # These are the features of your dataset like images, labels ...
                 }
             ),
@@ -126,10 +129,12 @@ class Sdqa(datalabs.GeneratorBasedBuilder):
             # Homepage of the dataset for documentation
             homepage="https://nlp.cs.gmu.edu/publication/faisal-etal-21-sdqa/",
             citation=_CITATION,
-            languages=["en","ar","bn","sw","ko"],
+            languages=["en", "ar", "bn", "sw", "ko"],
             task_templates=[
                 get_task(TaskType.qa_extractive)(
-                    question_column="question", context_column="context", answers_column="answers"
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                 )
             ],
         )
@@ -143,9 +148,18 @@ class Sdqa(datalabs.GeneratorBasedBuilder):
         downloaded_files = dl_manager.download_and_extract(urls_to_download)
 
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": downloaded_files["test"]}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"filepath": downloaded_files["train"]},
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"filepath": downloaded_files["dev"]},
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
+                gen_kwargs={"filepath": downloaded_files["test"]},
+            ),
         ]
 
     def _generate_examples(self, filepath):
@@ -156,12 +170,16 @@ class Sdqa(datalabs.GeneratorBasedBuilder):
             for example in squad["data"]:
                 title = example.get("title", "")
                 for paragraph in example["paragraphs"]:
-                    context = paragraph["context"]  # do not strip leading blank spaces GH-2585
+                    context = paragraph[
+                        "context"
+                    ]  # do not strip leading blank spaces GH-2585
                     for qa in paragraph["qas"]:
                         question = qa["question"]
                         id_ = qa["id"]
 
-                        answer_starts = [answer["answer_start"] for answer in qa["answers"]]
+                        answer_starts = [
+                            answer["answer_start"] for answer in qa["answers"]
+                        ]
                         answers = [answer["text"] for answer in qa["answers"]]
 
                         # Features currently used are "context", "question", and "answers".

@@ -1,6 +1,7 @@
 """ SummScreen: A Dataset for Abstractive Screenplay Summarization """
 import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -36,12 +37,14 @@ _ARTICLE = "text"
 
 def _gdrive_url(id):
     return f"https://drive.google.com/uc?id={id}&export=download&confirm=t"
-        
+
+
 def restore(line):
-    line = line.replace('@@ ', '')
-    if line.endswith('@@'):
+    line = line.replace("@@ ", "")
+    if line.endswith("@@"):
         line = line[:-2]
     return line
+
 
 class SummScreenConfig(datalabs.BuilderConfig):
     """BuilderConfig for SummScreen."""
@@ -56,6 +59,7 @@ class SummScreenConfig(datalabs.BuilderConfig):
 
 class SummScreenDataset(datalabs.GeneratorBasedBuilder):
     """SummScreen Dataset."""
+
     _FILE = _gdrive_url("1BvdIllGBo9d2-bzXQRzWuJXB04XPVmfF")
     BUILDER_CONFIGS = [
         SummScreenConfig(
@@ -94,30 +98,47 @@ class SummScreenDataset(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT),
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                ),
             ],
         )
 
     def _split_generators(self, dl_manager):
         f_path = dl_manager.download_and_extract(self._FILE)
         if self.config.name == "non-anonymized-ForeverDreaming":
-            train_path = os.path.join(f_path, "./SummScreen/ForeverDreaming/fd_train.json")
+            train_path = os.path.join(
+                f_path, "./SummScreen/ForeverDreaming/fd_train.json"
+            )
             val_path = os.path.join(f_path, "./SummScreen/ForeverDreaming/fd_dev.json")
-            test_path = os.path.join(f_path, "./SummScreen/ForeverDreaming/fd_test.json")
+            test_path = os.path.join(
+                f_path, "./SummScreen/ForeverDreaming/fd_test.json"
+            )
         elif self.config.name == "anonymized-ForeverDreaming":
-            train_path = os.path.join(f_path, "./SummScreen/ForeverDreaming/fd_anonymize_train.json")
-            val_path = os.path.join(f_path, "./SummScreen/ForeverDreaming/fd_anonymize_dev.json")
-            test_path = os.path.join(f_path, "./SummScreen/ForeverDreaming/fd_anonymize_test.json")
+            train_path = os.path.join(
+                f_path, "./SummScreen/ForeverDreaming/fd_anonymize_train.json"
+            )
+            val_path = os.path.join(
+                f_path, "./SummScreen/ForeverDreaming/fd_anonymize_dev.json"
+            )
+            test_path = os.path.join(
+                f_path, "./SummScreen/ForeverDreaming/fd_anonymize_test.json"
+            )
         elif self.config.name == "non-anonymized-TVMegaSite":
             train_path = os.path.join(f_path, "./SummScreen/TVMegaSite/tms_train.json")
             val_path = os.path.join(f_path, "./SummScreen/TVMegaSite/tms_dev.json")
             test_path = os.path.join(f_path, "./SummScreen/TVMegaSite/tms_test.json")
         else:
-            train_path = os.path.join(f_path, "./SummScreen/TVMegaSite/tms_anonymize_train.json")
-            val_path = os.path.join(f_path, "./SummScreen/TVMegaSite/tms_anonymize_dev.json")
-            test_path = os.path.join(f_path, "./SummScreen/TVMegaSite/tms_anonymize_test.json")
+            train_path = os.path.join(
+                f_path, "./SummScreen/TVMegaSite/tms_anonymize_train.json"
+            )
+            val_path = os.path.join(
+                f_path, "./SummScreen/TVMegaSite/tms_anonymize_dev.json"
+            )
+            test_path = os.path.join(
+                f_path, "./SummScreen/TVMegaSite/tms_anonymize_test.json"
+            )
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"f_path": train_path}
@@ -129,7 +150,6 @@ class SummScreenDataset(datalabs.GeneratorBasedBuilder):
                 name=datalabs.Split.TEST, gen_kwargs={"f_path": test_path}
             ),
         ]
-        
 
     def _generate_examples(self, f_path):
         """Generate SummScreen examples."""

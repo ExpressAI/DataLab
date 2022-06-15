@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import re
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -34,17 +35,24 @@ For more information, please refer to http://www.sigkg.cn/ccks2019/?page_id=49.
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/CKBQA/train.txt"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/CKBQA/valid.txt"
-_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/CKBQA/test.txt"
+_TRAIN_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/CKBQA/train.txt"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/CKBQA/valid.txt"
+)
+_TEST_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/CKBQA/test.txt"
+)
 
 _HOMEPAGE = "http://www.sigkg.cn/ccks2019/"
 
-class CKBQAConfig(datalabs.BuilderConfig):
 
+class CKBQAConfig(datalabs.BuilderConfig):
     def __init__(self, **kwargs):
 
         super(CKBQAConfig, self).__init__(**kwargs)
+
 
 class CKBQA(datalabs.GeneratorBasedBuilder):
 
@@ -55,14 +63,14 @@ class CKBQA(datalabs.GeneratorBasedBuilder):
             description="open_domain_question_answering",
         ),
     ]
-    
+
     def _info(self):
 
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                    "question": datalabs.Value("string"), 
+                    "question": datalabs.Value("string"),
                     "query": datalabs.Value("string"),
                     "answers": datalabs.features.Sequence(datalabs.Value("string")),
                 }
@@ -70,40 +78,45 @@ class CKBQA(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            languages = ["zh"],
+            languages=["zh"],
             task_templates=[
                 get_task(TaskType.qa_open_domain)(
-                    question_column = "question",
-                    context_column = "query",
-                    answers_column = "answers",
+                    question_column="question",
+                    context_column="query",
+                    answers_column="answers",
                 )
             ],
         )
-
 
     def _split_generators(self, dl_manager):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
 
         id_ = 0
-        
-        with open(filepath, encoding='utf8') as f:
+
+        with open(filepath, encoding="utf8") as f:
             line = True
             str_pat = re.compile(r'"(.*?)"')
             while line:
                 line = f.readline()
-                if len(line.split(':')) > 1:
-                    question = line.split(':')[1].rstrip()
+                if len(line.split(":")) > 1:
+                    question = line.split(":")[1].rstrip()
                 line = f.readline()
                 query = line.rstrip()
                 line = f.readline()
@@ -115,12 +128,10 @@ class CKBQA(datalabs.GeneratorBasedBuilder):
                         del answers[index]
                         [answers.insert(index, d) for d in li]
                 line = f.readline()
-                if line == '\n':
-                    yield id_, {"question": question, "query": query, "answers": answers}
+                if line == "\n":
+                    yield id_, {
+                        "question": question,
+                        "query": query,
+                        "answers": answers,
+                    }
                     id_ = id_ + 1
-                    
-
-
-
-
-            

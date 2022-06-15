@@ -17,10 +17,9 @@
 import csv
 import os
 from pathlib import Path
+
 import datalabs
-from datalabs import get_task, TaskType, Prompts
-
-
+from datalabs import get_task, Prompts, TaskType
 
 _DESCRIPTION = """\
 AG is a collection of more than 1 million news articles. News articles have been
@@ -53,28 +52,21 @@ _TEST_DOWNLOAD_URL = "https://raw.githubusercontent.com/mhjabreel/CharCnn_Keras/
 _PROMPT_URL = "https://raw.githubusercontent.com/ExpressAI/DataLab/main/datasets/ag_news/prompts.json"
 
 
-
-
-
-
-
-
-
 class AGNews(datalabs.GeneratorBasedBuilder):
-
     def _info(self):
         category_names = ["World", "Sports", "Business", "Science and Technology"]
         # Task prompts
-        prompts = get_task(TaskType.topic_classification)().get_prompts()  # instantiate task prompt based on the current dataset
+        prompts = get_task(
+            TaskType.topic_classification
+        )().get_prompts()  # instantiate task prompt based on the current dataset
         # Add PromptSource prompts
         prompts.update(Prompts.from_url(_PROMPT_URL))
         features = datalabs.Features(
             {
                 "text": datalabs.Value("string"),
-                "label": datalabs.features.ClassLabel(
-                    names=category_names),
-
-            })
+                "label": datalabs.features.ClassLabel(names=category_names),
+            }
+        )
 
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
@@ -83,10 +75,11 @@ class AGNews(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["en"],
             task_templates=[
-                get_task(TaskType.topic_classification)
-                (text_column="text", label_column="label")
+                get_task(TaskType.topic_classification)(
+                    text_column="text", label_column="label"
+                )
             ],
-            prompts=prompts
+            prompts=prompts,
         )
 
     def _split_generators(self, dl_manager):
@@ -94,22 +87,33 @@ class AGNews(datalabs.GeneratorBasedBuilder):
         print(f"train_path: \t{train_path}")
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
         """Generate AG News examples."""
 
         # map the label into textual string
-        textualize_label = {"1": "World",
-                            "2": "Sports",
-                            "3": "Business",
-                            "4": "Science and Technology"}
+        textualize_label = {
+            "1": "World",
+            "2": "Sports",
+            "3": "Business",
+            "4": "Science and Technology",
+        }
 
         with open(filepath, encoding="utf-8") as csv_file:
             csv_reader = csv.reader(
-                csv_file, quotechar='"', delimiter=",", quoting=csv.QUOTE_ALL, skipinitialspace=True)
+                csv_file,
+                quotechar='"',
+                delimiter=",",
+                quoting=csv.QUOTE_ALL,
+                skipinitialspace=True,
+            )
             # using this for tsv: csv_reader = csv.reader(csv_file, delimiter='\t')
             for id_, row in enumerate(csv_reader):
                 label, title, description = row
@@ -117,4 +121,3 @@ class AGNews(datalabs.GeneratorBasedBuilder):
                 text = " ".join((title, description))
 
                 yield id_, {"text": text, "label": label}
-

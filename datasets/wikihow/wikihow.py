@@ -1,13 +1,10 @@
 import json
 import os
-import tempfile
 import subprocess
+import tempfile
 
 import datalabs
 from datalabs import get_task, TaskType
-
-
-
 
 _DESCRIPTION = """
  WikiHow is a new large-scale dataset using the online WikiHow (http://www.wikihow.com/) knowledge base.
@@ -34,21 +31,44 @@ _CITATION = """\
 _ABSTRACT = "summary"
 _ARTICLE = "text"
 
+
 def _gdrive_url(id):
     return f"https://drive.google.com/uc?id={id}&export=download"
 
+
 def custom_download(url, path):
     with tempfile.TemporaryDirectory() as tmpdir:
-        response = subprocess.check_output([
-            "wget", "--save-cookies", os.path.join(tmpdir, "cookies.txt"), 
-            f"{url}", "-O-"])
+        response = subprocess.check_output(
+            [
+                "wget",
+                "--save-cookies",
+                os.path.join(tmpdir, "cookies.txt"),
+                f"{url}",
+                "-O-",
+            ]
+        )
         with open(os.path.join(tmpdir, "response.txt"), "w") as f:
             f.write(response.decode("utf-8"))
-        response = subprocess.check_output(["sed", "-rn", 's/.*confirm=([0-9A-Za-z_]+).*/\\1/p', os.path.join(tmpdir, "response.txt")])
+        response = subprocess.check_output(
+            [
+                "sed",
+                "-rn",
+                "s/.*confirm=([0-9A-Za-z_]+).*/\\1/p",
+                os.path.join(tmpdir, "response.txt"),
+            ]
+        )
         response = response.decode("utf-8")
-        subprocess.check_output([
-            "wget", "--load-cookies", os.path.join(tmpdir, "cookies.txt"), "-O", path,
-            url+f"&confirm={response}"])
+        subprocess.check_output(
+            [
+                "wget",
+                "--load-cookies",
+                os.path.join(tmpdir, "cookies.txt"),
+                "-O",
+                path,
+                url + f"&confirm={response}",
+            ]
+        )
+
 
 class WikiHowConfig(datalabs.BuilderConfig):
     """BuilderConfig for WikiHow."""
@@ -63,6 +83,7 @@ class WikiHowConfig(datalabs.BuilderConfig):
 
 class WikiHowDataset(datalabs.GeneratorBasedBuilder):
     """WikiHow Dataset."""
+
     _FILE_ID = "1n6RQIZBGkCloxh6dSHAaDC8XsDBn2V_u"
     BUILDER_CONFIGS = [
         WikiHowConfig(
@@ -75,12 +96,12 @@ class WikiHowDataset(datalabs.GeneratorBasedBuilder):
 
     def _info(self):
         features_sample = datalabs.Features(
-                {
-                    _ARTICLE: datalabs.Value("string"),
-                    _ABSTRACT: datalabs.Value("string"),
-                    # "id": datalab.Value("string"),
-                }
-            )
+            {
+                _ARTICLE: datalabs.Value("string"),
+                _ABSTRACT: datalabs.Value("string"),
+                # "id": datalab.Value("string"),
+            }
+        )
         # Should return a datalab.DatasetInfo object
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
@@ -88,9 +109,10 @@ class WikiHowDataset(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage=None,
             citation=_CITATION,
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT),
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                ),
             ],
         )
 
@@ -101,7 +123,6 @@ class WikiHowDataset(datalabs.GeneratorBasedBuilder):
         train_path = os.path.join(f_path, "train.jsonl")
         test_path = os.path.join(f_path, "test.jsonl")
         val_path = os.path.join(f_path, "val.jsonl")
-        
 
         return [
             datalabs.SplitGenerator(
@@ -121,14 +142,9 @@ class WikiHowDataset(datalabs.GeneratorBasedBuilder):
             for (id_, line) in enumerate(f):
                 data = json.loads(line)
 
-
                 raw_feature_info = {
                     _ARTICLE: data["article"],
                     _ABSTRACT: data["summary"],
                 }
 
-
                 yield id_, raw_feature_info
-
-
-

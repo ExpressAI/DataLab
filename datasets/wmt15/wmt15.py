@@ -21,7 +21,6 @@ import datalabs
 
 from .wmt_utils import Wmt, WmtConfig
 
-
 _URL = "http://www.statmt.org/wmt15/translation-task.html"
 _CITATION = """
 @InProceedings{bojar-EtAl:2015:WMT,
@@ -74,6 +73,10 @@ class Wmt15(Wmt):
                 "wikiheadlines_fi",
                 "wikiheadlines_ru",
             ],
-            datalabs.Split.VALIDATION: ["newsdev2015", "newsdiscussdev2015", "newstest2014"],
+            datalabs.Split.VALIDATION: [
+                "newsdev2015",
+                "newsdiscussdev2015",
+                "newstest2014",
+            ],
             datalabs.Split.TEST: ["newstest2015", "newsdiscusstest2015"],
         }

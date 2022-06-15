@@ -13,9 +13,9 @@
 
 
 import csv
+
 import datalabs
 from datalabs import get_task, TaskType
-
 
 _DESCRIPTION = """\
 Intent classification aims to assign intent labels to the queries, which can be regarded as multiple label classification tasks. We use the cMedIC dataset, which consists of queries with three intent labels (e.g., no intention, weak intention, and firm intention).
@@ -30,9 +30,15 @@ _CITATION = """\
 }
 """
 
-_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/cMedIC/train.txt"
-_VALIDATION_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/cMedIC/dev.txt"
-_TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/cMedIC/test.txt"
+_TRAIN_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/cMedIC/train.txt"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/cMedIC/dev.txt"
+)
+_TEST_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/cMedIC/test.txt"
+)
 
 
 class cMedIC(datalabs.GeneratorBasedBuilder):
@@ -42,15 +48,17 @@ class cMedIC(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["0","1", "2"]),
+                    "label": datalabs.features.ClassLabel(names=["0", "1", "2"]),
                 }
             ),
             homepage="https://github.com/alibaba-research/ChineseBLUE",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.intent_classification)(
-                text_column="text",
-                label_column="label")],
+            task_templates=[
+                get_task(TaskType.intent_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -58,16 +66,22 @@ class cMedIC(datalabs.GeneratorBasedBuilder):
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
 
         with open(filepath, encoding="utf-8") as f:
-            
+
             for id_, row in enumerate(f):
-                label,text = row.strip().split('\t')
-    
+                label, text = row.strip().split("\t")
+
                 yield id_, {"text": text, "label": label}

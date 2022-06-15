@@ -1,13 +1,10 @@
+import gzip
 import json
 import os
+
 import datalabs
-import gzip
 from datalabs import get_task, TaskType
 from datalabs.tasks.summarization import _MDS_TEXT_COLUMN
-
-
-
-
 
 _DESCRIPTION = """
  Multi-XScience, a large-scale multi-document summarization dataset created from scientific articles. Multi-XScience introduces a challenging multi-document summarization task: writing therelated-work section of a paper based on itsabstract and the articles it references.
@@ -36,8 +33,10 @@ _ABSTRACT = "summary"
 _ARTICLE = "text"
 _MDS_SEP = "|||||"
 
+
 def _gdrive_url(id):
     return f"https://drive.google.com/uc?id={id}&export=download"
+
 
 class MultiXScienceConfig(datalabs.BuilderConfig):
     """BuilderConfig for MultiXScience."""
@@ -53,25 +52,32 @@ class MultiXScienceConfig(datalabs.BuilderConfig):
 
 class MultiXScienceDataset(datalabs.GeneratorBasedBuilder):
     """MultiXScience Dataset."""
+
     _TRAIN_URL = "https://raw.githubusercontent.com/yaolu/Multi-XScience/master/data/train.json.gz"
-    _VAL_URL = "https://raw.githubusercontent.com/yaolu/Multi-XScience/master/data/val.json.gz"
+    _VAL_URL = (
+        "https://raw.githubusercontent.com/yaolu/Multi-XScience/master/data/val.json.gz"
+    )
     _TEST_URL = "https://raw.githubusercontent.com/yaolu/Multi-XScience/master/data/test.json.gz"
     BUILDER_CONFIGS = [
         MultiXScienceConfig(
             name="single-document",
             version=datalabs.Version("1.0.0"),
             description="MultiXScience dataset for summarization, single document summarization version",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         ),
         MultiXScienceConfig(
             name="multi-document",
             version=datalabs.Version("1.0.0"),
             description="MultiXScience dataset for summarization, multi-document summarization version",
-            task_templates=[get_task(TaskType.multi_doc_summarization)(
-                source_column=_MDS_TEXT_COLUMN,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.multi_doc_summarization)(
+                    source_column=_MDS_TEXT_COLUMN, reference_column=_ABSTRACT
+                )
+            ],
         ),
     ]
     DEFAULT_CONFIG_NAME = "multi-document"
@@ -137,8 +143,6 @@ class MultiXScienceDataset(datalabs.GeneratorBasedBuilder):
                     _ABSTRACT: summary,
                 }
                 yield id_, raw_feature_info
-
-
 
             else:
                 yield id_, {

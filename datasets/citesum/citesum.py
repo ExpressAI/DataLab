@@ -1,6 +1,7 @@
 """CiteSum: Citation Text-guided Scientific Extreme Summarization and Low-resource Domain Adaptation"""
-import os
 import json
+import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -38,6 +39,7 @@ class CiteSumConfig(datalabs.BuilderConfig):
 
 class CiteSumDataset(datalabs.GeneratorBasedBuilder):
     """CiteSum Dataset."""
+
     _FILE_ID = "1ndHCREXGSPnDUNllladh9qCtayqbXAfJ"
 
     BUILDER_CONFIGS = [
@@ -45,9 +47,11 @@ class CiteSumDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description=" Scientific extreme summarization dataset.",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -66,7 +70,7 @@ class CiteSumDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=["en"],
-            task_templates=self.config.task_templates
+            task_templates=self.config.task_templates,
         )
 
     def _split_generators(self, dl_manager):
@@ -76,18 +80,15 @@ class CiteSumDataset(datalabs.GeneratorBasedBuilder):
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
-                gen_kwargs={
-                    "f_path": os.path.join(f_path, "train.json")}
+                gen_kwargs={"f_path": os.path.join(f_path, "train.json")},
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
-                gen_kwargs={
-                    "f_path": os.path.join(f_path, "val.json")}
+                gen_kwargs={"f_path": os.path.join(f_path, "val.json")},
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
-                gen_kwargs={
-                    "f_path": os.path.join(f_path, "test.json")}
+                gen_kwargs={"f_path": os.path.join(f_path, "test.json")},
             ),
         ]
 
@@ -105,8 +106,5 @@ class CiteSumDataset(datalabs.GeneratorBasedBuilder):
             datas.append((text, summary))
 
         for id_, (text, summary) in enumerate(datas):
-            raw_feature_info = {
-                _ARTICLE: text,
-                _ABSTRACT: summary
-            }
+            raw_feature_info = {_ARTICLE: text, _ABSTRACT: summary}
             yield id_, raw_feature_info

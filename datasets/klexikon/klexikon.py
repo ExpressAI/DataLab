@@ -1,6 +1,7 @@
 """Klexikon: A German Dataset for Joint Summarization and Simplification"""
-import os
 import json
+import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -46,9 +47,11 @@ class KlexikonDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("2.0.0"),
             description="A German summarization dataset.",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -67,31 +70,33 @@ class KlexikonDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             license=_LICENSE,
-            languages=["de"],  # https://huggingface.co/languages#:~:text=840-,German,-de
-            task_templates=self.config.task_templates
+            languages=[
+                "de"
+            ],  # https://huggingface.co/languages#:~:text=840-,German,-de
+            task_templates=self.config.task_templates,
         )
 
     def _split_generators(self, dl_manager):
 
         train_f_path = dl_manager.download(
-            "https://huggingface.co/datasets/dennlinger/klexikon/resolve/main/data/train.json")
+            "https://huggingface.co/datasets/dennlinger/klexikon/resolve/main/data/train.json"
+        )
         valid_f_path = dl_manager.download(
-            "https://huggingface.co/datasets/dennlinger/klexikon/resolve/main/data/validation.json")
+            "https://huggingface.co/datasets/dennlinger/klexikon/resolve/main/data/validation.json"
+        )
         test_f_path = dl_manager.download(
-            "https://huggingface.co/datasets/dennlinger/klexikon/resolve/main/data/test.json")
+            "https://huggingface.co/datasets/dennlinger/klexikon/resolve/main/data/test.json"
+        )
 
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN,
-                gen_kwargs={"f_path": train_f_path}
+                name=datalabs.Split.TRAIN, gen_kwargs={"f_path": train_f_path}
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION,
-                gen_kwargs={"f_path": valid_f_path}
+                name=datalabs.Split.VALIDATION, gen_kwargs={"f_path": valid_f_path}
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST,
-                gen_kwargs={"f_path": test_f_path}
+                name=datalabs.Split.TEST, gen_kwargs={"f_path": test_f_path}
             ),
         ]
 
@@ -107,8 +112,5 @@ class KlexikonDataset(datalabs.GeneratorBasedBuilder):
             datas.append((text, summary))
 
         for id_, (text, summary) in enumerate(datas):
-            raw_feature_info = {
-                _ARTICLE: text,
-                _ABSTRACT: summary
-            }
+            raw_feature_info = {_ARTICLE: text, _ABSTRACT: summary}
             yield id_, raw_feature_info

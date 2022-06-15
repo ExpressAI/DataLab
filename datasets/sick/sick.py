@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -57,7 +58,9 @@ class SICK(datalabs.GeneratorBasedBuilder):
                     "id": datalabs.Value("string"),
                     "text1": datalabs.Value("string"),
                     "text2": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["entailment", "neutral", "contradiction"]),
+                    "label": datalabs.features.ClassLabel(
+                        names=["entailment", "neutral", "contradiction"]
+                    ),
                     "relatedness_score": datalabs.Value("float"),
                     "entailment_AB": datalabs.Value("string"),
                     "entailment_BA": datalabs.Value("string"),
@@ -70,10 +73,10 @@ class SICK(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="http://marcobaroni.org/composes/sick.html",
             citation=_CITATION,
-            task_templates=[get_task(TaskType.natural_language_inference)(
-                text1_column="text1",
-                text2_column="text2",
-                label_column="label"),
+            task_templates=[
+                get_task(TaskType.natural_language_inference)(
+                    text1_column="text1", text2_column="text2", label_column="label"
+                ),
             ],
         )
 
@@ -83,15 +86,24 @@ class SICK(datalabs.GeneratorBasedBuilder):
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
-                gen_kwargs={"filepath": os.path.join(dl_dir, "SICK.txt"), "key": "TRAIN"},
+                gen_kwargs={
+                    "filepath": os.path.join(dl_dir, "SICK.txt"),
+                    "key": "TRAIN",
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
-                gen_kwargs={"filepath": os.path.join(dl_dir, "SICK.txt"), "key": "TRIAL"},
+                gen_kwargs={
+                    "filepath": os.path.join(dl_dir, "SICK.txt"),
+                    "key": "TRIAL",
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
-                gen_kwargs={"filepath": os.path.join(dl_dir, "SICK.txt"), "key": "TEST"},
+                gen_kwargs={
+                    "filepath": os.path.join(dl_dir, "SICK.txt"),
+                    "key": "TEST",
+                },
             ),
         ]
 

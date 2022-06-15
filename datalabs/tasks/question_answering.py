@@ -286,13 +286,14 @@ class QuestionAnsweringMultipleChoiceWithoutContext(QuestionAnsweringMultipleCho
     answers_column: str = "answers"
     options_column: str = "options"
 
+
 @register_task(TaskType.qa_open_domain)
 @dataclass
 class QuestionAnsweringOpenDomain(QuestionAnswering):
     task: TaskType = TaskType.qa_open_domain
     input_schema: ClassVar[Features] = Features(
         {
-            "question": Value("string"), 
+            "question": Value("string"),
             "query": Value("string"),
         }
     )

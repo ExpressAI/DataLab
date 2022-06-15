@@ -14,9 +14,10 @@
 # limitations under the License.
 
 import json
+
 import datalabs
-from datalabs.features.features import Sequence
 from datalabs import get_task, TaskType
+from datalabs.features.features import Sequence
 
 _DESCRIPTION = """\
 The Chinese scientific and technological literature dataset (CSL) is taken from the abstracts of Chinese papers and their keywords, 
@@ -75,50 +76,65 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/csl/train.json"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/csl/dev.json"
-_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/csl/test.json"
+_TRAIN_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/csl/train.json"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/csl/dev.json"
+)
+_TEST_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/csl/test.json"
+)
 # _TEST_UNLABELED_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/csl/test_unlabeled.json"
 # _UNLABELED_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/csl/unlabeled.json"
+
 
 class CSL(datalabs.GeneratorBasedBuilder):
     def _info(self):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalabs.Features({
-                'text1': datalabs.Value('string'),
-                'text2': Sequence(datalabs.Value("string")),
-                'label': datalabs.features.ClassLabel(names=['0', '1']),
-            }),
+            features=datalabs.Features(
+                {
+                    "text1": datalabs.Value("string"),
+                    "text2": Sequence(datalabs.Value("string")),
+                    "label": datalabs.features.ClassLabel(names=["0", "1"]),
+                }
+            ),
             supervised_keys=None,
-            homepage='https://github.com/CLUEbenchmark/CLUE',
+            homepage="https://github.com/CLUEbenchmark/CLUE",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.keyword_recognition)(
-                text1_column="text1",
-                text2_column="text2",
-                label_column="label"),
+            task_templates=[
+                get_task(TaskType.keyword_recognition)(
+                    text1_column="text1", text2_column="text2", label_column="label"
+                ),
             ],
         )
 
     def _split_generators(self, dl_manager):
-            
+
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
-        
+
         with open(filepath, encoding="utf-8") as f:
             for id_, line in enumerate(f.readlines()):
                 line = json.loads(line.strip())
-                text1 = line['abst']
-                text2 = line['keyword']
-                label = line['label']
+                text1 = line["abst"]
+                text2 = line["keyword"]
+                label = line["label"]
                 if label == ("0" or "1"):
-                    yield id_, {'text1': text1, 'text2': text2, 'label': label}
+                    yield id_, {"text1": text1, "text2": text2, "label": label}

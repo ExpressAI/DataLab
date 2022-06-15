@@ -14,9 +14,9 @@
 # limitations under the License.
 import csv
 from email import header
+
 import datalabs
 from datalabs import get_task, TaskType
-
 
 # Find for instance the citation on arxiv or on the dataset repo/website
 _CITATION = """\
@@ -37,6 +37,7 @@ _HOMEPAGE = "https://github.com/SophonPlus/ChineseNlpCorpus"
 
 _URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/waimai/waimai_10k.csv"
 
+
 class WAIMAI(datalabs.GeneratorBasedBuilder):
     def _info(self):
         return datalabs.DatasetInfo(
@@ -46,35 +47,38 @@ class WAIMAI(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["positive", "negative"]),
+                    "label": datalabs.features.ClassLabel(
+                        names=["positive", "negative"]
+                    ),
                 }
             ),
             homepage=_HOMEPAGE,
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.sentiment_classification)(
-                text_column="text",
-                label_column="label")],
+            task_templates=[
+                get_task(TaskType.sentiment_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
         # dl_manager is a datalab.download.DownloadManager that can be used to download and extract URLs
         train_path = dl_manager.download_and_extract(_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            )
         ]
 
     def _generate_examples(self, filepath):
         """Generate WAIMAI examples."""
 
         # map the label into textual string
-        textualize_label = {
-            "1": "positive",
-            "0": "negative"
-        }
+        textualize_label = {"1": "positive", "0": "negative"}
 
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',')
+            csv_reader = csv.reader(csv_file, delimiter=",")
             for id_, row in enumerate(csv_reader):
                 label, text = row
                 if label == "0" or label == "1":

@@ -1,17 +1,16 @@
 """The AMI Meeting Corpus: A pre-announcement."""
-import os
 import json
-import datalabs
-from datalabs import get_task, TaskType
+import os
 
 # the following package are needed when more additional features are expected to be calculated
 from featurize.summarization import (
     get_features_sample_level,
     get_schema_of_sample_level_features,
 )
-from datalabs.utils.more_features import (
-    get_feature_schemas,
-)
+
+import datalabs
+from datalabs import get_task, TaskType
+from datalabs.utils.more_features import get_feature_schemas
 
 _CITATION = """\
 @inproceedings{Carletta2005TheAM,
@@ -38,7 +37,8 @@ def get_article_summary_urls(mode):
     urls = []
     mode2num = {"train": 32, "dev": 20, "test": 20}
     root_url = "https://raw.githubusercontent.com/microsoft/HMNet/main/ExampleRawData/meeting_summarization/AMI_proprec/{}".format(
-        mode)
+        mode
+    )
     for index in range(0, mode2num[mode]):
         url = os.path.join(root_url, "split_{}.jsonl.gz".format(str(index)))
         urls.append(url)
@@ -65,17 +65,21 @@ class AMIDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="AMI dataset for summarization, single document version",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         ),
         AMIConfig(
             name="dialogue",
             version=datalabs.Version("1.0.0"),
             description="AMI dataset for summarization, dialogue summarization version",
-            task_templates=[get_task(TaskType.dialog_summarization)(
-                source_column="dialogue",
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.dialog_summarization)(
+                    source_column="dialogue", reference_column=_ABSTRACT
+                )
+            ],
         ),
     ]
     DEFAULT_CONFIG_NAME = "dialogue"
@@ -92,17 +96,24 @@ class AMIDataset(datalabs.GeneratorBasedBuilder):
                 }
             )
             if self.feature_expanding:
-                features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                        get_schema_of_sample_level_features)
+                features_sample, features_dataset = get_feature_schemas(
+                    features_sample, get_schema_of_sample_level_features
+                )
 
         else:
-            features_sample = datalabs.Features({
-                "dialogue": datalabs.Sequence(datalabs.Features({
-                    "speaker": datalabs.Value("string"),
-                    "text": datalabs.Value("string")
-                })),
-                _ABSTRACT: datalabs.Value("string"),
-            })
+            features_sample = datalabs.Features(
+                {
+                    "dialogue": datalabs.Sequence(
+                        datalabs.Features(
+                            {
+                                "speaker": datalabs.Value("string"),
+                                "text": datalabs.Value("string"),
+                            }
+                        )
+                    ),
+                    _ABSTRACT: datalabs.Value("string"),
+                }
+            )
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features_sample,
@@ -181,15 +192,14 @@ class AMIDataset(datalabs.GeneratorBasedBuilder):
                     text = text + one["speaker"] + " : " + one["text"] + " "
                 text = text.strip()
 
-                raw_feature_info = {
-                    _ARTICLE: text,
-                    _ABSTRACT: data["summary"]
-                }
+                raw_feature_info = {_ARTICLE: text, _ABSTRACT: data["summary"]}
 
                 if not self.feature_expanding:
                     yield id_, raw_feature_info
                 else:
-                    additional_feature_info = get_features_sample_level(raw_feature_info)
+                    additional_feature_info = get_features_sample_level(
+                        raw_feature_info
+                    )
                     raw_feature_info.update(additional_feature_info)
                     yield id_, raw_feature_info
 
