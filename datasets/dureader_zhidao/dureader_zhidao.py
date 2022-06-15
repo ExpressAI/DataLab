@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -60,11 +61,12 @@ _VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/questio
 
 _HOMEPAGE = "http://ai.baidu.com/broad/download?dataset=dureader"
 
+
 class DuReaderZhidaoConfig(datalabs.BuilderConfig):
-    
     def __init__(self, **kwargs):
 
         super(DuReaderZhidaoConfig, self).__init__(**kwargs)
+
 
 class DuReaderZhidao(datalabs.GeneratorBasedBuilder):
 
@@ -87,8 +89,12 @@ class DuReaderZhidao(datalabs.GeneratorBasedBuilder):
                             "is_selected": datalabs.Value("string"),
                             "most_related_para": datalabs.Value("int32"),
                             "title": datalabs.Value("string"),
-                            "segmented_title": datalabs.features.Sequence(datalabs.Value("string")),
-                            "paragraphs": datalabs.features.Sequence(datalabs.Value("string")),
+                            "segmented_title": datalabs.features.Sequence(
+                                datalabs.Value("string")
+                            ),
+                            "paragraphs": datalabs.features.Sequence(
+                                datalabs.Value("string")
+                            ),
                             "segmented_paragraphs": datalabs.features.Sequence(
                                 datalabs.features.Sequence(datalabs.Value("string"))
                             ),
@@ -98,12 +104,16 @@ class DuReaderZhidao(datalabs.GeneratorBasedBuilder):
                     "segmented_answers": datalabs.features.Sequence(
                         datalabs.features.Sequence(datalabs.Value("string"))
                     ),
-                    "fake_answers": datalabs.features.Sequence(datalabs.Value("string")),
+                    "fake_answers": datalabs.features.Sequence(
+                        datalabs.Value("string")
+                    ),
                     "answer_spans": datalabs.features.Sequence(
                         datalabs.features.Sequence(datalabs.Value("int32"))
                     ),
                     "question": datalabs.Value("string"),
-                    "segmented_question": datalabs.features.Sequence(datalabs.Value("string")),
+                    "segmented_question": datalabs.features.Sequence(
+                        datalabs.Value("string")
+                    ),
                     "question_type": datalabs.Value("string"),
                     "fact_or_opinion": datalabs.Value("string"),
                     "question_id": datalabs.Value("string"),
@@ -114,7 +124,7 @@ class DuReaderZhidao(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            languages = ["zh"],
+            languages=["zh"],
             task_templates=[
                 get_task(TaskType.qa_extractive_dureader)(
                     question_column="question", context_column="documents", answers_column="answers"
@@ -126,10 +136,14 @@ class DuReaderZhidao(datalabs.GeneratorBasedBuilder):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
@@ -139,11 +153,28 @@ class DuReaderZhidao(datalabs.GeneratorBasedBuilder):
             for id_, line in enumerate(f.readlines()):
                 line = json.loads(line)
                 documents = line["documents"]
-                answers, segmented_answers, fake_answers, answer_spans = line["answers"], line["segmented_answers"], line["fake_answers"], line["answer_spans"]
-                question, segmented_question, question_type, fact_or_opinion, question_id = line["question"], line["segmented_question"], line["question_type"], line["fact_or_opinion"], line["question_id"]
+                answers, segmented_answers, fake_answers, answer_spans = (
+                    line["answers"],
+                    line["segmented_answers"],
+                    line["fake_answers"],
+                    line["answer_spans"],
+                )
+                (
+                    question,
+                    segmented_question,
+                    question_type,
+                    fact_or_opinion,
+                    question_id,
+                ) = (
+                    line["question"],
+                    line["segmented_question"],
+                    line["question_type"],
+                    line["fact_or_opinion"],
+                    line["question_id"],
+                )
                 match_scores, answer_docs = line["match_scores"], line["answer_docs"]
                 yield id_, {
-                    "documents":documents,
+                    "documents": documents,
                     "answers": answers,
                     "segmented_answers": segmented_answers,
                     "fake_answers": fake_answers,
@@ -156,6 +187,3 @@ class DuReaderZhidao(datalabs.GeneratorBasedBuilder):
                     "match_scores": match_scores,
                     "answer_docs": answer_docs,
                 }
-
-
-            

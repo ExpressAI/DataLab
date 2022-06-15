@@ -1,6 +1,7 @@
 """StreamHover: Livestream Transcript Summarization and Annotation"""
 import os
 import pickle
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -42,6 +43,7 @@ class StreamHoverConfig(datalabs.BuilderConfig):
 
 class StreamHoverDataset(datalabs.GeneratorBasedBuilder):
     """StreamHover Dataset."""
+
     _FILE_ID = "1kMmMX7ceYLOZuhdsgi_Qahc269Bpipha"
 
     BUILDER_CONFIGS = [
@@ -49,9 +51,11 @@ class StreamHoverDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="Livestream transcript summarization dataset.",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -70,7 +74,7 @@ class StreamHoverDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=["en"],
-            task_templates=self.config.task_templates
+            task_templates=self.config.task_templates,
         )
 
     def _split_generators(self, dl_manager):
@@ -80,18 +84,15 @@ class StreamHoverDataset(datalabs.GeneratorBasedBuilder):
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
-                gen_kwargs={
-                    "f_path": os.path.join(f_path, "Behance_train.pkl")}
+                gen_kwargs={"f_path": os.path.join(f_path, "Behance_train.pkl")},
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
-                gen_kwargs={
-                    "f_path": os.path.join(f_path, "Behance_val.pkl")}
+                gen_kwargs={"f_path": os.path.join(f_path, "Behance_val.pkl")},
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
-                gen_kwargs={
-                    "f_path": os.path.join(f_path, "Behance_test.pkl")}
+                gen_kwargs={"f_path": os.path.join(f_path, "Behance_test.pkl")},
             ),
         ]
 
@@ -108,8 +109,5 @@ class StreamHoverDataset(datalabs.GeneratorBasedBuilder):
             datas.append((text, summary))
 
         for id_, (text, summary) in enumerate(datas):
-            raw_feature_info = {
-                _ARTICLE: text,
-                _ABSTRACT: summary
-            }
+            raw_feature_info = {_ARTICLE: text, _ABSTRACT: summary}
             yield id_, raw_feature_info

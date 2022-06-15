@@ -1,6 +1,7 @@
 """WSD: A Novel Wikipedia based Dataset for Monolingual and Cross-Lingual Summarization"""
-import os
 import json
+import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -38,25 +39,32 @@ class WSDConfig(datalabs.BuilderConfig):
 class WSDDataset(datalabs.GeneratorBasedBuilder):
     """WSD Dataset."""
 
-    URL = {"monolingual": "https://wsd.h-its.org/wms.zip", "crosslingual": "https://wsd.h-its.org/wcls.zip"}
+    URL = {
+        "monolingual": "https://wsd.h-its.org/wms.zip",
+        "crosslingual": "https://wsd.h-its.org/wcls.zip",
+    }
 
     BUILDER_CONFIGS = [
         WSDConfig(
             name="monolingual",
             version=datalabs.Version("1.0.0"),
             description="English-to-English summarization dataset.",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         ),
         WSDConfig(
             name="crosslingual",
             version=datalabs.Version("1.0.0"),
             description="English-to-German summarization dataset.",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
-        )
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
+        ),
     ]
     DEFAULT_CONFIG_NAME = "crosslingual"
 
@@ -73,8 +81,11 @@ class WSDDataset(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             citation=_CITATION,
             version=self.VERSION,
-            languages=["de", "en"],  # https://huggingface.co/languages#:~:text=840-,German,-de
-            task_templates=self.config.task_templates
+            languages=[
+                "de",
+                "en",
+            ],  # https://huggingface.co/languages#:~:text=840-,German,-de
+            task_templates=self.config.task_templates,
         )
 
     def _split_generators(self, dl_manager):
@@ -92,16 +103,13 @@ class WSDDataset(datalabs.GeneratorBasedBuilder):
 
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN,
-                gen_kwargs={"f_path": train_f_path}
+                name=datalabs.Split.TRAIN, gen_kwargs={"f_path": train_f_path}
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION,
-                gen_kwargs={"f_path": valid_f_path}
+                name=datalabs.Split.VALIDATION, gen_kwargs={"f_path": valid_f_path}
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST,
-                gen_kwargs={"f_path": test_f_path}
+                name=datalabs.Split.TEST, gen_kwargs={"f_path": test_f_path}
             ),
         ]
 
@@ -121,8 +129,5 @@ class WSDDataset(datalabs.GeneratorBasedBuilder):
             datas.append((text.strip(), summary.strip()))
 
         for id_, (text, summary) in enumerate(datas):
-            raw_feature_info = {
-                _ARTICLE: text,
-                _ABSTRACT: summary
-            }
+            raw_feature_info = {_ARTICLE: text, _ABSTRACT: summary}
             yield id_, raw_feature_info

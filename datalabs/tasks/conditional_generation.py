@@ -47,20 +47,19 @@ class EventExtraction(ConditionalGeneration):
                 "level1": Value("string"),
                 "level2": Value("string"),
                 "level3": Value("string"),
-            }    
+            }
         }
     )
     label_schema: ClassVar[Features] = Features(
         {
             "reference": Sequence(
                 {
-                    "start": Value("int32"), 
-                    "end": Value("int32"),  
+                    "start": Value("int32"),
+                    "end": Value("int32"),
                     "type": Value("string"),
                     "entity": Value("string"),
                 }
             )
-            
         }
     )
 

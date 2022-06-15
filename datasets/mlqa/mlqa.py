@@ -18,7 +18,6 @@ import os
 import datalabs
 from datalabs import get_task, TaskType
 
-
 # TODO(mlqa): BibTeX citation
 _CITATION = """\
 @article{lewis2019mlqa,
@@ -47,6 +46,7 @@ LANG_URLS = {
     "zh": "https://drive.google.com/uc?export=download&id=13J-Dn-5ihOizMt-XtARtkvWoTpbSVjMe",
 }
 
+
 class MlqaConfig(datalabs.BuilderConfig):
     def __init__(self, data_url, **kwargs):
         """BuilderConfig for MLQA
@@ -54,12 +54,15 @@ class MlqaConfig(datalabs.BuilderConfig):
           data_url: `string`, url to the dataset
           **kwargs: keyword arguments forwarded to super.
         """
+
         def __init__(self, **kwargs):
             """
             Args:
                 **kwargs: keyword arguments forwarded to super.
             """
-            super(MlqaConfig, self).__init__(version=datalabs.Version("2.0.0", ""), **kwargs)
+            super(MlqaConfig, self).__init__(
+                version=datalabs.Version("2.0.0", ""), **kwargs
+            )
 
 
 class Mlqa(datalabs.GeneratorBasedBuilder):
@@ -69,8 +72,7 @@ class Mlqa(datalabs.GeneratorBasedBuilder):
     VERSION = datalabs.Version("2.0.0")
     BUILDER_CONFIGS = [
         datalabs.BuilderConfig(
-            name="{}".format(lang),
-            version=datalabs.Version("2.0.0")
+            name="{}".format(lang), version=datalabs.Version("2.0.0")
         )
         for lang in list(LANG_URLS.keys())
     ]
@@ -86,11 +88,12 @@ class Mlqa(datalabs.GeneratorBasedBuilder):
                     "id": datalabs.Value("string"),
                     "context": datalabs.Value("string"),
                     "question": datalabs.Value("string"),
-                    "answers":
-                        {
-                            "text": datalabs.features.Sequence(datalabs.Value("string")),
-                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
-                        }
+                    "answers": {
+                        "text": datalabs.features.Sequence(datalabs.Value("string")),
+                        "answer_start": datalabs.features.Sequence(
+                            datalabs.Value("int32")
+                        ),
+                    }
                     # These are the features of your dataset like images, labels ...
                 }
             ),
@@ -103,7 +106,9 @@ class Mlqa(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 get_task(TaskType.qa_extractive)(
-                    question_column="question", context_column="context", answers_column="answers"
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                 )
             ],
         )
@@ -121,7 +126,9 @@ class Mlqa(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 gen_kwargs={
-                    "filepath": os.path.join(data_dir, lang + "/test-" + lang + ".json"),
+                    "filepath": os.path.join(
+                        data_dir, lang + "/test-" + lang + ".json"
+                    ),
                 },
             ),
             datalabs.SplitGenerator(
@@ -144,7 +151,9 @@ class Mlqa(datalabs.GeneratorBasedBuilder):
                         question = qa["question"].strip()
                         id_ = qa["id"]
 
-                        answer_starts = [answer["answer_start"] for answer in qa["answers"]]
+                        answer_starts = [
+                            answer["answer_start"] for answer in qa["answers"]
+                        ]
                         answers = [answer["text"].strip() for answer in qa["answers"]]
 
                         yield key, {

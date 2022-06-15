@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -78,61 +79,72 @@ _TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/coreference_
 _VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/coreference_resolution/cluewsc2020/dev.json"
 # _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/coreference_resolution/cluewsc2020/test.json"
 
+
 class CLUEWSC2020(datalabs.GeneratorBasedBuilder):
     def _info(self):
-        
+
         return datalabs.DatasetInfo(
-
             description=_DESCRIPTION,
-
-            features=datalabs.Features({
-                "text": datalabs.Value("string"),
-                "pronoun": datalabs.Value("string"),
-                "pronoun_idx": datalabs.Value("int32"),
-                "quote": datalabs.Value("string"),
-                "quote_idx": datalabs.Value("int32"),
-                "label": datalabs.features.ClassLabel(names=["0", "1"])
-            }),
-            homepage='https://github.com/CLUEbenchmark/CLUEWSC2020',
+            features=datalabs.Features(
+                {
+                    "text": datalabs.Value("string"),
+                    "pronoun": datalabs.Value("string"),
+                    "pronoun_idx": datalabs.Value("int32"),
+                    "quote": datalabs.Value("string"),
+                    "quote_idx": datalabs.Value("int32"),
+                    "label": datalabs.features.ClassLabel(names=["0", "1"]),
+                }
+            ),
+            homepage="https://github.com/CLUEbenchmark/CLUEWSC2020",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.coreference_resolution)(
-                text_column = "text",
-                pronoun_column = "pronoun",
-                pronoun_idx_column = "pronoun_idx",
-                quote_column = "quote",
-                quote_idx_column = "quote_idx",
-                label_column = "label"
-            )],
+            task_templates=[
+                get_task(TaskType.coreference_resolution)(
+                    text_column="text",
+                    pronoun_column="pronoun",
+                    pronoun_idx_column="pronoun_idx",
+                    quote_column="quote",
+                    quote_idx_column="quote_idx",
+                    label_column="label",
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 
     def _generate_examples(self, filepath):
-        
-        textualize_label = {
-            "true": "0",
-            "false": "1"
-        }
+
+        textualize_label = {"true": "0", "false": "1"}
 
         with open(filepath, encoding="utf-8") as f:
             for id_, line in enumerate(f.readlines()):
                 line = json.loads(line.strip())
-                text = line['text']
-                pronoun = line['target']['span2_text']
-                pronoun_idx = int(line['target']['span2_index'])
-                quote = line['target']['span1_text']
-                quote_idx = int(line['target']['span1_index'])
-                label = line['label']
-                if label in textualize_label: 
+                text = line["text"]
+                pronoun = line["target"]["span2_text"]
+                pronoun_idx = int(line["target"]["span2_index"])
+                quote = line["target"]["span1_text"]
+                quote_idx = int(line["target"]["span1_index"])
+                label = line["label"]
+                if label in textualize_label:
                     label = textualize_label[label]
-                    yield id_, {'text': text, 'pronoun': pronoun, 'pronoun_idx': pronoun_idx, 'quote': quote, 'quote_idx': quote_idx, 'label': label}
+                    yield id_, {
+                        "text": text,
+                        "pronoun": pronoun,
+                        "pronoun_idx": pronoun_idx,
+                        "quote": quote,
+                        "quote_idx": quote_idx,
+                        "label": label,
+                    }

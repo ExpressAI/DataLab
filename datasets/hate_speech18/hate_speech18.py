@@ -62,15 +62,23 @@ class HateSpeech18(datalabs.GeneratorBasedBuilder):
                     "user_id": datalabs.Value("int64"),
                     "subforum_id": datalabs.Value("int64"),
                     "num_contexts": datalabs.Value("int64"),
-                    "label": datalabs.features.ClassLabel(names=["no hate",
-                                                                 "hate",
-                                                                 "unknown", ]),
+                    "label": datalabs.features.ClassLabel(
+                        names=[
+                            "no hate",
+                            "hate",
+                            "unknown",
+                        ]
+                    ),
                 }
             ),
             supervised_keys=None,
             homepage="https://github.com/Vicomtech/hate-speech-dataset",
             citation=_CITATION,
-            task_templates=[get_task(TaskType.hatespeech_identification)(text_column="text", label_column="label")],
+            task_templates=[
+                get_task(TaskType.hatespeech_identification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -78,21 +86,32 @@ class HateSpeech18(datalabs.GeneratorBasedBuilder):
 
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": os.path.join(dl_dir, "hate-speech-dataset-master")}
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={
+                    "filepath": os.path.join(dl_dir, "hate-speech-dataset-master")
+                },
             ),
         ]
 
     def _generate_examples(self, filepath):
 
-        textualize_label = {"hate":"hate",
-                                 "relation":"hate",
-                                 "noHate":"no hate",
-                                 "idk/skip":"unknown"}
+        textualize_label = {
+            "hate": "hate",
+            "relation": "hate",
+            "noHate": "no hate",
+            "idk/skip": "unknown",
+        }
 
-        with open(os.path.join(filepath, "annotations_metadata.csv"), encoding="utf-8") as csv_file:
+        with open(
+            os.path.join(filepath, "annotations_metadata.csv"), encoding="utf-8"
+        ) as csv_file:
 
             csv_reader = csv.reader(
-                csv_file, quotechar='"', delimiter=",", quoting=csv.QUOTE_ALL, skipinitialspace=True
+                csv_file,
+                quotechar='"',
+                delimiter=",",
+                quoting=csv.QUOTE_ALL,
+                skipinitialspace=True,
             )
 
             next(csv_reader)
@@ -105,13 +124,8 @@ class HateSpeech18(datalabs.GeneratorBasedBuilder):
 
                 path = os.path.join(all_files_path, file_id + ".txt")
 
-
-
-
-
                 with open(path, encoding="utf-8") as file:
                     text = file.read()
-
 
                 yield idx, {
                     "text": text,

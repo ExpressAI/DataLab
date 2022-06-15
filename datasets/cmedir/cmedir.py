@@ -17,10 +17,9 @@
 
 import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
-
-
 
 _CITATION = """\
 @article{zhang2020conceptualized,
@@ -37,10 +36,15 @@ Information retrieval aims to retrieve most related documents given search queri
 _HOMEPAGE = "https://github.com/alibaba-research/ChineseBLUE/"
 _LICENSE = "Available for research use"
 
-_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/retrieval/cMedIR/train.json"
-_VALIDATION_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/retrieval/cMedIR/dev.json"
-_TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/retrieval/cMedIR/test.json"
-
+_TRAIN_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/retrieval/cMedIR/train.json"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/retrieval/cMedIR/dev.json"
+)
+_TEST_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/retrieval/cMedIR/test.json"
+)
 
 
 class cMedIR(datalabs.GeneratorBasedBuilder):
@@ -51,24 +55,21 @@ class cMedIR(datalabs.GeneratorBasedBuilder):
                 {
                     "id": datalabs.Value("string"),
                     "query": datalabs.Value("string"),
-                    "answers": 
-                        {
-                            "title": datalabs.features.Sequence(datalabs.Value("string")),
-                            "label": datalabs.features.Sequence(datalabs.Value("int32")),
-                        },
-
+                    "answers": {
+                        "title": datalabs.features.Sequence(datalabs.Value("string")),
+                        "label": datalabs.features.Sequence(datalabs.Value("int32")),
+                    },
                 }
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
             license=_LICENSE,
-            languages=['zh'],
+            languages=["zh"],
             version=self.VERSION,
             task_templates=[
                 get_task(TaskType.retrieval)(
-                    query_column= "query",
-                    answers_column="answers"
+                    query_column="query", answers_column="answers"
                 )
             ],
         )
@@ -79,27 +80,31 @@ class cMedIR(datalabs.GeneratorBasedBuilder):
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
 
         with open(filepath, encoding="utf-8") as f:
             for id, line in enumerate(f):
-                example=json.loads(line)
+                example = json.loads(line)
 
                 label = [doc["label"] for doc in example["documents"]]
                 title = [doc["title"] for doc in example["documents"]]
 
                 yield id, {
                     "id": id,
-                    "query":   example["query"],
+                    "query": example["query"],
                     "answers": {
-                        "label":label ,
-                        "title":title ,
+                        "label": label,
+                        "title": title,
                     },
                 }
-
-

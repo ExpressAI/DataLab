@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -52,11 +53,12 @@ _VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/questio
 
 _HOMEPAGE = "https://github.com/baidu/DuReader/tree/master/DuReader-Robust"
 
-class DuReaderRobustConfig(datalabs.BuilderConfig):
 
+class DuReaderRobustConfig(datalabs.BuilderConfig):
     def __init__(self, **kwargs):
 
         super(DuReaderRobustConfig, self).__init__(**kwargs)
+
 
 class DuReaderRobust(datalabs.GeneratorBasedBuilder):
 
@@ -67,14 +69,14 @@ class DuReaderRobust(datalabs.GeneratorBasedBuilder):
             description="reading_comprehension",
         ),
     ]
-    
+
     def _info(self):
 
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                    "question": datalabs.Value("string"), 
+                    "question": datalabs.Value("string"),
                     "context": datalabs.Value("string"),
                     "answers": {
                         "text": datalabs.features.Sequence(datalabs.Value("string")),
@@ -85,26 +87,29 @@ class DuReaderRobust(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            languages = ["zh"],
+            languages=["zh"],
             task_templates=[
                 get_task(TaskType.qa)(
-                    question_column = "question",
-                    context_column = "context",
-                    answers_column = "answers",
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                 )
             ],
         )
-
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 

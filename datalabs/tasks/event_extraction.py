@@ -17,13 +17,9 @@ class EventExtraction(TaskTemplate):
             task_cls.get_task() for task_cls in self.get_task_parents()
         ]
         if self.input_schema is None:
-            self.input_schema: ClassVar[Features] = Features(
-                {"text": Value("string")}
-            )
+            self.input_schema: ClassVar[Features] = Features({"text": Value("string")})
         if self.label_schema is None:
-            self.label_schema: ClassVar[Features] = Features(
-                {"event": Value("string")}
-            )
+            self.label_schema: ClassVar[Features] = Features({"event": Value("string")})
 
 
 @register_task(TaskType.event_entity_extraction)
@@ -36,6 +32,7 @@ class EventEntityExtraction(EventExtraction):
 
     text_column: str = "text"
     entity_column: str = "event_entity"
+
 
 @register_task(TaskType.event_arguments_extraction)
 @dataclass
@@ -54,6 +51,7 @@ class EventArgumentsExtraction(EventExtraction):
 
     text_column: str = "text"
     event_column: str = "arguments"
+
 
 @register_task(TaskType.event_relation_extraction_causality)
 @dataclass

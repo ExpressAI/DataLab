@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import csv
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -40,10 +41,10 @@ _HOMEPAGE = "https://www.biendata.xyz/competition/ccks_2020_4_1"
 
 
 class CCKS2020FinEEConfig(datalabs.BuilderConfig):
-    
     def __init__(self, **kwargs):
 
         super(CCKS2020FinEEConfig, self).__init__(**kwargs)
+
 
 class CCKS2020FinEE(datalabs.GeneratorBasedBuilder):
 
@@ -84,9 +85,11 @@ class CCKS2020FinEE(datalabs.GeneratorBasedBuilder):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
@@ -96,4 +99,8 @@ class CCKS2020FinEE(datalabs.GeneratorBasedBuilder):
             for id_, line in enumerate(f):
                 line = line.rstrip().split("\t")
                 text, event_type, event_entity = line[1], line[2], line[3]
-                yield id_, {'text': text, 'event_type': event_type, 'event_entity': event_entity}
+                yield id_, {
+                    "text": text,
+                    "event_type": event_type,
+                    "event_entity": event_entity,
+                }

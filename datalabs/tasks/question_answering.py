@@ -286,6 +286,7 @@ class QuestionAnsweringMultipleChoiceWithoutContext(QuestionAnsweringMultipleCho
     answers_column: str = "answers"
     options_column: str = "options"
 
+
 @register_task(TaskType.qa_open_domain)
 @dataclass
 class QuestionAnsweringOpenDomain(QuestionAnswering):

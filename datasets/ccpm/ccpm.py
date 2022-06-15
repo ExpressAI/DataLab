@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -37,18 +38,22 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CCPM/train.jsonl"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CCPM/valid.jsonl"
+_TRAIN_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CCPM/train.jsonl"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CCPM/valid.jsonl"
+)
 # _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CCPM/test_public.jsonl"
 
 _HOMEPAGE = "https://github.com/THUNLP-AIPoet/CCPM"
 
 
 class CCPMConfig(datalabs.BuilderConfig):
-    
     def __init__(self, **kwargs):
 
         super(CCPMConfig, self).__init__(**kwargs)
+
 
 class CCPM(datalabs.GeneratorBasedBuilder):
 
@@ -95,8 +100,12 @@ class CCPM(datalabs.GeneratorBasedBuilder):
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 

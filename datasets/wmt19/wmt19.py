@@ -21,7 +21,6 @@ import datalabs
 
 from .wmt_utils import CWMT_SUBSET_NAMES, Wmt, WmtConfig
 
-
 _URL = "http://www.statmt.org/wmt19/translation-task.html"
 # TODO(adarob): Update with citation of overview paper once it is published.
 _CITATION = """
@@ -32,7 +31,9 @@ _CITATION = """
 }
 """
 
-_LANGUAGE_PAIRS = [(lang, "en") for lang in ["cs", "de", "fi", "gu", "kk", "lt", "ru", "zh"]] + [("fr", "de")]
+_LANGUAGE_PAIRS = [
+    (lang, "en") for lang in ["cs", "de", "fi", "gu", "kk", "lt", "ru", "zh"]
+] + [("fr", "de")]
 
 
 class Wmt19(Wmt):
@@ -77,5 +78,9 @@ class Wmt19(Wmt):
                 "rapid_2019",
             ]
             + CWMT_SUBSET_NAMES,
-            datalabs.Split.VALIDATION: ["euelections_dev2019", "newsdev2019", "newstest2018"],
+            datalabs.Split.VALIDATION: [
+                "euelections_dev2019",
+                "newsdev2019",
+                "newstest2018",
+            ],
         }

@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -33,18 +34,24 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CAIL2019-SCM/train.json"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CAIL2019-SCM/valid.json"
-_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CAIL2019-SCM/test.json"
+_TRAIN_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CAIL2019-SCM/train.json"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CAIL2019-SCM/valid.json"
+)
+_TEST_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CAIL2019-SCM/test.json"
+)
 
 _HOMEPAGE = "https://github.com/china-ai-law-challenge/CAIL2019/tree/master/scm"
 
 
 class CAIL2019Config(datalabs.BuilderConfig):
-    
     def __init__(self, **kwargs):
 
         super(CAIL2019Config, self).__init__(**kwargs)
+
 
 class CAIL2019(datalabs.GeneratorBasedBuilder):
 
@@ -90,11 +97,17 @@ class CAIL2019(datalabs.GeneratorBasedBuilder):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):

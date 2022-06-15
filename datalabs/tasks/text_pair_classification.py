@@ -91,6 +91,7 @@ class KeywordRecognition(TextPairClassification):
     )
     label_schema: ClassVar[Features] = Features({"label": ClassLabel})
 
+
 @register_task(TaskType.question_answering_matching)
 @dataclass
 class QuestionAnsweringMatching(TextPairClassification):

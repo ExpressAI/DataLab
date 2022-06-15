@@ -1,6 +1,7 @@
 """K-SportsSum: Knowledge Enhanced Sports Game Summarization"""
-import os
 import json
+import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -43,6 +44,7 @@ class KSportsSumConfig(datalabs.BuilderConfig):
 
 class KSportsSumDataset(datalabs.GeneratorBasedBuilder):
     """K-SportsSum Dataset."""
+
     _FILE_ID = "1RGWIz3Nw_kzfgIYo_Ke9elLfPOg0rS4V"
 
     BUILDER_CONFIGS = [
@@ -50,8 +52,11 @@ class KSportsSumDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="Dataset for sports game summarization.",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE, reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -63,7 +68,7 @@ class KSportsSumDataset(datalabs.GeneratorBasedBuilder):
                 {
                     _ARTICLE: {
                         "commentary": datalabs.Sequence(datalabs.Value("string")),
-                        "score": datalabs.Sequence(datalabs.Value("string"))
+                        "score": datalabs.Sequence(datalabs.Value("string")),
                     },
                     _ABSTRACT: datalabs.Value("string"),
                 }
@@ -73,9 +78,10 @@ class KSportsSumDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT),
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                ),
             ],
         )
 
@@ -85,18 +91,15 @@ class KSportsSumDataset(datalabs.GeneratorBasedBuilder):
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
-                gen_kwargs={
-                    "f_path": os.path.join(f_path, "K-SportsSum/train.json")}
+                gen_kwargs={"f_path": os.path.join(f_path, "K-SportsSum/train.json")},
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
-                gen_kwargs={
-                    "f_path": os.path.join(f_path, "K-SportsSum/val.json")}
+                gen_kwargs={"f_path": os.path.join(f_path, "K-SportsSum/val.json")},
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
-                gen_kwargs={
-                    "f_path": os.path.join(f_path, "K-SportsSum/test.json")}
+                gen_kwargs={"f_path": os.path.join(f_path, "K-SportsSum/test.json")},
             ),
         ]
 
@@ -104,7 +107,6 @@ class KSportsSumDataset(datalabs.GeneratorBasedBuilder):
         """Generate K-SportsSum examples."""
         with open(f_path) as f:
             original_datas = json.load(f)
-
 
         datas = []
         for original_data in original_datas:
@@ -116,10 +118,7 @@ class KSportsSumDataset(datalabs.GeneratorBasedBuilder):
 
         for id_, data in enumerate(datas):
             raw_feature_info = {
-                _ARTICLE: {
-                    "commentary": data["commentary"],
-                    "score": data["score"]
-                },
-                _ABSTRACT: data["summary"]
+                _ARTICLE: {"commentary": data["commentary"], "score": data["score"]},
+                _ABSTRACT: data["summary"],
             }
             yield id_, raw_feature_info

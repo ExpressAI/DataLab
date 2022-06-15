@@ -12,6 +12,7 @@
 # limitations under the License.
 
 import csv
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -53,6 +54,7 @@ _TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classi
 _VALIDATION_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/ASAP/ASAP_SENT/dev.tsv"
 # _TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/ASAP/ASAP_SENT/test.tsv"
 
+
 class ASAPSENT(datalabs.GeneratorBasedBuilder):
     def _info(self):
         return datalabs.DatasetInfo(
@@ -60,13 +62,19 @@ class ASAPSENT(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["Excellent","Good","Average","Fair","Poor"])
+                    "label": datalabs.features.ClassLabel(
+                        names=["Excellent", "Good", "Average", "Fair", "Poor"]
+                    ),
                 }
             ),
             homepage="https://aclanthology.org/2021.naacl-main.167",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.sentiment_classification)(text_column="text", label_column="label")],
+            task_templates=[
+                get_task(TaskType.sentiment_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -74,11 +82,14 @@ class ASAPSENT(datalabs.GeneratorBasedBuilder):
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
-       
 
     def _generate_examples(self, filepath):
 
@@ -92,11 +103,11 @@ class ASAPSENT(datalabs.GeneratorBasedBuilder):
             "2.0": "Fair",
             "3.0": "Average",
             "4.0": "Good",
-            "5.0": "Excellent"
+            "5.0": "Excellent",
         }
 
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter = '\t')
+            csv_reader = csv.reader(csv_file, delimiter="\t")
             for id_, row in enumerate(csv_reader):
                 if len(row) == 2:
                     text, label = row

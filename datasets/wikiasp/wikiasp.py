@@ -1,8 +1,9 @@
 """WikiAsp:  A Dataset for Multi-domain Aspect-based Summarization"""
+import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
-import json
 
 _CITATION = """\
 @article{10.1162/tacl_a_00362,
@@ -46,8 +47,9 @@ class WikiAspConfig(datalabs.BuilderConfig):
 
 class WikiAspDataset(datalabs.GeneratorBasedBuilder):
     """WikiAsp Dataset."""
+
     _DOMAINS = [
-        "Album", 
+        "Album",
         "Animal",
         "Artist",
         "Building",
@@ -66,17 +68,25 @@ class WikiAspDataset(datalabs.GeneratorBasedBuilder):
         "Software",
         "TelevisionShow",
         "Town",
-        "WrittenWork"
+        "WrittenWork",
+    ]
+    BUILDER_CONFIGS = list(
+        [
+            WikiAspConfig(
+                name=x,
+                version=datalabs.Version("1.0.0"),
+                description=f"WikiAsp Dataset for aspect-based summarization, {x} split",
+                task_templates=[
+                    get_task(TaskType.query_summarization)(
+                        source_column=_ARTICLE,
+                        reference_column=_ABSTRACT,
+                        guidance_column=_KEY,
+                    )
+                ],
+            )
+            for x in _DOMAINS
         ]
-    BUILDER_CONFIGS = list([WikiAspConfig(
-            name=x,
-            version=datalabs.Version("1.0.0"),
-            description=f"WikiAsp Dataset for aspect-based summarization, {x} split",
-            task_templates=[get_task(TaskType.query_summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT,
-                guidance_column=_KEY)]
-        ) for x in _DOMAINS])
+    )
     DEFAULT_CONFIG_NAME = "Album"
 
     def _info(self):
@@ -94,10 +104,12 @@ class WikiAspDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=[self.config.name],
-            task_templates=[get_task(TaskType.query_summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT,
-                guidance_column=_KEY),
+            task_templates=[
+                get_task(TaskType.query_summarization)(
+                    source_column=_ARTICLE,
+                    reference_column=_ABSTRACT,
+                    guidance_column=_KEY,
+                ),
             ],
         )
 
@@ -107,13 +119,16 @@ class WikiAspDataset(datalabs.GeneratorBasedBuilder):
         path = dl_manager.download_and_extract(url)
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"f_path": os.path.join(path, f"{name}/train.jsonl")},
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"f_path": os.path.join(path, f"{name}/train.jsonl")},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION, gen_kwargs={"f_path": os.path.join(path, f"{name}/valid.jsonl")},
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"f_path": os.path.join(path, f"{name}/valid.jsonl")},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST, gen_kwargs={"f_path": os.path.join(path, f"{name}/test.jsonl")},
+                name=datalabs.Split.TEST,
+                gen_kwargs={"f_path": os.path.join(path, f"{name}/test.jsonl")},
             ),
         ]
 
@@ -127,4 +142,3 @@ class WikiAspDataset(datalabs.GeneratorBasedBuilder):
                 for t in data["targets"]:
                     yield cnt, {_ARTICLE: text, _ABSTRACT: t[1], _KEY: t[0]}
                     cnt += 1
-                
