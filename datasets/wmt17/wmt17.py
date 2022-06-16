@@ -1,4 +1,3 @@
-
 # coding=utf-8
 # Copyright 2020 The TensorFlow Datasets Authors, the HuggingFace Datasets Authors,
 # and the DataLab Authors.
@@ -21,7 +20,6 @@
 import datalabs
 
 from .wmt_utils import CWMT_SUBSET_NAMES, Wmt, WmtConfig
-
 
 _URL = "http://www.statmt.org/wmt17/translation-task.html"
 _CITATION = """

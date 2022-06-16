@@ -1,5 +1,6 @@
 """WikiLingua: A Multilingual Abstractive Summarization Dataset"""
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -53,8 +54,28 @@ class WikiLinguaConfig(datalabs.BuilderConfig):
 
 class WikiLinguaDataset(datalabs.GeneratorBasedBuilder):
     """WikiLingua Dataset."""
+
     _FILE_ID = "1PM7GFCy2gJL1WHqQz1dzqIDIEN6kfRoi"
-    _LANG = ["en", "es", "pt", "fr", "de", "ru", "it", "id", "nl", "ar", "zh", "vi", "th", "ja", "ko", "hi", "cs", "tr"]
+    _LANG = [
+        "en",
+        "es",
+        "pt",
+        "fr",
+        "de",
+        "ru",
+        "it",
+        "id",
+        "nl",
+        "ar",
+        "zh",
+        "vi",
+        "th",
+        "ja",
+        "ko",
+        "hi",
+        "cs",
+        "tr",
+    ]
     _LANG_NAME = {
         "en": "english",
         "es": "spanish",
@@ -75,27 +96,71 @@ class WikiLinguaDataset(datalabs.GeneratorBasedBuilder):
         "cs": "czech",
         "tr": "turkish",
     }
-    BUILDER_CONFIGS = list([
-        WikiLinguaConfig(
-            name=l,
-            version=datalabs.Version("1.0.0"),
-            description=f"WikiLingua Dataset for multilingual summarization, {l} split",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT),
+    BUILDER_CONFIGS = list(
+        [
+            WikiLinguaConfig(
+                name=l,
+                version=datalabs.Version("1.0.0"),
+                description=f"WikiLingua Dataset for multilingual summarization, {l} split",
+                task_templates=[
+                    get_task(TaskType.summarization)(
+                        source_column=_ARTICLE, reference_column=_ABSTRACT
+                    ),
+                ],
+            )
+            for l in [
+                "en",
+                "es",
+                "pt",
+                "fr",
+                "de",
+                "ru",
+                "it",
+                "id",
+                "nl",
+                "ar",
+                "zh",
+                "vi",
+                "th",
+                "ja",
+                "ko",
+                "hi",
+                "cs",
+                "tr",
             ]
-        ) for l in ["en", "es", "pt", "fr", "de", "ru", "it", "id", "nl", "ar", "zh", "vi", "th", "ja", "ko", "hi", "cs", "tr"]
-    ] + [
-        WikiLinguaConfig(
-            name=f"{l}-en",
-            version=datalabs.Version("1.0.0"),
-            description=f"WikiLingua Dataset for crosslingual summarization, {l}-en split",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT),
+        ]
+        + [
+            WikiLinguaConfig(
+                name=f"{l}-en",
+                version=datalabs.Version("1.0.0"),
+                description=f"WikiLingua Dataset for crosslingual summarization, {l}-en split",
+                task_templates=[
+                    get_task(TaskType.summarization)(
+                        source_column=_ARTICLE, reference_column=_ABSTRACT
+                    ),
+                ],
+            )
+            for l in [
+                "es",
+                "pt",
+                "fr",
+                "de",
+                "ru",
+                "it",
+                "id",
+                "nl",
+                "ar",
+                "zh",
+                "vi",
+                "th",
+                "ja",
+                "ko",
+                "hi",
+                "cs",
+                "tr",
             ]
-        ) for l in ["es", "pt", "fr", "de", "ru", "it", "id", "nl", "ar", "zh", "vi", "th", "ja", "ko", "hi", "cs", "tr"]
-    ])
+        ]
+    )
     DEFAULT_CONFIG_NAME = "en"
 
     def _info(self):
@@ -112,11 +177,12 @@ class WikiLinguaDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             license=_LICENSE,
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)],
-            languages=self.config.name.split('-'),
-
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
+            languages=self.config.name.split("-"),
         )
 
     def _split_generators(self, dl_manager):
@@ -129,23 +195,41 @@ class WikiLinguaDataset(datalabs.GeneratorBasedBuilder):
                 datalabs.SplitGenerator(
                     name=datalabs.Split.TRAIN,
                     gen_kwargs={
-                        "text_path": os.path.join(f_path, f"./WikiLingua_data_splits/{src_name}/train.src.{src_id}"), 
-                        "summary_path": os.path.join(f_path, f"./WikiLingua_data_splits/{src_name}/train.tgt.{tgt_id}")
-                        }
+                        "text_path": os.path.join(
+                            f_path,
+                            f"./WikiLingua_data_splits/{src_name}/train.src.{src_id}",
+                        ),
+                        "summary_path": os.path.join(
+                            f_path,
+                            f"./WikiLingua_data_splits/{src_name}/train.tgt.{tgt_id}",
+                        ),
+                    },
                 ),
                 datalabs.SplitGenerator(
                     name=datalabs.Split.VALIDATION,
                     gen_kwargs={
-                        "text_path": os.path.join(f_path, f"./WikiLingua_data_splits/{src_name}/val.src.{src_id}"), 
-                        "summary_path": os.path.join(f_path, f"./WikiLingua_data_splits/{src_name}/val.tgt.{tgt_id}")
-                        }
+                        "text_path": os.path.join(
+                            f_path,
+                            f"./WikiLingua_data_splits/{src_name}/val.src.{src_id}",
+                        ),
+                        "summary_path": os.path.join(
+                            f_path,
+                            f"./WikiLingua_data_splits/{src_name}/val.tgt.{tgt_id}",
+                        ),
+                    },
                 ),
                 datalabs.SplitGenerator(
                     name=datalabs.Split.TEST,
                     gen_kwargs={
-                        "text_path": os.path.join(f_path, f"./WikiLingua_data_splits/{src_name}/test.src.{src_id}"), 
-                        "summary_path": os.path.join(f_path, f"./WikiLingua_data_splits/{src_name}/test.tgt.{tgt_id}")
-                        }
+                        "text_path": os.path.join(
+                            f_path,
+                            f"./WikiLingua_data_splits/{src_name}/test.src.{src_id}",
+                        ),
+                        "summary_path": os.path.join(
+                            f_path,
+                            f"./WikiLingua_data_splits/{src_name}/test.tgt.{tgt_id}",
+                        ),
+                    },
                 ),
             ]
         else:  # multilingual summarization
@@ -155,31 +239,44 @@ class WikiLinguaDataset(datalabs.GeneratorBasedBuilder):
                 datalabs.SplitGenerator(
                     name=datalabs.Split.TRAIN,
                     gen_kwargs={
-                        "text_path": os.path.join(f_path, f"./WikiLingua_data_splits/{name}/train.src.{id}"), 
-                        "summary_path": os.path.join(f_path, f"./WikiLingua_data_splits/{name}/train.tgt.{id}")
-                        }
+                        "text_path": os.path.join(
+                            f_path, f"./WikiLingua_data_splits/{name}/train.src.{id}"
+                        ),
+                        "summary_path": os.path.join(
+                            f_path, f"./WikiLingua_data_splits/{name}/train.tgt.{id}"
+                        ),
+                    },
                 ),
                 datalabs.SplitGenerator(
                     name=datalabs.Split.VALIDATION,
                     gen_kwargs={
-                        "text_path": os.path.join(f_path, f"./WikiLingua_data_splits/{name}/val.src.{id}"), 
-                        "summary_path": os.path.join(f_path, f"./WikiLingua_data_splits/{name}/val.tgt.{id}")
-                        }
+                        "text_path": os.path.join(
+                            f_path, f"./WikiLingua_data_splits/{name}/val.src.{id}"
+                        ),
+                        "summary_path": os.path.join(
+                            f_path, f"./WikiLingua_data_splits/{name}/val.tgt.{id}"
+                        ),
+                    },
                 ),
                 datalabs.SplitGenerator(
                     name=datalabs.Split.TEST,
                     gen_kwargs={
-                        "text_path": os.path.join(f_path, f"./WikiLingua_data_splits/{name}/test.src.{id}"), 
-                        "summary_path": os.path.join(f_path, f"./WikiLingua_data_splits/{name}/test.tgt.{id}")
-                        }
+                        "text_path": os.path.join(
+                            f_path, f"./WikiLingua_data_splits/{name}/test.src.{id}"
+                        ),
+                        "summary_path": os.path.join(
+                            f_path, f"./WikiLingua_data_splits/{name}/test.tgt.{id}"
+                        ),
+                    },
                 ),
             ]
 
     def _generate_examples(self, text_path, summary_path):
         """Generate WikiLingua examples."""
-        with open(text_path, encoding="utf-8") as f_src, open(summary_path, encoding="utf-8") as f_tgt: 
+        with open(text_path, encoding="utf-8") as f_src, open(
+            summary_path, encoding="utf-8"
+        ) as f_tgt:
             for (id_, (x, y)) in enumerate(zip(f_src, f_tgt)):
                 x = x.strip()
                 y = y.strip()
                 yield id_, {_ARTICLE: x, _ABSTRACT: y}
-                

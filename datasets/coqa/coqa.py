@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import re
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -40,11 +41,12 @@ _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answ
 
 _HOMEPAGE = "http://www.sigkg.cn/ccks2018/"
 
-class COQAConfig(datalabs.BuilderConfig):
 
+class COQAConfig(datalabs.BuilderConfig):
     def __init__(self, **kwargs):
 
         super(COQAConfig, self).__init__(**kwargs)
+
 
 class COQA(datalabs.GeneratorBasedBuilder):
 
@@ -54,56 +56,87 @@ class COQA(datalabs.GeneratorBasedBuilder):
             version=datalabs.Version("1.0.0"),
             description="open_domain_question_answering",
         ),
+        COQAConfig(
+                name="text_to_sql",
+                version=datalabs.Version("1.0.0"),
+                description="text_to_sql",
+        ),
     ]
     
+    DEFAULT_CONFIG_NAME = "open_domain_question_answering"
+
     def _info(self):
 
-        return datalabs.DatasetInfo(
-            description=_DESCRIPTION,
-            features=datalabs.Features(
-                {
-                    "question": datalabs.Value("string"), 
-                    "query": datalabs.Value("string"),
-                    "answers": datalabs.features.Sequence(datalabs.Value("string")),
-                }
-            ),
-            supervised_keys=None,
-            homepage=_HOMEPAGE,
-            citation=_CITATION,
-            languages = ["zh"],
-            task_templates=[
-                get_task(TaskType.qa_open_domain)(
-                    question_column = "question",
-                    context_column = "query",
-                    answers_column = "answers",
-                )
-            ],
-        )
-
+        if self.config.name == "open_domain_question_answering":
+            return datalabs.DatasetInfo(
+                description=_DESCRIPTION,
+                features=datalabs.Features(
+                    {
+                        "question": datalabs.Value("string"), 
+                        "answers": datalabs.features.Sequence(datalabs.Value("string")),
+                    }
+                ),
+                supervised_keys=None,
+                homepage=_HOMEPAGE,
+                citation=_CITATION,
+                languages = ["zh"],
+                task_templates=[
+                    get_task(TaskType.qa_open_domain)(
+                        question_column = "question",
+                        answers_column = "answers",
+                    )
+                ],
+            )
+        else:
+            return datalabs.DatasetInfo(
+                description=_DESCRIPTION,
+                features=datalabs.Features(
+                    {
+                        "question": datalabs.Value("string"), 
+                        "query": datalabs.Value("string"),
+                    }
+                ),
+                supervised_keys=None,
+                homepage=_HOMEPAGE,
+                citation=_CITATION,
+                languages = ["zh"],
+                task_templates=[
+                    get_task(TaskType.text_to_sql)(
+                        question_column = "question",
+                        query_column = "query",
+                    )
+                ],
+            )
 
     def _split_generators(self, dl_manager):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
 
         id_ = 0
-        
-        with open(filepath, encoding='utf8') as f:
+
+        with open(filepath, encoding="utf8") as f:
             line = True
             str_pat = re.compile(r'"(.*?)"')
             while line:
                 line = f.readline()
-                if len(line.split(':')) > 1:
-                    question = line.split(':')[1].rstrip()
+                if len(line.split(":")) > 1:
+                    question = line.split(":")[1].rstrip()
                 line = f.readline()
                 query = line.rstrip()
                 line = f.readline()
@@ -116,11 +149,8 @@ class COQA(datalabs.GeneratorBasedBuilder):
                         [answers.insert(index, d) for d in li]
                 line = f.readline()
                 if line == '\n':
-                    yield id_, {"question": question, "query": query, "answers": answers}
+                    if self.config.name == "open_domain_question_answering":
+                        yield id_, {"question": question, "answers": answers}
+                    else:
+                        yield id_, {"question": question, "query": query}
                     id_ = id_ + 1
-                    
-
-
-
-
-            

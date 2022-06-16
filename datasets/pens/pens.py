@@ -1,5 +1,6 @@
 import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -32,7 +33,7 @@ _CITATION = """\
 """
 _ABSTRACT = "summary"
 _ARTICLE = "text"
-        
+
 
 class PENSConfig(datalabs.BuilderConfig):
     """BuilderConfig for PENS."""
@@ -47,6 +48,7 @@ class PENSConfig(datalabs.BuilderConfig):
 
 class PENSDataset(datalabs.GeneratorBasedBuilder):
     """PENS Dataset."""
+
     BUILDER_CONFIGS = [
         PENSConfig(
             name="document",
@@ -60,11 +62,11 @@ class PENSDataset(datalabs.GeneratorBasedBuilder):
 
         features_dataset = {}
         features_sample = datalabs.Features(
-                {
-                    _ARTICLE: datalabs.Value("string"),
-                    _ABSTRACT: datalabs.Value("string"),
-                }
-            )
+            {
+                _ARTICLE: datalabs.Value("string"),
+                _ABSTRACT: datalabs.Value("string"),
+            }
+        )
 
         # Should return a datalab.DatasetInfo object
         return datalabs.DatasetInfo(
@@ -74,17 +76,21 @@ class PENSDataset(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://msnews.github.io/pens.html",
             citation=_CITATION,
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT),
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                ),
             ],
         )
 
     def _split_generators(self, dl_manager):
-        f_path = dl_manager.download_and_extract("https://msrshare.blob.core.windows.net/msr/training_set.zip")
+        f_path = dl_manager.download_and_extract(
+            "https://msrshare.blob.core.windows.net/msr/training_set.zip"
+        )
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"f_path": os.path.join(f_path, "./training_set/news.tsv")}
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"f_path": os.path.join(f_path, "./training_set/news.tsv")},
             ),
         ]
 
@@ -96,9 +102,3 @@ class PENSDataset(datalabs.GeneratorBasedBuilder):
             for id_, x in enumerate(f):
                 x = x.strip().split("\t")
                 yield id_, {"text": x[4].strip(), "summary": x[3].strip()}
-
-
-
-
-
-

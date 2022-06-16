@@ -17,9 +17,9 @@
 """XL-Sum abstractive summarization dataset."""
 import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
-
 
 _CITATION = """\
 @inproceedings{hasan-etal-2021-xl,
@@ -105,8 +105,7 @@ class Xlsum(datalabs.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
         datalabs.BuilderConfig(
-            name="{}".format(lang),
-            version=datalabs.Version("2.0.0")
+            name="{}".format(lang), version=datalabs.Version("2.0.0")
         )
         for lang in _LANGUAGES.keys()
     ]
@@ -128,9 +127,10 @@ class Xlsum(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             license=_LICENSE,
             version=self.VERSION,
-            task_templates=[get_task(TaskType.summarization)(
-                source_column="text",
-                reference_column="summary")
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column="text", reference_column="summary"
+                )
             ],
             languages=[_LANGUAGES[self.config.name]],
         )

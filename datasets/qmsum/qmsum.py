@@ -2,12 +2,11 @@
 
 import json
 import os
-import datalabs
-from datalabs import get_task, TaskType
+
 from nltk import word_tokenize
 
-
-
+import datalabs
+from datalabs import get_task, TaskType
 
 _DESCRIPTION = """
  QMSum is a new human-annotated benchmark for query-based multi-domain meeting summarization task, which consists of 1,808 query-summary pairs over 232 meetings in multiple domains.
@@ -45,21 +44,23 @@ _KEY = "query"
 
 # tokneize a sent
 def tokenize(sent):
-    tokens = ' '.join(word_tokenize(sent.lower()))
+    tokens = " ".join(word_tokenize(sent.lower()))
     return tokens
+
 
 # filter some noises caused by speech recognition
 def clean_data(text):
-    text = text.replace('{ vocalsound } ', '')
-    text = text.replace('{ disfmarker } ', '')
-    text = text.replace('a_m_i_', 'ami')
-    text = text.replace('l_c_d_', 'lcd')
-    text = text.replace('p_m_s', 'pms')
-    text = text.replace('t_v_', 'tv')
-    text = text.replace('{ pause } ', '')
-    text = text.replace('{ nonvocalsound } ', '')
-    text = text.replace('{ gap } ', '')
+    text = text.replace("{ vocalsound } ", "")
+    text = text.replace("{ disfmarker } ", "")
+    text = text.replace("a_m_i_", "ami")
+    text = text.replace("l_c_d_", "lcd")
+    text = text.replace("p_m_s", "pms")
+    text = text.replace("t_v_", "tv")
+    text = text.replace("{ pause } ", "")
+    text = text.replace("{ nonvocalsound } ", "")
+    text = text.replace("{ gap } ", "")
     return text
+
 
 class QMSumConfig(datalabs.BuilderConfig):
     """BuilderConfig for QMSum."""
@@ -75,6 +76,7 @@ class QMSumConfig(datalabs.BuilderConfig):
 
 class QMSumDataset(datalabs.GeneratorBasedBuilder):
     """QMSum Dataset."""
+
     _TRAIN_URL = "https://raw.githubusercontent.com/Yale-LILY/QMSum/main/data/ALL/jsonl/train.jsonl"
     _VAL_URL = "https://raw.githubusercontent.com/Yale-LILY/QMSum/main/data/ALL/jsonl/val.jsonl"
     _TEST_URL = "https://raw.githubusercontent.com/Yale-LILY/QMSum/main/data/ALL/jsonl/test.jsonl"
@@ -83,18 +85,23 @@ class QMSumDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="QMSum dataset for summarization, single document summarization version",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         ),
         QMSumConfig(
             name="query-based",
             version=datalabs.Version("1.0.0"),
             description="QMSum dataset for summarization, query-based summarization version",
-            task_templates=[get_task(TaskType.query_summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT,
-                guidance_column=_KEY)]
+            task_templates=[
+                get_task(TaskType.query_summarization)(
+                    source_column=_ARTICLE,
+                    reference_column=_ABSTRACT,
+                    guidance_column=_KEY,
+                )
+            ],
         ),
     ]
     DEFAULT_CONFIG_NAME = "query-based"
@@ -133,13 +140,16 @@ class QMSumDataset(datalabs.GeneratorBasedBuilder):
         test_path = dl_manager.download(self._TEST_URL)
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"f_path": train_path},
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"f_path": train_path},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION, gen_kwargs={"f_path": val_path},
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"f_path": val_path},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST, gen_kwargs={"f_path": test_path},
+                name=datalabs.Split.TEST,
+                gen_kwargs={"f_path": test_path},
             ),
         ]
 
@@ -150,44 +160,48 @@ class QMSumDataset(datalabs.GeneratorBasedBuilder):
             for x in f:
                 data = json.loads(x)
                 src = []
-                for k in range(len(data['meeting_transcripts'])):
-                    cur_turn = data['meeting_transcripts'][k]['speaker'].lower() + ': '
-                    cur_turn = cur_turn + tokenize(data['meeting_transcripts'][k]['content'])
+                for k in range(len(data["meeting_transcripts"])):
+                    cur_turn = data["meeting_transcripts"][k]["speaker"].lower() + ": "
+                    cur_turn = cur_turn + tokenize(
+                        data["meeting_transcripts"][k]["content"]
+                    )
                     src.append(cur_turn)
-                src = ' '.join(src)
-                for j in range(len(data['general_query_list'])):
+                src = " ".join(src)
+                for j in range(len(data["general_query_list"])):
                     cur = {}
-                    query = tokenize(data['general_query_list'][j]['query'])
+                    query = tokenize(data["general_query_list"][j]["query"])
                     if "document" in self.config.name:
-                        cur['text'] = clean_data('<s> ' + query + ' </s> ' + src + ' </s>')
-                        target = tokenize(data['general_query_list'][j]['answer'])
-                        cur['summary'] = target
+                        cur["text"] = clean_data(
+                            "<s> " + query + " </s> " + src + " </s>"
+                        )
+                        target = tokenize(data["general_query_list"][j]["answer"])
+                        cur["summary"] = target
 
                         raw_feature_info = cur
-
 
                         yield _id, raw_feature_info
 
                     else:
                         query, src = clean_data(query), clean_data(src)
-                        target = tokenize(data['general_query_list'][j]['answer'])
+                        target = tokenize(data["general_query_list"][j]["answer"])
                         yield _id, {_ARTICLE: src, _ABSTRACT: target, _KEY: query}
-                    _id += 1   
-                for j in range(len(data['specific_query_list'])):
+                    _id += 1
+                for j in range(len(data["specific_query_list"])):
                     cur = {}
-                    query = tokenize(data['specific_query_list'][j]['query'])
+                    query = tokenize(data["specific_query_list"][j]["query"])
                     if "document" in self.config.name:
-                        cur['text'] = clean_data('<s> ' + query + ' </s> ' + src + ' </s>')
-                        target = tokenize(data['specific_query_list'][j]['answer'])
-                        cur['summary'] = target
+                        cur["text"] = clean_data(
+                            "<s> " + query + " </s> " + src + " </s>"
+                        )
+                        target = tokenize(data["specific_query_list"][j]["answer"])
+                        cur["summary"] = target
 
                         raw_feature_info = cur
-
 
                         yield _id, raw_feature_info
 
                     else:
                         query, src = clean_data(query), clean_data(src)
-                        target = tokenize(data['specific_query_list'][j]['answer'])
+                        target = tokenize(data["specific_query_list"][j]["answer"])
                         yield _id, {_ARTICLE: src, _ABSTRACT: target, _KEY: query}
                     _id += 1

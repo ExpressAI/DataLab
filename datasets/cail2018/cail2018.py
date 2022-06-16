@@ -1,9 +1,8 @@
 import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
-
-
 
 _CITATION = """\
 @misc{xiao2018cail2018,
@@ -29,24 +28,26 @@ To help the researchers make improvements on legal judgment prediction.
 """
 _URL = "https://cail.oss-cn-qingdao.aliyuncs.com/CAIL2018_ALL_DATA.zip"
 
-class Cail2018Config(datalabs.BuilderConfig):
 
-   def __init__(self,
-                 text_features=None,
-                 label_column = None,
-                 label_classes=None,
-                 task_templates = None,
-                 **kwargs):
-      
+class Cail2018Config(datalabs.BuilderConfig):
+    def __init__(
+        self,
+        text_features=None,
+        label_column=None,
+        label_classes=None,
+        task_templates=None,
+        **kwargs
+    ):
+
         super(Cail2018Config, self).__init__(**kwargs)
         self.text_features = text_features
         self.label_column = label_column
         self.task_templates = task_templates
-        self.label_classes=label_classes
+        self.label_classes = label_classes
 
 
 class Cail2018(datalabs.GeneratorBasedBuilder):
-    
+
     BUILDER_CONFIGS = [
         Cail2018Config(name="charges",
                         version=datalabs.Version("1.0.0"),
@@ -79,10 +80,8 @@ class Cail2018(datalabs.GeneratorBasedBuilder):
                         task_templates=[get_task(TaskType.text_classification)
                                         (text_column="text", label_column="label")]
                         )
+
     ]
-
- 
-
 
     def _info(self):
         features = {text_feature: datalabs.Value("string") for text_feature in self.config.text_features.keys()}
@@ -91,15 +90,15 @@ class Cail2018(datalabs.GeneratorBasedBuilder):
         else: 
             features["label"] =datalabs.Sequence(datalabs.features.ClassLabel(names=self.config.label_classes))
 
+
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=datalabs.Features(features),
             citation=_CITATION,
-            task_templates=self.config.task_templates
+            task_templates=self.config.task_templates,
         )
 
     def _split_generators(self, dl_manager):
-        
 
         dl_dir = dl_manager.download_and_extract(_URL)
 
@@ -126,9 +125,11 @@ class Cail2018(datalabs.GeneratorBasedBuilder):
             #     },
             # ),
             datalabs.SplitGenerator(
-                name=datalabs.Split("train"),     #"first_stage_train"
+                name=datalabs.Split("train"),  # "first_stage_train"
                 gen_kwargs={
-                    "filepath": os.path.join(dl_dir, "final_all_data/first_stage/train.json"),
+                    "filepath": os.path.join(
+                        dl_dir, "final_all_data/first_stage/train.json"
+                    ),
                     "split": "first_stage_train",
                 },
             ),
@@ -140,8 +141,11 @@ class Cail2018(datalabs.GeneratorBasedBuilder):
             #     },
             # ),
             datalabs.SplitGenerator(
-                name=datalabs.Split("test"),    #"final_test"
-                gen_kwargs={"filepath": os.path.join(dl_dir, "final_all_data/final_test.json"), "split": "final_test"},
+                name=datalabs.Split("test"),  # "final_test"
+                gen_kwargs={
+                    "filepath": os.path.join(dl_dir, "final_all_data/final_test.json"),
+                    "split": "final_test",
+                },
             ),
         ]
 
@@ -156,11 +160,10 @@ class Cail2018(datalabs.GeneratorBasedBuilder):
                         "label": data["meta"]["relevant_articles"],
                     }
                 if self.config.name == "charges":
-                    
+
                     yield idx, {
                         "text": data["fact"],
                         "label": data["meta"]["accusation"],
-                   
                     }
 
                 if self.config.name =="terms_of_penalty" :

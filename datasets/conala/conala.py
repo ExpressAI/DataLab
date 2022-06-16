@@ -2,9 +2,8 @@ import csv
 import json
 
 import datalabs
-
-from datalabs.utils.logging import get_logger
 from datalabs import get_task, TaskType
+from datalabs.utils.logging import get_logger
 
 logger = get_logger(__name__)
 
@@ -46,7 +45,6 @@ class ConalaConfig(datalabs.BuilderConfig):
 
 
 class Conala(datalabs.GeneratorBasedBuilder):
-
     def _info(self):
         features_dataset = datalabs.Features()
         features_sample = datalabs.Features(
@@ -56,7 +54,7 @@ class Conala(datalabs.GeneratorBasedBuilder):
                 "translation": {
                     "en": datalabs.Value("string"),
                     "python": datalabs.Value("string"),
-                }
+                },
             }
         )
 
@@ -68,7 +66,7 @@ class Conala(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://conala-corpus.github.io/",
             citation=_CITATION,
-            languages=['en', 'python'],
+            languages=["en", "python"],
             task_templates=[
                 get_task(TaskType.code_generation)(
                     translation_column="translation",
@@ -84,38 +82,43 @@ class Conala(datalabs.GeneratorBasedBuilder):
         split_gens = [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
-                gen_kwargs={"filepath": f'{dataset_path}/conala-corpus/conala-train.json'},
+                gen_kwargs={
+                    "filepath": f"{dataset_path}/conala-corpus/conala-train.json"
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
-                gen_kwargs={"filepath": f'{dataset_path}/conala-corpus/conala-test.json'},
+                gen_kwargs={
+                    "filepath": f"{dataset_path}/conala-corpus/conala-test.json"
+                },
             ),
             datalabs.SplitGenerator(
-                name='mined',
+                name="mined",
                 gen_kwargs={
-                    "filepath": f'{dataset_path}/conala-corpus/conala-mined.jsonl'},
+                    "filepath": f"{dataset_path}/conala-corpus/conala-mined.jsonl"
+                },
             ),
         ]
         return split_gens
 
     def _convert_data(self, data):
         return {
-            "question_id": data['question_id'],
-            "orig_en": data['intent'],
+            "question_id": data["question_id"],
+            "orig_en": data["intent"],
             "translation": {
-                "en": data['rewritten_intent'],
-                "python": data['snippet'],
-            }
+                "en": data["rewritten_intent"],
+                "python": data["snippet"],
+            },
         }
 
     def _generate_examples(self, filepath):
         """Yields examples."""
         id_sample = 0
-        if 'jsonl' in filepath:
+        if "jsonl" in filepath:
             with open(filepath, encoding="utf-8") as fin:
                 for _id, line in enumerate(fin):
                     data = json.loads(line)
-                    data['rewritten_intent'] = ''
+                    data["rewritten_intent"] = ""
                     yield _id, self._convert_data(data)
         else:
             with open(filepath, encoding="utf-8") as fin:

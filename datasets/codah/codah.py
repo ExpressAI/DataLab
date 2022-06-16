@@ -15,6 +15,7 @@
 """The COmmonsense Dataset Adversarially-authored by Humans (CODAH)"""
 
 import csv
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -67,21 +68,41 @@ class Codah(datalabs.GeneratorBasedBuilder):
 
     VERSION = datalabs.Version("1.0.0")
     BUILDER_CONFIGS = [
-        CodahConfig(name="codah", version=datalabs.Version("1.0.0"), description="Full CODAH dataset", fold=None),
         CodahConfig(
-            name="fold_0", version=datalabs.Version("1.0.0"), description="Official CV split (fold_0)", fold="fold_0"
+            name="codah",
+            version=datalabs.Version("1.0.0"),
+            description="Full CODAH dataset",
+            fold=None,
         ),
         CodahConfig(
-            name="fold_1", version=datalabs.Version("1.0.0"), description="Official CV split (fold_1)", fold="fold_1"
+            name="fold_0",
+            version=datalabs.Version("1.0.0"),
+            description="Official CV split (fold_0)",
+            fold="fold_0",
         ),
         CodahConfig(
-            name="fold_2", version=datalabs.Version("1.0.0"), description="Official CV split (fold_2)", fold="fold_2"
+            name="fold_1",
+            version=datalabs.Version("1.0.0"),
+            description="Official CV split (fold_1)",
+            fold="fold_1",
         ),
         CodahConfig(
-            name="fold_3", version=datalabs.Version("1.0.0"), description="Official CV split (fold_3)", fold="fold_3"
+            name="fold_2",
+            version=datalabs.Version("1.0.0"),
+            description="Official CV split (fold_2)",
+            fold="fold_2",
         ),
         CodahConfig(
-            name="fold_4", version=datalabs.Version("1.0.0"), description="Official CV split (fold_4)", fold="fold_4"
+            name="fold_3",
+            version=datalabs.Version("1.0.0"),
+            description="Official CV split (fold_3)",
+            fold="fold_3",
+        ),
+        CodahConfig(
+            name="fold_4",
+            version=datalabs.Version("1.0.0"),
+            description="Official CV split (fold_4)",
+            fold="fold_4",
         ),
     ]
 
@@ -92,13 +113,14 @@ class Codah(datalabs.GeneratorBasedBuilder):
                 {
                     "id": datalabs.Value("string"),
                     "question_category": datalabs.Value("string"),
-                    "question": datalabs.Value("string"), # question_prompt->question
-                    "options": datalabs.features.Sequence(datalabs.Value("string")), # candidate_answers -> options
-                    "answers":  # answers -> answerKey
-                        {
-                            "text": datalabs.Value("string"),
-                            "option_index": datalabs.Value("int32"),
-                        },
+                    "question": datalabs.Value("string"),  # question_prompt->question
+                    "options": datalabs.features.Sequence(
+                        datalabs.Value("string")
+                    ),  # candidate_answers -> options
+                    "answers": {  # answers -> answerKey
+                        "text": datalabs.Value("string"),
+                        "option_index": datalabs.Value("int32"),
+                    },
                 }
             ),
             supervised_keys=None,
@@ -116,7 +138,11 @@ class Codah(datalabs.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         if self.config.name == "codah":
             data_file = dl_manager.download(_FULL_DATA_URL)
-            return [datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"data_file": data_file})]
+            return [
+                datalabs.SplitGenerator(
+                    name=datalabs.Split.TRAIN, gen_kwargs={"data_file": data_file}
+                )
+            ]
 
         base_url = f"{_URL}cv_split/{self.config.fold}/"
         _urls = {
@@ -127,17 +153,35 @@ class Codah(datalabs.GeneratorBasedBuilder):
         downloaded_files = dl_manager.download_and_extract(_urls)
 
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"data_file": downloaded_files["train"]}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"data_file": downloaded_files["dev"]}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"data_file": downloaded_files["test"]}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"data_file": downloaded_files["train"]},
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"data_file": downloaded_files["dev"]},
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
+                gen_kwargs={"data_file": downloaded_files["test"]},
+            ),
         ]
 
     def _generate_examples(self, data_file):
-        question_category_list = ["Idioms", "Reference", "Polysemy", "Negation", "Quantitative", "Others"]
+        question_category_list = [
+            "Idioms",
+            "Reference",
+            "Polysemy",
+            "Negation",
+            "Quantitative",
+            "Others",
+        ]
         with open(data_file, encoding="utf-8") as f:
             rows = csv.reader(f, delimiter="\t")
             for i, row in enumerate(rows):
-                question_category = QUESTION_CATEGORIES_MAPPING[row[0]] if row[0] != "" else -1
+                question_category = (
+                    QUESTION_CATEGORIES_MAPPING[row[0]] if row[0] != "" else -1
+                )
 
                 options = row[2:-1]
                 option_index = int(row[-1])
@@ -146,10 +190,9 @@ class Codah(datalabs.GeneratorBasedBuilder):
                     "question_category": question_category,
                     "question": row[1],
                     "options": options,
-                    "answers":  # correct_answer_idx -> answers
-                        {
-                            "text": options[option_index],
-                            "option_index": option_index,
-                        },
+                    "answers": {  # correct_answer_idx -> answers
+                        "text": options[option_index],
+                        "option_index": option_index,
+                    },
                     # "correct_answer_idx": int(row[-1]),
                 }

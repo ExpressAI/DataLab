@@ -1,5 +1,6 @@
 import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -30,8 +31,10 @@ _CITATION = """\
 _ABSTRACT = "summary"
 _ARTICLE = "text"
 
+
 def _gdrive_url(id):
     return f"https://drive.google.com/uc?id={id}&export=download"
+
 
 class SAMSumConfig(datalabs.BuilderConfig):
     """BuilderConfig for SAMSum."""
@@ -45,32 +48,35 @@ class SAMSumConfig(datalabs.BuilderConfig):
         self.task_templates = task_templates
 
 
-
 class SAMSumDataset(datalabs.GeneratorBasedBuilder):
     """SAMSum Dataset."""
+
     _FILE_ID = "1Wq9A5ZXOMZN3w3HVjIGwBz25XVbbgNr5"
     BUILDER_CONFIGS = [
         SAMSumConfig(
             name="document",
             version=datalabs.Version("1.0.0"),
             description="SAMSum dataset for summarization, single document version",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         ),
         SAMSumConfig(
             name="dialogue",
             version=datalabs.Version("1.0.0"),
             description="SAMSum dataset for summarization, dialogue summarization version",
-            task_templates=[get_task(TaskType.dialog_summarization)(
-                source_column="dialogue",
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.dialog_summarization)(
+                    source_column="dialogue", reference_column=_ABSTRACT
+                )
+            ],
         ),
     ]
     DEFAULT_CONFIG_NAME = "document"
 
     def _info(self):
-
 
         if "document" in self.config.name:
             features_sample = datalabs.Features(
@@ -80,13 +86,19 @@ class SAMSumDataset(datalabs.GeneratorBasedBuilder):
                 }
             )
         else:
-            features_sample = datalabs.Features({
-                "dialogue": datalabs.Sequence(datalabs.Features({
-                        "speaker": datalabs.Value("string"),
-                        "text": datalabs.Value("string")
-                        })),
-                _ABSTRACT: datalabs.Sequence(datalabs.Value("string")),
-            })
+            features_sample = datalabs.Features(
+                {
+                    "dialogue": datalabs.Sequence(
+                        datalabs.Features(
+                            {
+                                "speaker": datalabs.Value("string"),
+                                "text": datalabs.Value("string"),
+                            }
+                        )
+                    ),
+                    _ABSTRACT: datalabs.Sequence(datalabs.Value("string")),
+                }
+            )
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features_sample,
@@ -126,9 +138,8 @@ class SAMSumDataset(datalabs.GeneratorBasedBuilder):
 
                 raw_feature_info = {
                     _ARTICLE: article["dialogue"],
-                    _ABSTRACT: article["summary"]
+                    _ABSTRACT: article["summary"],
                 }
-
 
                 yield id_, raw_feature_info
 

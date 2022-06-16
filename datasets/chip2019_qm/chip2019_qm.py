@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import csv
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -29,17 +30,20 @@ For more information, please refer to http://www.cips-chip.org.cn:8000/home.
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CHIP2019_QM/train.csv"
+_TRAIN_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CHIP2019_QM/train.csv"
+)
 # _VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CHIP2019_QM/dev.csv"
 # _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CHIP2019_QM/test.csv"
 
 _HOMEPAGE = "http://www.cips-chip.org.cn:8000/home"
 
-class CHIP2019QMConfig(datalabs.BuilderConfig):
 
+class CHIP2019QMConfig(datalabs.BuilderConfig):
     def __init__(self, **kwargs):
 
         super(CHIP2019QMConfig, self).__init__(**kwargs)
+
 
 class CHIP2019QM(datalabs.GeneratorBasedBuilder):
 
@@ -50,41 +54,42 @@ class CHIP2019QM(datalabs.GeneratorBasedBuilder):
             description="question_migration",
         ),
     ]
-    
+
     def _info(self):
 
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                    "question1": datalabs.Value("string"), 
+                    "question1": datalabs.Value("string"),
                     "question2": datalabs.Value("string"),
                     "category": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=['0', '1']),
+                    "label": datalabs.features.ClassLabel(names=["0", "1"]),
                 }
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            languages = ["zh"],
+            languages=["zh"],
             task_templates=[
                 get_task(TaskType.text_pair_classification)(
-                    text1_column = "question1",
-                    text2_column = "question2",
-                    label_column = "label",
+                    text1_column="question1",
+                    text2_column="question2",
+                    label_column="label",
                 )
             ],
         )
-
 
     def _split_generators(self, dl_manager):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         # validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
             # datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
@@ -92,18 +97,15 @@ class CHIP2019QM(datalabs.GeneratorBasedBuilder):
     def _generate_examples(self, filepath):
 
         with open(filepath, encoding="utf-8") as file:
-            csv_reader = csv.reader(file, delimiter = ',')
+            csv_reader = csv.reader(file, delimiter=",")
             for id_, row in enumerate(csv_reader):
                 if len(row) == 4:
                     question1, question2, label, category = row
-                    if label == ('0' or '1'):
+                    if label == ("0" or "1"):
                         label = int(label)
-                        yield id_, {'question1': question1, 'question2': question2, 'category': category, 'label': label}
-                
-
-                    
-
-
-
-
-            
+                        yield id_, {
+                            "question1": question1,
+                            "question2": question2,
+                            "category": category,
+                            "label": label,
+                        }

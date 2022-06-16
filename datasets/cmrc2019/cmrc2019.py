@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -49,16 +50,19 @@ _CITATION = """\
 _LICENSE = "NA"
 
 _TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/CMRC2019/train.json"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/CMRC2019/dev.json"
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/CMRC2019/dev.json"
+)
 _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/CMRC2019/trial.json"
 
 _HOMEPAGE = "https://hfl-rc.com/cmrc2019/"
 
-class CMRC2019Config(datalabs.BuilderConfig):
 
+class CMRC2019Config(datalabs.BuilderConfig):
     def __init__(self, **kwargs):
 
         super(CMRC2019Config, self).__init__(**kwargs)
+
 
 class CMRC2019(datalabs.GeneratorBasedBuilder):
 
@@ -76,19 +80,22 @@ class CMRC2019(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                    "id": datalabs.Value("string"),
                     "context": datalabs.Value("string"),
+                    "question_mark": datalabs.Value("string"),
                     "options": datalabs.features.Sequence(datalabs.Value("string")),
-                    "answers": datalabs.features.Sequence(datalabs.Value("int32")),
+                    "answers": {
+                        "text": datalabs.Value("string"),
+                        "option_index": datalabs.Value("int32"),
+                    }
                 }
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            languages = ["zh"],
+            languages=["zh"],
             task_templates=[
                 get_task(TaskType.cloze_multiple_choice)(
-                    question_column = "id",
+                    question_column = "question_mark",
                     context_column = "context",
                     options_column = "options",
                     answers_column = "answers",
@@ -96,17 +103,22 @@ class CMRC2019(datalabs.GeneratorBasedBuilder):
             ],
         )
 
-
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
@@ -118,10 +130,13 @@ class CMRC2019(datalabs.GeneratorBasedBuilder):
             file = json.load(f)
             data = file["data"]
             for article in data:
-                id = article["context_id"]
                 context = article["context"]
                 options = article["choices"]
                 answers = article["answers"]
-
-                yield count, {"id": id, "context": context, "options": options, "answers": answers}
-                count = count + 1
+                for i in range(len(answers)-1):
+                    question_mark = 'BLANK' + str(i+1)
+                    option_index = answers[i]
+                    text = options[option_index]
+                    answers_new = {"text": text, "option_index": option_index}
+                    yield count, {"question_mark": question_mark, "context": context, "options": options, "answers": answers_new}
+                    count = count + 1

@@ -1,15 +1,16 @@
 # coding=utf-8
 """Gaokao Benchmark for Evaluation Human-level AI"""
 
-import csv
-import os
 import ast
-import textwrap
+import csv
 import json
+import os
+import textwrap
 from typing import List
+
 import datalabs
-from datalabs.features import Features, Sequence, Value
 from datalabs import get_task, TaskType
+from datalabs.features import Features, Sequence, Value
 from datalabs.tasks.question_answering import QuestionAnsweringMultipleChoice
 
 _GLUE_CITATION = """\
@@ -27,15 +28,15 @@ class Gaokao2020NP3Config(datalabs.BuilderConfig):
     """BuilderConfig for Gaokao Benchmark."""
 
     def __init__(
-            self,
-            data_url,
-            data_dir,
-            citation,
-            url,
-            features,
-            process_label=lambda x: x,
-            task_templates=None,
-            **kwargs,
+        self,
+        data_url,
+        data_dir,
+        citation,
+        url,
+        features,
+        process_label=lambda x: x,
+        task_templates=None,
+        **kwargs,
     ):
         """BuilderConfig for GLUE.
 
@@ -49,9 +50,9 @@ class Gaokao2020NP3Config(datalabs.BuilderConfig):
             of the label and processing it to the form required by the label feature
           **kwargs: keyword arguments forwarded to super.
         """
-        super(Gaokao2020NP3Config, self).__init__(version
-                                                  =datalabs.Version("1.0.0", ""),
-                                                  **kwargs)
+        super(Gaokao2020NP3Config, self).__init__(
+            version=datalabs.Version("1.0.0", ""), **kwargs
+        )
 
         self.features = features
         self.data_url = data_url
@@ -89,15 +90,17 @@ class Gaokao2020NP3(datalabs.GeneratorBasedBuilder):
                     "answers": {
                         "text": Value("string"),
                         "option_index": Value("int32"),
-                    }
-
-                }),
-            task_templates=[get_task(TaskType.qa_multiple_choice)(
-                context_column="context",
-                options_column="options",
-                question_column="question",
-                answers_column="answer",
-            )],
+                    },
+                }
+            ),
+            task_templates=[
+                get_task(TaskType.qa_multiple_choice)(
+                    context_column="context",
+                    options_column="options",
+                    question_column="question",
+                    answers_column="answer",
+                )
+            ],
         ),
         Gaokao2020NP3Config(
             name="cloze-multiple-choice",
@@ -122,14 +125,17 @@ class Gaokao2020NP3(datalabs.GeneratorBasedBuilder):
                     "answers": {
                         "text": Value("string"),
                         "option_index": Value("int32"),
-                    }
-
-                }),
-            task_templates=[get_task(TaskType.cloze_multiple_choice)(
-                context_column="context",
-                options_column="options",
-                question_column="question_mark",
-                answers_column="answer")],
+                    },
+                }
+            ),
+            task_templates=[
+                get_task(TaskType.cloze_multiple_choice)(
+                    context_column="context",
+                    options_column="options",
+                    question_column="question_mark",
+                    answers_column="answer",
+                )
+            ],
         ),
         Gaokao2020NP3Config(
             name="cloze-hint",
@@ -152,13 +158,16 @@ class Gaokao2020NP3(datalabs.GeneratorBasedBuilder):
                     "hint": Value("string"),
                     "question_mark": Value("string"),
                     "answers": Value("string"),
-
-                }),
-            task_templates=[get_task(TaskType.cloze_generative)(
-                context_column="context",
-                hint_column="hint",
-                question_column="question_mark",
-                answers_column="answers")],
+                }
+            ),
+            task_templates=[
+                get_task(TaskType.cloze_generative)(
+                    context_column="context",
+                    hint_column="hint",
+                    question_column="question_mark",
+                    answers_column="answers",
+                )
+            ],
         ),
         Gaokao2020NP3Config(
             name="reading-multiple-choice",
@@ -183,15 +192,17 @@ class Gaokao2020NP3(datalabs.GeneratorBasedBuilder):
                     "answers": {
                         "text": Value("string"),
                         "option_index": Value("int32"),
-                    }
-
-                }),
-            task_templates=[get_task(TaskType.qa_multiple_choice)(
-                context_column="context",
-                options_column="options",
-                question_column="question",
-                answers_column="answers",
-            )],
+                    },
+                }
+            ),
+            task_templates=[
+                get_task(TaskType.qa_multiple_choice)(
+                    context_column="context",
+                    options_column="options",
+                    question_column="question",
+                    answers_column="answers",
+                )
+            ],
         ),
         Gaokao2020NP3Config(
             name="reading-cloze",
@@ -216,15 +227,17 @@ class Gaokao2020NP3(datalabs.GeneratorBasedBuilder):
                     "answers": {
                         "text": Value("string"),
                         "option_index": Value("int32"),
-                    }
-
-                }),
-            task_templates=[get_task(TaskType.cloze_multiple_choice)(
-                context_column="context",
-                options_column="options",
-                question_column="question_mark",
-                answers_column="answers",
-            )],
+                    },
+                }
+            ),
+            task_templates=[
+                get_task(TaskType.cloze_multiple_choice)(
+                    context_column="context",
+                    options_column="options",
+                    question_column="question_mark",
+                    answers_column="answers",
+                )
+            ],
         ),
         Gaokao2020NP3Config(
             name="writing-grammar",
@@ -251,13 +264,16 @@ class Gaokao2020NP3(datalabs.GeneratorBasedBuilder):
                             "start_idx": Value("int32"),
                             "end_idx": Value("int32"),
                             "corrections": Sequence(Value("string")),
-                        }),
-
-                }),
-            task_templates=[get_task(TaskType.grammatical_error_correction)(
-                source_column="text",
-                reference_column="edits",
-            )],
+                        }
+                    ),
+                }
+            ),
+            task_templates=[
+                get_task(TaskType.grammatical_error_correction)(
+                    source_column="text",
+                    reference_column="edits",
+                )
+            ],
         ),
         Gaokao2020NP3Config(
             name="writing-essay",
@@ -277,11 +293,13 @@ class Gaokao2020NP3(datalabs.GeneratorBasedBuilder):
                 {
                     "source": Value("string"),
                     "reference": Value("string"),
-
-                }),
-            task_templates=[get_task(TaskType.essay_writing)(
-                source_column="source",
-                reference_column="reference")],
+                }
+            ),
+            task_templates=[
+                get_task(TaskType.essay_writing)(
+                    source_column="source", reference_column="reference"
+                )
+            ],
         ),
     ]
 

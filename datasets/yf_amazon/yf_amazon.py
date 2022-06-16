@@ -17,6 +17,7 @@
 
 import csv
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -58,19 +59,22 @@ class YFAmazon(datalabs.GeneratorBasedBuilder):
                 {
                     "user_id": datalabs.Value("string"),
                     "product_id": datalabs.Value("string"),
-                    "rating": datalabs.features.ClassLabel(names=["Excellent","Good","Average","Fair","Poor"]),
+                    "rating": datalabs.features.ClassLabel(
+                        names=["Excellent", "Good", "Average", "Fair", "Poor"]
+                    ),
                     "timestamp": datalabs.Value("string"),
                     "title": datalabs.Value("string"),
                     "comment": datalabs.Value("string"),
-
                 }
             ),
             homepage="https://doi.org/10.1145/2736277.2741087",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.sentiment_classification)(
-                text_column="title",
-                label_column="rating")],
+            task_templates=[
+                get_task(TaskType.sentiment_classification)(
+                    text_column="title", label_column="rating"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -78,10 +82,10 @@ class YFAmazon(datalabs.GeneratorBasedBuilder):
         data_dir = os.path.join(dl_dir, "")
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": os.path.join(data_dir, "ratings.csv")}
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"filepath": os.path.join(data_dir, "ratings.csv")},
             )
         ]
-       
 
     def _generate_examples(self, filepath):
 
@@ -95,16 +99,16 @@ class YFAmazon(datalabs.GeneratorBasedBuilder):
             "2.0": "Fair",
             "3.0": "Average",
             "4.0": "Good",
-            "5.0": "Excellent"
+            "5.0": "Excellent",
         }
 
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter = ',')
+            csv_reader = csv.reader(csv_file, delimiter=",")
             id_actual = 0
             for id_, row in enumerate(csv_reader):
                 if id_ == 0:
                     continue
-                if len(row) !=6:
+                if len(row) != 6:
                     continue
 
                 user_id, product_id, rating, timestamp, title, comment = row
@@ -116,7 +120,5 @@ class YFAmazon(datalabs.GeneratorBasedBuilder):
                         "rating": textualize_label[str(rating)],
                         "timestamp": timestamp,
                         "title": title,
-                        "comment": comment
+                        "comment": comment,
                     }
-
-

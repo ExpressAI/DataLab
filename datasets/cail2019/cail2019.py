@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -33,18 +34,24 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CAIL2019-SCM/train.json"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CAIL2019-SCM/valid.json"
-_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CAIL2019-SCM/test.json"
+_TRAIN_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CAIL2019-SCM/train.json"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CAIL2019-SCM/valid.json"
+)
+_TEST_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CAIL2019-SCM/test.json"
+)
 
 _HOMEPAGE = "https://github.com/china-ai-law-challenge/CAIL2019/tree/master/scm"
 
 
 class CAIL2019Config(datalabs.BuilderConfig):
-    
     def __init__(self, **kwargs):
 
         super(CAIL2019Config, self).__init__(**kwargs)
+
 
 class CAIL2019(datalabs.GeneratorBasedBuilder):
 
@@ -64,9 +71,12 @@ class CAIL2019(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                    "text": datalabs.Value("string"),
+                    "question": datalabs.Value("string"),
                     "options": datalabs.features.Sequence(datalabs.Value("string")),
-                    "label": datalabs.features.ClassLabel(names=["0", "1"]),
+                    "answers": {
+                        "text": datalabs.Value("string"),
+                        "option_index": datalabs.Value("int32"),
+                    }
                 }
             ),
             supervised_keys=None,
@@ -74,10 +84,10 @@ class CAIL2019(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["zh"],
             task_templates=[
-                get_task(TaskType.text_matching_multiple_choice)(
-                    text_column = "text",
+                get_task(TaskType.qa_multiple_choice_without_context)(
+                    question_column = "question",
                     options_column = "options",
-                    label_column = "label",
+                    answers_column = "answers",
                 ),
             ],
         )
@@ -87,23 +97,32 @@ class CAIL2019(datalabs.GeneratorBasedBuilder):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
         labels = {
-            "B": "0",
-            "C": "1",
+            "B": 0,
+            "C": 1,
         }
         with open(filepath, encoding="utf-8") as f:
             for id_, line in enumerate(f):
                 line = json.loads(line)
-                text = line["A"].rstrip()
+                question = line["A"].rstrip()
                 options = [line["B"].rstrip(), line["C"].rstrip()]
                 label = line["label"]
                 if label in labels:
-                    yield id_, {"text": text, "options": options, "label": labels[label]}
+                    option_index = labels[label]
+                    text = options[option_index]
+                    answers = {"text": text, "option_index": option_index}
+                    yield id_, {"question": question, "options": options, "answers": answers}

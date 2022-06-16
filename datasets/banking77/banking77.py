@@ -20,7 +20,6 @@ import csv
 import datalabs
 from datalabs import get_task, TaskType
 
-
 _CITATION = """\
 @inproceedings{Casanueva2020,
     author      = {I{\~{n}}igo Casanueva and Tadas Temcinas and Daniela Gerz and Matthew Henderson and Ivan Vulic},
@@ -43,9 +42,7 @@ _HOMEPAGE = "https://github.com/PolyAI-LDN/task-specific-datalab"
 
 _LICENSE = "Creative Commons Attribution 4.0 International"
 
-_TRAIN_DOWNLOAD_URL = (
-    "https://raw.githubusercontent.com/PolyAI-LDN/task-specific-datasets/master/banking_data/train.csv"
-)
+_TRAIN_DOWNLOAD_URL = "https://raw.githubusercontent.com/PolyAI-LDN/task-specific-datasets/master/banking_data/train.csv"
 _TEST_DOWNLOAD_URL = "https://raw.githubusercontent.com/PolyAI-LDN/task-specific-datasets/master/banking_data/test.csv"
 
 
@@ -148,7 +145,11 @@ class Banking77(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             license=_LICENSE,
             citation=_CITATION,
-            task_templates=[get_task(TaskType.intent_classification)(text_column="text", label_column="label")],
+            task_templates=[
+                get_task(TaskType.intent_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -156,14 +157,24 @@ class Banking77(datalabs.GeneratorBasedBuilder):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
         """Yields examples as (key, example) tuples."""
         with open(filepath, encoding="utf-8") as f:
-            csv_reader = csv.reader(f, quotechar='"', delimiter=",", quoting=csv.QUOTE_ALL, skipinitialspace=True)
+            csv_reader = csv.reader(
+                f,
+                quotechar='"',
+                delimiter=",",
+                quoting=csv.QUOTE_ALL,
+                skipinitialspace=True,
+            )
             # call next to skip header
             next(csv_reader)
             for id_, row in enumerate(csv_reader):

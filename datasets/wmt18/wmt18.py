@@ -21,7 +21,6 @@ import datalabs
 
 from .wmt_utils import CWMT_SUBSET_NAMES, Wmt, WmtConfig
 
-
 _URL = "http://www.statmt.org/wmt18/translation-task.html"
 _CITATION = """\
 @InProceedings{bojar-EtAl:2018:WMT1,
@@ -40,7 +39,9 @@ _CITATION = """\
 }
 """
 
-_LANGUAGE_PAIRS = [(lang, "en") for lang in ["cs", "de", "et", "fi", "kk", "ru", "tr", "zh"]]
+_LANGUAGE_PAIRS = [
+    (lang, "en") for lang in ["cs", "de", "et", "fi", "kk", "ru", "tr", "zh"]
+]
 
 
 class Wmt18(Wmt):

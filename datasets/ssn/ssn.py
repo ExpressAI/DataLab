@@ -1,11 +1,10 @@
 """SSN (Semantic Scholar Network): Multi-Document Scientific Papers Summarization."""
-import os
 import json
+import os
+
 import datalabs
 from datalabs import get_task, TaskType
 from datalabs.tasks.summarization import _MDS_TEXT_COLUMN
-
-
 
 _CITATION = """\
 @article{An_Zhong_Chen_Wang_Qiu_Huang_2021, 
@@ -66,7 +65,7 @@ class SSNDataset(datalabs.GeneratorBasedBuilder):
     _FILE_ID = {
         "transductive": _gdrive_url("1SdrWHoDRU0-P21b4LM42SwFt8zx3d4F2"),
         "inductive": _gdrive_url("1GJOkm3iQf7kBxme1ZFuwYPeTV3J8QV17"),
-        "papers": _gdrive_url("1P5viA8hMm19n-Ia3k9wZyQTEloCk2gMJ")
+        "papers": _gdrive_url("1P5viA8hMm19n-Ia3k9wZyQTEloCk2gMJ"),
     }
 
     BUILDER_CONFIGS = [
@@ -74,40 +73,47 @@ class SSNDataset(datalabs.GeneratorBasedBuilder):
             name="transductive-document",
             version=datalabs.Version("1.0.0"),
             description="SSN dataset for scientific multi-document summarization, single document version. Transductive: during training, models can access to all the nodes and edges in the whole dataset including papers (excluding abstracts) in the test set.",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         ),
         SSNConfig(
             name="transductive-multidoc",
             version=datalabs.Version("1.0.0"),
             description="SSN dataset for scientific multi-document summarization, multi-document version. Inductive: papers in the test set are from a totally new graph which means all test nodes cannot be used during training.",
-            task_templates=[get_task(TaskType.multi_doc_summarization)(
-                source_column=_MDS_TEXT_COLUMN,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.multi_doc_summarization)(
+                    source_column=_MDS_TEXT_COLUMN, reference_column=_ABSTRACT
+                )
+            ],
         ),
         SSNConfig(
             name="inductive-document",
             version=datalabs.Version("1.0.0"),
             description="SSN dataset for scientific multi-document summarization, single document version. Transductive: during training, models can access to all the nodes and edges in the whole dataset including papers (excluding abstracts) in the test set.",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         ),
         SSNConfig(
             name="inductive-multidoc",
             version=datalabs.Version("1.0.0"),
             description="SSN dataset for scientific multi-document summarization, multi-document version. Inductive: papers in the test set are from a totally new graph which means all test nodes cannot be used during training.",
-            task_templates=[get_task(TaskType.multi_doc_summarization)(
-                source_column=_MDS_TEXT_COLUMN,
-                reference_column=_ABSTRACT)]
-        )
+            task_templates=[
+                get_task(TaskType.multi_doc_summarization)(
+                    source_column=_MDS_TEXT_COLUMN, reference_column=_ABSTRACT
+                )
+            ],
+        ),
     ]
     DEFAULT_CONFIG_NAME = "transductive-document"
 
     def _info(self):
         # Should return a datalab.DatasetInfo object
-
 
         if "document" in self.config.name:
             features_sample = datalabs.Features(
@@ -122,7 +128,7 @@ class SSNDataset(datalabs.GeneratorBasedBuilder):
                 {
                     _MDS_TEXT_COLUMN: {
                         "introduction": datalabs.Value("string"),
-                        "references": datalabs.Sequence(datalabs.Value("string"))
+                        "references": datalabs.Sequence(datalabs.Value("string")),
                     },
                     _ABSTRACT: datalabs.Value("string"),
                 }
@@ -152,18 +158,24 @@ class SSNDataset(datalabs.GeneratorBasedBuilder):
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
-                gen_kwargs={"f_path": os.path.join(f_path, "{}/train.jsonl".format(type)),
-                            "papers_f_path": papers_f_path}
+                gen_kwargs={
+                    "f_path": os.path.join(f_path, "{}/train.jsonl".format(type)),
+                    "papers_f_path": papers_f_path,
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
-                gen_kwargs={"f_path": os.path.join(f_path, "{}/val.jsonl".format(type)),
-                            "papers_f_path": papers_f_path}
+                gen_kwargs={
+                    "f_path": os.path.join(f_path, "{}/val.jsonl".format(type)),
+                    "papers_f_path": papers_f_path,
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
-                gen_kwargs={"f_path": os.path.join(f_path, "{}/test.jsonl".format(type)),
-                            "papers_f_path": papers_f_path}
+                gen_kwargs={
+                    "f_path": os.path.join(f_path, "{}/test.jsonl".format(type)),
+                    "papers_f_path": papers_f_path,
+                },
             ),
         ]
 
@@ -190,13 +202,21 @@ class SSNDataset(datalabs.GeneratorBasedBuilder):
                     ref_abstracts.append(ref_abstract)
                 introduction = paper["introduction"].strip()
                 summary = paper["abstract"].strip()
-                datas.append({"ref_abstracts": ref_abstracts, "introduction": introduction, "summary": summary})
+                datas.append(
+                    {
+                        "ref_abstracts": ref_abstracts,
+                        "introduction": introduction,
+                        "summary": summary,
+                    }
+                )
 
         if "document" in self.config.name:
             for id_, data in enumerate(datas):
                 raw_feature_info = {
-                    _ARTICLE: data["introduction"] + " " + " ".join(data["ref_abstracts"]).strip(),
-                    _ABSTRACT: data["summary"]
+                    _ARTICLE: data["introduction"]
+                    + " "
+                    + " ".join(data["ref_abstracts"]).strip(),
+                    _ABSTRACT: data["summary"],
                 }
 
                 yield id_, raw_feature_info
@@ -206,8 +226,8 @@ class SSNDataset(datalabs.GeneratorBasedBuilder):
                 raw_feature_info = {
                     _MDS_TEXT_COLUMN: {
                         "introduction": data["introduction"],
-                        "references": data["ref_abstracts"]
+                        "references": data["ref_abstracts"],
                     },
-                    _ABSTRACT: data["summary"]
+                    _ABSTRACT: data["summary"],
                 }
                 yield id_, raw_feature_info

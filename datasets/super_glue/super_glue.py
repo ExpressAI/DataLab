@@ -22,7 +22,6 @@ import os
 
 import datalabs
 
-
 _SUPER_GLUE_CITATION = """\
 @article{wang2019superglue,
   title={SuperGLUE: A Stickier Benchmark for General-Purpose Language Understanding Systems},
@@ -281,7 +280,15 @@ _AXG_CITATION = """\
 class SuperGlueConfig(datalabs.BuilderConfig):
     """BuilderConfig for SuperGLUE."""
 
-    def __init__(self, features, data_url, citation, url, label_classes=("False", "True"), **kwargs):
+    def __init__(
+        self,
+        features,
+        data_url,
+        citation,
+        url,
+        label_classes=("False", "True"),
+        **kwargs,
+    ):
         """BuilderConfig for SuperGLUE.
 
         Args:
@@ -301,7 +308,9 @@ class SuperGlueConfig(datalabs.BuilderConfig):
         #        the full release (v2.0).
         # 1.0.0: S3 (new shuffling, sharding and slicing mechanism).
         # 0.0.2: Initial version.
-        super(SuperGlueConfig, self).__init__(version=datalabs.Version("1.0.2"), **kwargs)
+        super(SuperGlueConfig, self).__init__(
+            version=datalabs.Version("1.0.2"), **kwargs
+        )
         self.features = features
         self.label_classes = label_classes
         self.data_url = data_url
@@ -374,7 +383,15 @@ class SuperGlue(datalabs.GeneratorBasedBuilder):
             description=_WIC_DESCRIPTION,
             # Note that start1, start2, end1, and end2 will be integers stored as
             # datalab.Value('int32').
-            features=["word", "sentence1", "sentence2", "start1", "start2", "end1", "end2"],
+            features=[
+                "word",
+                "sentence1",
+                "sentence2",
+                "start1",
+                "start2",
+                "end1",
+                "end2",
+            ],
             data_url="https://dl.fbaipublicfiles.com/glue/superglue/data/v2/WiC.zip",
             citation=_WIC_CITATION,
             url="https://pilehvar.github.io/wic/",
@@ -392,7 +409,8 @@ class SuperGlue(datalabs.GeneratorBasedBuilder):
         SuperGlueConfig(
             name="wsc.fixed",
             description=(
-                _WSC_DESCRIPTION + "\n\nThis version fixes issues where the spans are not actually "
+                _WSC_DESCRIPTION
+                + "\n\nThis version fixes issues where the spans are not actually "
                 "substrings of the text."
             ),
             # Note that span1_index and span2_index will be integers stored as
@@ -423,7 +441,9 @@ class SuperGlue(datalabs.GeneratorBasedBuilder):
     ]
 
     def _info(self):
-        features = {feature: datalabs.Value("string") for feature in self.config.features}
+        features = {
+            feature: datalabs.Value("string") for feature in self.config.features
+        }
         if self.config.name.startswith("wsc"):
             features["span1_index"] = datalabs.Value("int32")
             features["span2_index"] = datalabs.Value("int32")
@@ -456,7 +476,9 @@ class SuperGlue(datalabs.GeneratorBasedBuilder):
             # Answers are the subset of entities that are correct.
             features["answers"] = datalabs.features.Sequence(datalabs.Value("string"))
         else:
-            features["label"] = datalabs.features.ClassLabel(names=self.config.label_classes)
+            features["label"] = datalabs.features.ClassLabel(
+                names=self.config.label_classes
+            )
 
         return datalabs.DatasetInfo(
             description=_GLUE_DESCRIPTION + self.config.description,
@@ -513,13 +535,23 @@ class SuperGlue(datalabs.GeneratorBasedBuilder):
                     for question in paragraph["questions"]:
                         for answer in question["answers"]:
                             label = answer.get("label")
-                            key = "%s_%s_%s" % (row["idx"], question["idx"], answer["idx"])
+                            key = "%s_%s_%s" % (
+                                row["idx"],
+                                question["idx"],
+                                answer["idx"],
+                            )
                             yield key, {
                                 "paragraph": paragraph["text"],
                                 "question": question["question"],
                                 "answer": answer["text"],
-                                "label": -1 if label is None else _cast_label(bool(label)),
-                                "idx": {"paragraph": row["idx"], "question": question["idx"], "answer": answer["idx"]},
+                                "label": -1
+                                if label is None
+                                else _cast_label(bool(label)),
+                                "idx": {
+                                    "paragraph": row["idx"],
+                                    "question": question["idx"],
+                                    "answer": answer["idx"],
+                                },
                             }
                 elif self.config.name == "record":
                     passage = row["passage"]
@@ -534,7 +566,9 @@ class SuperGlue(datalabs.GeneratorBasedBuilder):
                 else:
                     if self.config.name.startswith("wsc"):
                         row.update(row["target"])
-                    example = {feature: row[feature] for feature in self.config.features}
+                    example = {
+                        feature: row[feature] for feature in self.config.features
+                    }
                     if self.config.name == "wsc.fixed":
                         example = _fix_wst(example)
                     example["idx"] = row["idx"]

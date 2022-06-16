@@ -1,9 +1,10 @@
+import gzip
 import json
 import os
-import datalabs
-import gzip
-import tempfile
 import subprocess
+import tempfile
+
+import datalabs
 from datalabs import get_task, TaskType
 
 _DESCRIPTION = """
@@ -32,21 +33,44 @@ _CITATION = """\
 _ABSTRACT = "summary"
 _ARTICLE = "text"
 
+
 def _gdrive_url(id):
     return f"https://drive.google.com/uc?id={id}&export=download"
 
+
 def custom_download(url, path):
     with tempfile.TemporaryDirectory() as tmpdir:
-        response = subprocess.check_output([
-            "wget", "--save-cookies", os.path.join(tmpdir, "cookies.txt"), 
-            f"{url}", "-O-"])
+        response = subprocess.check_output(
+            [
+                "wget",
+                "--save-cookies",
+                os.path.join(tmpdir, "cookies.txt"),
+                f"{url}",
+                "-O-",
+            ]
+        )
         with open(os.path.join(tmpdir, "response.txt"), "w") as f:
             f.write(response.decode("utf-8"))
-        response = subprocess.check_output(["sed", "-rn", 's/.*confirm=([0-9A-Za-z_]+).*/\\1/p', os.path.join(tmpdir, "response.txt")])
+        response = subprocess.check_output(
+            [
+                "sed",
+                "-rn",
+                "s/.*confirm=([0-9A-Za-z_]+).*/\\1/p",
+                os.path.join(tmpdir, "response.txt"),
+            ]
+        )
         response = response.decode("utf-8")
-        subprocess.check_output([
-            "wget", "--load-cookies", os.path.join(tmpdir, "cookies.txt"), "-O", path,
-            url+f"&confirm={response}"])
+        subprocess.check_output(
+            [
+                "wget",
+                "--load-cookies",
+                os.path.join(tmpdir, "cookies.txt"),
+                "-O",
+                path,
+                url + f"&confirm={response}",
+            ]
+        )
+
 
 class BigPatentConfig(datalabs.BuilderConfig):
     """BuilderConfig for BigPatent."""
@@ -61,6 +85,7 @@ class BigPatentConfig(datalabs.BuilderConfig):
 
 class BigPatentDataset(datalabs.GeneratorBasedBuilder):
     """BigPatent Dataset."""
+
     _FILE_ID = "1J3mucMFTWrgAYa3LuBZoLRR3CzzYD3fa"
     BUILDER_CONFIGS = [
         BigPatentConfig(
@@ -73,12 +98,12 @@ class BigPatentDataset(datalabs.GeneratorBasedBuilder):
 
     def _info(self):
         features_sample = datalabs.Features(
-                {
-                    _ARTICLE: datalabs.Value("string"),
-                    _ABSTRACT: datalabs.Value("string"),
-                    # "id": datalab.Value("string"),
-                }
-            )
+            {
+                _ARTICLE: datalabs.Value("string"),
+                _ABSTRACT: datalabs.Value("string"),
+                # "id": datalab.Value("string"),
+            }
+        )
 
         # Should return a datalab.DatasetInfo object
         return datalabs.DatasetInfo(
@@ -87,9 +112,10 @@ class BigPatentDataset(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://evasharma.github.io/bigpatent/",
             citation=_CITATION,
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT),
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                ),
             ],
         )
 
@@ -97,19 +123,28 @@ class BigPatentDataset(datalabs.GeneratorBasedBuilder):
         # f_path = dl_manager.download_and_extract(_gdrive_url(self._FILE_ID))
         f_path = dl_manager.download_custom(_gdrive_url(self._FILE_ID), custom_download)
         f_path = dl_manager.extract(f_path)
-        train_path = dl_manager.extract(os.path.join(f_path, "bigPatentData", "train.tar.gz"))
-        test_path = dl_manager.extract(os.path.join(f_path, "bigPatentData", "test.tar.gz"))
-        val_path = dl_manager.extract(os.path.join(f_path, "bigPatentData", "val.tar.gz"))  
+        train_path = dl_manager.extract(
+            os.path.join(f_path, "bigPatentData", "train.tar.gz")
+        )
+        test_path = dl_manager.extract(
+            os.path.join(f_path, "bigPatentData", "test.tar.gz")
+        )
+        val_path = dl_manager.extract(
+            os.path.join(f_path, "bigPatentData", "val.tar.gz")
+        )
 
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"f_path": os.path.join(train_path, "train")}
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"f_path": os.path.join(train_path, "train")},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION, gen_kwargs={"f_path": os.path.join(val_path, "val")}
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"f_path": os.path.join(val_path, "val")},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST, gen_kwargs={"f_path": os.path.join(test_path, "test")}
+                name=datalabs.Split.TEST,
+                gen_kwargs={"f_path": os.path.join(test_path, "test")},
             ),
         ]
 
@@ -122,7 +157,7 @@ class BigPatentDataset(datalabs.GeneratorBasedBuilder):
             cur_dir = os.path.join(f_path, data_dir)
             file_names = os.listdir(cur_dir)
             for file_name in file_names:
-                with gzip.open(os.path.join(cur_dir, file_name), 'r') as f:
+                with gzip.open(os.path.join(cur_dir, file_name), "r") as f:
                     for row in f:
                         data = json.loads(row)
 
@@ -130,7 +165,6 @@ class BigPatentDataset(datalabs.GeneratorBasedBuilder):
                             _ARTICLE: data["description"],
                             _ABSTRACT: data["abstract"],
                         }
-
 
                         yield cnt, raw_feature_info
 

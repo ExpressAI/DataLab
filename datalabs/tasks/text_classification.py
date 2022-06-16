@@ -67,6 +67,14 @@ class HatespeechIdentification(TextClassification):
     label_column: str = "label"
 
 
+@register_task(TaskType.next_token_classification)
+@dataclass
+class NextTokenClassification(TextClassification):
+    task: TaskType = TaskType.next_token_classification
+    text_column: str = "text"
+    label_column: str = "label"
+
+
 @register_task(TaskType.question_classification)
 @dataclass
 class QuestionClassification(TextClassification):
@@ -320,3 +328,21 @@ class TopicClassification(TextClassification):
         ),
     ]
     prompts = {x.id: x for x in prompts_raw}
+
+
+@register_task(TaskType.question_answering_classification)
+@dataclass
+class QuestionAnsweringClassification(TextClassification):
+    task: TaskType = TaskType.question_answering_classification
+    text_column: str = "text"
+    label_column: str = "label"
+
+    input_schema: ClassVar[Features] = Features(
+        {
+            "text": {
+                "question": Value("string"),
+                "description": Value("string"),
+                "answers": Value("string"),
+            }
+        }
+    )

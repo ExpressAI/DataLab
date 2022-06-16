@@ -15,8 +15,7 @@
 import csv
 
 import datalabs
-from datalabs import get_task, TaskType
-from datalabs import Dataset
+from datalabs import Dataset, get_task, TaskType
 
 _DESCRIPTION = """\
 The ATIS (Airline Travel Information Systems) is a dataset consisting of audio 
@@ -51,18 +50,45 @@ class ATIS(datalabs.GeneratorBasedBuilder):
                 {
                     "text": datalabs.Value("string"),
                     "label": datalabs.features.ClassLabel(
-                        names=['abbreviation', 'aircraft', 'aircraft, flight and flight number', 'airfare',
-                               'airfare and flight', 'airfare and flight time', 'airline', 'airline and flight number',
-                               'airport', 'capacity', 'cheapest', 'city', 'distance', 'day name', 'flight',
-                               'flight and airfare', 'flight and airline', 'flight number', 'flight time',
-                               'flight number and airline', 'ground fare', 'ground service',
-                               'ground service and ground fare', 'meal', 'quantity', 'restriction']),
+                        names=[
+                            "abbreviation",
+                            "aircraft",
+                            "aircraft, flight and flight number",
+                            "airfare",
+                            "airfare and flight",
+                            "airfare and flight time",
+                            "airline",
+                            "airline and flight number",
+                            "airport",
+                            "capacity",
+                            "cheapest",
+                            "city",
+                            "distance",
+                            "day name",
+                            "flight",
+                            "flight and airfare",
+                            "flight and airline",
+                            "flight number",
+                            "flight time",
+                            "flight number and airline",
+                            "ground fare",
+                            "ground service",
+                            "ground service and ground fare",
+                            "meal",
+                            "quantity",
+                            "restriction",
+                        ]
+                    ),
                 }
             ),
             homepage="https://github.com/howl-anderson/ATIS_dataset/blob/master/README.en-US.md",
             citation=_CITATION,
             languages=["en"],
-            task_templates=[get_task(TaskType.intent_classification)(text_column="text", label_column="label")],
+            task_templates=[
+                get_task(TaskType.intent_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -70,8 +96,12 @@ class ATIS(datalabs.GeneratorBasedBuilder):
         print(f"train_path: \t{train_path}")
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
@@ -104,11 +134,11 @@ class ATIS(datalabs.GeneratorBasedBuilder):
             "ground_service+ground_fare": "ground service and ground fare",
             "meal": "meal",
             "quantity": "quantity",
-            "restriction": "restriction"
+            "restriction": "restriction",
         }
 
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter='\t')
+            csv_reader = csv.reader(csv_file, delimiter="\t")
             # using this for tsv: csv_reader = csv.reader(csv_file, delimiter='\t')
             for id_, row in enumerate(csv_reader):
                 text, label = row

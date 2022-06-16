@@ -1,9 +1,8 @@
 """AESLC: Annotated Enron Subject Line Corpus."""
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
-
-
 
 _CITATION = """\
 @inproceedings{zhang-tetreault-2019-email,
@@ -33,9 +32,10 @@ _ABSTRACT = "summaries"
 _LANGUAGES = ["en"]
 _TASK_TEMPLATES = [
     get_task(TaskType.multi_ref_summarization)(
-        source_column=_ARTICLE,
-        reference_column=_ABSTRACT)
+        source_column=_ARTICLE, reference_column=_ABSTRACT
+    )
 ]
+
 
 class AESLCConfig(datalabs.BuilderConfig):
     """BuilderConfig for AESLC."""
@@ -57,7 +57,7 @@ class AESLCDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="Email subject line generation Dataset.",
-            task_templates=_TASK_TEMPLATES
+            task_templates=_TASK_TEMPLATES,
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -85,18 +85,24 @@ class AESLCDataset(datalabs.GeneratorBasedBuilder):
 
         train_dir = os.path.join(f_path, "AESLC-master/enron_subject_line/train")
         train_f_paths = os.listdir(train_dir)
-        train_f_paths = [os.path.join(f_path, "AESLC-master/enron_subject_line/train", train_f_path) for train_f_path in
-                         train_f_paths]
+        train_f_paths = [
+            os.path.join(f_path, "AESLC-master/enron_subject_line/train", train_f_path)
+            for train_f_path in train_f_paths
+        ]
 
         dev_dir = os.path.join(f_path, "AESLC-master/enron_subject_line/dev")
         dev_f_paths = os.listdir(dev_dir)
-        dev_f_paths = [os.path.join(f_path, "AESLC-master/enron_subject_line/dev", dev_f_path) for dev_f_path in
-                       dev_f_paths]
+        dev_f_paths = [
+            os.path.join(f_path, "AESLC-master/enron_subject_line/dev", dev_f_path)
+            for dev_f_path in dev_f_paths
+        ]
 
         test_dir = os.path.join(f_path, "AESLC-master/enron_subject_line/test")
         test_f_paths = os.listdir(test_dir)
-        test_f_paths = [os.path.join(f_path, "AESLC-master/enron_subject_line/test", test_f_path) for test_f_path in
-                        test_f_paths]
+        test_f_paths = [
+            os.path.join(f_path, "AESLC-master/enron_subject_line/test", test_f_path)
+            for test_f_path in test_f_paths
+        ]
 
         return [
             datalabs.SplitGenerator(
@@ -126,12 +132,14 @@ class AESLCDataset(datalabs.GeneratorBasedBuilder):
                 else:
                     sentences = [line.strip() for line in lines[:-11]]
                     text = " ".join(sentences)
-                    summaries = [lines[-10].strip(), lines[-7].strip(), lines[-4].strip(), lines[-1].strip()]
+                    summaries = [
+                        lines[-10].strip(),
+                        lines[-7].strip(),
+                        lines[-4].strip(),
+                        lines[-1].strip(),
+                    ]
                     datas.append((text, summaries))
 
         for id_, (text, summaries) in enumerate(datas):
-            raw_feature_info = {
-                _ARTICLE: text,
-                _ABSTRACT: summaries
-            }
+            raw_feature_info = {_ARTICLE: text, _ABSTRACT: summaries}
             yield id_, raw_feature_info

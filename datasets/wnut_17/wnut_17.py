@@ -67,11 +67,6 @@ _DEV_FILE = "emerging.dev.conll"
 _TEST_FILE = "emerging.test.annotated"
 
 
-
-
-
-
-
 class WNUT_17Config(datalabs.BuilderConfig):
     """The WNUT 17 Emerging Entities Dataset."""
 
@@ -84,23 +79,18 @@ class WNUT_17Config(datalabs.BuilderConfig):
         super(WNUT_17Config, self).__init__(**kwargs)
 
 
-
-
 class WNUT_17(datalabs.GeneratorBasedBuilder):
     """The WNUT 17 Emerging Entities Dataset."""
-
-
 
     # def __init__(self,*args, **kwargs):
     #     super(WNUT_17, self).__init__(*args, **kwargs)
     #     self.dataset_class = SequenceLabelingDataset
 
-
-
-
     BUILDER_CONFIGS = [
         WNUT_17Config(
-            name="wnut_17", version=datalabs.Version("1.0.0"), description="The WNUT 17 Emerging Entities Dataset"
+            name="wnut_17",
+            version=datalabs.Version("1.0.0"),
+            description="The WNUT 17 Emerging Entities Dataset",
         ),
     ]
 
@@ -135,9 +125,11 @@ class WNUT_17(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="http://noisy-text.github.io/2017/emerging-rare-entities.html",
             citation=_CITATION,
-            task_templates=[get_task(TaskType.named_entity_recognition)(
-                tokens_column="tokens",
-                tags_column="tags")],
+            task_templates=[
+                get_task(TaskType.named_entity_recognition)(
+                    tokens_column="tokens", tags_column="tags"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -150,9 +142,18 @@ class WNUT_17(datalabs.GeneratorBasedBuilder):
         downloaded_files = dl_manager.download_and_extract(urls_to_download)
 
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": downloaded_files["test"]}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"filepath": downloaded_files["train"]},
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"filepath": downloaded_files["dev"]},
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
+                gen_kwargs={"filepath": downloaded_files["test"]},
+            ),
         ]
 
     def _generate_examples(self, filepath):
@@ -172,7 +173,9 @@ class WNUT_17(datalabs.GeneratorBasedBuilder):
                     if not current_tokens:
                         # Consecutive empty lines will cause empty sentences
                         continue
-                    assert len(current_tokens) == len(current_labels), "💔 between len of tokens & labels"
+                    assert len(current_tokens) == len(
+                        current_labels
+                    ), "💔 between len of tokens & labels"
                     sentence = (
                         sentence_counter,
                         {

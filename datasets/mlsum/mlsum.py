@@ -3,10 +3,11 @@
 # Usage of dataset is restricted to non-commercial research purposes only. Copyright belongs to the original copyright holders.
 
 """MLSum: multiligual summarization dataset"""
+import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
-import json
 
 _CITATION = """\
 @inproceedings{scialom-etal-2020-mlsum,
@@ -40,8 +41,6 @@ _ABSTRACT = "summary"
 _ARTICLE = "text"
 
 
-
-
 class MLSumConfig(datalabs.BuilderConfig):
     """BuilderConfig for MLSum."""
 
@@ -56,18 +55,24 @@ class MLSumConfig(datalabs.BuilderConfig):
 
 class MLSumDataset(datalabs.GeneratorBasedBuilder):
     """MLSum Dataset."""
+
     _LANG = ["de", "es", "fr", "ru", "tu"]
     _URL = "https://gitlab.lip6.fr/scialom/mlsum_data/-/raw/master/MLSUM/"
-    BUILDER_CONFIGS = list([
-        MLSumConfig(
-            name=l,
-            version=datalabs.Version("1.0.0"),
-            description=f"MLSum Dataset for multiligual summarization, {l} split",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
-        ) for l in ["de", "es", "fr", "ru", "tu"]
-    ])
+    BUILDER_CONFIGS = list(
+        [
+            MLSumConfig(
+                name=l,
+                version=datalabs.Version("1.0.0"),
+                description=f"MLSum Dataset for multiligual summarization, {l} split",
+                task_templates=[
+                    get_task(TaskType.summarization)(
+                        source_column=_ARTICLE, reference_column=_ABSTRACT
+                    )
+                ],
+            )
+            for l in ["de", "es", "fr", "ru", "tu"]
+        ]
+    )
     DEFAULT_CONFIG_NAME = "de"
 
     def _info(self):
@@ -84,9 +89,10 @@ class MLSumDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=[self.config.name],
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT),
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                ),
             ],
         )
 
@@ -100,26 +106,28 @@ class MLSumDataset(datalabs.GeneratorBasedBuilder):
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={
                     "f_path": os.path.join(train_path, f"{lang_id}_train.jsonl"),
-                    }
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 gen_kwargs={
                     "f_path": os.path.join(val_path, f"{lang_id}_val.jsonl"),
-                    }
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 gen_kwargs={
                     "f_path": os.path.join(test_path, f"{lang_id}_test.jsonl"),
-                    }
+                },
             ),
         ]
 
     def _generate_examples(self, f_path):
         """Generate MLSum examples."""
-        with open(f_path, encoding="utf-8") as f: 
+        with open(f_path, encoding="utf-8") as f:
             for (id_, x) in enumerate(f):
                 x = json.loads(x)
-                yield id_, {_ARTICLE: x["text"].strip(), _ABSTRACT: x["summary"].strip()}
-                
+                yield id_, {
+                    _ARTICLE: x["text"].strip(),
+                    _ABSTRACT: x["summary"].strip(),
+                }

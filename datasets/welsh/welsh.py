@@ -1,6 +1,7 @@
 """Welsh Summarization Dataset."""
 import os
 import pickle
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -46,18 +47,22 @@ class WelshDataset(datalabs.GeneratorBasedBuilder):
             name="wiki-ref",
             version=datalabs.Version("1.0.0"),
             description="Welsh summarization dataset. Single wiki reference.",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         ),
         WelshConfig(
             name="human-ref",
             version=datalabs.Version("1.0.0"),
             description="Welsh summarization dataset. Multiple human written references.",
-            task_templates=[get_task(TaskType.multi_ref_summarization)(
-                source_column=_ARTICLE,
-                reference_column="summaries")]
-        )
+            task_templates=[
+                get_task(TaskType.multi_ref_summarization)(
+                    source_column=_ARTICLE, reference_column="summaries"
+                )
+            ],
+        ),
     ]
     DEFAULT_CONFIG_NAME = "human-ref"
 
@@ -70,8 +75,9 @@ class WelshDataset(datalabs.GeneratorBasedBuilder):
                 }
             )
             if self.feature_expanding:
-                features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                        get_schema_of_sample_level_features)
+                features_sample, features_dataset = get_feature_schemas(
+                    features_sample, get_schema_of_sample_level_features
+                )
         elif self.config.name == "human-ref":
             features_sample = datalabs.Features(
                 {
@@ -98,7 +104,12 @@ class WelshDataset(datalabs.GeneratorBasedBuilder):
 
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST, gen_kwargs={"f_path": os.path.join(f_path, "welsh-summarization-dataset-main/data/dataset.pkl")}
+                name=datalabs.Split.TEST,
+                gen_kwargs={
+                    "f_path": os.path.join(
+                        f_path, "welsh-summarization-dataset-main/data/dataset.pkl"
+                    )
+                },
             ),
         ]
 
@@ -115,18 +126,36 @@ class WelshDataset(datalabs.GeneratorBasedBuilder):
         human_summary = dataset["human_summary"]
 
         final_dataset = {}
-        for (id, text, w_summary, h_summary) in zip(fileid.values(), article.values(), wiki_summary.values(),
-                                                    human_summary.values()):
+        for (id, text, w_summary, h_summary) in zip(
+            fileid.values(),
+            article.values(),
+            wiki_summary.values(),
+            human_summary.values(),
+        ):
             if id not in final_dataset:
-                final_dataset[id] = [{"article": text, "wiki_summary": w_summary, "human_summary": h_summary}]
+                final_dataset[id] = [
+                    {
+                        "article": text,
+                        "wiki_summary": w_summary,
+                        "human_summary": h_summary,
+                    }
+                ]
             else:
-                final_dataset[id].append({"article": text, "wiki_summary": w_summary, "human_summary": h_summary})
+                final_dataset[id].append(
+                    {
+                        "article": text,
+                        "wiki_summary": w_summary,
+                        "human_summary": h_summary,
+                    }
+                )
 
         datas = []
         for samples in final_dataset.values():
             text = samples[0]["article"].replace("\n", "")
             wiki_summary = samples[0]["wiki_summary"].replace("\n", "")
-            human_summaries = [sample["human_summary"].replace("\n", "") for sample in samples]
+            human_summaries = [
+                sample["human_summary"].replace("\n", "") for sample in samples
+            ]
             if self.config.name == "human-ref":
                 datas.append((text, human_summaries))
             else:
@@ -134,13 +163,7 @@ class WelshDataset(datalabs.GeneratorBasedBuilder):
 
         for id_, (text, summary) in enumerate(datas):
             if self.config.name == "human-ref":
-                raw_feature_info = {
-                    _ARTICLE: text,
-                    "summaries": summary
-                }
+                raw_feature_info = {_ARTICLE: text, "summaries": summary}
             else:
-                raw_feature_info = {
-                    _ARTICLE: text,
-                    _ABSTRACT: summary
-                }
+                raw_feature_info = {_ARTICLE: text, _ABSTRACT: summary}
             yield id_, raw_feature_info

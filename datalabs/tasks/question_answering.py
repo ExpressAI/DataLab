@@ -291,14 +291,104 @@ class QuestionAnsweringMultipleChoiceWithoutContext(QuestionAnsweringMultipleCho
 @dataclass
 class QuestionAnsweringOpenDomain(QuestionAnswering):
     task: TaskType = TaskType.qa_open_domain
-    input_schema: ClassVar[Features] = Features(
-        {
-            "question": Value("string"),
-            "query": Value("string"),
-        }
-    )
+    input_schema: ClassVar[Features] = Features({"question": Value("string")})
     label_schema: ClassVar[Features] = Features({"answers": Sequence(Value("string"))})
 
     question_column: str = "question"
     answers_column: str = "answers"
-    context_column: str = "query"
+
+
+@register_task(TaskType.qa_bool_dureader)
+@dataclass
+class QuestionAnsweringBoolDureader(QuestionAnswering):
+    task: TaskType = TaskType.qa_bool_dureader
+    input_schema: ClassVar[Features] = Features(
+        {
+            "documents": Sequence(
+                {
+                    "title": Value("string"),
+                    "paragraphs": Sequence(Value("string")),
+                }
+            ),
+            "question": Value("string"),
+        }
+    )
+    label_schema: ClassVar[Features] = Features(
+        {
+            "answers": {
+                "text": Value("string"),
+                "yesno_answer": Value("string"),
+            }
+        }
+    )
+
+    question_column: str = "question"
+    answers_column: str = "answers"
+    context_column: str = "documents"
+
+
+@register_task(TaskType.qa_extractive_dureader)
+@dataclass
+class QuestionAnsweringExtractiveDureader(QuestionAnsweringExtractive):
+    task: TaskType = TaskType.qa_extractive_dureader
+    question_column: str = "question"
+    context_column: str = "context"
+    answers_column: str = "answers"
+
+    input_schema: ClassVar[Features] = Features(
+        {
+            "documents": Sequence(
+                {
+                    "is_selected": Value("string"),
+                    "most_related_para": Value("int32"),
+                    "title": Value("string"),
+                    "segmented_title": Sequence(Value("string")),
+                    "paragraphs": Sequence(Value("string")),
+                    "segmented_paragraphs": Sequence(Sequence(Value("string"))),
+                }
+            ),
+            "question": Value("string"),
+            "segmented_question": Sequence(Value("string")),
+            "question_type": Value("string"),
+            "fact_or_opinion": Value("string"),
+        }
+    )
+    label_schema: ClassVar[Features] = Features(
+        {
+            "answers": Sequence(Value("string")),
+            "segmented_answers": Sequence(Sequence(Value("string"))),
+            "fake_answers": Sequence(Value("string")),
+            "answer_spans": Sequence(Sequence(Value("int32"))),
+            "match_scores": Sequence(Value("float")),
+            "answer_docs": Sequence(Value("int32")),
+        }
+    )
+
+
+@register_task(TaskType.qa_multiple_choice_nlpec)
+@dataclass
+class QuestionAnsweringMultipleChoiceNLPEC(QuestionAnsweringMultipleChoice):
+    task: TaskType = TaskType.qa_multiple_choice_nlpec
+    input_schema: ClassVar[Features] = Features(
+        {
+            "question_type": Value("string"),
+            "question": Value("string"),
+            "question_s": Value("string"),
+            "options": Sequence(Value("string")),
+            "options_s": Sequence(Value("string")),
+            "context": Sequence(Value("string")),
+            "context_s": Sequence(Value("string")),
+        }
+    )
+    label_schema: ClassVar[Features] = Features(
+        {
+            "answers": {
+                "text": Value("string"),
+                "option_index": Value("int32"),
+            }
+        }
+    )
+    question_column: str = "question"
+    context_column: str = "context"
+    answers_column: str = "answers"
+    options_column: str = "options"

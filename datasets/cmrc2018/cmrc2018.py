@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -49,16 +50,19 @@ _CITATION = """\
 _LICENSE = "NA"
 
 _TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/cmrc2018/train.json"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/cmrc2018/dev.json"
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/cmrc2018/dev.json"
+)
 # _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/cmrc2018/test.json"
 
 _HOMEPAGE = "https://github.com/CLUEbenchmark/CLUE"
 
-class CMRC2018Config(datalabs.BuilderConfig):
 
+class CMRC2018Config(datalabs.BuilderConfig):
     def __init__(self, **kwargs):
 
         super(CMRC2018Config, self).__init__(**kwargs)
+
 
 class CMRC2018(datalabs.GeneratorBasedBuilder):
 
@@ -80,36 +84,40 @@ class CMRC2018(datalabs.GeneratorBasedBuilder):
                     "context": datalabs.Value("string"),
                     "title": datalabs.Value("string"),
                     "question": datalabs.Value("string"),
-                    "answers":
-                        {
-                            "text": datalabs.features.Sequence(datalabs.Value("string")),
-                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
-                        },
+                    "answers": {
+                        "text": datalabs.features.Sequence(datalabs.Value("string")),
+                        "answer_start": datalabs.features.Sequence(
+                            datalabs.Value("int32")
+                        ),
+                    },
                 }
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            languages = ["zh"],
+            languages=["zh"],
             task_templates=[
                 get_task(TaskType.qa_extractive)(
-                    question_column = "question",
-                    context_column = "context",
-                    answers_column = "answers",
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                 )
             ],
         )
-
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 
@@ -126,14 +134,14 @@ class CMRC2018(datalabs.GeneratorBasedBuilder):
                 paragraphs = article["paragraphs"][0]
                 context = paragraphs["context"]
                 qas = paragraphs["qas"]
-                # qas is a list, contaning many Q&A groups. 
+                # qas is a list, contaning many Q&A groups.
                 for qa in qas:
                     answer_starts = [answer["answer_start"] for answer in qa["answers"]]
                     text = [answer["text"] for answer in qa["answers"]]
                     yield count, {
-                        "title": title, 
-                        "context": context, 
-                        "question": qa["question"], 
+                        "title": title,
+                        "context": context,
+                        "question": qa["question"],
                         "id": qa["id"],
                         "answers": {
                             "text": text,
