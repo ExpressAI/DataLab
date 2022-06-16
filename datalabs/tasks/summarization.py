@@ -126,3 +126,35 @@ class OpinionSummarization(Summarization, GuidedConditionalGeneration):
     source_column: str = "texts"
     reference_column: str = "summaries"
     aspect_column: str = "aspect"
+
+
+@register_task(TaskType.query_multi_doc_summarization)
+@dataclass
+class QueryMultiDocSummarization(Summarization, GuidedConditionalGeneration):
+    """Query-based Multi-document summarization task.
+    data format: {
+        "texts": List[str], (multiple documents)
+        "query": str,
+        "summary": str,
+        }
+    """
+    task: TaskType = TaskType.query_multi_doc_summarization
+    input_schema: ClassVar[Features] = Features(
+        {"texts": Sequence(Value("string")), "query": Value("string")}
+    )
+    label_schema: ClassVar[Features] = Features({"summary": Value("string")})
+    source_column: str = "texts"
+    reference_column: str = "summary"
+    guidance_column: str = "query"
+
+
+@register_task(TaskType.extractive_summarization)
+@dataclass
+class ExtractiveSummarization(ConditionalGeneration):
+    task: TaskType = TaskType.extractive_summarization
+    input_schema: ClassVar[Features] = Features({"text": Value("string")})
+    label_schema: ClassVar[Features] = Features(
+        {"summary": Sequence(Value("string"))}
+    )
+    source_column: str = "text"
+    reference_column: str = "summary"
