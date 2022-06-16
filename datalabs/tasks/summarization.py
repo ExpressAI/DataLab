@@ -138,6 +138,7 @@ class QueryMultiDocSummarization(Summarization, GuidedConditionalGeneration):
         "summary": str,
         }
     """
+
     task: TaskType = TaskType.query_multi_doc_summarization
     input_schema: ClassVar[Features] = Features(
         {"texts": Sequence(Value("string")), "query": Value("string")}
@@ -153,8 +154,6 @@ class QueryMultiDocSummarization(Summarization, GuidedConditionalGeneration):
 class ExtractiveSummarization(ConditionalGeneration):
     task: TaskType = TaskType.extractive_summarization
     input_schema: ClassVar[Features] = Features({"text": Value("string")})
-    label_schema: ClassVar[Features] = Features(
-        {"summary": Sequence(Value("string"))}
-    )
+    label_schema: ClassVar[Features] = Features({"summary": Sequence(Value("string"))})
     source_column: str = "text"
     reference_column: str = "summary"
