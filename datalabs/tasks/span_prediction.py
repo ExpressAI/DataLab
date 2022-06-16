@@ -10,7 +10,7 @@ from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 class SpanPrediction(TaskTemplate):
     task: TaskType = TaskType.span_prediction
     text_column: str = "text"
-    label_column: str = "label"
+    label_column: str = "labels"
 
     def __post_init__(self):
         self.task_categories = [
@@ -25,7 +25,7 @@ class SpanPrediction(TaskTemplate):
             self.label_schema: ClassVar[Features] = Features(
                 {
                     "subject": Value("string"),
-                    "entity": Sequence(
+                    "spans": Sequence(
                         {
                             "start_idx": Sequence(Value("int32")),
                             "end_idx": Sequence(Value("int32")),
@@ -38,7 +38,7 @@ class SpanPrediction(TaskTemplate):
 
 @register_task(TaskType.ner_span_prediction)
 @dataclass
-class NerSpanPrediction(SpanPrediction):
+class NERSpanPrediction(SpanPrediction):
     task: TaskType = TaskType.ner_span_prediction
     text_column: str = "text"
-    label_column: str = "label"
+    label_column: str = "labels"

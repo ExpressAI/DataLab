@@ -34,12 +34,3 @@ class KnowledgeDrivenDialogue(Dialogue):
 class TaskOrientedDialogue(Dialogue):
     task: TaskType = TaskType.task_oriented_dialogue
     content_column: str = "content"
-
-    def __post_init__(self):
-        self.task_categories = [
-            task_cls.get_task() for task_cls in self.get_task_parents()
-        ]
-        if self.input_schema is None:
-            self.input_schema: ClassVar[Features] = Features(
-                {"content": Sequence(Value("string"))}
-            )
