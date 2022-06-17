@@ -10,7 +10,12 @@ from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 class Poetry(TaskTemplate):
     task: TaskType = TaskType.poetry
     title_column: str = "title"
-    paragraph_column: str = "paragraphs"
+    rhythmic_column: str = "rhythmic"
+    tags_column: str = "tags"
+    author_column: str = "author"
+    origin_column: str = "origin"
+    content_column: str = "content"
+    type_column: str = "type"
 
     def __post_init__(self):
         self.task_categories = [
@@ -18,15 +23,13 @@ class Poetry(TaskTemplate):
         ]
         if self.input_schema is None:
             self.input_schema: ClassVar[Features] = Features(
-                {"title": Value("string"), "paragraphs": Sequence(Value("string"))}
+                {
+                    "title": Value("string"),
+                    "author": Value("string"),
+                    "type": Value("string"),
+                    "content": {
+                        "chapter": Value("string"),
+                        "paragraphs": Sequence(Value("string")),
+                    },
+                }
             )
-
-
-@register_task(TaskType.chuci)
-@dataclass
-class Chuci(Poetry):
-    task: TaskType = TaskType.chuci
-    title_column: str = "title"
-    section_column: str = "section"
-    author_column: str = "author"
-    paragraph_column: str = "content"

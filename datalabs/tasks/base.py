@@ -99,7 +99,6 @@ class TaskType(str, Enum):
     retrieval = "retrieval"
     cloze = "cloze"
     poetry = "poetry"
-    chuci = "chuci"
     cloze_multiple_choice = "cloze-multiple-choice"
     cloze_generative = "cloze-generative"
     cloze_documents = "cloze_documents"
