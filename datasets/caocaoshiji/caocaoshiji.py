@@ -45,7 +45,7 @@ class Caocaoshiji(datalabs.GeneratorBasedBuilder):
             features=Features(
                 {
                     "title": Value("string"),
-                    "paragraphs": Sequence(Value("string")),
+                    "content": Sequence(Value("string")),
                 }
             ),
             homepage=_HOMEPAGE,
@@ -55,7 +55,7 @@ class Caocaoshiji(datalabs.GeneratorBasedBuilder):
             task_templates=[
                 get_task(TaskType.poetry)(
                     title_column= "title",
-                    paragraph_column= "paragraphs"
+                    content_column= "content"
                 )
             ],
         )
@@ -73,5 +73,5 @@ class Caocaoshiji(datalabs.GeneratorBasedBuilder):
             for id_,item in enumerate(data):
                 yield id_, {
                     'title': item['title'],
-                    'paragraphs':item['paragraphs']
+                    'content':item['paragraphs']
                 }
