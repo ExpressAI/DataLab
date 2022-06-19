@@ -71,6 +71,7 @@ class TaskType(str, Enum):
     paraphrase_identification = "paraphrase-identification"
     opinion_summarization = "opinion-summarization"
     multi_ref_query_summarization = "multi-ref-query-summarization",
+    aspect_summarization = "aspect-summarization"
 
     @staticmethod
     def list():
