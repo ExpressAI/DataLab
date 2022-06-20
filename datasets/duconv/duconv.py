@@ -65,25 +65,35 @@ class Duconv(datalabs.GeneratorBasedBuilder):
             name="test",
             version=datalabs.Version("1.0.0"),
             description="test set",
-            
+
         ),
     ]
 
     def _info(self):
         features = {feature: Sequence(Value("string")) for feature in ["goal", "knowledge", "content"]}
+
         if self.config.name=='test':
             features['response'] = Value("string")
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalabs.Features(features),
+            features=datalabs.Features({
+                "goal": Sequence(Value("string")),
+                "knowledge": Sequence(Value("string")),
+                "content":Sequence(Value("string")),
+                'response': Value("string")
+
+            }),
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
             languages = ["zh"],
             task_templates=[
-                get_task(TaskType.knowledge_driven_dialogue)(
+                get_task(TaskType.goal_oriented_knowledge_driven_dialogue)(
+                    knowledge_column = "knowledge",
+                    goal_column = "goal",
                     content_column = "content",
-                    knowledge_column = "knowledge"
+                    response_column = "response",
+
                 )
             ],
         )
@@ -93,15 +103,14 @@ class Duconv(datalabs.GeneratorBasedBuilder):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        if self.config.name=='test':
-            return [datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})]
-        else:
-            return [
+
+        return [
                 datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
                 datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+                datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
             ]
 
-         
+
 
 
     def _generate_examples(self, filepath):
@@ -110,12 +119,13 @@ class Duconv(datalabs.GeneratorBasedBuilder):
 
             for id_, line in enumerate(f):
                 conv=json.loads(line)
-              
+
                 if 'response' not in conv:
                     yield id_,{
                         "goal":conv['goal'],
                         "knowledge":  conv["knowledge"],
                         "content": conv["conversation"],
+                        "response": None,
                     }
                 else:
 
@@ -125,10 +135,3 @@ class Duconv(datalabs.GeneratorBasedBuilder):
                         "content": conv["history"],
                         'response': conv["response"],
                     }
-                
-
-                     
-
-
-
-
