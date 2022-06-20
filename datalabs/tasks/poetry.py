@@ -16,6 +16,7 @@ class Poetry(TaskTemplate):
     origin_column: str = "origin"
     content_column: str = "content"
     type_column: str = "type"
+    section_column: str = "section"
 
     def __post_init__(self):
         self.task_categories = [
@@ -27,6 +28,9 @@ class Poetry(TaskTemplate):
                     "title": Value("string"),
                     "author": Value("string"),
                     "type": Value("string"),
+                    "section": Value("string"),
+                    "rhythmic": Value("string"),
+                    "tags": Sequence(Value("string")),
                     "content": {
                         "chapter": Value("string"),
                         "paragraphs": Sequence(Value("string")),

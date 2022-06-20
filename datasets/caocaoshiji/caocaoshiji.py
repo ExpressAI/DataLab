@@ -45,7 +45,9 @@ class Caocaoshiji(datalabs.GeneratorBasedBuilder):
             features=Features(
                 {
                     "title": Value("string"),
-                    "content": Sequence(Value("string")),
+                    "content": {
+                        "paragraphs": Sequence(Value("string")),
+                    } 
                 }
             ),
             homepage=_HOMEPAGE,
@@ -73,5 +75,7 @@ class Caocaoshiji(datalabs.GeneratorBasedBuilder):
             for id_,item in enumerate(data):
                 yield id_, {
                     'title': item['title'],
-                    'content':item['paragraphs']
+                    'content':{
+                        "paragraphs": item['paragraphs']
+                    }
                 }

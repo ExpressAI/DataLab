@@ -47,7 +47,9 @@ class Chuci(datalabs.GeneratorBasedBuilder):
                     "title": Value("string"),
                     "section": Value("string"),
                     "author": Value("string"),
-                    "content": Sequence(Value("string")),
+                    "content": {
+                        "paragraphs": Sequence(Value("string")),
+                    }
                 
                 }
             ),
@@ -56,12 +58,11 @@ class Chuci(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages = ["zh"],
             task_templates=[
-                get_task(TaskType.chuci)(
+                get_task(TaskType.poetry)(
                     title_column= "title",
                     section_column = "section",
                     author_column = "author",
-                    paragraph_column= "content",
-
+                    content_column= "content",
                 )
             ],
         )
@@ -78,8 +79,10 @@ class Chuci(datalabs.GeneratorBasedBuilder):
             data=json.load(f)
             for id_,item in enumerate(data):
                 yield id_, {
-                    'title': item['title'],
-                    "section": item["section"],
+                    "title": item["title"],
                     "author": item["author"],
-                    "content": item["content"],
+                    "section": item["section"],
+                    "content": {
+                       "paragraphs": item["content"]
+                    }
                 }
