@@ -75,6 +75,8 @@ class TaskType(str, Enum):
     emotion_classification = "emotion-classification"
     intent_classification = "intent-classification"
     hatespeech_identification = "hatespeech-identification"
+    toxicity_identification = "toxicity-identification"
+    multi_toxicity_identification = "multi-toxicity-identification"
     spam_identification = "spam-identification"
     next_token_classification = "next-token-classification"
     grammatical_judgment = "grammatical-judgment"
@@ -107,6 +109,8 @@ class TaskType(str, Enum):
     dialogue = "dialogue"
     knowledge_driven_dialogue = "knowledge-driven-dialogue"
     task_oriented_dialogue = "task-oriented-dialogue"
+    dialogue_emotion_action_tracking = "dialogue-emotion-action-tracking"
+    dialogue_empathetic = "dialogue-empathetic"
 
     @staticmethod
     def list():
