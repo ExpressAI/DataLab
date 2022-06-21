@@ -24,7 +24,7 @@ _CITATION = """\
 """
 
 _DESCRIPTION = """\
-"Bai Jia Xing
+"Bai Jia Xing" is a work about Chinese surnames. According to literature records, it was written in the early Northern Song Dynasty. Originally, 411 surnames were collected, but they were added to 504, including 444 single surnames and 60 compound surnames.
 """
 
 _HOMEPAGE = "https://github.com/chinese-poetry/chinese-poetry"
