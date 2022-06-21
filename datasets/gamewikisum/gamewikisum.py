@@ -1,6 +1,7 @@
 """ GameWikiSum: a Novel Large Multi-Document Summarization Dataset """
-import os
 import json
+import os
+
 import datalabs
 from datalabs import get_task, TaskType
 from datalabs.tasks.summarization import _MDS_TEXT_COLUMN
@@ -47,6 +48,7 @@ class GameWikiSumConfig(datalabs.BuilderConfig):
 
 class GameWikiSumDataset(datalabs.GeneratorBasedBuilder):
     """GameWikiSum Dataset."""
+
     _FILE_ID = "http://lia.epfl.ch/Datasets/Full_GameWiki.zip"
 
     BUILDER_CONFIGS = [
@@ -54,16 +56,22 @@ class GameWikiSumDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="GameWikiSum dataset for multi-document summarization, single document version.",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE, reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         ),
         GameWikiSumConfig(
             name="multidoc",
             version=datalabs.Version("1.0.0"),
             description="GameWikiSum dataset for multi-document summarization, multi-document version.",
-            task_templates=[get_task(TaskType.multi_doc_summarization)(
-                source_column=_MDS_TEXT_COLUMN, reference_column=_ABSTRACT)]
-        )
+            task_templates=[
+                get_task(TaskType.multi_doc_summarization)(
+                    source_column=_MDS_TEXT_COLUMN, reference_column=_ABSTRACT
+                )
+            ],
+        ),
     ]
     DEFAULT_CONFIG_NAME = "document"
 
@@ -103,15 +111,15 @@ class GameWikiSumDataset(datalabs.GeneratorBasedBuilder):
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
-                gen_kwargs={"f_path": os.path.join(f_path, "train.json")}
+                gen_kwargs={"f_path": os.path.join(f_path, "train.json")},
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
-                gen_kwargs={"f_path": os.path.join(f_path, "val.json")}
+                gen_kwargs={"f_path": os.path.join(f_path, "val.json")},
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
-                gen_kwargs={"f_path": os.path.join(f_path, "test.json")}
+                gen_kwargs={"f_path": os.path.join(f_path, "test.json")},
             ),
         ]
 
@@ -124,9 +132,13 @@ class GameWikiSumDataset(datalabs.GeneratorBasedBuilder):
         all_datas = []
         for datas in data_segs:
             for data in datas:
-                preprocessed_paragraphs_per_reviews = data["preprocessed_paragraphs_per_reviews"]  # list of list
+                preprocessed_paragraphs_per_reviews = data[
+                    "preprocessed_paragraphs_per_reviews"
+                ]  # list of list
                 preprocessed_summary = data["preprocessed_summary"]  # string
-                all_datas.append((preprocessed_paragraphs_per_reviews, preprocessed_summary))
+                all_datas.append(
+                    (preprocessed_paragraphs_per_reviews, preprocessed_summary)
+                )
 
         for (id_, data) in enumerate(all_datas):
 
@@ -137,10 +149,7 @@ class GameWikiSumDataset(datalabs.GeneratorBasedBuilder):
 
                 article = " ".join([" ".join(sentences) for sentences in reviews])
 
-                raw_feature_info = {
-                    _ARTICLE: article,
-                    _ABSTRACT: summary
-                }
+                raw_feature_info = {_ARTICLE: article, _ABSTRACT: summary}
                 yield id_, raw_feature_info
 
             elif self.config.name == "multidoc":

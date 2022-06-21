@@ -1,5 +1,6 @@
 """PTS: Product Title Summarization Corpus."""
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -46,9 +47,11 @@ class PTSDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("1.0.0"),
             description="Product title summarization corpus.",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -67,18 +70,23 @@ class PTSDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
         train_f_path = dl_manager.download(
-            "https://raw.githubusercontent.com/FeiSun/ProductTitleSummarizationCorpus/master/corpus/train.txt")
+            "https://raw.githubusercontent.com/FeiSun/ProductTitleSummarizationCorpus/master/corpus/train.txt"
+        )
         valid_f_path = dl_manager.download(
-            "https://raw.githubusercontent.com/FeiSun/ProductTitleSummarizationCorpus/master/corpus/val.txt")
+            "https://raw.githubusercontent.com/FeiSun/ProductTitleSummarizationCorpus/master/corpus/val.txt"
+        )
         test_f_path = dl_manager.download(
-            "https://raw.githubusercontent.com/FeiSun/ProductTitleSummarizationCorpus/master/corpus/test.txt")
+            "https://raw.githubusercontent.com/FeiSun/ProductTitleSummarizationCorpus/master/corpus/test.txt"
+        )
 
         return [
             datalabs.SplitGenerator(
@@ -103,8 +111,5 @@ class PTSDataset(datalabs.GeneratorBasedBuilder):
             datas.append((article, summary))
 
         for id_, (article, summary) in enumerate(datas):
-            raw_feature_info = {
-                _ARTICLE: article,
-                _ABSTRACT: summary
-            }
+            raw_feature_info = {_ARTICLE: article, _ABSTRACT: summary}
             yield id_, raw_feature_info

@@ -1,8 +1,9 @@
 """En2DeSum: A Cross-lingual Summarization Dataset"""
+import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
-import json
 
 _CITATION = """\
 @inproceedings{bai-etal-2021-cross,
@@ -50,16 +51,19 @@ class En2DeSumConfig(datalabs.BuilderConfig):
 
 class En2DeSumDataset(datalabs.GeneratorBasedBuilder):
     """En2DeSum Dataset."""
+
     _FILE_ID = "1E4EDszxkHhL4ovgvYiPKOWz9pCegU0yB"
     BUILDER_CONFIGS = [
         En2DeSumConfig(
             name=f"en-de",
             version=datalabs.Version("1.0.0"),
             description=f"En2DeSum Dataset for crosslingual summarization",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
-        ) 
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
+        )
     ]
     DEFAULT_CONFIG_NAME = "en-de"
 
@@ -77,9 +81,10 @@ class En2DeSumDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=[self.config.name],
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT),
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                ),
             ],
         )
 
@@ -89,20 +94,20 @@ class En2DeSumDataset(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={
-                    "f_path": os.path.join(f_path, f"./en2de/train.jsonl"), 
-                    }
+                    "f_path": os.path.join(f_path, f"./en2de/train.jsonl"),
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 gen_kwargs={
                     "f_path": os.path.join(f_path, f"./en2de/valid.jsonl"),
-                    }
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 gen_kwargs={
                     "f_path": os.path.join(f_path, f"./en2de/test.jsonl"),
-                    }
+                },
             ),
         ]
 
@@ -112,4 +117,3 @@ class En2DeSumDataset(datalabs.GeneratorBasedBuilder):
             for (id_, x) in enumerate(f):
                 x = json.loads(x)
                 yield id_, {_ARTICLE: x["text"], _ABSTRACT: x["summary"]}
-                

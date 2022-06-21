@@ -17,6 +17,7 @@
 
 import csv
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -68,9 +69,11 @@ class YahooAnswersTopics(datalabs.GeneratorBasedBuilder):
                 },
             ),
             supervised_keys=None,
-            task_templates=[get_task(TaskType.topic_classification)(
-                text_column="text",
-                label_column="label")],
+            task_templates=[
+                get_task(TaskType.topic_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
             homepage="https://github.com/LC-John/Yahoo-Answers-Topic-Classification-Dataset",
         )
 
@@ -81,10 +84,12 @@ class YahooAnswersTopics(datalabs.GeneratorBasedBuilder):
         data_dir = os.path.join(data_dir, "yahoo_answers_csv")
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": os.path.join(data_dir, "train.csv")}
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"filepath": os.path.join(data_dir, "train.csv")},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST, gen_kwargs={"filepath": os.path.join(data_dir, "test.csv")}
+                name=datalabs.Split.TEST,
+                gen_kwargs={"filepath": os.path.join(data_dir, "test.csv")},
             ),
         ]
 

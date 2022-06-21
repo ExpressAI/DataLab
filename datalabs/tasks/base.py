@@ -11,6 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import annotations
+
 import abc
 import dataclasses
 from dataclasses import dataclass, field
@@ -40,12 +42,23 @@ class TaskType(str, Enum):
     qa_dcqa = "qa-dcqa"
     qa_multiple_choice = "qa-multiple-choice"
     qa_multiple_choice_qasc = "qa-multiple-choice-qasc"
+    qa_multiple_choice_c3 = "qa-multiple-choice-c3"
     qa_multiple_choice_without_context = "qa-multiple-choice-without-context"
+    qa_open_domain = "qa_open_domain"
+    qa_bool_dureader = "qa_bool_dureader"
+    qa_extractive_dureader = "qa_extractive_dureader"
+    qa_multiple_choice_nlpec = "qa_multiple_choice_nlpec"
     sequence_labeling = "sequence-labeling"
     named_entity_recognition = "named-entity-recognition"
     word_segmentation = "word-segmentation"
     chunking = "chunking"
     part_of_speech = "part-of-speech"
+    opinion_target_extraction = "opinion-target-extraction"
+    event_extraction = "event_extraction"
+    event_entity_extraction = "event_entity_extraction"
+    event_arguments_extraction = "event_arguments_extraction"
+    event_relation_extraction_causality = "event_relation_extraction_causality"
+    entity_relation_extraction = "entity_relation_extraction"
     semantic_parsing = "semantic-parsing"
     text_to_sql = "text-to-sql"
     span_relation_prediction = "span-relation-prediction"
@@ -62,16 +75,44 @@ class TaskType(str, Enum):
     emotion_classification = "emotion-classification"
     intent_classification = "intent-classification"
     hatespeech_identification = "hatespeech-identification"
+    toxicity_identification = "toxicity-identification"
+    multi_toxicity_identification = "multi-toxicity-identification"
     spam_identification = "spam-identification"
+    next_token_classification = "next-token-classification"
     grammatical_judgment = "grammatical-judgment"
     question_classification = "question-classification"
     topic_classification = "topic-classification"
+    question_answering_classification = "question_answering_classification"
     text_pair_classification = "text-pair-classification"
     natural_language_inference = "natural-language-inference"
     paraphrase_identification = "paraphrase-identification"
+    keyword_recognition = "keyword-recognition"
+    text_similarity = "text-similarity"
+    multilabel_classification = "multilabel-classification"
+    question_answering_matching = "question_answering_matching"
     opinion_summarization = "opinion-summarization"
     multi_ref_query_summarization = "multi-ref-query-summarization",
     aspect_summarization = "aspect-summarization"
+    single_turn_dialogue = "single-turn-dialogue"
+    ranking = "ranking"
+    retrieval_based_dialogue = "retrieval-based-dialogue"
+    span_prediction = "span-prediction"
+    ner_span_prediction = "ner-span-prediction"
+    query_multi_doc_summarization = "query-multi-doc-summarization"
+    extractive_summarization = "extractive-summarization"
+    retrieval = "retrieval"
+    cloze = "cloze"
+    cloze_multiple_choice = "cloze-multiple-choice"
+    cloze_generative = "cloze-generative"
+    cloze_documents = "cloze_documents"
+    text_editing = "text-editing"
+    grammatical_error_correction = "grammatical-error-correction"
+    essay_writing = "essay-writing"
+    dialogue = "dialogue"
+    knowledge_driven_dialogue = "knowledge-driven-dialogue"
+    task_oriented_dialogue = "task-oriented-dialogue"
+    dialogue_emotion_action_tracking = "dialogue-emotion-action-tracking"
+    dialogue_empathetic = "dialogue-empathetic"
 
     @staticmethod
     def list():
@@ -121,5 +162,5 @@ def register_task(task: TaskType):
     return register_task_fn
 
 
-def get_task(task: TaskType) -> TaskTemplate:
+def get_task(task: TaskType) -> Type[TaskTemplate]:
     return TASK_REGISTRY[task]

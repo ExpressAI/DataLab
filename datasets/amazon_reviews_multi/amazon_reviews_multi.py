@@ -62,7 +62,9 @@ class AmazonReviewsMultiConfig(datalabs.BuilderConfig):
     """BuilderConfig for AmazonReviewsMultiConfig."""
 
     def __init__(self, languages=None, **kwargs):
-        super(AmazonReviewsMultiConfig, self).__init__(version=datalabs.Version(_VERSION, ""), **kwargs),
+        super(AmazonReviewsMultiConfig, self).__init__(
+            version=datalabs.Version(_VERSION, ""), **kwargs
+        ),
         self.languages = languages
 
 
@@ -94,11 +96,9 @@ class AmazonReviewsMulti(datalabs.GeneratorBasedBuilder):
                     "review_id": datalabs.Value("string"),
                     "product_id": datalabs.Value("string"),
                     "reviewer_id": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["1 star",
-                                                                 "2 stars",
-                                                                 "3 stars",
-                                                                 "4 stars",
-                                                                 "5 stars"]),
+                    "label": datalabs.features.ClassLabel(
+                        names=["1 star", "2 stars", "3 stars", "4 stars", "5 stars"]
+                    ),
                     "text": datalabs.Value("string"),
                     "review_title": datalabs.Value("string"),
                     "language": datalabs.Value("string"),
@@ -110,51 +110,67 @@ class AmazonReviewsMulti(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE_URL,
             citation=_CITATION,
             task_templates=[
-                get_task(TaskType.sentiment_classification)(text_column="text", label_column="label"),
+                get_task(TaskType.sentiment_classification)(
+                    text_column="text", label_column="label"
+                ),
             ],
         )
 
     def _split_generators(self, dl_manager):
-        train_urls = [_DOWNLOAD_URL.format(split="train", lang=lang) for lang in self.config.languages]
-        dev_urls = [_DOWNLOAD_URL.format(split="dev", lang=lang) for lang in self.config.languages]
-        test_urls = [_DOWNLOAD_URL.format(split="test", lang=lang) for lang in self.config.languages]
+        train_urls = [
+            _DOWNLOAD_URL.format(split="train", lang=lang)
+            for lang in self.config.languages
+        ]
+        dev_urls = [
+            _DOWNLOAD_URL.format(split="dev", lang=lang)
+            for lang in self.config.languages
+        ]
+        test_urls = [
+            _DOWNLOAD_URL.format(split="test", lang=lang)
+            for lang in self.config.languages
+        ]
 
         train_paths = dl_manager.download_and_extract(train_urls)
         dev_paths = dl_manager.download_and_extract(dev_urls)
         test_paths = dl_manager.download_and_extract(test_urls)
 
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"file_paths": train_paths}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"file_paths": dev_paths}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"file_paths": test_paths}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"file_paths": train_paths}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"file_paths": dev_paths}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"file_paths": test_paths}
+            ),
         ]
 
     def _generate_examples(self, file_paths):
-        textualize_label = {"1":"1 star",
-                                 "2":"2 stars",
-                                 "3":"3 stars",
-                                 "4":"4 stars",
-                                 "5":"5 stars"}
-
-
+        textualize_label = {
+            "1": "1 star",
+            "2": "2 stars",
+            "3": "3 stars",
+            "4": "4 stars",
+            "5": "5 stars",
+        }
 
         row_count = 0
         for file_path in file_paths:
             with open(file_path, "r", encoding="utf-8") as f:
 
-
                 for line in f:
                     res_info = json.loads(line)
-                    label = textualize_label[res_info['stars']]
+                    label = textualize_label[res_info["stars"]]
                     yield row_count, {
-                    "review_id": res_info['review_id'],
-                    "product_id": res_info['product_id'],
-                    "reviewer_id": res_info['reviewer_id'],
-                    "label": label,
-                    "text":res_info['review_body'],
-                    "review_title":res_info['review_title'],
-                    "language":res_info['language'],
-                    "product_category":res_info['product_category'],
-                }
+                        "review_id": res_info["review_id"],
+                        "product_id": res_info["product_id"],
+                        "reviewer_id": res_info["reviewer_id"],
+                        "label": label,
+                        "text": res_info["review_body"],
+                        "review_title": res_info["review_title"],
+                        "language": res_info["language"],
+                        "product_category": res_info["product_category"],
+                    }
 
                     row_count += 1

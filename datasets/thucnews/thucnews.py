@@ -17,7 +17,6 @@
 import datalabs
 from datalabs import get_task, TaskType
 
-
 _DESCRIPTION = """\
 Thucnews is a long news text data set from Sina News and each text is labelled with one of 14 categories of news. 
 The categories: (0) Sports, (1) Entertainment, (2) Home, (3) Lottery, (4) Real estate, (5) Education, 
@@ -40,59 +39,69 @@ _CITATION = """\
 """
 
 
-
 _TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/thucnews/train.txt"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/thucnews/dev.txt"
-_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/thucnews/test.txt"
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/thucnews/dev.txt"
+)
+_TEST_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/thucnews/test.txt"
+)
 
 
 class THUCNEWS(datalabs.GeneratorBasedBuilder):
-
     def _info(self):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=[
-                        "sports",
-                        "entertainment",
-                        "home",
-                        "lottery",
-                        "real estate",
-                        "edu",
-                        "fashion",
-                        "politics",
-                        "constellation",
-                        "game",
-                        "society",
-                        "science",
-                        "stock",
-                        "finance",
-                    ]),
+                    "label": datalabs.features.ClassLabel(
+                        names=[
+                            "sports",
+                            "entertainment",
+                            "home",
+                            "lottery",
+                            "real estate",
+                            "edu",
+                            "fashion",
+                            "politics",
+                            "constellation",
+                            "game",
+                            "society",
+                            "science",
+                            "stock",
+                            "finance",
+                        ]
+                    ),
                 }
             ),
             homepage="http://thuctc.thunlp.org",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.topic_classification)(
-                text_column="text",
-                label_column="label")],
+            task_templates=[
+                get_task(TaskType.topic_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
-        
+
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
-        return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
-        ]
-        
 
+        return [
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
+        ]
 
     def _generate_examples(self, filepath):
 
@@ -110,7 +119,7 @@ class THUCNEWS(datalabs.GeneratorBasedBuilder):
             "10": "society",
             "11": "science",
             "12": "stock",
-            "13": "finance"          
+            "13": "finance",
         }
 
         with open(filepath, encoding="utf-8") as txt_file:
@@ -122,9 +131,3 @@ class THUCNEWS(datalabs.GeneratorBasedBuilder):
                     if label in textualize_label:
                         label = textualize_label[label]
                         yield id_, {"text": text, "label": label}
-                
-
-                
-                
-
-

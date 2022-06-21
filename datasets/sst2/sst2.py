@@ -13,9 +13,9 @@
 
 
 import csv
+
 import datalabs
 from datalabs import get_task, TaskType
-
 
 _DESCRIPTION = """\
 The Stanford Sentiment Treebank is a corpus with fully labeled parse trees that allows 
@@ -59,15 +59,19 @@ class SST2(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["positive", "negative"]),
+                    "label": datalabs.features.ClassLabel(
+                        names=["positive", "negative"]
+                    ),
                 }
             ),
             homepage="https://nlp.stanford.edu/sentiment/",
             citation=_CITATION,
             languages=["en"],
-            task_templates=[get_task(TaskType.sentiment_classification)(
-                text_column="text",
-                label_column="label")],
+            task_templates=[
+                get_task(TaskType.sentiment_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -78,22 +82,25 @@ class SST2(datalabs.GeneratorBasedBuilder):
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         print(f"test_path: \t{test_path}")
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
         """Generate SST2 examples."""
 
         # map the label into textual string
-        textualize_label = {
-            "1": "positive",
-            "0": "negative"
-        }
+        textualize_label = {"1": "positive", "0": "negative"}
 
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter='\t')
+            csv_reader = csv.reader(csv_file, delimiter="\t")
             for id_, row in enumerate(csv_reader):
                 text, label = row
                 label = textualize_label[label]

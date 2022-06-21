@@ -15,9 +15,9 @@
 
 import csv
 from email import header
+
 import datalabs
 from datalabs import get_task, TaskType
-
 
 # Find for instance the citation on arxiv or on the dataset repo/website
 _CITATION = """\
@@ -38,40 +38,44 @@ _HOMEPAGE = "https://github.com/SophonPlus/ChineseNlpCorpus"
 
 _URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/ChnSentiCorp_hotel/ChnSentiCorp_hotel.csv"
 
+
 class ChnSentiCorpHotel(datalabs.GeneratorBasedBuilder):
     def _info(self):
         return datalabs.DatasetInfo(
-
             description=_DESCRIPTION,
-
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["positive", "negative"]),
+                    "label": datalabs.features.ClassLabel(
+                        names=["positive", "negative"]
+                    ),
                 }
             ),
             homepage=_HOMEPAGE,
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.sentiment_classification)(text_column="text", label_column="label")],
+            task_templates=[
+                get_task(TaskType.sentiment_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_URL)
         print(f"train_path: \t{train_path}")
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            )
         ]
 
     def _generate_examples(self, filepath):
-        
-        textualize_label = {
-            "1": "positive",
-            "0": "negative"
-        }
+
+        textualize_label = {"1": "positive", "0": "negative"}
 
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',')
+            csv_reader = csv.reader(csv_file, delimiter=",")
             for id_, row in enumerate(csv_reader):
                 label, text = row
                 if label == "0" or label == "1":

@@ -1,7 +1,8 @@
+import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
-import json
 
 _CITATION = """\
 @inproceedings{Shah2021NutribulletsSH,
@@ -24,8 +25,10 @@ _HOMEPAGE = "https://github.com/darsh10/Nutribullets"
 _ABSTRACT = "summary"
 _ARTICLE = "text"
 
+
 def _gdrive_url(id):
     return f"https://drive.google.com/uc?id={id}&export=download&confirm=t"
+
 
 class HealthlineConfig(datalabs.BuilderConfig):
     """BuilderConfig for Healthline."""
@@ -41,15 +44,18 @@ class HealthlineConfig(datalabs.BuilderConfig):
 
 class HealthlineDataset(datalabs.GeneratorBasedBuilder):
     """Healthline Dataset."""
+
     _FILE_ID = "18ZU5VuiPC329c_BbyBLh2_m67vQ-jE3Y"
     BUILDER_CONFIGS = [
         HealthlineConfig(
             name="document",
             version=datalabs.Version("1.0.0"),
             description=f"Healthline Dataset for summarization",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         )
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -68,9 +74,10 @@ class HealthlineDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=[self.config.name],
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT),
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                ),
             ],
         )
 
@@ -80,26 +87,29 @@ class HealthlineDataset(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={
-                    "f_path": path, "split": "train",
-                    }
+                    "f_path": path,
+                    "split": "train",
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 gen_kwargs={
-                    "f_path": path, "split": "dev",
-                    }
+                    "f_path": path,
+                    "split": "dev",
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 gen_kwargs={
-                    "f_path": path, "split": "test",
-                    }
+                    "f_path": path,
+                    "split": "test",
+                },
             ),
         ]
 
     def _generate_examples(self, f_path, split):
         """Generate Healthline examples."""
-        with open(f_path, encoding="utf-8") as f: 
+        with open(f_path, encoding="utf-8") as f:
             data = json.load(f)
         id_ = 0
         for k in data:
@@ -109,10 +119,12 @@ class HealthlineDataset(datalabs.GeneratorBasedBuilder):
                 x = data[k]
                 if "summary_inputs" not in x:
                     continue
-                if 'summary_pubmed_articles' not in x["summary_inputs"]:
+                if "summary_pubmed_articles" not in x["summary_inputs"]:
                     continue
                 summaries, article_ids = [], []
-                for (summary, id) in x["summary_inputs"]["summary_pubmed_articles"].items():
+                for (summary, id) in x["summary_inputs"][
+                    "summary_pubmed_articles"
+                ].items():
                     summaries.append(summary.strip())
                     article_ids.append(id)
                 if "pubmed_sentences" not in x:
@@ -125,4 +137,3 @@ class HealthlineDataset(datalabs.GeneratorBasedBuilder):
                                 text.append(" ".join(a[0]))
                     yield id_, {_ARTICLE: " ".join(text), _ABSTRACT: s}
                     id_ += 1
-                
