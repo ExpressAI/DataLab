@@ -91,6 +91,8 @@ class TaskType(str, Enum):
     multilabel_classification = "multilabel-classification"
     question_answering_matching = "question_answering_matching"
     opinion_summarization = "opinion-summarization"
+    multi_ref_query_summarization = "multi-ref-query-summarization",
+    aspect_summarization = "aspect-summarization"
     single_turn_dialogue = "single-turn-dialogue"
     ranking = "ranking"
     retrieval_based_dialogue = "retrieval-based-dialogue"
