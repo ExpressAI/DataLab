@@ -7,7 +7,7 @@ from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 
 @register_task(TaskType.grammatical_error_correction)
 @dataclass
-class QuestionAnswering(TaskTemplate):
+class GrammaticalErrorCorrection(TaskTemplate):
     task: TaskType = TaskType.grammatical_error_correction
     original_column: str = "original"
     correct_column: str = "correct"
