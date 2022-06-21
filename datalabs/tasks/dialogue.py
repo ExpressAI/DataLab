@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import ClassVar
 
-from datalabs.features import ClassLabel, Features, Sequence, Value
+from datalabs.features import Features, Sequence, Value
 from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 
 
@@ -10,6 +10,7 @@ from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 class DialogueGeneration(TaskTemplate):
     task: TaskType = TaskType.dialogue
     dialogue_column: str = "dialog"
+
 
 @register_task(TaskType.dialogue_emotion_action_tracking)
 @dataclass
