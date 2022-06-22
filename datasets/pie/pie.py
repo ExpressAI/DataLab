@@ -88,7 +88,7 @@ class Pie(datalabs.GeneratorBasedBuilder):
             homepage="https://github.com/awasthiabhijeet/PIE",
             citation=_CITATION,
             task_templates=[
-                get_task(TaskType.grammatical_error_correction)(
+                get_task(TaskType.grammatical_error_correction_m2)(
 
                 )
             ],

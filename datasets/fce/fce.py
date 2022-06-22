@@ -79,7 +79,7 @@ class Fce(datalabs.GeneratorBasedBuilder):
             homepage="https://ilexir.co.uk/datasets/index.html",
             citation=_CITATION,
             task_templates=[
-                get_task(TaskType.grammatical_error_correction)(
+                get_task(TaskType.grammatical_error_correction_m2)(
 
                 )
             ],
@@ -109,11 +109,13 @@ class Fce(datalabs.GeneratorBasedBuilder):
                 m2 = sent[1:]
                 edits = sent[1:]
                 offset = 0
+                cor = ''
                 for edit in edits:
                     edit = edit.split("|||")
                     if edit[1] in skip: continue  # Ignore certain edits
                     coder = int(edit[-1])
-                    if coder != id: continue  # Ignore other coders
+                    # if coder != id: continue  # Ignore other coders
+                    if coder != 0: continue  # Ignore other coders
                     span = edit[0].split()[1:]  # Ignore "A "
                     start = int(span[0])
                     end = int(span[1])
@@ -124,6 +126,7 @@ class Fce(datalabs.GeneratorBasedBuilder):
                     "original": " ".join(origin_sent),
                     "correct": {
                         'm2': m2,
+                        # 'sentence': "edits: "+"@".join(edits)+" cor: " + cor + "offset: "+str(offset)
                         'sentence': " ".join(cor_sent)
                     }
                 }
