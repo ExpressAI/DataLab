@@ -105,6 +105,7 @@ class TaskType(str, Enum):
     cloze_documents = "cloze_documents"
     text_editing = "text-editing"
     grammatical_error_correction = "grammatical-error-correction"
+    grammatical_error_correction_m2 = "grammatical-error-correction-m2"
     essay_writing = "essay-writing"
     dialogue = "dialogue"
     knowledge_driven_dialogue = "knowledge-driven-dialogue"
