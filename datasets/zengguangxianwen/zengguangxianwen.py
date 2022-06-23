@@ -24,15 +24,15 @@ _CITATION = """\
 """
 
 _DESCRIPTION = """\
-"Gu Wen Guan Zhi" is an anthology of ancient prose selected by Wu Chucai and Wu Tiao Hou of the Qing Dynasty in the thirty-third year of Kangxi (1694). Er Wu Jun is a native of Shaoxing, Zhejiang, and has long set up a library to teach apprentices. This book is a literary reading book for school use selected during the Kangxi period of the Qing Dynasty. This book is a teaching material for students.
+"Zeng Guang Xian Wen" is an enlightenment book for children in ancient China. The title of the book was first seen in the opera "Peony Pavilion" in the Wanli period of the Ming Dynasty, so it can be inferred that the book was written in the Wanli period at the latest. Later, after the continuous addition of literati in the Ming and Qing dynasties, it was changed to what it is now, called "Zeng Guang Xi Shi Xian Wen", commonly known as "Zeng Guang Xian Wen". 
 """
 
 _HOMEPAGE = "https://github.com/chinese-poetry/chinese-poetry"
 _LICENSE = "MIT"
-_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/poetry/mengxue/guwenguanzhi.json"
+_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/poetry/mengxue/zengguangxianwen.json"
 
 
-class Guwenguanzhi(datalabs.GeneratorBasedBuilder):
+class ZengGuangXianWen(datalabs.GeneratorBasedBuilder):
    
     VERSION = datalabs.Version("1.0.0")
 
@@ -50,7 +50,6 @@ class Guwenguanzhi(datalabs.GeneratorBasedBuilder):
                     "content": {
                         "chapter":Value("string"),
                         "paragraphs": Sequence(Value("string")),
-                        "source": Value("string"),
                         }
                     
                 }
@@ -64,7 +63,8 @@ class Guwenguanzhi(datalabs.GeneratorBasedBuilder):
                     title_column= "title",
                     author_column="author",
                     content_column= "content",
-                    abstract_column= "abstract"
+                    abstract_column= "abstract",
+                    
                 )
             ],
         )
@@ -82,16 +82,14 @@ class Guwenguanzhi(datalabs.GeneratorBasedBuilder):
             
             count=0
             for id_,item in enumerate(data['content']):
-                for c in item['content']:
 
                     yield count, {
-                        'title': item['title'],
-                        "author": c["author"],
-                        "abstract": data['abstract'],
+                        'title': data['title'],
+                        "author": data["author"],
+                        "abstract":data["abstract"],
                         "content": {
-                            "chapter":c["chapter"],
-                            "paragraphs":  c['paragraphs'],
-                            "source": c['source'],
+                            "chapter":item["chapter"],
+                            "paragraphs":  item['paragraphs'],
 
                         }
                     

@@ -24,15 +24,15 @@ _CITATION = """\
 """
 
 _DESCRIPTION = """\
-"Gu Wen Guan Zhi" is an anthology of ancient prose selected by Wu Chucai and Wu Tiao Hou of the Qing Dynasty in the thirty-third year of Kangxi (1694). Er Wu Jun is a native of Shaoxing, Zhejiang, and has long set up a library to teach apprentices. This book is a literary reading book for school use selected during the Kangxi period of the Qing Dynasty. This book is a teaching material for students.
+Wen Zi Meng Qiu
 """
 
 _HOMEPAGE = "https://github.com/chinese-poetry/chinese-poetry"
 _LICENSE = "MIT"
-_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/poetry/mengxue/guwenguanzhi.json"
+_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/poetry/mengxue/wenzimengqiu.json"
 
 
-class Guwenguanzhi(datalabs.GeneratorBasedBuilder):
+class WenZiMengQiu(datalabs.GeneratorBasedBuilder):
    
     VERSION = datalabs.Version("1.0.0")
 
@@ -47,10 +47,9 @@ class Guwenguanzhi(datalabs.GeneratorBasedBuilder):
                     "title":Value("string"),
                     "author":Value("string"),
                     "abstract":Value("string"),
+                    "preface":Value("string"),
                     "content": {
-                        "chapter":Value("string"),
                         "paragraphs": Sequence(Value("string")),
-                        "source": Value("string"),
                         }
                     
                 }
@@ -64,7 +63,9 @@ class Guwenguanzhi(datalabs.GeneratorBasedBuilder):
                     title_column= "title",
                     author_column="author",
                     content_column= "content",
-                    abstract_column= "abstract"
+                    abstract_column= "abstract",
+                    preface_column= "preface",
+                    
                 )
             ],
         )
@@ -82,16 +83,14 @@ class Guwenguanzhi(datalabs.GeneratorBasedBuilder):
             
             count=0
             for id_,item in enumerate(data['content']):
-                for c in item['content']:
 
                     yield count, {
                         'title': item['title'],
-                        "author": c["author"],
-                        "abstract": data['abstract'],
+                        "author": data["author"],
+                        "abstract":data["abstract"],
+                        "preface":data["preface"],
                         "content": {
-                            "chapter":c["chapter"],
-                            "paragraphs":  c['paragraphs'],
-                            "source": c['source'],
+                            "paragraphs":  item['paragraphs'],
 
                         }
                     

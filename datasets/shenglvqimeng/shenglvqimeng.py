@@ -24,15 +24,15 @@ _CITATION = """\
 """
 
 _DESCRIPTION = """\
-"Gu Wen Guan Zhi" is an anthology of ancient prose selected by Wu Chucai and Wu Tiao Hou of the Qing Dynasty in the thirty-third year of Kangxi (1694). Er Wu Jun is a native of Shaoxing, Zhejiang, and has long set up a library to teach apprentices. This book is a literary reading book for school use selected during the Kangxi period of the Qing Dynasty. This book is a teaching material for students.
+"Sheng Lv Qi Meng" is an enlightenment book to train children to cope and master vocal rhythm. Arranged according to rhyme, it covers astronomy, geography, flowers and trees, birds and beasts, etc.
 """
 
 _HOMEPAGE = "https://github.com/chinese-poetry/chinese-poetry"
 _LICENSE = "MIT"
-_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/poetry/mengxue/guwenguanzhi.json"
+_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/poetry/mengxue/shenglvqimeng.json"
 
 
-class Guwenguanzhi(datalabs.GeneratorBasedBuilder):
+class Shenglvqimeng(datalabs.GeneratorBasedBuilder):
    
     VERSION = datalabs.Version("1.0.0")
 
@@ -50,7 +50,6 @@ class Guwenguanzhi(datalabs.GeneratorBasedBuilder):
                     "content": {
                         "chapter":Value("string"),
                         "paragraphs": Sequence(Value("string")),
-                        "source": Value("string"),
                         }
                     
                 }
@@ -64,7 +63,8 @@ class Guwenguanzhi(datalabs.GeneratorBasedBuilder):
                     title_column= "title",
                     author_column="author",
                     content_column= "content",
-                    abstract_column= "abstract"
+                    abstract_column= "abstract",
+                    
                 )
             ],
         )
@@ -86,12 +86,11 @@ class Guwenguanzhi(datalabs.GeneratorBasedBuilder):
 
                     yield count, {
                         'title': item['title'],
-                        "author": c["author"],
-                        "abstract": data['abstract'],
+                        "author": data["author"],
+                        "abstract":data["abstract"],
                         "content": {
                             "chapter":c["chapter"],
                             "paragraphs":  c['paragraphs'],
-                            "source": c['source'],
 
                         }
                     

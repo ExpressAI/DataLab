@@ -11,6 +11,8 @@ class Poetry(TaskTemplate):
     task: TaskType = TaskType.poetry
     title_column: str = "title"
     rhythmic_column: str = "rhythmic"
+    abstract_column: str = "abstract"
+    preface_column: str = "preface"
     tags_column: str = "tags"
     author_column: str = "author"
     origin_column: str = "origin"
@@ -27,6 +29,8 @@ class Poetry(TaskTemplate):
                 {
                     "title": Value("string"),
                     "author": Value("string"),
+                    "abstract": Value("string"),
+                    "preface": Value("string"),
                     "type": Value("string"),
                     "section": Value("string"),
                     "rhythmic": Value("string"),

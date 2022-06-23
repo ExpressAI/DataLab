@@ -46,7 +46,7 @@ class Youxueqionglin(datalabs.GeneratorBasedBuilder):
                 {
                     "title":Value("string"),
                     "author":Value("string"),
-                    
+                    "abstract":Value("string"),
                     "content": {
                         "chapter":Value("string"),
                         "paragraphs": Sequence(Value("string")),
@@ -63,7 +63,8 @@ class Youxueqionglin(datalabs.GeneratorBasedBuilder):
                 get_task(TaskType.poetry)(
                     title_column= "title",
                     author_column="author",
-                    content_column= "content"
+                    content_column= "content",
+                    abstract_column= "abstract",
                 )
             ],
         )
@@ -86,6 +87,7 @@ class Youxueqionglin(datalabs.GeneratorBasedBuilder):
                     yield count, {
                         'title': item['title'],
                         "author": data["author"],
+                        "abstract": data["abstract"],
                         "content": {
                             "chapter":c["chapter"],
                             "paragraphs":  c['paragraphs'],
