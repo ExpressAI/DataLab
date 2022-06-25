@@ -211,9 +211,10 @@ class ExtractiveSummarization(ConditionalGeneration):
 @dataclass
 class ReaderAwareSummarization(ConditionalGeneration):
     task: TaskType = TaskType.reader_aware_summarization
-    input_schema: ClassVar[Features] = Features({"text": Value("string"), "comments": Sequence(Value("string"))})
+    input_schema: ClassVar[Features] = Features(
+        {"text": Value("string"), "comments": Sequence(Value("string"))}
+    )
     label_schema: ClassVar[Features] = Features({"summary": Value("string")})
     source_column: str = "text"
     reference_column: str = "summary"
     guidance_column: str = "comments"
-
