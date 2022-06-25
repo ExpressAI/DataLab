@@ -7,6 +7,7 @@ import os
 import textwrap
 
 import datalabs
+from datalabs.utils import private_utils
 
 # TODO(xtreme): BibTeX citation
 from datalabs import get_task, TaskType
@@ -626,7 +627,7 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                 "dev": self.config.data_url + dev_url,
             }
             dl_dir = dl_manager.download_and_extract(urls_to_download)
-            return [
+            split_gens = [
                 datalabs.SplitGenerator(
                     name=datalabs.Split.TRAIN,
                     # These kwargs will be passed to _generate_examples
@@ -638,6 +639,17 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                     gen_kwargs={"filepath": dl_dir["dev"]},
                 ),
             ]
+            if private_utils.has_private_loc():
+                test_url = f"{private_utils.PRIVATE_LOC}/xtreme/tydiqa-goldp-v1.1-test.json"
+                test_path = dl_manager.download_and_extract(test_url)
+                split_gens.append(
+                    datalabs.SplitGenerator(
+                        name=datalabs.Split.TEST,
+                        # These kwargs will be passed to _generate_examples
+                        gen_kwargs={"filepath": test_path},
+                    ),
+                )
+            return split_gens
         if self.config.name.startswith("XNLI"):
             dl_dir = dl_manager.download_and_extract(self.config.data_url)
             data_dir = os.path.join(dl_dir, "XNLI-1.0")
