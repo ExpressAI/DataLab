@@ -126,6 +126,12 @@ sumpubmed | `document` | Summarization | ```load_dataset("sumpubmed")``` | Curre
 answersumm | `query-multi-doc` | QueryMultiDocSummarization | ```load_dataset("answersumm")``` | Current definition: query: `str` texts: `List[str]`, summary: `str` |
 vt-ssum | `document` | ExtractiveSummarization | ```load_dataset("vt-ssum")``` |  Current definition: text: `str`, summary: `List[str]` |
 wikicite | `query-multi-doc` | QueryMultiDocSummarization | ```load_dataset("wikicite")``` | Current definition: query: `str` texts: `List[str]`, summary: `str` |
+scisummnet | `multidoc` | MultiDocSummarization | ```load_dataset("scisummnet", "multidoc")``` |  Current definition: texts: `List[str]`, summary: `str` |
+scisummnet | `document` | Summarization | ```load_dataset("scisummnet", "document")``` | Current definition: text: `str`, summary: `str` |
+wikihowqa | `document` | Summarization | ```load_dataset("wikihowqa")``` | Current definition: text: `str`, summary: `str` |
+weibo_summary_comments | `document` | ReaderAwareSummarization | ```load_dataset("weibo_summary_comments")``` | Current definition: text: `str` comments: `List[str]`, summary: `str` |
+debatesum | `extract` | Summarization | ```load_dataset("debatesum", "extract")``` | Current definition: text: `str`, summary: `str` |
+debatesum | `abstract` | Summarization | ```load_dataset("debatesum", "abstract")``` | Current definition: text: `str`, summary: `str` |
 
 ## Examples
 

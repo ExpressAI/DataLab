@@ -100,6 +100,7 @@ class TaskType(str, Enum):
     ner_span_prediction = "ner-span-prediction"
     query_multi_doc_summarization = "query-multi-doc-summarization"
     extractive_summarization = "extractive-summarization"
+    reader_aware_summarization = "reader-aware-summarization"
     retrieval = "retrieval"
     cloze = "cloze"
     poetry = "poetry"
