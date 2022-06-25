@@ -4,6 +4,7 @@ import os
 import datalabs
 from datalabs import get_task, TaskType
 
+
 _CITATION = """\
 @article{DBLP:journals/corr/LowePSP15,
   author    = {Ryan Lowe and
@@ -27,56 +28,35 @@ _CITATION = """\
 _DESCRIPTION = """\
 Ubuntu Dialogue Corpus, a dataset containing almost 1 million multi-turn dialogues, with a total of over 7 million utterances and 100 million words. This provides a unique resource for research into building dialogue managers based on neural language models that can make use of large amounts of unlabeled data. The dataset has both the multi-turn property of conversations in the Dialog State Tracking Challenge datasets, and the unstructured nature of interactions from microblog services such as Twitter.
 """
-_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/ubuntu_dialogs_corpus/train.csv"
-_VALIDATION_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/ubuntu_dialogs_corpus/valid.csv"
-_TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/ubuntu_dialogs_corpus/test.csv"
-
-
-class UbuntuDialogsCorpusConfig(datalabs.BuilderConfig):
-    """BuilderConfig for UbuntuDialogsCorpus."""
-
-    def __init__(self, features, **kwargs):
-        """BuilderConfig for UbuntuDialogsCorpus.
-        Args:
-          **kwargs: keyword arguments forwarded to super.
-        """
-
-        super(UbuntuDialogsCorpusConfig, self).__init__(
-            version=datalabs.Version("1.0.0"), **kwargs
-        )
-        self.features = features
+_TRAIN_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/ubuntu_dialogs_corpus/train.csv"
+_VALIDATION_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/ubuntu_dialogs_corpus/valid.csv"
+_TEST_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/ubuntu_dialogs_corpus/test.csv"
 
 
 class UbuntuDialogsCorpus(datalabs.GeneratorBasedBuilder):
-
+   
     VERSION = datalabs.Version("1.0.0")
-    BUILDER_CONFIGS = [
-        UbuntuDialogsCorpusConfig(
-            name="train",
-            features=["Context", "Utterance", "Label"],
-            description="training features",
-        ),
-        UbuntuDialogsCorpusConfig(
-            name="validation_test",
-            features=["Context", "Ground Truth Utterance"]
-            + ["Distractor_" + str(i) for i in range(9)],
-            description="dev and test features",
-        ),
-    ]
 
     def _info(self):
-
-        features = {
-            feature: datalabs.Value("string") for feature in self.config.features
-        }
-        if self.config.name == "train":
-            features["Label"] = datalabs.Value("int32")
+        
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalabs.Features(features),
+            features=datalabs.Features(
+                {
+                "context": datalabs.features.Sequence(datalabs.Value("string")),
+                "utterance": datalabs.Value("string"),
+                "label": datalabs.Value("int32") 
+                }
+            ),
             supervised_keys=None,
             homepage="https://github.com/rkadlec/ubuntu-ranking-dataset-creator",
             citation=_CITATION,
+            languages = ["en"],
+            task_templates=[
+                get_task(TaskType.retrieval_based_dialogue)(
+                    context_column="context", utterance_column="utterance",label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -85,27 +65,44 @@ class UbuntuDialogsCorpus(datalabs.GeneratorBasedBuilder):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        
 
-        if self.config.name == "train":
-            return [
-                datalabs.SplitGenerator(
-                    name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
-                ),
-            ]
-        else:
-            return [
-                datalabs.SplitGenerator(
-                    name=datalabs.Split.VALIDATION,
-                    gen_kwargs={"filepath": validation_path},
-                ),
-                datalabs.SplitGenerator(
-                    name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
-                ),
-            ]
+        return [
+            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path,'split':'train'}),
+            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path,'split':'valid'}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path,'split':'test'})
+        ]
 
-    def _generate_examples(self, filepath):
 
+    def _generate_examples(self, filepath,split):
+        
         with open(filepath, encoding="utf-8") as f:
             data = csv.DictReader(f)
+            count=-1
             for id_, row in enumerate(data):
-                yield id_, row
+                context=row["Context"].strip().split('__eou__ __eot__')[:-1]
+
+                if split=='train':
+                    yield id_, {
+                        "context": context,
+                        "utterance": row["Utterance"],
+                        "label": row[ "Label"]
+                    }
+                else:
+                    conversations=[{
+                        "context": context,
+                        "utterance": row["Ground Truth Utterance"],
+                        "label": 1
+                    }]
+
+                    for i in range(9):
+                        conversations.append({
+                            "context": context,
+                            "utterance": row["Distractor_" + str(i)],
+                            "label": 0
+                            }
+                        )
+
+                    for conversation in conversations:
+                        count+=1
+                        yield count, conversation

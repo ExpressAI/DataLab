@@ -102,6 +102,7 @@ class TaskType(str, Enum):
     extractive_summarization = "extractive-summarization"
     retrieval = "retrieval"
     cloze = "cloze"
+    poetry = "poetry"
     cloze_multiple_choice = "cloze-multiple-choice"
     cloze_generative = "cloze-generative"
     cloze_documents = "cloze_documents"
