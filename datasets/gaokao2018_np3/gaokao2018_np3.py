@@ -85,6 +85,7 @@ class Gaokao2018NP3(datalabs.GeneratorBasedBuilder):
                 {
                     # TODO: add audio?
                     "context": Value("string"),
+                    "context_oracle": Value("string"),
                     "options": Sequence(Value("string")),
                     "question": Value("string"),
                     "answers": {
@@ -333,11 +334,13 @@ class Gaokao2018NP3(datalabs.GeneratorBasedBuilder):
                     # reading data
                     # TODO (add audio?)
                     context = data["context"]
+                    context_oracle = data["context_oracle"]
                     options = data["options"]
                     question = data["question"]
                     answer = data["answer"]
                     yield id_, {
                         "context": context,
+                        "context_oracle": context_oracle,
                         "options": options,
                         "question": question,
                         "answers": {

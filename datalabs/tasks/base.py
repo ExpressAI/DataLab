@@ -75,6 +75,8 @@ class TaskType(str, Enum):
     emotion_classification = "emotion-classification"
     intent_classification = "intent-classification"
     hatespeech_identification = "hatespeech-identification"
+    toxicity_identification = "toxicity-identification"
+    multi_toxicity_identification = "multi-toxicity-identification"
     spam_identification = "spam-identification"
     next_token_classification = "next-token-classification"
     grammatical_judgment = "grammatical-judgment"
@@ -89,6 +91,8 @@ class TaskType(str, Enum):
     multilabel_classification = "multilabel-classification"
     question_answering_matching = "question_answering_matching"
     opinion_summarization = "opinion-summarization"
+    multi_ref_query_summarization = "multi-ref-query-summarization"
+    aspect_summarization = "aspect-summarization"
     single_turn_dialogue = "single-turn-dialogue"
     ranking = "ranking"
     retrieval_based_dialogue = "retrieval-based-dialogue"
@@ -104,10 +108,13 @@ class TaskType(str, Enum):
     cloze_documents = "cloze_documents"
     text_editing = "text-editing"
     grammatical_error_correction = "grammatical-error-correction"
+    grammatical_error_correction_m2 = "grammatical-error-correction-m2"
     essay_writing = "essay-writing"
     dialogue = "dialogue"
     knowledge_driven_dialogue = "knowledge-driven-dialogue"
     task_oriented_dialogue = "task-oriented-dialogue"
+    dialogue_emotion_action_tracking = "dialogue-emotion-action-tracking"
+    dialogue_empathetic = "dialogue-empathetic"
 
     @staticmethod
     def list():

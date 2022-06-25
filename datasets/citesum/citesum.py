@@ -6,7 +6,12 @@ import datalabs
 from datalabs import get_task, TaskType
 
 _CITATION = """\
-TO BE DONE
+@article{mao2022citesum,
+  title={CiteSum: Citation Text-guided Scientific Extreme Summarization and Low-resource Domain Adaptation},
+  author={Mao, Yuning and Zhong, Ming and Han, Jiawei},
+  journal={arXiv preprint arXiv:2205.06207},
+  year={2022}
+}
 """
 
 _DESCRIPTION = """\
