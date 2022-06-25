@@ -54,6 +54,7 @@ class TaskOrientedDialogue(Dialogue):
     task: TaskType = TaskType.task_oriented_dialogue
     content_column: str = "content"
 
+
 class DialogueGeneration(TaskTemplate):
     task: TaskType = TaskType.dialogue
     dialogue_column: str = "dialog"
@@ -97,4 +98,3 @@ class DialogueEmpathetic(DialogueGeneration):
     situation_column: str = "situation"
     utterance_column: str = "utterance"
     emotion_column: str = "emotion"
-
