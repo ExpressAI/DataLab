@@ -92,7 +92,7 @@ class Wi_Locness(datalabs.GeneratorBasedBuilder):
             homepage="https://www.cl.cam.ac.uk/research/nl/bea2019st/",
             citation=_CITATION,
             task_templates=[
-                get_task(TaskType.grammatical_error_correction)(
+                get_task(TaskType.grammatical_error_correction_m2)(
 
                 )
             ],

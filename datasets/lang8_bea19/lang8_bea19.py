@@ -80,7 +80,7 @@ class Lang8Bea19(datalabs.GeneratorBasedBuilder):
             homepage="https://lang-8.com/",
             citation=_CITATION,
             task_templates=[
-                get_task(TaskType.grammatical_error_correction)(
+                get_task(TaskType.grammatical_error_correction_m2)(
 
                 )
             ],

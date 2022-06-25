@@ -5,9 +5,9 @@ from datalabs.features import Features, Value
 from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 
 
-@register_task(TaskType.grammatical_error_correction)
+@register_task(TaskType.grammatical_error_correction_m2)
 @dataclass
-class GrammaticalErrorCorrection(TaskTemplate):
+class GrammaticalErrorCorrectionM2(TaskTemplate):
     task: TaskType = TaskType.grammatical_error_correction
     original_column: str = "original"
     correct_column: str = "correct"
