@@ -29,23 +29,23 @@ class KnowledgeDrivenDialogue(Dialogue):
     knowledge_column: str = "knowledge"
 
 
-@register_task(TaskType.goal_oriented_knowledge_driven_dialogue)
-@dataclass
-class GoalOrientedKnowledgeDrivenDialogue(Dialogue):
-    task: TaskType = TaskType.goal_oriented_knowledge_driven_dialogue
-    goal_column: str = "goal"
-    content_column: str = "content"
-    knowledge_column: str = "knowledge"
-    response_column: str = "response"
-
-    input_schema: ClassVar[Features] = Features(
-        {
-            "goal": Sequence(Value("string")),
-            "content": Sequence(Value("string")),
-            "knowledge": Sequence(Value("string")),
-            "response": Value("string"),
-        }
-    )
+# @register_task(TaskType.goal_oriented_knowledge_driven_dialogue)
+# @dataclass
+# class GoalOrientedKnowledgeDrivenDialogue(Dialogue):
+#     task: TaskType = TaskType.goal_oriented_knowledge_driven_dialogue
+#     goal_column: str = "goal"
+#     content_column: str = "content"
+#     knowledge_column: str = "knowledge"
+#     response_column: str = "response"
+#
+#     input_schema: ClassVar[Features] = Features(
+#         {
+#             "goal": Sequence(Value("string")),
+#             "content": Sequence(Value("string")),
+#             "knowledge": Sequence(Value("string")),
+#             "response": Value("string"),
+#         }
+#     )
 
 
 @register_task(TaskType.task_oriented_dialogue)
