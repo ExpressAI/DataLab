@@ -133,6 +133,7 @@ class Codah(datalabs.GeneratorBasedBuilder):
                     options_column="options",
                 )
             ],
+            languages=["en"],
         )
 
     def _split_generators(self, dl_manager):

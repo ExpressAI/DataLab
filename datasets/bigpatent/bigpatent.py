@@ -117,6 +117,7 @@ class BigPatentDataset(datalabs.GeneratorBasedBuilder):
                     source_column=_ARTICLE, reference_column=_ABSTRACT
                 ),
             ],
+            languages=["en"],
         )
 
     def _split_generators(self, dl_manager):

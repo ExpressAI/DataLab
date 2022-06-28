@@ -130,6 +130,7 @@ class WNUT_17(datalabs.GeneratorBasedBuilder):
                     tokens_column="tokens", tags_column="tags"
                 )
             ],
+            languages=["en"],
         )
 
     def _split_generators(self, dl_manager):
