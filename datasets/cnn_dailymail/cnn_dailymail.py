@@ -314,8 +314,7 @@ class CnnDailymail(datalabs.GeneratorBasedBuilder):
                 get_task(TaskType.summarization)(
                     source_column=_ARTICLE, reference_column=_HIGHLIGHTS
                 ),
-            ],
-            languages=["en"],
+            ]
         )
 
     def _vocab_text_gen(self, paths):
