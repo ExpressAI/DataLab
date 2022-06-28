@@ -84,6 +84,7 @@ class Billsum(datalabs.GeneratorBasedBuilder):
                     source_column=_DOCUMENT, reference_column=_SUMMARY
                 ),
             ],
+            languages=["en"],
         )
 
     def _split_generators(self, dl_manager):

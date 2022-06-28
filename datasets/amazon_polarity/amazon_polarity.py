@@ -91,6 +91,7 @@ class AmazonPolarity(datalabs.GeneratorBasedBuilder):
             license=_LICENSE,
             citation=_CITATION,
             task_templates=[get_task(TaskType.sentiment_classification)()],
+            languages=["en"],
         )
 
     def _split_generators(self, dl_manager):

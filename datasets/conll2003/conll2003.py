@@ -223,6 +223,7 @@ class Conll2003(datalabs.GeneratorBasedBuilder):
             homepage="https://www.aclweb.org/anthology/W03-0419/",
             citation=_CITATION,
             task_templates=self.config.task_templates,
+            languages=["en"],
         )
 
     def _split_generators(self, dl_manager):

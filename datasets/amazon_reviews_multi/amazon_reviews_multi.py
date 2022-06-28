@@ -114,6 +114,7 @@ class AmazonReviewsMulti(datalabs.GeneratorBasedBuilder):
                     text_column="text", label_column="label"
                 ),
             ],
+            languages=self.config.languages,
         )
 
     def _split_generators(self, dl_manager):

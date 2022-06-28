@@ -315,6 +315,7 @@ class CnnDailymail(datalabs.GeneratorBasedBuilder):
                     source_column=_ARTICLE, reference_column=_HIGHLIGHTS
                 ),
             ],
+            languages=["en"],
         )
 
     def _vocab_text_gen(self, paths):

@@ -96,6 +96,7 @@ class Cail2018(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(features),
             citation=_CITATION,
             task_templates=self.config.task_templates,
+            languages=["zh"],
         )
 
     def _split_generators(self, dl_manager):
