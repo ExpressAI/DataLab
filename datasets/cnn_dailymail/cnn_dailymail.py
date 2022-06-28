@@ -307,6 +307,7 @@ class CnnDailymail(datalabs.GeneratorBasedBuilder):
                 }
             ),
             supervised_keys=None,
+            languages=["en"],
             homepage="https://github.com/abisee/cnn-dailymail",
             citation=_CITATION,
             task_templates=[

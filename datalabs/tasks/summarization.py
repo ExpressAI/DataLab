@@ -128,6 +128,54 @@ class OpinionSummarization(Summarization, GuidedConditionalGeneration):
     aspect_column: str = "aspect"
 
 
+@register_task(TaskType.multi_ref_query_summarization)
+@dataclass
+class MultiRefQuerySummarization(Summarization, GuidedConditionalGeneration):
+    """Multi-Reference Query-based summarization task.
+    data format: {
+        "text": str,
+        "query": str,
+        "summaries": List[str],
+        }
+    """
+
+    task: TaskType = TaskType.multi_ref_query_summarization
+    input_schema: ClassVar[Features] = Features(
+        {"text": Value("string"), "query": Value("string")}
+    )
+    label_schema: ClassVar[Features] = Features(
+        {"summaries": Sequence(Value("string"))}
+    )
+    source_column: str = "text"
+    reference_column: str = "summaries"
+    guidance_column: str = "query"
+
+
+@register_task(TaskType.aspect_summarization)
+@dataclass
+class AspectSummarization(Summarization, GuidedConditionalGeneration):
+    """Aspect summarization task.
+    data format: {
+        "texts": List[str], # list of reviews
+        "aspects": List[str], # list of aspects
+        "summaries": List[str], # list of summaries
+        }
+    """
+
+    # `task` is not a ClassVar since we want it to be part of the `asdict`
+    # output for JSON serialization
+    task: TaskType = TaskType.aspect_summarization
+    input_schema: ClassVar[Features] = Features(
+        {"texts": Sequence(Value("string")), "aspects": Sequence(Value("string"))}
+    )
+    label_schema: ClassVar[Features] = Features(
+        {"summaries": Sequence(Value("string"))}
+    )
+    source_column: str = "texts"
+    reference_column: str = "summaries"
+    aspect_column: str = "aspects"
+
+
 @register_task(TaskType.query_multi_doc_summarization)
 @dataclass
 class QueryMultiDocSummarization(Summarization, GuidedConditionalGeneration):
@@ -157,3 +205,16 @@ class ExtractiveSummarization(ConditionalGeneration):
     label_schema: ClassVar[Features] = Features({"summary": Sequence(Value("string"))})
     source_column: str = "text"
     reference_column: str = "summary"
+
+
+@register_task(TaskType.reader_aware_summarization)
+@dataclass
+class ReaderAwareSummarization(ConditionalGeneration):
+    task: TaskType = TaskType.reader_aware_summarization
+    input_schema: ClassVar[Features] = Features(
+        {"text": Value("string"), "comments": Sequence(Value("string"))}
+    )
+    label_schema: ClassVar[Features] = Features({"summary": Value("string")})
+    source_column: str = "text"
+    reference_column: str = "summary"
+    guidance_column: str = "comments"

@@ -67,6 +67,14 @@ class HatespeechIdentification(TextClassification):
     label_column: str = "label"
 
 
+@register_task(TaskType.toxicity_identification)
+@dataclass
+class ToxicityIdentification(TextClassification):
+    task: TaskType = TaskType.toxicity_identification
+    text_column: str = "text"
+    label_column: str = "label"
+
+
 @register_task(TaskType.next_token_classification)
 @dataclass
 class NextTokenClassification(TextClassification):
