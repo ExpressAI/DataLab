@@ -82,20 +82,21 @@ class DuIE(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "relation": 
+                    "relation": datalabs.features.Sequence(
                         {
-                            "predicate": datalabs.features.Sequence(datalabs.Value("string")),
-                            "subject": datalabs.features.Sequence(datalabs.Value("string")),
-                            "subject_type": datalabs.features.Sequence(datalabs.Value("string")),
-                            "object": datalabs.features.Sequence({
+                            "predicate": datalabs.Value("string"),
+                            "subject": datalabs.Value("string"),
+                            "subject_type": datalabs.Value("string"),
+                            "object": {
                                 "@value": datalabs.Value("string"),
                                 "inWork": datalabs.Value("string"),
-                            }),
-                            "object_type": datalabs.features.Sequence({
+                            },
+                            "object_type": {
                                 "@value": datalabs.Value("string"),
                                 "inWork": datalabs.Value("string"),
-                            }),
-                        }
+                            },
+                        })
+
                 }
             ),
             supervised_keys=None,
@@ -128,19 +129,16 @@ class DuIE(datalabs.GeneratorBasedBuilder):
             for id_, line in enumerate(f):
                 line = json.loads(line)
                 text, spo_list = line["text"], line["spo_list"]
-                predicate = []
-                subject = []
-                subject_type = []
-                object = []
-                object_type = []
+                relation = []
                 for spo in spo_list:
-                    predicate.append(spo["predicate"])
-                    subject.append(spo["subject"])
-                    subject_type.append(spo["subject_type"])
-                    if "inWork" not in spo["object"]:
-                        spo["object"]["inWork"] = '1'
-                        spo["object_type"]["inWork"] = '1'
-                    object.append(spo["object"])
-                    object_type.append(spo["object_type"])
-                relation = {"predicate": predicate, "subject": subject, "subject_type": subject_type, "object": object, "object_type": object_type}
+                    predicate = spo["predicate"]
+                    subject = spo["subject"]
+                    subject_type = spo["subject_type"] 
+                    if "inWork" in spo["object"]:
+                        object = {"@value": spo["object"]["@value"], "inWork" : spo["object"]["inWork"]}
+                        object_type = {"@value": spo["object_type"]["@value"], "inWork" : spo["object_type"]["inWork"]}
+                    else: 
+                        object = {"@value": spo["object"]["@value"], "inWork" : '1'}
+                        object_type = {"@value": spo["object_type"]["@value"], "inWork" : '1'}
+                    relation.append({"predicate": predicate, "subject": subject, "subject_type": subject_type, "object": object, "object_type": object_type})
                 yield id_, {"text": text, "relation":relation}

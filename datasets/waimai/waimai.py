@@ -12,9 +12,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import csv
-from email import header
 
+import csv
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -37,8 +36,22 @@ _HOMEPAGE = "https://github.com/SophonPlus/ChineseNlpCorpus"
 
 _URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/waimai/waimai_10k.csv"
 
+class WaimaiConfig(datalabs.BuilderConfig):
+    
+    def __init__(self, **kwargs):
 
-class WAIMAI(datalabs.GeneratorBasedBuilder):
+        super(WaimaiConfig, self).__init__(**kwargs)
+
+class Waimai(datalabs.GeneratorBasedBuilder):
+
+    BUILDER_CONFIGS = [
+        WaimaiConfig(
+            name="sentiment_classification",
+            version=datalabs.Version("1.0.0"),
+            description="sentiment_classification",
+        ),
+    ]
+
     def _info(self):
         return datalabs.DatasetInfo(
             # This is the description that will appear on the datalab page.
@@ -47,9 +60,7 @@ class WAIMAI(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(
-                        names=["positive", "negative"]
-                    ),
+                    "label": datalabs.features.ClassLabel(names=["positive", "negative"]),
                 }
             ),
             homepage=_HOMEPAGE,
@@ -57,7 +68,8 @@ class WAIMAI(datalabs.GeneratorBasedBuilder):
             languages=["zh"],
             task_templates=[
                 get_task(TaskType.sentiment_classification)(
-                    text_column="text", label_column="label"
+                    text_column="text", 
+                    label_column="label",
                 )
             ],
         )
@@ -66,9 +78,7 @@ class WAIMAI(datalabs.GeneratorBasedBuilder):
         # dl_manager is a datalab.download.DownloadManager that can be used to download and extract URLs
         train_path = dl_manager.download_and_extract(_URL)
         return [
-            datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
-            )
+            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path})
         ]
 
     def _generate_examples(self, filepath):

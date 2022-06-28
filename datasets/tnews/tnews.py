@@ -14,10 +14,6 @@
 # limitations under the License.
 
 import json
-
-from pydantic import FilePath
-import requests
-
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -53,8 +49,22 @@ _VALIDATION_DOWNLOAD_URL = (
 )
 # _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/test1.0.json"
 
+class TNEWSConfig(datalabs.BuilderConfig):
+    
+    def __init__(self, **kwargs):
+
+        super(TNEWSConfig, self).__init__(**kwargs)
 
 class TNEWS(datalabs.GeneratorBasedBuilder):
+
+    BUILDER_CONFIGS = [
+        TNEWSConfig(
+            name="topic_classification",
+            version=datalabs.Version("1.0.0"),
+            description="topic_classification",
+        ),
+    ]
+
     def _info(self):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
