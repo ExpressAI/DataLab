@@ -37,7 +37,7 @@ _LICENSE = "NA"
 
 _TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/ccks2018task4/train.txt"
 _VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/ccks2018task4/valid.txt"
-_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/ccks2018task4/test.txt"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/ccks2018task4/test2.txt"
 
 _HOMEPAGE = "http://www.sigkg.cn/ccks2018/"
 

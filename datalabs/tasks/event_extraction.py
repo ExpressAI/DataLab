@@ -90,23 +90,21 @@ class EntityRelationExtraction(EventExtraction):
     input_schema: ClassVar[Features] = Features({"text": Value("string")})
     label_schema: ClassVar[Features] = Features(
         {
-            "relation": {
-                "predicate": Sequence(Value("string")),
-                "subject": Sequence(Value("string")),
-                "subject_type": Sequence(Value("string")),
-                "object": Sequence(
+            "relation": Sequence({
+                "predicate": Value("string"),
+                "subject": Value("string"),
+                "subject_type": Value("string"),
+                "object": 
                     {
                         "@value": Value("string"),
                         "inWork": Value("string"),
-                    }
-                ),
-                "object_type": Sequence(
+                    },
+                "object_type": 
                     {
                         "@value": Value("string"),
                         "inWork": Value("string"),
-                    }
-                ),
-            }
+                    },
+            })
         }
     )
 

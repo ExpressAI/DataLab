@@ -14,8 +14,6 @@
 # limitations under the License.
 
 import csv
-from email import header
-
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -39,8 +37,22 @@ _HOMEPAGE = "https://github.com/SophonPlus/ChineseNlpCorpus"
 
 _URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/online_shopping/online_shopping.csv"
 
+class OnlineShoppingConfig(datalabs.BuilderConfig):
+    
+    def __init__(self, **kwargs):
+
+        super(OnlineShoppingConfig, self).__init__(**kwargs)
 
 class OnlineShopping(datalabs.GeneratorBasedBuilder):
+
+    BUILDER_CONFIGS = [
+        OnlineShoppingConfig(
+            name="sentiment_classification",
+            version=datalabs.Version("1.0.0"),
+            description="sentiment_classification",
+        ),
+    ]
+
     def _info(self):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,

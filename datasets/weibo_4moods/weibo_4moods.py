@@ -14,7 +14,6 @@
 # limitations under the License.
 
 import csv
-
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -37,8 +36,22 @@ _HOMEPAGE = "https://github.com/SophonPlus/ChineseNlpCorpus"
 
 _URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/weibo_4moods/weibo_4moods.csv"
 
+class Weibo4MoodsConfig(datalabs.BuilderConfig):
+    
+    def __init__(self, **kwargs):
+
+        super(Weibo4MoodsConfig, self).__init__(**kwargs)
 
 class Weibo4Moods(datalabs.GeneratorBasedBuilder):
+
+    BUILDER_CONFIGS = [
+        Weibo4MoodsConfig(
+            name="emotion_classification",
+            version=datalabs.Version("1.0.0"),
+            description="emotion_classification",
+        ),
+    ]
+
     def _info(self):
 
         return datalabs.DatasetInfo(
