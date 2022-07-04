@@ -55,9 +55,9 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_search/train.json"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_search/dev.json"
-# _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_search/test.json"
+_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_search/train_revised.json"
+_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_search/validation_revised.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_search/test_revised.json"
 
 _HOMEPAGE = "http://ai.baidu.com/broad/download?dataset=dureader"
 
@@ -135,7 +135,7 @@ class DuReaderSearch(datalabs.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-        # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
         return [
             datalabs.SplitGenerator(
@@ -144,46 +144,25 @@ class DuReaderSearch(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
             ),
-            # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
     def _generate_examples(self, filepath):
 
         with open(filepath, encoding="utf-8") as f:
             for id_, line in enumerate(f.readlines()):
-                line = json.loads(line)
-                documents = line["documents"]
-                answers, segmented_answers, fake_answers, answer_spans = (
-                    line["answers"],
-                    line["segmented_answers"],
-                    line["fake_answers"],
-                    line["answer_spans"],
-                )
-                (
-                    question,
-                    segmented_question,
-                    question_type,
-                    fact_or_opinion,
-                    question_id,
-                ) = (
-                    line["question"],
-                    line["segmented_question"],
-                    line["question_type"],
-                    line["fact_or_opinion"],
-                    line["question_id"],
-                )
-                match_scores, answer_docs = line["match_scores"], line["answer_docs"]
+                line = json.loads(line.strip())
                 yield id_, {
-                    "documents": documents,
-                    "answers": answers,
-                    "segmented_answers": segmented_answers,
-                    "fake_answers": fake_answers,
-                    "answer_spans": answer_spans,
-                    "question": question,
-                    "segmented_question": segmented_question,
-                    "question_type": question_type,
-                    "fact_or_opinion": fact_or_opinion,
-                    "question_id": question_id,
-                    "match_scores": match_scores,
-                    "answer_docs": answer_docs,
+                    "documents": line["documents"],
+                    "answers": line["answers"],
+                    "segmented_answers": line["segmented_answers"],
+                    "fake_answers": line["fake_answers"],
+                    "answer_spans": line["answer_spans"],
+                    "question": line["question"],
+                    "segmented_question": line["segmented_question"],
+                    "question_type": line["question_type"],
+                    "fact_or_opinion": line["fact_or_opinion"],
+                    "question_id": line["question_id"],
+                    "match_scores": line["match_scores"],
+                    "answer_docs": line["answer_docs"],
                 }

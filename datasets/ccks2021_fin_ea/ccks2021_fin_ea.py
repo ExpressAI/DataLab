@@ -37,8 +37,9 @@ year={2021},
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/CCKS2021_fin/train.txt"
-# _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/CCKS2021_fin/test_without_tags.txt"
+_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/CCKS2021_fin/train_revised.json"
+_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/CCKS2021_fin/validation_revised.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/CCKS2021_fin/test_revised.json"
 
 _HOMEPAGE = "https://www.biendata.xyz/competition/ccks_2021_task6_1"
 
@@ -98,46 +99,24 @@ class CCKS2021FinEA(datalabs.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
-        # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
             ),
-            # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
     def _generate_examples(self, filepath):
 
-        with open(filepath, encoding="utf-8") as txt_file:
-            for id_, line in enumerate(txt_file):
+        with open(filepath, encoding="utf-8") as f:
+            for id_, line in enumerate(f):
                 line = json.loads(line)
-                text, level1, level2, level3, attributes = (
-                    line["text"],
-                    line["level1"],
-                    line["level2"],
-                    line["level3"],
-                    line["attributes"],
-                )
-                event_type = {"level1": level1, "level2": level2, "level3": level3}
-                if len(attributes) > 0:
-                    arguments = []
-                    for attribute in attributes:
-                        argument = {}
-                        (
-                            argument["start"],
-                            argument["end"],
-                            argument["role"],
-                            argument["entity"],
-                        ) = (
-                            attribute["start"],
-                            attribute["end"],
-                            attribute["type"],
-                            attribute["entity"],
-                        )
-                        arguments.append(argument)
-                    yield id_, {
-                        "text": text,
-                        "event_type": event_type,
-                        "arguments": arguments,
-                    }
+                yield id_, {
+                    "text": line["text"],
+                    "event_type": line["event_type"],
+                    "arguments": line["arguments"],
+                }

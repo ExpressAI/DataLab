@@ -56,12 +56,12 @@ _LICENSE = (
 _UserAgreement = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/bq_corpus/User_Agreement.pdf"
 
 _TRAIN_DOWNLOAD_URL = (
-    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/bq_corpus/train.tsv"
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/bq_corpus/train_revised.tsv"
 )
 _VALIDATION_DOWNLOAD_URL = (
     "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/bq_corpus/dev.tsv"
 )
-# _TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/bq_corpus/test.tsv"
+_TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/bq_corpus/test_revised.tsv"
 
 
 class BQCORPUS(datalabs.GeneratorBasedBuilder):
@@ -90,7 +90,7 @@ class BQCORPUS(datalabs.GeneratorBasedBuilder):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-        # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
@@ -98,7 +98,7 @@ class BQCORPUS(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
             ),
-            # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 
     def _generate_examples(self, filepath):

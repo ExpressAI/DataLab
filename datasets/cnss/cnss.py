@@ -14,8 +14,7 @@
 # limitations under the License.
 
 
-import csv
-
+import json
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -49,10 +48,13 @@ _CITATION = """\
 _LICENSE = "NA"
 
 _TRAIN_DOWNLOAD_URL = (
-    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CNSS/train.txt"
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CNSS/train_revised.json"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CNSS/validation_revised.json"
 )
 _TEST_DOWNLOAD_URL = (
-    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CNSS/test.txt"
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CNSS/test_revised.json"
 )
 
 _HOMEPAGE = "https://github.com/BangLiu/ArticlePairMatching"
@@ -110,10 +112,14 @@ class CNSS(datalabs.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
+        valid_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": valid_path}
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
@@ -121,35 +127,21 @@ class CNSS(datalabs.GeneratorBasedBuilder):
         ]
 
     def _generate_examples(self, filepath):
-        with open(filepath, encoding="utf-8") as file:
-            csv_reader = csv.reader(file, delimiter="|")
-            for id_, row in enumerate(csv_reader):
-                label = row[0]
-                title1 = row[3]
-                title2 = row[4]
-                text1 = row[5]
-                text2 = row[6]
-                keywords1 = row[7]
-                keywords2 = row[8]
-                main_keywords1 = row[9]
-                main_keywords2 = row[10]
-                ner_keywords1 = row[11]
-                ner_keywords2 = row[12]
-                ner1 = row[13]
-                ner2 = row[14]
-                if label == ("0" or "1"):
-                    yield id_, {
-                        "text1": text1,
-                        "text2": text2,
-                        "title1": title1,
-                        "title2": title2,
-                        "keywords1": keywords1,
-                        "keywords2": keywords2,
-                        "main_keywords1": main_keywords1,
-                        "main_keywords2": main_keywords2,
-                        "ner_keywords1": ner_keywords1,
-                        "ner_keywords2": ner_keywords2,
-                        "ner1": ner1,
-                        "ner2": ner2,
-                        "label": label,
-                    }
+        with open(filepath, encoding="utf-8") as f:
+            for id_, line in enumerate(f.readlines()):
+                line = json.loads(line.strip())
+                yield id_, {
+                    "text1": line["text1"],
+                    "text2": line["text2"],
+                    "title1": line["title1"],
+                    "title2": line["title2"],
+                    "keywords1": line["keywords1"],
+                    "keywords2": line["keywords2"],
+                    "main_keywords1": line["main_keywords1"],
+                    "main_keywords2": line["main_keywords2"],
+                    "ner_keywords1": line["ner_keywords1"],
+                    "ner_keywords2": line["ner_keywords2"],
+                    "ner1": line["ner1"],
+                    "ner2": line["ner2"],
+                    "label": line["label"],
+                }

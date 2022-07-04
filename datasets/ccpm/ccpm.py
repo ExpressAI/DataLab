@@ -38,13 +38,9 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = (
-    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CCPM/train.jsonl"
-)
-_VALIDATION_DOWNLOAD_URL = (
-    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CCPM/valid.jsonl"
-)
-# _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CCPM/test_public.jsonl"
+_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CCPM/train_revised.json"
+_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CCPM/validation_revised.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CCPM/test_revised.json"
 
 _HOMEPAGE = "https://github.com/THUNLP-AIPoet/CCPM"
 
@@ -98,7 +94,7 @@ class CCPM(datalabs.GeneratorBasedBuilder):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-        # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
@@ -106,14 +102,11 @@ class CCPM(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
             ),
-            # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 
     def _generate_examples(self, filepath):
         with open(filepath, encoding="utf-8") as file:
             for id_, line in enumerate(file):
                 line = json.loads(line)
-                question, options, option_index = line["translation"], line["choices"], line["answer"]
-                text = options[option_index]
-                answers = {"text": text, "option_index": option_index}
-                yield id_, {"question": question, "options": options, "answers": answers}
+                yield id_, {"question": line["question"], "options": line["options"], "answers": line["answers"]}

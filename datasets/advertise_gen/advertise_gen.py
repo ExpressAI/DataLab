@@ -46,8 +46,9 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/conditional_generation/AdvertiseGen/train.json"
+_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/conditional_generation/AdvertiseGen/train_revised.json"
 _VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/conditional_generation/AdvertiseGen/dev.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/conditional_generation/AdvertiseGen/test_revised.json"
 
 _HOMEPAGE = "https://aclanthology.org/D19-1321"
 
@@ -80,6 +81,7 @@ class AdvertiseGen(datalabs.GeneratorBasedBuilder):
         """Returns SplitGenerators."""
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
         return [
             datalabs.SplitGenerator(
@@ -87,6 +89,9 @@ class AdvertiseGen(datalabs.GeneratorBasedBuilder):
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
             ),
         ]
 

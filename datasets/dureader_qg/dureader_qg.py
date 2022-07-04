@@ -48,8 +48,9 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/DuReaderQG/train.json"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/DuReaderQG/dev.json"
+_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/DuReaderQG/train_revised.json"
+_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/DuReaderQG/validation_revised.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/DuReaderQG/test_revised.json"
 
 _HOMEPAGE = "https://aclanthology.org/2021.acl-short.120"
 
@@ -127,6 +128,7 @@ class DuReaderQG(datalabs.GeneratorBasedBuilder):
         """Returns SplitGenerators."""
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
         return [
             datalabs.SplitGenerator(
@@ -134,6 +136,9 @@ class DuReaderQG(datalabs.GeneratorBasedBuilder):
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
             ),
         ]
 
@@ -144,20 +149,14 @@ class DuReaderQG(datalabs.GeneratorBasedBuilder):
             for id_, line in enumerate(f.readlines()):
                 line = json.loads(line.strip())
                 if self.config.name == "question_answering":
-                    context = line["context"]
-                    question = line["question"]
-                    answer = line["answer"]
                     yield id_, {
-                        "context": context,
-                        "question": question,
-                        "answer": answer,
+                        "context": line["context"],
+                        "question": line["question"],
+                        "answer": line["answer"],
                     }
                 else:
-                    source = line["context"]
-                    guidance = line["answer"]
-                    reference = line["question"]
                     yield id_, {
-                        "source": source,
-                        "guidance": guidance,
-                        "reference": reference,
+                        "source": line["context"],
+                        "guidance": line["answer"],
+                        "reference": line["question"],
                     }

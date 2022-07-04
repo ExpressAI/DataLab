@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import csv
+import json
 
 import datalabs
 from datalabs import get_task, TaskType
@@ -34,8 +34,9 @@ year={2021},
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/ccks2020_fin_event_entity/train.csv"
-# _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/ccks2020_fin_event_entity/test.csv"
+_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/ccks2020_fin_event_entity/train_revised.json"
+_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/ccks2020_fin_event_entity/validation_revised.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/ccks2020_fin_event_entity/test_revised.json"
 
 _HOMEPAGE = "https://www.biendata.xyz/competition/ccks_2020_4_1"
 
@@ -84,23 +85,24 @@ class CCKS2020FinEE(datalabs.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
-        # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
             ),
-            # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
     def _generate_examples(self, filepath):
 
         with open(filepath, encoding="utf-8") as f:
             for id_, line in enumerate(f):
-                line = line.rstrip().split("\t")
-                text, event_type, event_entity = line[1], line[2], line[3]
+                line = json.loads(line)
                 yield id_, {
-                    "text": text,
-                    "event_type": event_type,
-                    "event_entity": event_entity,
+                    "text": line["text"],
+                    "event_type": line["event_type"],
+                    "event_entity": line["event_entity"],
                 }

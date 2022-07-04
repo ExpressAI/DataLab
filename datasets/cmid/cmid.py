@@ -37,9 +37,9 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = (
-    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/CMID/CMID.json"
-)
+_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/CMID/train_revised.json"
+_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/CMID/validation_revised.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/CMID/test_revised.json"
 
 LABELS_36class = [
     "定义",
@@ -140,34 +140,29 @@ class CMID(datalabs.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
+        validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
-            )
+            ),
+            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 
     def _generate_examples(self, filepath):
         with open(filepath, encoding="utf-8") as f:
-            file = json.load(f)
-            for id_ in range(len(file)):
-                text = file[id_]["originalText"]
-                entities = file[id_]["entities"]
-                seg_result = file[id_]["seg_result"]
+            for id_, line in enumerate(f):
+                line = json.loads(line)
                 if self.config.name == "label_36class":
-                    label = (
-                        file[id_]["label_36class"][0].replace('"', "").replace("'", "")
-                    )
+                    label = line["label_36class"]
                 else:
-                    label = (
-                        file[id_]["label_4class"][0].replace('"', "").replace("'", "")
-                    )
-                if label not in LABELS_36class + LABELS_4class:
-                    continue
-
-                yield id_, {
-                    "text": text,
-                    "label": label,
-                    "entities": entities,
-                    "seg_result": seg_result,
-                }
+                    label = line["label_4class"]
+                if (label in LABELS_36class) or (label in LABELS_4class):
+                   yield id_, {
+                        "text": line["text"],
+                        "label": label,
+                        "entities": line["entities"],
+                        "seg_result": line["seg_result"],
+                    }    

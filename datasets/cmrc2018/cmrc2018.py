@@ -15,6 +15,8 @@
 
 import json
 
+from pkg_resources import yield_lines
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -49,11 +51,11 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/cmrc2018/train.json"
+_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/cmrc2018/train_revised.json"
 _VALIDATION_DOWNLOAD_URL = (
-    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/cmrc2018/dev.json"
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/cmrc2018/validation_revised.json"
 )
-# _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/cmrc2018/test.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/cmrc2018/test_revised.json"
 
 _HOMEPAGE = "https://github.com/CLUEbenchmark/CLUE"
 
@@ -109,7 +111,7 @@ class CMRC2018(datalabs.GeneratorBasedBuilder):
         """Returns SplitGenerators."""
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-        # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
         return [
             datalabs.SplitGenerator(
@@ -118,7 +120,7 @@ class CMRC2018(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
             ),
-            # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 
     def _generate_examples(self, filepath):
@@ -127,25 +129,12 @@ class CMRC2018(datalabs.GeneratorBasedBuilder):
 
         count = 0
         with open(filepath, encoding="utf-8") as f:
-            file = json.load(f)
-            data = file["data"]
-            for article in data:
-                title = article["title"]
-                paragraphs = article["paragraphs"][0]
-                context = paragraphs["context"]
-                qas = paragraphs["qas"]
-                # qas is a list, contaning many Q&A groups.
-                for qa in qas:
-                    answer_starts = [answer["answer_start"] for answer in qa["answers"]]
-                    text = [answer["text"] for answer in qa["answers"]]
-                    yield count, {
-                        "title": title,
-                        "context": context,
-                        "question": qa["question"],
-                        "id": qa["id"],
-                        "answers": {
-                            "text": text,
-                            "answer_start": answer_starts,
-                        },
-                    }
-                    count = count + 1
+            for id_, line in enumerate(f.readlines()):
+                line = json.loads(line.strip())
+                yield id_, {
+                    "title": line["title"],
+                    "context": line["context"],
+                    "question": line["question"],
+                    "id": line["id"],
+                    "answers": line["answers"]
+                }   
