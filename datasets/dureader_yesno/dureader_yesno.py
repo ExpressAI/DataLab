@@ -55,9 +55,9 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_yesno/train.json"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_yesno/dev.json"
-# _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_yesno/test.json"
+_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_yesno/train_revised.json"
+_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_yesno/validation_revised.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_yesno/test_revised.json"
 
 _HOMEPAGE = (
     "https://aistudio.baidu.com/aistudio/competition/detail/49/0/task-definition"
@@ -116,7 +116,7 @@ class DuReaderYesNo(datalabs.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-        # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
         return [
             datalabs.SplitGenerator(
@@ -125,18 +125,16 @@ class DuReaderYesNo(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
             ),
-            # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
     def _generate_examples(self, filepath):
 
         with open(filepath, encoding="utf-8") as f:
             for id_, line in enumerate(f.readlines()):
-                line = json.loads(line)
-                documents, question, text, yesno_answer = line["documents"], line["question"], line["answer"], line["yesno_answer"]
-                answers = {"text": text, "yesno_answer": yesno_answer}
+                line = json.loads(line.strip())
                 yield id_, {
-                    "documents": documents,
-                    "question": question,
-                    "answers": answers,
+                    "documents": line["documents"],
+                    "question": line["question"],
+                    "answers": line["answers"],
                 }

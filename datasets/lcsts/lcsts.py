@@ -45,10 +45,13 @@ _CITATION = """\
 _LICENSE = "N/A"
 
 _TRAIN_DOWNLOAD_URL = (
-    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/summarization/LCSTS_new/train.json"
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/summarization/LCSTS_new/train_revised.json"
 )
 _VALIDATION_DOWNLOAD_URL = (
-    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/summarization/LCSTS_new/dev.json"
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/summarization/LCSTS_new/validation_revised.json"
+)
+_TEST_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/summarization/LCSTS_new/test_revised.json"
 )
 
 _ARTICLE = "text"
@@ -102,6 +105,7 @@ class LCSTS(datalabs.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
         return [
             datalabs.SplitGenerator(
@@ -110,14 +114,14 @@ class LCSTS(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
             ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
         """Generate examples."""
         with open(filepath, encoding="utf-8") as f:
-            for id_, row in enumerate(f):
-                line = json.loads(row)
-                if len(line) == 3:
-                    article = line["content"]
-                    abstract = line["summary"]
-                    yield id_, {"text": article, "summary": abstract}
+            for id_, line in enumerate(f.readlines()):
+                line = json.loads(line.strip())
+                yield id_, {"text": line["text"], "summary": line["summary"]}

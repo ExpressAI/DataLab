@@ -42,12 +42,12 @@ keywords = {benchmark,tensorflow,nlu,glue,corpus,transformers,Chinese,pretrained
 
 
 _TRAIN_DOWNLOAD_URL = (
-    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/train.json"
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/train_revised.json"
 )
 _VALIDATION_DOWNLOAD_URL = (
-    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/dev.json"
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/validation_revised.json"
 )
-# _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/test1.0.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/test_revised.json"
 
 class TNEWSConfig(datalabs.BuilderConfig):
     
@@ -107,7 +107,7 @@ class TNEWS(datalabs.GeneratorBasedBuilder):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-        # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
         return [
             datalabs.SplitGenerator(
@@ -116,40 +116,17 @@ class TNEWS(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
             ),
-            # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 
     def _generate_examples(self, filepath):
 
-        textualize_label = {
-            "100": "story",
-            "101": "culture",
-            "102": "entertainment",
-            "103": "sports",
-            "104": "finance",
-            "106": "house",
-            "107": "car",
-            "108": "edu",
-            "109": "tech",
-            "110": "military",
-            "112": "travel",
-            "113": "world",
-            "114": "stock",
-            "115": "agriculture",
-            "116": "game",
-        }
-
-        row_count = 0
-
         with open(filepath, "r", encoding="utf-8") as f:
 
-            for line in f:
-                res_info = json.loads(line)
-                if res_info.__contains__("label"):
-                    label = textualize_label[res_info["label"]]
-                    yield row_count, {
-                        "text": res_info["sentence"],
-                        "keywords": res_info["keywords"],
-                        "label": label,
+            for id_, line in enumerate(f.readlines()):
+                line = json.loads(line.strip())            
+                yield id_, {
+                        "text": line["text"],
+                        "keywords": line["keywords"],
+                        "label": line["label"],
                     }
-                row_count += 1
