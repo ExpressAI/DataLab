@@ -48,10 +48,13 @@ _CITATION = """\
 _LICENSE = "NA"
 
 _TRAIN_DOWNLOAD_URL = (
-    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/c3/d-train.json"
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/c3/d_train_revised.json"
 )
 _VALIDATION_DOWNLOAD_URL = (
-    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/c3/d-dev.json"
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/c3/d_validation.json"
+)
+_TEST_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/c3/d_test_revised.json"
 )
 
 _HOMEPAGE = "https://github.com/CLUEbenchmark/CLUE"
@@ -107,6 +110,7 @@ class C3d(datalabs.GeneratorBasedBuilder):
         """Returns SplitGenerators."""
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
         return [
             datalabs.SplitGenerator(
@@ -114,6 +118,9 @@ class C3d(datalabs.GeneratorBasedBuilder):
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
             ),
         ]
 
@@ -124,21 +131,11 @@ class C3d(datalabs.GeneratorBasedBuilder):
         key = 0
 
         with open(filepath, encoding="utf-8") as f:
-            data = json.load(f)
-            for article in data:
-                context, qas, id = article[0], article[1], article[2]
-                for qa in qas:
-                    question, options, text = qa["question"], qa["choice"], qa["answer"]
-                    if options.index(text):
-                        option_index = options.index(text)
-                        yield key, {
-                            "id": id,
-                            "context": context,
-                            "question": question,
-                            "options": options,
-                            "answers": {
-                                "text": text,
-                                "option_index": option_index,
-                            },
-                        }
-                        key = key + 1
+            for id_, line in enumerate(f.readlines()):
+                line = json.loads(line.strip())
+                yield id_, {
+                    "id": line['id'],
+                    "context": line['context'],
+                    "question": line['question'],
+                    "options": line['options'],
+                    "answers": line['answers']}

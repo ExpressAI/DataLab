@@ -47,9 +47,9 @@ _CITATION = """\
 
 _LICENSE = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_robust/License.pdf"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_robust/train.json"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_robust/dev.json"
-# _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_robust/test.json"
+_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_robust/train_revised.json"
+_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_robust/validation_revised.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_robust/test_revised.json"
 
 _HOMEPAGE = "https://github.com/baidu/DuReader/tree/master/DuReader-Robust"
 
@@ -101,7 +101,7 @@ class DuReaderRobust(datalabs.GeneratorBasedBuilder):
         """Returns SplitGenerators."""
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-        # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
         return [
             datalabs.SplitGenerator(
@@ -110,30 +110,16 @@ class DuReaderRobust(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
             ),
-            # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 
     def _generate_examples(self, filepath):
         """This function returns the examples."""
 
         with open(filepath, encoding="utf-8") as f:
-            file = json.load(f)
-            data = file["data"][0]["paragraphs"]
-            for id_, line in enumerate(data):
-                qas, context = line["qas"][0], line["context"]
-                question, answers = qas["question"], qas["answers"][0]
-                if isinstance(answers["text"],list):
-                    text = answers["text"]
-                else:
-                    text = []
-                    text.append(answers["text"])
-                if isinstance(answers["answer_start"],list):
-                    answer_start = answers["answer_start"]
-                else: 
-                    answer_start = []
-                    answer_start.append(answers["answer_start"])
-                answers = {"text": text, "answer_start": answer_start}
-                yield(id_, {"question": question, "context": context, "answers": answers})
+            for id_, line in enumerate(f.readlines()):
+                line = json.loads(line.strip())
+                yield(id_, {"question": line["question"], "context": line["context"], "answers": line["answers"]})
 
 
 

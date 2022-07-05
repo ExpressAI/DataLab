@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import csv
+import json
 
 from pkg_resources import yield_lines
 import datalabs
@@ -40,8 +40,9 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/children_fairy_tale/auto_test.csv"
-_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/children_fairy_tale/human_test.csv"
+_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/children_fairy_tale/train_revised.json"
+_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/children_fairy_tale/validation_revised.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/children_fairy_tale/test_revised.json"
 
 _HOMEPAGE = "https://github.com/ymcui/Chinese-Cloze-RC"
 
@@ -91,11 +92,13 @@ class CFT(datalabs.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
+        validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         
         return [
 
             datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
             datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 
@@ -103,26 +106,11 @@ class CFT(datalabs.GeneratorBasedBuilder):
 
         count = 0
         with open(filepath, encoding='utf8') as f:
-            line = True
-            documents = []
-            documents_tokens = []
-            while line:
-                line = f.readline()
-                line_li = line.rstrip().split(" ||| ")
-                if len(line_li) == 2:
-                    sentence_tokens = line_li[1].split(" ")
-                    sentence = "".join(sentence_tokens)
-                    documents.append(sentence)
-                    documents_tokens.append(sentence_tokens)
-                elif len(line_li) == 3:
-                    question_tokens = line_li[1].split(" ")
-                    question = "".join(question_tokens)
-                    answers = line_li[2]
-                    yield count, {
-                        "documents": documents, "documents_tokens": documents_tokens, 
-                        "question": question, "question_tokens": question_tokens, 
-                        "answers": answers
-                    }
-                    documents = []
-                    documents_tokens = []
-                    count = count + 1
+            for id_, line in enumerate(f):
+                line = json.loads(line)
+                yield id_, {
+                    "documents": line["documents"], "documents_tokens": line["documents_tokens"], 
+                    "question": line["question"], "question_tokens": line["question_tokens"], 
+                    "answers": line["answers"]
+                }
+                

@@ -34,8 +34,9 @@ year={2021},
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/ccks2021_fin_re/train.txt"
-# _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/ccks2021_fin_re/test.txt"
+_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/ccks2021_fin_re/train_revised.json"
+_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/ccks2021_fin_re/validation_revised.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/ccks2021_fin_re/test_revised.json"
 
 _HOMEPAGE = "https://www.biendata.xyz/competition/ccks_2021_task6_2"
 
@@ -108,31 +109,20 @@ class CCKS2021FinRE(datalabs.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
-        # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
             ),
-            # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
     def _generate_examples(self, filepath):
 
-        with open(filepath, encoding="utf-8") as txt_file:
-            for id_, line in enumerate(txt_file):
+        with open(filepath, encoding="utf-8") as f:
+            for id_, line in enumerate(f):
                 line = json.loads(line)
-                text, result = line["text"], line["result"][0]
-                relation = {
-                    "reason_type": [],
-                    "reason_region": [],
-                    "reason_industry": [],
-                    "reason_product": [],
-                    "result_type": [],
-                    "result_region": [],
-                    "result_industry": [],
-                    "result_product": [],
-                }
-                for key in result:
-                    relation[key].extend(result[key].split(","))
-                yield id_, {"text": text, "relation": relation}
+                yield id_, {"text": line["text"], "relation": line["relation"]}

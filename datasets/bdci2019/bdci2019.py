@@ -39,8 +39,9 @@ _LICENSE = "N/A"
 
 _HOMEPAGE = "https://www.datafountain.cn/competitions/350/datasets"
 
-_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/BDCI2019/train.csv"
-# _TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/BDCI2019/test.csv"
+_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/BDCI2019/train_revised.csv"
+_VALIDATION_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/BDCI2019/validation_revised.csv"
+_TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/BDCI2019/test_revised.csv"
 
 
 class BDCI2019(datalabs.GeneratorBasedBuilder):
@@ -68,9 +69,17 @@ class BDCI2019(datalabs.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
+        validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
             )
         ]
 
@@ -78,13 +87,10 @@ class BDCI2019(datalabs.GeneratorBasedBuilder):
 
         textualize_label = {"0": "positive", "1": "neutral", "2": "negative"}
 
-        header = 0
         with open(filepath, encoding="utf-8") as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=",")
             for id_, row in enumerate(csv_reader):
-                if header > 0:
-                    num, news_id, label, title, text = row
-                    if label in textualize_label:
-                        label = textualize_label[label]
-                        yield id_, {"title": title, "text": text, "label": label}
-                header = header + 1
+                num, news_id, label, title, text = row
+                if label in textualize_label:
+                    label = textualize_label[label]
+                    yield id_, {"title": title, "text": text, "label": label}

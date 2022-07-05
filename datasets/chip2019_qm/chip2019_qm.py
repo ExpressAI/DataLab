@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import csv
+import json
 
 import datalabs
 from datalabs import get_task, TaskType
@@ -31,10 +31,10 @@ For more information, please refer to http://www.cips-chip.org.cn:8000/home.
 _LICENSE = "NA"
 
 _TRAIN_DOWNLOAD_URL = (
-    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CHIP2019_QM/train.csv"
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CHIP2019_QM/train_revised.json"
 )
-# _VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CHIP2019_QM/dev.csv"
-# _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CHIP2019_QM/test.csv"
+_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CHIP2019_QM/validation_revised.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/CHIP2019_QM/test_revised.json"
 
 _HOMEPAGE = "http://www.cips-chip.org.cn:8000/home"
 
@@ -83,29 +83,25 @@ class CHIP2019QM(datalabs.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
-        # validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-        # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
             ),
-            # datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 
     def _generate_examples(self, filepath):
 
-        with open(filepath, encoding="utf-8") as file:
-            csv_reader = csv.reader(file, delimiter=",")
-            for id_, row in enumerate(csv_reader):
-                if len(row) == 4:
-                    question1, question2, label, category = row
-                    if label == ("0" or "1"):
-                        label = int(label)
-                        yield id_, {
-                            "question1": question1,
-                            "question2": question2,
-                            "category": category,
-                            "label": label,
-                        }
+        with open(filepath, encoding="utf-8") as f:
+            for id_, line in enumerate(f):
+                line = json.loads(line)
+                yield id_, {
+                    "question1": line["question1"],
+                    "question2": line["question2"],
+                    "category": line["category"],
+                    "label": line["label"],
+                }

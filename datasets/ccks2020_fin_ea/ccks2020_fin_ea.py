@@ -35,8 +35,9 @@ year={2021},
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/ccks2020_fin_event_element/train.txt"
-# _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/ccks2020_fin_event_element/test.txt"
+_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/ccks2020_fin_event_element/train_revised.json"
+_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/ccks2020_fin_event_element/validation_revised.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/event_extraction/ccks2020_fin_event_element/test_revised.json"
 
 _HOMEPAGE = "https://www.biendata.xyz/competition/ccks_2020_4_2"
 
@@ -92,28 +93,20 @@ class CCKS2020FinEA(datalabs.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
-        # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
             ),
-            # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
 
     def _generate_examples(self, filepath):
 
-        with open(filepath, encoding="utf-8") as txt_file:
-            for id_, line in enumerate(txt_file):
+        with open(filepath, encoding="utf-8") as f:
+            for id_, line in enumerate(f):
                 line = json.loads(line)
-                text, events = line["content"], line["events"][0]
-                event_type = events["event_type"]
-                del events["event_type"]
-                del events["event_id"]
-                arguments = []
-                for key in events:
-                    role = key
-                    entity = events[key]
-                    argument = {"start": -1, "end": -1, "role": role, "entity": entity}
-                    arguments.append(argument)
-                yield id_,{"text": text, "event_type": event_type, "arguments": arguments}
+                yield id_,{"text": line["text"], "event_type": line["event_type"], "arguments": line["arguments"]}
