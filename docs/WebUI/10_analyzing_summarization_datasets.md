@@ -132,6 +132,10 @@ wikihowqa | `document` | Summarization | ```load_dataset("wikihowqa")``` | Curre
 weibo_summary_comments | `document` | ReaderAwareSummarization | ```load_dataset("weibo_summary_comments")``` | Current definition: text: `str` comments: `List[str]`, summary: `str` |
 debatesum | `extract` | Summarization | ```load_dataset("debatesum", "extract")``` | Current definition: text: `str`, summary: `str` |
 debatesum | `abstract` | Summarization | ```load_dataset("debatesum", "abstract")``` | Current definition: text: `str`, summary: `str` |
+multilexsum | `long` | MultiDocSummarization | ```load_dataset("multilexsum", "long")``` |  Current definition: texts: `List[str]`, summary: `str` |
+multilexsum | `short` | MultiDocSummarization | ```load_dataset("multilexsum", "short")``` |  Current definition: texts: `List[str]`, summary: `str` |
+multilexsum | `tiny` | MultiDocSummarization | ```load_dataset("multilexsum", "tiny")``` |  Current definition: texts: `List[str]`, summary: `str` |
+20minuten | `document` | Summarization | ```load_dataset("20minuten")``` | Current definition: text: `str`, summary: `str` |
 
 ## Examples
 
