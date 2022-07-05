@@ -18,9 +18,9 @@
 
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
-
 
 logger = datalabs.logging.get_logger(__name__)
 
@@ -91,12 +91,12 @@ class Squad(datalabs.GeneratorBasedBuilder):
                     #         "answer_start": datalabs.Value("int32"),
                     #     }
                     # ),
-                    "answers":
-                        {
-                            "text": datalabs.features.Sequence(datalabs.Value("string")),
-                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
-                        }
-
+                    "answers": {
+                        "text": datalabs.features.Sequence(datalabs.Value("string")),
+                        "answer_start": datalabs.features.Sequence(
+                            datalabs.Value("int32")
+                        ),
+                    },
                 }
             ),
             # No default supervised_keys (as we have to pass both question
@@ -106,7 +106,9 @@ class Squad(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 get_task(TaskType.qa_extractive)(
-                    question_column="question", context_column="context", answers_column="answers"
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                 )
             ],
         )
@@ -115,8 +117,14 @@ class Squad(datalabs.GeneratorBasedBuilder):
         downloaded_files = dl_manager.download_and_extract(_URLS)
 
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"filepath": downloaded_files["train"]},
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"filepath": downloaded_files["dev"]},
+            ),
         ]
 
     def _generate_examples(self, filepath):
@@ -128,9 +136,13 @@ class Squad(datalabs.GeneratorBasedBuilder):
             for article in squad["data"]:
                 title = article.get("title", "")
                 for paragraph in article["paragraphs"]:
-                    context = paragraph["context"]  # do not strip leading blank spaces GH-2585
+                    context = paragraph[
+                        "context"
+                    ]  # do not strip leading blank spaces GH-2585
                     for qa in paragraph["qas"]:
-                        answer_starts = [answer["answer_start"] for answer in qa["answers"]]
+                        answer_starts = [
+                            answer["answer_start"] for answer in qa["answers"]
+                        ]
                         answers = [answer["text"] for answer in qa["answers"]]
 
                         # answer_list = [

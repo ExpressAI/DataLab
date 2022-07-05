@@ -1,6 +1,7 @@
 """ Open4Business (O4B): An Open Access Dataset for Summarizing Business Documents """
 import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -28,7 +29,7 @@ _ARTICLE = "text"
 
 def _gdrive_url(id):
     return f"https://drive.google.com/uc?id={id}&export=download&confirm=t"
-        
+
 
 class Open4BusinessConfig(datalabs.BuilderConfig):
     """BuilderConfig for Open4Business."""
@@ -43,6 +44,7 @@ class Open4BusinessConfig(datalabs.BuilderConfig):
 
 class Open4BusinessDataset(datalabs.GeneratorBasedBuilder):
     """Open4Business Dataset."""
+
     _FILE = _gdrive_url("1qJzriJyL6plmdzKdU1HIlR0jUWl-_dxZ")
     BUILDER_CONFIGS = [
         Open4BusinessConfig(
@@ -66,9 +68,10 @@ class Open4BusinessDataset(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT),
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                ),
             ],
         )
 
@@ -83,19 +86,24 @@ class Open4BusinessDataset(datalabs.GeneratorBasedBuilder):
 
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"src_path": train_src_path, "tgt_path": train_tgt_path}
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"src_path": train_src_path, "tgt_path": train_tgt_path},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION, gen_kwargs={"src_path": val_src_path, "tgt_path": val_tgt_path}
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"src_path": val_src_path, "tgt_path": val_tgt_path},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST, gen_kwargs={"src_path": test_src_path, "tgt_path": test_tgt_path}
+                name=datalabs.Split.TEST,
+                gen_kwargs={"src_path": test_src_path, "tgt_path": test_tgt_path},
             ),
         ]
 
     def _generate_examples(self, src_path, tgt_path):
         """Generate Open4Business examples."""
-        with open(src_path, encoding="utf-8") as f_src, open(tgt_path, encoding="utf-8") as f_tgt:
+        with open(src_path, encoding="utf-8") as f_src, open(
+            tgt_path, encoding="utf-8"
+        ) as f_tgt:
             for (id_, (row_src, row_tgt)) in enumerate(zip(f_src, f_tgt)):
                 row_src = row_src.strip()
                 row_tgt = row_tgt.strip()

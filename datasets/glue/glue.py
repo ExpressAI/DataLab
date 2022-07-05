@@ -20,7 +20,9 @@
 import csv
 import os
 import textwrap
+
 import numpy as np
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -41,8 +43,12 @@ evaluating, and analyzing natural language understanding systems.
 """
 
 _MRPC_DEV_IDS = "https://dl.fbaipublicfiles.com/glue/data/mrpc_dev_ids.tsv"
-_MRPC_TRAIN = "https://dl.fbaipublicfiles.com/senteval/senteval_data/msr_paraphrase_train.txt"
-_MRPC_TEST = "https://dl.fbaipublicfiles.com/senteval/senteval_data/msr_paraphrase_test.txt"
+_MRPC_TRAIN = (
+    "https://dl.fbaipublicfiles.com/senteval/senteval_data/msr_paraphrase_train.txt"
+)
+_MRPC_TEST = (
+    "https://dl.fbaipublicfiles.com/senteval/senteval_data/msr_paraphrase_test.txt"
+)
 
 _MNLI_BASE_KWARGS = dict(
     text_features={
@@ -80,10 +86,10 @@ _MNLI_BASE_KWARGS = dict(
       }"""
     ),
     url="http://www.nyu.edu/projects/bowman/multinli/",
-    task_templates=[get_task(TaskType.natural_language_inference)(
-        text1_column="text1",
-        text2_column="text2",
-        label_column="label"),
+    task_templates=[
+        get_task(TaskType.natural_language_inference)(
+            text1_column="text1", text2_column="text2", label_column="label"
+        ),
     ],
 )
 
@@ -123,7 +129,9 @@ class GlueConfig(datalabs.BuilderConfig):
             of the label and processing it to the form required by the label feature
           **kwargs: keyword arguments forwarded to super.
         """
-        super(GlueConfig, self).__init__(version=datalabs.Version("1.0.0", ""), **kwargs)
+        super(GlueConfig, self).__init__(
+            version=datalabs.Version("1.0.0", ""), **kwargs
+        )
         self.text_features = text_features
         self.label_column = label_column
         self.label_classes = label_classes
@@ -163,9 +171,11 @@ class Glue(datalabs.GeneratorBasedBuilder):
             }"""
             ),
             url="https://nyu-mll.github.io/CoLA/",
-            task_templates=[get_task(TaskType.grammatical_judgment)(
-                text_column="text",
-                label_column="label")],
+            task_templates=[
+                get_task(TaskType.grammatical_judgment)(
+                    text_column="text", label_column="label"
+                )
+            ],
         ),
         GlueConfig(
             name="sst2",
@@ -192,8 +202,11 @@ class Glue(datalabs.GeneratorBasedBuilder):
             }"""
             ),
             url="https://datalab.stanford.edu/sentiment/index.html",
-            task_templates=[get_task(TaskType.sentiment_classification)(
-                text_column="text", label_column="label")],
+            task_templates=[
+                get_task(TaskType.sentiment_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         ),
         GlueConfig(
             name="mrpc",
@@ -218,10 +231,10 @@ class Glue(datalabs.GeneratorBasedBuilder):
             }"""
             ),
             url="https://www.microsoft.com/en-us/download/details.aspx?id=52398",
-            task_templates=[get_task(TaskType.paraphrase_identification)(
-                text1_column="text1",
-                text2_column="text2",
-                label_column="label"),
+            task_templates=[
+                get_task(TaskType.paraphrase_identification)(
+                    text1_column="text1", text2_column="text2", label_column="label"
+                ),
             ],
         ),
         GlueConfig(
@@ -251,10 +264,10 @@ class Glue(datalabs.GeneratorBasedBuilder):
           }"""
             ),
             url="https://data.quora.com/First-Quora-Dataset-Release-Question-Pairs",
-            task_templates=[get_task(TaskType.paraphrase_identification)(
-                text1_column="text1",
-                text2_column="text2",
-                label_column="label"),
+            task_templates=[
+                get_task(TaskType.paraphrase_identification)(
+                    text1_column="text1", text2_column="text2", label_column="label"
+                ),
             ],
         ),
         GlueConfig(
@@ -284,12 +297,11 @@ class Glue(datalabs.GeneratorBasedBuilder):
             ),
             url="http://ixa2.si.ehu.es/stswiki/index.php/STSbenchmark",
             process_label=np.float32,
-            # task_templates=[TextMatching(
-            #     text1_column="text1",
-            #     text2_column="text2",
-            #     task="natural-language-inference",
-            #     label_column="label"),
-            # ],
+            task_templates=[
+                get_task(TaskType.text_similarity)(
+                    text1_column="text1", text2_column="text2", label_column="label"
+                ),
+            ],
         ),
         GlueConfig(
             name="mnli",
@@ -356,10 +368,10 @@ class Glue(datalabs.GeneratorBasedBuilder):
             }"""
             ),
             url="https://rajpurkar.github.io/SQuAD-explorer/",
-            task_templates=[get_task(TaskType.natural_language_inference)(
-                text1_column="text1",
-                text2_column="text2",
-                label_column="label"),
+            task_templates=[
+                get_task(TaskType.natural_language_inference)(
+                    text1_column="text1", text2_column="text2", label_column="label"
+                ),
             ],
         ),
         GlueConfig(
@@ -416,10 +428,10 @@ class Glue(datalabs.GeneratorBasedBuilder):
             }"""
             ),
             url="https://aclweb.org/aclwiki/Recognizing_Textual_Entailment",
-            task_templates=[get_task(TaskType.natural_language_inference)(
-                text1_column="text1",
-                text2_column="text2",
-                label_column="label"),
+            task_templates=[
+                get_task(TaskType.natural_language_inference)(
+                    text1_column="text1", text2_column="text2", label_column="label"
+                ),
             ],
         ),
         GlueConfig(
@@ -460,10 +472,10 @@ class Glue(datalabs.GeneratorBasedBuilder):
             }"""
             ),
             url="https://cs.nyu.edu/faculty/davise/papers/WinogradSchemas/WS.html",
-            task_templates=[get_task(TaskType.natural_language_inference)(
-                text1_column="text1",
-                text2_column="text2",
-                label_column="label"),
+            task_templates=[
+                get_task(TaskType.natural_language_inference)(
+                    text1_column="text1", text2_column="text2", label_column="label"
+                ),
             ],
         ),
         GlueConfig(
@@ -488,18 +500,23 @@ class Glue(datalabs.GeneratorBasedBuilder):
             data_dir="",  # We are downloading a tsv.
             citation="",  # The GLUE citation is sufficient.
             url="https://gluebenchmark.com/diagnostics",
-            task_templates=[get_task(TaskType.natural_language_inference)(
-                text1_column="text1",
-                text2_column="text2",
-                label_column="label"),
+            task_templates=[
+                get_task(TaskType.natural_language_inference)(
+                    text1_column="text1", text2_column="text2", label_column="label"
+                ),
             ],
         ),
     ]
 
     def _info(self):
-        features = {text_feature: datalabs.Value("string") for text_feature in self.config.text_features.keys()}
+        features = {
+            text_feature: datalabs.Value("string")
+            for text_feature in self.config.text_features.keys()
+        }
         if self.config.label_classes:
-            features["label"] = datalabs.features.ClassLabel(names=self.config.label_classes)
+            features["label"] = datalabs.features.ClassLabel(
+                names=self.config.label_classes
+            )
         else:
             features["label"] = datalabs.Value("float32")
         features["idx"] = datalabs.Value("int32")
@@ -548,10 +565,16 @@ class Glue(datalabs.GeneratorBasedBuilder):
         if self.config.name == "mnli":
             return [
                 train_split,
-                _mnli_split_generator("validation_matched", data_dir, "dev", matched=True),
-                _mnli_split_generator("validation_mismatched", data_dir, "dev", matched=False),
+                _mnli_split_generator(
+                    "validation_matched", data_dir, "dev", matched=True
+                ),
+                _mnli_split_generator(
+                    "validation_mismatched", data_dir, "dev", matched=False
+                ),
                 _mnli_split_generator("test_matched", data_dir, "test", matched=True),
-                _mnli_split_generator("test_mismatched", data_dir, "test", matched=False),
+                _mnli_split_generator(
+                    "test_mismatched", data_dir, "test", matched=False
+                ),
             ]
         elif self.config.name == "mnli_matched":
             return [
@@ -587,7 +610,9 @@ class Glue(datalabs.GeneratorBasedBuilder):
     def _generate_examples(self, data_file, split, mrpc_files=None):
         if self.config.name == "mrpc":
             # We have to prepare the MRPC dataset from the original sources ourselves.
-            examples = self._generate_example_mrpc_files(mrpc_files=mrpc_files, split=split)
+            examples = self._generate_example_mrpc_files(
+                mrpc_files=mrpc_files, split=split
+            )
             for example in examples:
                 yield example["idx"], example
         else:
@@ -624,22 +649,20 @@ class Glue(datalabs.GeneratorBasedBuilder):
                             row["text1"] = row["question"]
                             row["text2"] = row["sentence"]
 
-
                     # print(row)
                     # for feat, col in self.config.text_features.items():
                     #     print(feat, col)
                     #     print(row[col])
                     #     print("------------------")
 
-                    #print(self.config.text_features)
+                    # print(self.config.text_features)
 
                     # exit()
 
-
-                    example = {feat: row[col] for feat, col in self.config.text_features.items()}
-
-
-
+                    example = {
+                        feat: row[col]
+                        for feat, col in self.config.text_features.items()
+                    }
 
                     example["idx"] = n
 
@@ -698,7 +721,9 @@ def _mnli_split_generator(name, data_dir, split, matched):
     return datalabs.SplitGenerator(
         name=name,
         gen_kwargs={
-            "data_file": os.path.join(data_dir, "%s_%s.tsv" % (split, "matched" if matched else "mismatched")),
+            "data_file": os.path.join(
+                data_dir, "%s_%s.tsv" % (split, "matched" if matched else "mismatched")
+            ),
             "split": split,
             "mrpc_files": None,
         },

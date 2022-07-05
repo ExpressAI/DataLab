@@ -16,7 +16,6 @@ import os
 import textwrap
 
 import datalabs
-
 from datalabs import get_task, TaskType
 
 # TODO(openBookQA): BibTeX citation
@@ -51,7 +50,9 @@ class OpenbookqaConfig(datalabs.BuilderConfig):
           **kwargs: keyword arguments forwarded to super.
         """
 
-        super(OpenbookqaConfig, self).__init__(version=datalabs.Version("1.0.0", ""), **kwargs)
+        super(OpenbookqaConfig, self).__init__(
+            version=datalabs.Version("1.0.0", ""), **kwargs
+        )
 
         self.data_dir = data_dir
 
@@ -99,13 +100,12 @@ class Openbookqa(datalabs.GeneratorBasedBuilder):
                 {
                     # These are the features of your dataset like images, labels ...
                     "id": datalabs.Value("string"),
-                    "question": datalabs.Value("string"), # question -> question_stem
+                    "question": datalabs.Value("string"),  # question -> question_stem
                     "options": datalabs.features.Sequence(datalabs.Value("string")),
-                    "answers":  # answers -> answerKey
-                        {
-                            "text": datalabs.Value("string"),
-                            "option_index": datalabs.Value("int32"),
-                        },
+                    "answers": {  # answers -> answerKey
+                        "text": datalabs.Value("string"),
+                        "option_index": datalabs.Value("int32"),
+                    },
                     # "options": datalabs.features.Sequence(
                     #     {"text": datalabs.Value("string"), "label": datalabs.Value("string")}
                     # ),
@@ -123,7 +123,7 @@ class Openbookqa(datalabs.GeneratorBasedBuilder):
                 get_task(TaskType.qa_multiple_choice_without_context)(
                     question_column="question",
                     answers_column="answers",
-                    options_column="options"
+                    options_column="options",
                 )
             ],
         )
@@ -172,26 +172,36 @@ class Openbookqa(datalabs.GeneratorBasedBuilder):
     def _generate_examples(self, filepath):
         """Yields examples."""
         # TODO(openBookQA): Yields (key, example) tuples from the dataset
-        dict_map = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4,"F": 5,"G": 6,"H": 7,"I": 8,"J": 9,"K": 10}
+        dict_map = {
+            "A": 0,
+            "B": 1,
+            "C": 2,
+            "D": 3,
+            "E": 4,
+            "F": 5,
+            "G": 6,
+            "H": 7,
+            "I": 8,
+            "J": 9,
+            "K": 10,
+        }
         id_sample = 0
         with open(filepath, encoding="utf-8") as f:
             for row in f:
                 data = json.loads(row)
                 id_sample += 1
-                options =[choice["text"] for choice in data["question"]["choices"]]
+                options = [choice["text"] for choice in data["question"]["choices"]]
                 option_index = dict_map[data["answerKey"]]
                 yield data["id"], {
-                    "id": str(id_sample-1),
+                    "id": str(id_sample - 1),
                     "question": data["question"]["stem"],
-                    "options":options,
-                    "answers":  # answers -> answerKey
-                        {
-                            "text": options[option_index],
-                            "option_index": option_index,
-                        },
+                    "options": options,
+                    "answers": {  # answers -> answerKey
+                        "text": options[option_index],
+                        "option_index": option_index,
+                    },
                     # "choice": {
                     #     "text": [choice["text"] for choice in data["question"]["choices"]],
                     #     "label": [choice["text"] for choice in data["question"]["choices"]],
                     # },
                 }
-

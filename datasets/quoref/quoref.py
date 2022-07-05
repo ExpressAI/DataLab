@@ -19,6 +19,7 @@
 # sys.path.append("..")
 import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -61,11 +62,12 @@ class Quoref(datalabs.GeneratorBasedBuilder):
                     "context": datalabs.Value("string"),
                     "title": datalabs.Value("string"),
                     "url": datalabs.Value("string"),
-                    "answers":
-                        {
-                            "text": datalabs.features.Sequence(datalabs.Value("string")),
-                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
-                        }
+                    "answers": {
+                        "text": datalabs.features.Sequence(datalabs.Value("string")),
+                        "answer_start": datalabs.features.Sequence(
+                            datalabs.Value("int32")
+                        ),
+                    }
                     # These are the features of your dataset like images, labels ...
                 }
             ),
@@ -80,7 +82,7 @@ class Quoref(datalabs.GeneratorBasedBuilder):
                 get_task(TaskType.qa_extractive)(
                     question_column="question",
                     context_column="context",
-                    answers_column="answers"
+                    answers_column="answers",
                 )
             ],
         )
@@ -96,7 +98,9 @@ class Quoref(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 # These kwargs will be passed to _generate_examples
-                gen_kwargs={"filepath": os.path.join(data_dir, "quoref-train-v0.1.json")},
+                gen_kwargs={
+                    "filepath": os.path.join(data_dir, "quoref-train-v0.1.json")
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
@@ -119,7 +123,9 @@ class Quoref(datalabs.GeneratorBasedBuilder):
                         question = qa["question"].strip()
                         id_ = qa["id"]
 
-                        answer_starts = [answer["answer_start"] for answer in qa["answers"]]
+                        answer_starts = [
+                            answer["answer_start"] for answer in qa["answers"]
+                        ]
                         answers = [answer["text"].strip() for answer in qa["answers"]]
 
                         # Features currently used are "context", "question", and "answers".

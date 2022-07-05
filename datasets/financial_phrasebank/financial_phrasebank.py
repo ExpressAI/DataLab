@@ -91,9 +91,13 @@ class FinancialPhraseBankConfig(datalabs.BuilderConfig):
           filename_bit: `string`, the changing part of the filename.
         """
 
-        super(FinancialPhraseBankConfig, self).__init__(name=f"sentences_{split}agree", version=_VERSION, **kwargs)
+        super(FinancialPhraseBankConfig, self).__init__(
+            name=f"sentences_{split}agree", version=_VERSION, **kwargs
+        )
 
-        self.path = os.path.join("FinancialPhraseBank-v1.0", f"Sentences_{split.title()}Agree.txt")
+        self.path = os.path.join(
+            "FinancialPhraseBank-v1.0", f"Sentences_{split.title()}Agree.txt"
+        )
 
 
 class FinancialPhrasebank(datalabs.GeneratorBasedBuilder):
@@ -103,9 +107,15 @@ class FinancialPhrasebank(datalabs.GeneratorBasedBuilder):
             split="all",
             description="Sentences where all annotators agreed",
         ),
-        FinancialPhraseBankConfig(split="75", description="Sentences where at least 75% of annotators agreed"),
-        FinancialPhraseBankConfig(split="66", description="Sentences where at least 66% of annotators agreed"),
-        FinancialPhraseBankConfig(split="50", description="Sentences where at least 50% of annotators agreed"),
+        FinancialPhraseBankConfig(
+            split="75", description="Sentences where at least 75% of annotators agreed"
+        ),
+        FinancialPhraseBankConfig(
+            split="66", description="Sentences where at least 66% of annotators agreed"
+        ),
+        FinancialPhraseBankConfig(
+            split="50", description="Sentences where at least 50% of annotators agreed"
+        ),
     ]
 
     def _info(self):
@@ -125,10 +135,14 @@ class FinancialPhrasebank(datalabs.GeneratorBasedBuilder):
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
-            languages = ["en"],
+            languages=["en"],
             license=_LICENSE,
             citation=_CITATION,
-            task_templates=[get_task(TaskType.sentiment_classification)(text_column="text", label_column="label")],
+            task_templates=[
+                get_task(TaskType.sentiment_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):

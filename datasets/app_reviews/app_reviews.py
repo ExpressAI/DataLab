@@ -50,40 +50,49 @@ class AppReviews(datalabs.GeneratorBasedBuilder):
                     "package_name": datalabs.Value("string"),
                     "text": datalabs.Value("string"),
                     "date": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["1 star",
-                                                                 "2 stars",
-                                                                 "3 stars",
-                                                                 "4 stars",
-                                                                 "5 stars"]),
+                    "label": datalabs.features.ClassLabel(
+                        names=["1 star", "2 stars", "3 stars", "4 stars", "5 stars"]
+                    ),
                 }
             ),
             homepage="https://giograno.me/assets/pdf/workshop/wama17.pdf",
             citation=_CITATION,
-            task_templates=[get_task(TaskType.sentiment_classification)(text_column="text", label_column="label")],
+            task_templates=[
+                get_task(TaskType.sentiment_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
         """Generate Distaster Response Messages examples."""
-        textualize_label = {"1":"1 star",
-                                 "2":"2 stars",
-                                 "3":"3 stars",
-                                 "4":"4 stars",
-                                 "5":"5 stars"}
+        textualize_label = {
+            "1": "1 star",
+            "2": "2 stars",
+            "3": "3 stars",
+            "4": "4 stars",
+            "5": "5 stars",
+        }
         with open(filepath, encoding="utf-8") as csv_file:
             csv_reader = csv.reader(
-                csv_file, quotechar='"', delimiter=",", quoting=csv.QUOTE_ALL, skipinitialspace=True
+                csv_file,
+                quotechar='"',
+                delimiter=",",
+                quoting=csv.QUOTE_ALL,
+                skipinitialspace=True,
             )
             next(csv_reader, None)
             for id_, row in enumerate(csv_reader):
                 row = row[1:5]
                 (package_name, review, date, star) = row
-
 
                 yield id_, {
                     "package_name": (package_name),

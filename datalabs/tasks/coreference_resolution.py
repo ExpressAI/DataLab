@@ -9,6 +9,7 @@ from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 @dataclass
 class CoreferenceResolution(TaskTemplate):
     task: TaskType = TaskType.coreference_resolution
+
     input_schema: ClassVar[Features] = Features(
         {
             "text": Value("string"),
@@ -20,6 +21,7 @@ class CoreferenceResolution(TaskTemplate):
     )
 
     label_schema: ClassVar[Features] = Features({"label": ClassLabel})
+
     text_column: str = "text"
     pronoun_column: str = "pronoun"
     pronoun_idx_column: str = "pronoun_idx"
@@ -27,6 +29,11 @@ class CoreferenceResolution(TaskTemplate):
     quote_idx_column: str = "quote_idx"
     label_column: str = "label"
     labels: Optional[Tuple[str]] = None
+
+    def set_labels(self, labels):
+        self.__dict__["labels"] = tuple(labels)
+        self.__dict__["label_schema"] = self.label_schema.copy()
+        self.label_schema["labels"] = ClassLabel(names=labels)
 
     def __post_init__(self):
         self.task_categories = ["span-relation-prediction"]  # TODO(Pengfei)

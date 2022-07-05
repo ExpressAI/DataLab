@@ -13,10 +13,11 @@
 
 
 import csv
+
 import datalabs
 from datalabs import get_task, TaskType
 
-_CITATION = '''\
+_CITATION = """\
 @inproceedings{liu-etal-2018-lcqmc,
     title = "LCQMC: A Large-scale Chinese Question Matching Corpus",
     author = "Liu, Xin  and
@@ -37,60 +38,73 @@ _CITATION = '''\
 }
 
 
-'''
+"""
 
-_DESCRIPTION = '''\
+_DESCRIPTION = """\
 This dataset is LCQMC (A Large-scale Chinese Question Matching Corpus), a Chinese text-matching dataset extracted from BaiduZhidao.
 It can be used to make up for the lack of Chinese large-scale datasets in the text-matching field. 
 For more information, please refer to https://aclanthology.org/C18-1166.
-'''
+"""
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/lcqmc/train.tsv"
-_VALIDATION_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/lcqmc/dev.tsv"
-_TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/lcqmc/test.tsv"
+_TRAIN_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/lcqmc/train.tsv"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/lcqmc/dev.tsv"
+)
+_TEST_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/lcqmc/test.tsv"
+)
 
 
 class LCQMC(datalabs.GeneratorBasedBuilder):
     def _info(self):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-            features=datalabs.Features({
-                'text1': datalabs.Value('string'),
-                'text2': datalabs.Value('string'),
-                'label': datalabs.features.ClassLabel(names=['0', '1'])
-            }),
+            features=datalabs.Features(
+                {
+                    "text1": datalabs.Value("string"),
+                    "text2": datalabs.Value("string"),
+                    "label": datalabs.features.ClassLabel(names=["0", "1"]),
+                }
+            ),
             supervised_keys=None,
-            homepage='https://aclanthology.org/C18-1166',
+            homepage="https://aclanthology.org/C18-1166",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.paraphrase_identification)(
-                text1_column="text1",
-                text2_column="text2",
-                label_column="label"),
+            task_templates=[
+                get_task(TaskType.paraphrase_identification)(
+                    text1_column="text1", text2_column="text2", label_column="label"
+                ),
             ],
         )
 
     def _split_generators(self, dl_manager):
-        
+
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
-
 
     def _generate_examples(self, filepath):
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter = '\t')
+            csv_reader = csv.reader(csv_file, delimiter="\t")
             header = 0
             for id_, row in enumerate(csv_reader):
                 if header != 0:
                     text1, text2, label = row
                     label = int(label)
-                    yield id_, {'text1': text1, 'text2': text2, 'label': label}
+                    yield id_, {"text1": text1, "text2": text2, "label": label}
                 header = header + 1

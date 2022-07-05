@@ -12,6 +12,7 @@
 # limitations under the License.
 
 import csv
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -47,16 +48,19 @@ class SUBJ(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["subjective", "objective"]),
+                    "label": datalabs.features.ClassLabel(
+                        names=["subjective", "objective"]
+                    ),
                 }
             ),
             homepage="https://www.cs.cornell.edu/people/pabo/movie-review-data/",
             citation=_CITATION,
             languages=["en"],
-            task_templates=[get_task(TaskType.sentiment_classification)(
-                text_column="text",
-                label_column="label"
-            )],
+            task_templates=[
+                get_task(TaskType.sentiment_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -64,21 +68,22 @@ class SUBJ(datalabs.GeneratorBasedBuilder):
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         print(f"train_path: \t{train_path}")
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
         """Generate SUBJ examples."""
 
         # map the label into textual string
-        textualize_label = {
-            "0": "subjective",
-            "1": "objective"
-        }
+        textualize_label = {"0": "subjective", "1": "objective"}
 
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter='\t')
+            csv_reader = csv.reader(csv_file, delimiter="\t")
             for id_, row in enumerate(csv_reader):
                 text, label = row
                 label = textualize_label[label]

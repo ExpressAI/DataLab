@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import csv
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -33,6 +34,7 @@ _LICENSE = "NA"
 
 _TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/douban_movie/douban_movie.csv"
 
+
 class DOUBANMOVIE(datalabs.GeneratorBasedBuilder):
     def _info(self):
         return datalabs.DatasetInfo(
@@ -40,22 +42,28 @@ class DOUBANMOVIE(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["Excellent","Good","Average","Fair","Poor"])
+                    "label": datalabs.features.ClassLabel(
+                        names=["Excellent", "Good", "Average", "Fair", "Poor"]
+                    ),
                 }
             ),
             homepage="https://github.com/SophonPlus/ChineseNlpCorpus/blob/master/datasets/dmsc_v2/intro.ipynb",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.sentiment_classification)(
-                text_column="text", label_column="label")],
+            task_templates=[
+                get_task(TaskType.sentiment_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
         ]
-       
 
     def _generate_examples(self, filepath):
 
@@ -64,13 +72,13 @@ class DOUBANMOVIE(datalabs.GeneratorBasedBuilder):
             "2": "Fair",
             "3": "Average",
             "4": "Good",
-            "5": "Excellent"
+            "5": "Excellent",
         }
 
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter = ',')
+            csv_reader = csv.reader(csv_file, delimiter=",")
             for id_, row in enumerate(csv_reader):
-                userId,movieId,label,timestamp,text,like = row
+                userId, movieId, label, timestamp, text, like = row
                 if label in textualize_label:
                     label = textualize_label[label]
                     yield id_, {"text": text, "label": label}

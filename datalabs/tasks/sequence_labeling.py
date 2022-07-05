@@ -66,7 +66,7 @@ class Chunking(SequenceLabeling):
 
 @register_task(TaskType.part_of_speech)
 @dataclass
-class PartofSpeech(SequenceLabeling):
+class PartOfSpeech(SequenceLabeling):
     task: TaskType = TaskType.part_of_speech
     tokens_column: str = "tokens"
     tags_column: str = "tags"

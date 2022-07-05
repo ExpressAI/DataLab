@@ -113,6 +113,53 @@ def summarization_func(sample: dict):
     return res_info_general_all
 
 
+_symmetric_relations = [
+    "/base/popstra/celebrity/breakup./base/popstra/breakup/participant",
+    "/base/popstra/celebrity/canoodled./base/popstra/canoodled/participant",
+    "/base/popstra/celebrity/dated./base/popstra/dated/participant",
+    "/base/popstra/celebrity/friendship./base/popstra/friendship/participant",
+    "/celebrities/celebrity/celebrity_friends./celebrities/friendship/friend",
+    "/celebrities/celebrity/sexual_relationships./celebrities/romantic_relationship/celebrity",  # noqa: E501
+    "/influence/influence_node/peers./influence/peer_relationship/peers",
+    "/location/location/adjoin_s./location/adjoining_relationship/adjoins",
+    "/people/person/spouse_s./people/marriage/spouse",
+    "/people/person/sibling_s./people/sibling relationship/sibling",
+]
+
+
+@nlp_featurizing(name="kg_func")
+def kg_func(sample: dict):
+    head = sample["head"]
+    link = sample["link"]
+    tail = sample["tail"]
+
+    relation_symmetric = ""
+    if link in _symmetric_relations:
+        relation_symmetric = "symmetric"
+    else:
+        relation_symmetric = "asymmetric"
+
+    res_info_general_all = {}
+
+    res_info_general = basic_features(head)
+    for k, v in res_info_general.items():
+        res_info_general_all["head" + "_" + k] = v
+
+    res_info_general = basic_features(tail)
+    for k, v in res_info_general.items():
+        res_info_general_all["tail" + "_" + k] = v
+
+    # get task-dependent features
+    task_dependent_features = {
+        "relation_symmetric": relation_symmetric,
+    }
+
+    # update the res_info_general_all
+    res_info_general_all.update(task_dependent_features)
+
+    return {}
+
+
 """
 you can test this operation by:
 

@@ -18,7 +18,6 @@ import json
 import datalabs
 from datalabs import get_task, TaskType
 
-
 _CITATION = """\
 @article{Artetxe:etal:2019,
       author    = {Mikel Artetxe and Sebastian Ruder and Dani Yogatama},
@@ -56,7 +55,9 @@ class XquadConfig(datalabs.BuilderConfig):
             lang: string, language for the input text
             **kwargs: keyword arguments forwarded to super.
         """
-        super(XquadConfig, self).__init__(version=datalabs.Version("2.0.0", ""), **kwargs)
+        super(XquadConfig, self).__init__(
+            version=datalabs.Version("2.0.0", ""), **kwargs
+        )
         self.lang = lang
 
 
@@ -66,7 +67,10 @@ class Xquad(datalabs.GeneratorBasedBuilder):
     # TODO(xquad): Set up version.
     VERSION = datalabs.Version("2.0.0")
     # BUILDER_CONFIGS = [XquadConfig(name=f"xquad.{lang}", description=_DESCRIPTION, lang=lang) for lang in _LANG]
-    BUILDER_CONFIGS = [XquadConfig(name=f"{lang}", description=_DESCRIPTION, lang=lang) for lang in _LANG]
+    BUILDER_CONFIGS = [
+        XquadConfig(name=f"{lang}", description=_DESCRIPTION, lang=lang)
+        for lang in _LANG
+    ]
 
     def _info(self):
         # TODO(xquad): Specifies the datasets.DatasetInfo object
@@ -79,11 +83,12 @@ class Xquad(datalabs.GeneratorBasedBuilder):
                     "id": datalabs.Value("string"),
                     "context": datalabs.Value("string"),
                     "question": datalabs.Value("string"),
-                    "answers":
-                        {
-                            "text": datalabs.features.Sequence(datalabs.Value("string")),
-                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
-                        }
+                    "answers": {
+                        "text": datalabs.features.Sequence(datalabs.Value("string")),
+                        "answer_start": datalabs.features.Sequence(
+                            datalabs.Value("int32")
+                        ),
+                    },
                 }
             ),
             supervised_keys=None,
@@ -95,7 +100,7 @@ class Xquad(datalabs.GeneratorBasedBuilder):
                 get_task(TaskType.qa_extractive)(
                     question_column="question",
                     context_column="context",
-                    answers_column="answers"
+                    answers_column="answers",
                 )
             ],
         )
@@ -127,10 +132,10 @@ class Xquad(datalabs.GeneratorBasedBuilder):
                     context = paragraph["context"].strip()
                     for qa in paragraph["qas"]:
                         question = qa["question"].strip()
-                        answer_starts = [answer["answer_start"] for answer in qa["answers"]]
+                        answer_starts = [
+                            answer["answer_start"] for answer in qa["answers"]
+                        ]
                         answers = [answer["text"].strip() for answer in qa["answers"]]
-
-
 
                         # Features currently used are "context", "question", and "answers".
                         # Others are extracted here for the ease of future expansions.

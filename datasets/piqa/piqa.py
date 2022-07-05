@@ -18,10 +18,8 @@
 import json
 import os
 
-
 import datalabs
 from datalabs import get_task, TaskType
-
 
 _CITATION = """\
 @inproceedings{Bisk2020,
@@ -78,13 +76,12 @@ class Piqa(datalabs.GeneratorBasedBuilder):
             features=datalabs.Features(
                 {
                     "id": datalabs.Value("string"),
-                    "question": datalabs.Value("string"), # question -> goal
+                    "question": datalabs.Value("string"),  # question -> goal
                     "options": datalabs.features.Sequence(datalabs.Value("string")),
-                    "answers":  # answers -> answer
-                        {
-                            "text": datalabs.Value("string"),
-                            "option_index": datalabs.Value("int32"),
-                        },
+                    "answers": {  # answers -> answer
+                        "text": datalabs.Value("string"),
+                        "option_index": datalabs.Value("int32"),
+                    },
                 }
             ),
             supervised_keys=None,
@@ -94,7 +91,7 @@ class Piqa(datalabs.GeneratorBasedBuilder):
                 get_task(TaskType.qa_multiple_choice_without_context)(
                     question_column="question",
                     answers_column="answers",
-                    options_column="options"
+                    options_column="options",
                 )
             ],
         )
@@ -106,8 +103,14 @@ class Piqa(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={
-                    "input_filepath": os.path.join(data_dir["train-dev"], "physicaliqa-train-dev", "train.jsonl"),
-                    "label_filepath": os.path.join(data_dir["train-dev"], "physicaliqa-train-dev", "train-labels.lst"),
+                    "input_filepath": os.path.join(
+                        data_dir["train-dev"], "physicaliqa-train-dev", "train.jsonl"
+                    ),
+                    "label_filepath": os.path.join(
+                        data_dir["train-dev"],
+                        "physicaliqa-train-dev",
+                        "train-labels.lst",
+                    ),
                 },
             ),
             datalabs.SplitGenerator(
@@ -119,8 +122,12 @@ class Piqa(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 gen_kwargs={
-                    "input_filepath": os.path.join(data_dir["train-dev"], "physicaliqa-train-dev", "dev.jsonl"),
-                    "label_filepath": os.path.join(data_dir["train-dev"], "physicaliqa-train-dev", "dev-labels.lst"),
+                    "input_filepath": os.path.join(
+                        data_dir["train-dev"], "physicaliqa-train-dev", "dev.jsonl"
+                    ),
+                    "label_filepath": os.path.join(
+                        data_dir["train-dev"], "physicaliqa-train-dev", "dev-labels.lst"
+                    ),
                 },
             ),
         ]
@@ -140,26 +147,25 @@ class Piqa(datalabs.GeneratorBasedBuilder):
                 labels = [-1] * len(inputs)
 
             for idx, (row, lab) in enumerate(zip(inputs, labels)):
-                id_sample +=1
+                id_sample += 1
                 data = json.loads(row)
                 goal = data["goal"]
                 sol1 = data["sol1"]
                 sol2 = data["sol2"]
 
-                answer_text = ''
+                answer_text = ""
                 if lab in [0, 1]:
-                    new_lab = str(int(lab)+1)
-                    answer_text = data['sol' + new_lab]
+                    new_lab = str(int(lab) + 1)
+                    answer_text = data["sol" + new_lab]
 
                 yield idx, {
-                    "id": str(id_sample-1),
+                    "id": str(id_sample - 1),
                     "question": goal,  # question -> goal
                     "options": [sol1, sol2],
-                    "answers":  # answers -> answer
-                        {
-                            "text": answer_text,
-                            "option_index": int(lab),
-                        },
+                    "answers": {  # answers -> answer
+                        "text": answer_text,
+                        "option_index": int(lab),
+                    },
                 }
 
                 # yield idx, {

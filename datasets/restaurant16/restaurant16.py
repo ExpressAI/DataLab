@@ -12,6 +12,7 @@
 # limitations under the License.
 
 import csv
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -38,7 +39,9 @@ class Restaurant16(datalabs.GeneratorBasedBuilder):
                 {
                     "aspect": datalabs.Value("string"),
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["positive", "negative", "neutral"]),
+                    "label": datalabs.features.ClassLabel(
+                        names=["positive", "negative", "neutral"]
+                    ),
                 }
             ),
             homepage="https://alt.qcri.org/semeval2016/task5/index.php?id=data-and-tools",
@@ -46,10 +49,9 @@ class Restaurant16(datalabs.GeneratorBasedBuilder):
             languages=["en"],
             task_templates=[
                 get_task(TaskType.aspect_based_sentiment_classification)(
-                    span_column="aspect",
-                    text_column="text",
-                    label_column="label"
-                )]
+                    span_column="aspect", text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -58,14 +60,18 @@ class Restaurant16(datalabs.GeneratorBasedBuilder):
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         print(f"test_path: \t{test_path}")
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
         """Generate Restaurant16 examples."""
         with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter='\t')
+            csv_reader = csv.reader(csv_file, delimiter="\t")
             for id_, row in enumerate(csv_reader):
                 aspect, text, label = row
                 yield id_, {"aspect": aspect, "text": text, "label": label}

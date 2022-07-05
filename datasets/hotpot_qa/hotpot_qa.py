@@ -19,9 +19,9 @@
 
 import json
 import textwrap
+
 import datalabs
 from datalabs import get_task, TaskType
-
 
 _CITATION = """
 @inproceedings{yang2018hotpotqa,
@@ -85,21 +85,22 @@ class HotpotQA(datalabs.GeneratorBasedBuilder):
                     # "answer": datalabs.Value("string"),
                     "type": datalabs.Value("string"),
                     "level": datalabs.Value("string"),
-                    "supporting_facts":
-                        {
-                            "title": datalabs.features.Sequence(datalabs.Value("string")),
-                            "sent_id": datalabs.features.Sequence(datalabs.Value("int32")),
-                        },
-                    "context":
-                        {
-                            "title": datalabs.features.Sequence(datalabs.Value("string")),
-                            "sentences": datalabs.features.Sequence(datalabs.Value("string")),
-                        },
-                    "answers":
-                        {
-                            "text": datalabs.features.Sequence(datalabs.Value("string")),
-                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
-                        }
+                    "supporting_facts": {
+                        "title": datalabs.features.Sequence(datalabs.Value("string")),
+                        "sent_id": datalabs.features.Sequence(datalabs.Value("int32")),
+                    },
+                    "context": {
+                        "title": datalabs.features.Sequence(datalabs.Value("string")),
+                        "sentences": datalabs.features.Sequence(
+                            datalabs.Value("string")
+                        ),
+                    },
+                    "answers": {
+                        "text": datalabs.features.Sequence(datalabs.Value("string")),
+                        "answer_start": datalabs.features.Sequence(
+                            datalabs.Value("int32")
+                        ),
+                    }
                     # "supporting_facts": datalabs.features.Sequence(
                     #     {
                     #         "title": datalabs.Value("string"),
@@ -112,16 +113,18 @@ class HotpotQA(datalabs.GeneratorBasedBuilder):
                     #         "sentences": datalabs.features.Sequence(datalabs.Value("string")),
                     #     }
                     # ),
-
                 }
             ),
             supervised_keys=None,
             homepage="https://hotpotqa.github.io/",
             citation=_CITATION,
-            languages = ["en"],
+            languages=["en"],
             task_templates=[
                 get_task(TaskType.qa_hotpot)(
-                    question_column="question", context_column="context", answers_column="answers", supporting_column="supporting_facts"
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
+                    supporting_column="supporting_facts",
                 )
             ],
         )
@@ -130,7 +133,10 @@ class HotpotQA(datalabs.GeneratorBasedBuilder):
         """Returns SplitGenerators."""
         paths = {
             datalabs.Split.TRAIN: _URL_BASE + "hotpot_train_v1.1.json",
-            datalabs.Split.VALIDATION: _URL_BASE + "hotpot_dev_" + self.config.name + "_v1.json",
+            datalabs.Split.VALIDATION: _URL_BASE
+            + "hotpot_dev_"
+            + self.config.name
+            + "_v1.json",
         }
         if self.config.name == "fullwiki":
             paths[datalabs.Split.TEST] = _URL_BASE + "hotpot_test_fullwiki_v1.json"
@@ -139,7 +145,11 @@ class HotpotQA(datalabs.GeneratorBasedBuilder):
 
         split_generators = []
         for split in files:
-            split_generators.append(datalabs.SplitGenerator(name=split, gen_kwargs={"data_file": files[split]}))
+            split_generators.append(
+                datalabs.SplitGenerator(
+                    name=split, gen_kwargs={"data_file": files[split]}
+                )
+            )
 
         return split_generators
 
@@ -161,7 +171,6 @@ class HotpotQA(datalabs.GeneratorBasedBuilder):
 
             context_titles = [x[0] for x in example["context"]]
             context_sentences = [x[1] for x in example["context"]]
-
 
             yield idx, {
                 "id": example["_id"],
