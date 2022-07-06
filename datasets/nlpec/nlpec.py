@@ -40,7 +40,15 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/NLPEC/train.json"
+_TRAIN_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/NLPEC/train_revised.json"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/NLPEC/validation_revised.json"
+)
+_TEST_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/NLPEC/test_revised.json"
+)
 
 _HOMEPAGE = "https://tianchi.aliyun.com/dataset/dataDetail?dataId=90134"
 
@@ -95,30 +103,35 @@ class NLPEC(datalabs.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
-        
+        valid_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": valid_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
 
         with open(filepath, encoding="utf-8") as f:
             for id_, line in enumerate(f.readlines()):
-                line = json.loads(line)
-                question_type, question, question_s = line["questionType"], line["questionText"], line["q_s"]
-                option_index = int(line["answer"][0])-1
-                options, options_s = line["option"], line["option_s"]
-                context, context_s = line["context"], line["context_s"]
-                answers = {"text": options[option_index], "option_index": option_index}
+                line = json.loads(line.strip())
                 yield id_, {
-                    "question_type":question_type,
-                    "question": question,
-                    "question_s": question_s,
-                    "options": options,
-                    "options_s": options_s,
-                    "context": context,
-                    "context_s": context_s,
-                    "answers": answers
+                    "question_type":line["question_type"],
+                    "question": line["question"],
+                    "question_s": line["question_s"],
+                    "options": line["options"],
+                    "options_s": line["options_s"],
+                    "context": line["context"],
+                    "context_s": line["context_s"],
+                    "answers": line["answers"]
                 }
 
 

@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import csv
+import json
 
 import datalabs
 from datalabs import get_task, TaskType
@@ -62,9 +62,15 @@ _CITATION = """\
 
 _LICENSE = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/SE-ABSA16/License.pdf"
 
-_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/SE-ABSA16/SE-ABSA16-PHNS-train.tsv"
-# _TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/SE-ABSA16/SE-ABSA16-PHNS-test.tsv"
-
+_TRAIN_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/SE-ABSA16/PHNS/train_revised.json"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/SE-ABSA16/PHNS/validation_revised.json"
+)
+_TEST_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/SE-ABSA16/PHNS/test_revised.json"
+)
 
 class SEABSA16PHNS(datalabs.GeneratorBasedBuilder):
     def _info(self):
@@ -90,21 +96,25 @@ class SEABSA16PHNS(datalabs.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
+        valid_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+
         print(f"train_path: \t{train_path}")
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
-            )
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": valid_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
 
-        textualize_label = {"1": "positive", "0": "negative"}
-
-        with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter="\t")
-            for id_, row in enumerate(csv_reader):
-                label, object, text = row
-                if label == ("0" or "1"):
-                    label = textualize_label[label]
-                    yield id_, {"text": text, "label": label}
+        with open(filepath, encoding="utf-8") as f:
+            for id_, line in enumerate(f.readlines()):
+                line = json.loads(line.strip())
+                yield id_, {"text": line["text"], "label": line["label"]}

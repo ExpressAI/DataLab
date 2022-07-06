@@ -47,7 +47,9 @@ _TRAIN_DOWNLOAD_URL = (
 _VALIDATION_DOWNLOAD_URL = (
     "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/validation_revised.json"
 )
-_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/test_revised.json"
+_TEST_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/test_revised.json"
+)
 
 class TNEWSConfig(datalabs.BuilderConfig):
     

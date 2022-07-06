@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import csv
+import json
 
 import datalabs
 from datalabs import get_task, TaskType
@@ -30,10 +30,14 @@ For more information, please refer to http://contest.aicubes.cn/#/detail?topicId
 _LICENSE = "NA"
 
 _TRAIN_DOWNLOAD_URL = (
-    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/ths2021/train.tsv"
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/ths2021/train_revised.json"
 )
-# _TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/ths2021/test.tsv"
-
+_VALIDATION_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/ths2021/validation_revised.json"
+)
+_TEST_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/ths2021/test_revised.json"
+)
 
 class THS2021(datalabs.GeneratorBasedBuilder):
     def _info(self):
@@ -60,19 +64,23 @@ class THS2021(datalabs.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
-        # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        valid_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
             ),
-            # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": valid_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
-        with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter="\t")
-            for id_, row in enumerate(csv_reader):
-                if len(row) == 3:
-                    label, text1, text2 = row
-                    label = int(label)
-                    yield id_, {"text1": text1, "text2": text2, "label": label}
+        with open(filepath, encoding="utf-8") as f:
+            for id_, line in enumerate(f.readlines()):
+                line = json.loads(line.strip())
+                yield id_, {"text1": line["text1"], "text2": line["text2"], "label": line["label"]}
