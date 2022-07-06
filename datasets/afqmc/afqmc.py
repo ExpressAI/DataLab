@@ -78,8 +78,9 @@ class AFQMC(datalabs.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         files_to_download = {
-            "dev": "https://drive.google.com/uc?export=download&id=1yl9n16KjNYq71ViPkY4PyWAfb4jmZuds",
-            "train": "https://drive.google.com/uc?export=download&id=1pTzl977JqmIGEv6TXhwNP_dVUL7GliA0",
+            "test": "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/afqmc/test.json",
+            "dev": "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/afqmc/dev.json",
+            "train": "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/afqmc/train.json",
         }
         downloaded_files = dl_manager.download_and_extract(files_to_download)
         # train_path = os.path.join(path, 'train.json')
@@ -93,6 +94,10 @@ class AFQMC(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 gen_kwargs={"filepath": downloaded_files["dev"]},
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
+                gen_kwargs={"filepath": downloaded_files["test"]},
             ),
             # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
         ]
