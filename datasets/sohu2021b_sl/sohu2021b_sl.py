@@ -32,9 +32,9 @@ For more information, please refer to https://www.biendata.xyz/competition/sohu_
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/sohu2021B/short-long/train.txt"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/sohu2021B/short-long/valid.txt"
-# _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/sohu2021B/short-long/test_with_id.txt"
+_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/sohu2021B/short-long/train_revised.json"
+_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/sohu2021B/short-long/validation_revised.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/sohu2021B/short-long/test_revised.json"
 
 
 class SOHU2021B_SL(datalabs.GeneratorBasedBuilder):
@@ -63,7 +63,7 @@ class SOHU2021B_SL(datalabs.GeneratorBasedBuilder):
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-        # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
@@ -71,7 +71,7 @@ class SOHU2021B_SL(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
             ),
-            # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 
     def _generate_examples(self, filepath):
@@ -79,6 +79,4 @@ class SOHU2021B_SL(datalabs.GeneratorBasedBuilder):
         with open(filepath, encoding="utf-8") as f:
             for id_, line in enumerate(f.readlines()):
                 line = json.loads(line.strip())
-                text1, text2, label = line["source"], line["target"], line["labelB"]
-                if label == ("0" or "1"):
-                    yield id_, {"text1": text1, "text2": text2, "label": label}
+                yield id_, {"text1": line["text1"], "text2": line["text2"], "label": line["label"]}
