@@ -152,6 +152,7 @@ class Gaokao2019NP2(datalabs.GeneratorBasedBuilder):
                     "context": Value("string"),
                     "hint": Value("string"),
                     "question_mark": Value("string"),
+<<<<<<< Updated upstream
                     "answers": Value("string"),
 
                 }),
@@ -160,6 +161,19 @@ class Gaokao2019NP2(datalabs.GeneratorBasedBuilder):
                 hint_column="hint",
                 question_column="question_mark",
                 answers_column="answers")],
+=======
+                    "answers": Sequence(Value("string")),
+                }
+            ),
+            task_templates=[
+                get_task(TaskType.cloze_generative)(
+                    context_column="context",
+                    hint_column="hint",
+                    question_column="question_mark",
+                    answers_column="answers",
+                )
+            ],
+>>>>>>> Stashed changes
         ),
         Gaokao2019NP2Config(
             name="reading-multiple-choice",
