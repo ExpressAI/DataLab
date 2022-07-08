@@ -158,7 +158,7 @@ class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
                     "context": Value("string"),
                     "hint": Value("string"),
                     "question_mark": Value("string"),
-                    "answers": Sequence(Value("string")),
+                    "answers": Sequence(Value("string"))
                 }
             ),
             task_templates=[

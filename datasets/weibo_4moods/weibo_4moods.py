@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import csv
+import json
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -34,49 +34,75 @@ _LICENSE = "N/A"
 
 _HOMEPAGE = "https://github.com/SophonPlus/ChineseNlpCorpus"
 
-_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/weibo_4moods/weibo_4moods.csv"
+_TRAIN_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/weibo_4moods/train_revised.json"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/weibo_4moods/validation_revised.json"
+)
+_TEST_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/weibo_4moods/test_revised.json"
+)
+
+class Weibo4MoodsConfig(datalabs.BuilderConfig):
+    
+    def __init__(self, **kwargs):
+
+        super(Weibo4MoodsConfig, self).__init__(**kwargs)
 
 class Weibo4Moods(datalabs.GeneratorBasedBuilder):
+
+    BUILDER_CONFIGS = [
+        Weibo4MoodsConfig(
+            name="emotion_classification",
+            version=datalabs.Version("1.0.0"),
+            description="emotion_classification",
+        ),
+    ]
+
     def _info(self):
-        
+
         return datalabs.DatasetInfo(
-
             description=_DESCRIPTION,
-
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["joy", "anger","disgust","depression"]),
+                    "label": datalabs.features.ClassLabel(
+                        names=["joy", "anger", "disgust", "depression"]
+                    ),
                 }
             ),
             homepage=_HOMEPAGE,
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.emotion_classification)(
-                text_column="text",
-                label_column="label")],
+            task_templates=[
+                get_task(TaskType.emotion_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
-        train_path = dl_manager.download_and_extract(_URL)
+        train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
+        valid_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+
         print(f"train_path: \t{train_path}")
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": valid_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
         
-        textualize_label = {
-            "0": "joy",
-            "1": "anger",
-            "2": "disgust",
-            "3": "depression"
-        }
-
-        with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            for id_, row in enumerate(csv_reader):
-                label, text = row
-                if label == ("0" or "1" or "2" or "3") :
-                    label = textualize_label.get(label)
-                    yield id_, {"text": text, "label": label}
+        with open(filepath, encoding="utf-8") as f:
+            for id_, line in enumerate(f.readlines()):
+                line = json.loads(line.strip())
+                yield id_, {"text": line["text"], "label": line["label"]}

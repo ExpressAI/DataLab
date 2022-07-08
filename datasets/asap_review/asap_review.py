@@ -1,19 +1,16 @@
 import json
 import os
-import datalabs
-from datalabs import get_task, TaskType
-from tqdm import tqdm
 
 # the following package are needed when more additional features are expected to be calculated
 from featurize.summarization import (
     get_features_sample_level_asap,
     get_schema_of_sample_level_features_asap,
-    )
-from datalabs.utils.more_features import (
-    get_feature_schemas,
 )
+from tqdm import tqdm
 
-
+import datalabs
+from datalabs import get_task, TaskType
+from datalabs.utils.more_features import get_feature_schemas
 
 _DESCRIPTION = """
  A peer review dataset with more fine-grained aspect annotation (summary, motivation, originality, soundness, 
@@ -34,37 +31,44 @@ _CITATION = """\
 """
 
 _TRAIN_DOWNLOAD_URL = "https://datalab-hub.s3.amazonaws.com/asap_review/new_train.jsonl"
-_VALIDATION_DOWNLOAD_URL = "https://datalab-hub.s3.amazonaws.com/asap_review/new_validation.jsonl"
+_VALIDATION_DOWNLOAD_URL = (
+    "https://datalab-hub.s3.amazonaws.com/asap_review/new_validation.jsonl"
+)
 _TEST_DOWNLOAD_URL = "https://datalab-hub.s3.amazonaws.com/asap_review/new_test.jsonl"
 
 
 class ASAPReviewDataset(datalabs.GeneratorBasedBuilder):
-    """ ASAP-Review Dataset. """
+    """ASAP-Review Dataset."""
 
     def _info(self):
         features_dataset = {}
         features_sample = datalabs.Features(
-                {
-                    "paper_id": datalabs.Value("string"),
-                    "title": datalabs.Value("string"),
-                    "abstract": datalabs.Value("string"),
-                    "content": datalabs.Sequence({
+            {
+                "paper_id": datalabs.Value("string"),
+                "title": datalabs.Value("string"),
+                "abstract": datalabs.Value("string"),
+                "content": datalabs.Sequence(
+                    {
                         "heading": datalabs.Value("string"),
-                        "text": datalabs.Value("string")
-                    }),
-                    "aspects": datalabs.Sequence({
+                        "text": datalabs.Value("string"),
+                    }
+                ),
+                "aspects": datalabs.Sequence(
+                    {
                         "start_idx": datalabs.Value("int32"),
                         "end_idx": datalabs.Value("int32"),
-                        "aspect": datalabs.Value("string")
-                    }),
-                    "review": datalabs.Value("string"),
-                    "text": datalabs.Value("string")
-                }
-            )
+                        "aspect": datalabs.Value("string"),
+                    }
+                ),
+                "review": datalabs.Value("string"),
+                "text": datalabs.Value("string"),
+            }
+        )
 
         if self.feature_expanding:
-            features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                    get_schema_of_sample_level_features_asap)
+            features_sample, features_dataset = get_feature_schemas(
+                features_sample, get_schema_of_sample_level_features_asap
+            )
 
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
@@ -74,7 +78,11 @@ class ASAPReviewDataset(datalabs.GeneratorBasedBuilder):
             languages=["en"],
             homepage="https://github.com/neulab/ReviewAdvisor",
             citation=_CITATION,
-            task_templates=[get_task(TaskType.summarization)(source_column="text", reference_column="review")]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column="text", reference_column="review"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -111,14 +119,23 @@ class ASAPReviewDataset(datalabs.GeneratorBasedBuilder):
                 review = data["review"]
                 text = data["text"]
 
-                raw_feature_info = {"paper_id": paper_id, "title": title, "abstract": abstract, "content": content,
-                            "aspects": aspects, "review": review, "text": text}
+                raw_feature_info = {
+                    "paper_id": paper_id,
+                    "title": title,
+                    "abstract": abstract,
+                    "content": content,
+                    "aspects": aspects,
+                    "review": review,
+                    "text": text,
+                }
 
                 if not self.feature_expanding:
                     yield id_, raw_feature_info
 
                 else:
-                    additional_feature_info = get_features_sample_level_asap(raw_feature_info)
+                    additional_feature_info = get_features_sample_level_asap(
+                        raw_feature_info
+                    )
                     raw_feature_info.update(additional_feature_info)
                     # print(additional_feature_info)
                     yield id_, raw_feature_info

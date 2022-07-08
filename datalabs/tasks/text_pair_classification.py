@@ -64,6 +64,15 @@ class ParaphraseIdentification(TextPairClassification):
     label_column: str = "label"
 
 
+@register_task(TaskType.text_similarity)
+@dataclass
+class TextSimilarity(TextPairClassification):
+    task: TaskType = TaskType.text_similarity
+    text1_column: str = "text1"
+    text2_column: str = "text2"
+    label_column: str = "label"
+
+
 @register_task(TaskType.keyword_recognition)
 @dataclass
 class KeywordRecognition(TextPairClassification):
@@ -81,3 +90,12 @@ class KeywordRecognition(TextPairClassification):
         }
     )
     label_schema: ClassVar[Features] = Features({"label": ClassLabel})
+
+
+@register_task(TaskType.question_answering_matching)
+@dataclass
+class QuestionAnsweringMatching(TextPairClassification):
+    task: TaskType = TaskType.question_answering_matching
+    text1_column: str = "text1"
+    text2_column: str = "text2"
+    label_column: str = "label"

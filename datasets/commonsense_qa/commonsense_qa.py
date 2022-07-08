@@ -12,10 +12,9 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
-
-
 
 # TODO(commonsense_qa): BibTeX citation
 _CITATION = """\
@@ -55,11 +54,10 @@ class CommonsenseQa(datalabs.GeneratorBasedBuilder):
                 "id": datalabs.Value("string"),
                 "question": datalabs.Value("string"),  # question -> question_stem
                 "options": datalabs.features.Sequence(datalabs.Value("string")),
-                "answers":  # answers -> answerKey
-                    {
-                        "text": datalabs.Value("string"),
-                        "option_index": datalabs.Value("int32"),
-                    },
+                "answers": {  # answers -> answerKey
+                    "text": datalabs.Value("string"),
+                    "option_index": datalabs.Value("int32"),
+                },
                 # "answerKey": datalabs.Value("string"),
                 # "question": datalabs.Value("string"),
                 # "choices": datalabs.features.Sequence(
@@ -84,10 +82,12 @@ class CommonsenseQa(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 get_task(TaskType.qa_multiple_choice_without_context)(
-                    question_column="question", answers_column="answers",
+                    question_column="question",
+                    answers_column="answers",
                     options_column="options",
                 )
             ],
+            languages=["en"],
         )
 
     def _split_generators(self, dl_manager):
@@ -99,7 +99,8 @@ class CommonsenseQa(datalabs.GeneratorBasedBuilder):
 
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"], "split": "train"}
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"filepath": downloaded_files["train"], "split": "train"},
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
@@ -120,7 +121,19 @@ class CommonsenseQa(datalabs.GeneratorBasedBuilder):
     def _generate_examples(self, filepath, split):
         """Yields examples."""
         # TODO(commonsense_qa): Yields (key, example) tuples from the dataset
-        dict_map = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4,"F": 5,"G": 6,"H": 7,"I": 8,"J": 9,"K": 10}
+        dict_map = {
+            "A": 0,
+            "B": 1,
+            "C": 2,
+            "D": 3,
+            "E": 4,
+            "F": 5,
+            "G": 6,
+            "H": 7,
+            "I": 8,
+            "J": 9,
+            "K": 10,
+        }
         id_sample = 0
         with open(filepath, encoding="utf-8") as f:
             for id_, row in enumerate(f):
@@ -133,7 +146,7 @@ class CommonsenseQa(datalabs.GeneratorBasedBuilder):
                 stem = question["stem"]
                 if split == "test":
                     option_index = -1
-                    answer_text = ''
+                    answer_text = ""
                 else:
                     option_index = dict_map[data["answerKey"]]
                     answer_text = options[option_index]
@@ -142,9 +155,8 @@ class CommonsenseQa(datalabs.GeneratorBasedBuilder):
                     "id": str(id_sample - 1),
                     "question": stem,
                     "options": options,
-                    "answers":  # answers -> answerKey
-                        {
-                            "text": answer_text,
-                            "option_index": option_index,
-                        },
+                    "answers": {  # answers -> answerKey
+                        "text": answer_text,
+                        "option_index": option_index,
+                    },
                 }

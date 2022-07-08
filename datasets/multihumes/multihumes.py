@@ -1,8 +1,9 @@
 """MultiHumES: Multilingual Humanitarian Response Dataset for Extractive Summarization"""
+import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
-import json
 
 _CITATION = """\
 @inproceedings{yela-bello-etal-2021-multihumes,
@@ -33,8 +34,10 @@ _HOMEPAGE = "https://deephelp.zendesk.com/hc/en-us/articles/360055330172-Overvie
 _ABSTRACT = "summary"
 _ARTICLE = "text"
 
+
 def _gdrive_url(id):
     return f"https://drive.google.com/uc?id={id}&export=download&confirm=t"
+
 
 class MultiHumESConfig(datalabs.BuilderConfig):
     """BuilderConfig for MultiHumES."""
@@ -50,18 +53,24 @@ class MultiHumESConfig(datalabs.BuilderConfig):
 
 class MultiHumESDataset(datalabs.GeneratorBasedBuilder):
     """MultiHumES Dataset."""
+
     _LANG = ["en", "es", "fr", "multilingual"]
     _FILE_ID = "1ALyhms8XWxuM-w56D9dk1MMMUpDvlGrI"
-    BUILDER_CONFIGS = list([
-        MultiHumESConfig(
-            name=l,
-            version=datalabs.Version("1.0.0"),
-            description=f"MultiHumES Dataset for multiligual summarization, {l} split",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
-        ) for l in ["en", "es", "fr", "multilingual"]
-    ])
+    BUILDER_CONFIGS = list(
+        [
+            MultiHumESConfig(
+                name=l,
+                version=datalabs.Version("1.0.0"),
+                description=f"MultiHumES Dataset for multiligual summarization, {l} split",
+                task_templates=[
+                    get_task(TaskType.summarization)(
+                        source_column=_ARTICLE, reference_column=_ABSTRACT
+                    )
+                ],
+            )
+            for l in ["en", "es", "fr", "multilingual"]
+        ]
+    )
     DEFAULT_CONFIG_NAME = "multilingual"
 
     def _info(self):
@@ -78,9 +87,10 @@ class MultiHumESDataset(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             version=self.VERSION,
             languages=[self.config.name],
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT),
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                ),
             ],
         )
 
@@ -100,31 +110,32 @@ class MultiHumESDataset(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={
-                    "src_path": train_src_path, 
+                    "src_path": train_src_path,
                     "tgt_path": train_tgt_path,
-                    }
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 gen_kwargs={
                     "src_path": val_src_path,
                     "tgt_path": val_tgt_path,
-                    }
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 gen_kwargs={
                     "src_path": test_src_path,
                     "tgt_path": test_tgt_path,
-                    }
+                },
             ),
         ]
 
     def _generate_examples(self, src_path, tgt_path):
         """Generate MultiHumES examples."""
-        with open(src_path, encoding="utf-8") as f_src, open(tgt_path, encoding="utf-8") as f_tgt:
+        with open(src_path, encoding="utf-8") as f_src, open(
+            tgt_path, encoding="utf-8"
+        ) as f_tgt:
             for (id_, (x, y)) in enumerate(zip(f_src, f_tgt)):
                 x = x.strip().replace("##SENT##", "")
                 y = y.strip().replace("##SENT##", "")
                 yield id_, {_ARTICLE: x, _ABSTRACT: y}
-                

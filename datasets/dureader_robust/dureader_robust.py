@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -46,80 +47,79 @@ _CITATION = """\
 
 _LICENSE = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_robust/License.pdf"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_robust/train.json"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_robust/dev.json"
-# _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_robust/test.json"
+_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_robust/train_revised.json"
+_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_robust/validation_revised.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/question_answering/dureader_robust/test_revised.json"
 
 _HOMEPAGE = "https://github.com/baidu/DuReader/tree/master/DuReader-Robust"
 
-class DuReaderRobustConfig(datalabs.BuilderConfig):
 
+class DuReaderRobustConfig(datalabs.BuilderConfig):
     def __init__(self, **kwargs):
 
         super(DuReaderRobustConfig, self).__init__(**kwargs)
+
 
 class DuReaderRobust(datalabs.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
         DuReaderRobustConfig(
-            name="Reading Comprehension",
+            name="reading_comprehension",
             version=datalabs.Version("1.0.0"),
-            description="Reading Comprehension",
+            description="reading_comprehension",
         ),
     ]
-    
+
     def _info(self):
 
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                    "question": datalabs.Value("string"), 
+                    "question": datalabs.Value("string"),
                     "context": datalabs.Value("string"),
                     "answers": {
-                        "text": datalabs.Value("string"),
-                        "answer_start": datalabs.Value("int32"),
+                        "text": datalabs.features.Sequence(datalabs.Value("string")),
+                        "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
                     }
                 }
             ),
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            languages = ["zh"],
+            languages=["zh"],
             task_templates=[
                 get_task(TaskType.qa)(
-                    question_column = "question",
-                    context_column = "context",
-                    answers_column = "answers",
+                    question_column="question",
+                    context_column="context",
+                    answers_column="answers",
                 )
             ],
         )
-
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-        # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
         ]
 
     def _generate_examples(self, filepath):
         """This function returns the examples."""
 
         with open(filepath, encoding="utf-8") as f:
-            file = json.load(f)
-            data = file["data"][0]["paragraphs"]
-            for id_, line in enumerate(data):
-                qas, context = line["qas"][0], line["context"]
-                question, answers = qas["question"], qas["answers"][0]
-                answer_text, answer_start = answers["text"], int(answers["answer_start"])
-                answers = {"text": answer_text, "answer_start": answer_start}
-                yield(id_, {"question": question, "context": context, "answers": answers})
+            for id_, line in enumerate(f.readlines()):
+                line = json.loads(line.strip())
+                yield(id_, {"question": line["question"], "context": line["context"], "answers": line["answers"]})
 
 
 

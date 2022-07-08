@@ -8,9 +8,8 @@ import textwrap
 
 import datalabs
 
-
 # TODO(xtreme): BibTeX citation
-from datalabs import TaskType, get_task
+from datalabs import get_task, TaskType
 
 _CITATION = """\
 @article{hu2020xtreme,
@@ -36,12 +35,66 @@ Niger-Congo languages Swahili and Yoruba, spoken in Africa.
 """
 
 # Dictionaries of languages should have ISO 639-3 first, then code used by dataset file
-_TYDIQA_LANG = {'ara': 'arabic', 'ben': 'bengali', 'eng': 'english', 'fin': 'finnish', 'ind': 'indonesian', 'kor': 'korean', 'rus': 'russian', 'swa': 'swahili', 'tel': 'telugu'}
-_XNLI_LANG = {'ara': 'ar', 'bul': 'bg', 'deu': 'de', 'ell': 'el', 'eng': 'en', 'spa': 'es', 'fra': 'fr', 'hin': 'hi', 'rus': 'ru', 'swa': 'sw', 'tha': 'th', 'tur': 'tr', 'urd': 'ur', 'vie': 'vi', 'cmn': 'zh'}
-_MLQA_LANG = {'ara': 'ar', 'deu': 'de', 'vie': 'vi', 'cmn': 'zh', 'eng': 'en', 'spa': 'es', 'hin': 'hi'}
-_XQUAD_LANG = {'ara': 'ar', 'deu': 'de', 'vie': 'vi', 'cmn': 'zh', 'eng': 'en', 'spa': 'es', 'hin': 'hi', 'ell': 'el', 'rus': 'ru', 'tha': 'th', 'tur': 'tr'}
-_PAWSX_LANG = {'deu': 'de', 'eng': 'en', 'spa': 'es', 'fra': 'fr', 'jpn': 'ja', 'kor': 'ko', 'cmn': 'zh'}
-_BUCC_LANG = {'deu': 'de', 'fra': 'fr', 'cmn': 'zh', 'rus': 'ru'}
+_TYDIQA_LANG = {
+    "ara": "arabic",
+    "ben": "bengali",
+    "eng": "english",
+    "fin": "finnish",
+    "ind": "indonesian",
+    "kor": "korean",
+    "rus": "russian",
+    "swa": "swahili",
+    "tel": "telugu",
+}
+_XNLI_LANG = {
+    "ara": "ar",
+    "bul": "bg",
+    "deu": "de",
+    "ell": "el",
+    "eng": "en",
+    "spa": "es",
+    "fra": "fr",
+    "hin": "hi",
+    "rus": "ru",
+    "swa": "sw",
+    "tha": "th",
+    "tur": "tr",
+    "urd": "ur",
+    "vie": "vi",
+    "cmn": "zh",
+}
+_MLQA_LANG = {
+    "ara": "ar",
+    "deu": "de",
+    "vie": "vi",
+    "cmn": "zh",
+    "eng": "en",
+    "spa": "es",
+    "hin": "hi",
+}
+_XQUAD_LANG = {
+    "ara": "ar",
+    "deu": "de",
+    "vie": "vi",
+    "cmn": "zh",
+    "eng": "en",
+    "spa": "es",
+    "hin": "hi",
+    "ell": "el",
+    "rus": "ru",
+    "tha": "th",
+    "tur": "tr",
+}
+_PAWSX_LANG = {
+    "deu": "de",
+    "eng": "en",
+    "spa": "es",
+    "fra": "fr",
+    "jpn": "ja",
+    "kor": "ko",
+    "cmn": "zh",
+}
+_BUCC_LANG = {"deu": "de", "fra": "fr", "cmn": "zh", "rus": "ru"}
 _TATOEBA_LANG = [
     "afr",
     "ara",
@@ -116,9 +169,50 @@ _UD_POS_LANG = {
     "vie": "Vietnamese",
     "yor": "Yoruba",
 }
-_PAN_X_LANG = {'afr': 'af', 'ara': 'ar', 'bul': 'bg', 'ben': 'bn', 'deu': 'de', 'ell': 'el', 'eng': 'en', 'spa': 'es', 'est': 'et', 'eus': 'eu', 'fas': 'fa', 'fin': 'fi', 'fra': 'fr', 'heb': 'he', 'hin': 'hi', 'hun': 'hu', 'ind': 'id', 'ita': 'it', 'jpn': 'ja', 'jav': 'jv', 'kat': 'ka', 'kaz': 'kk', 'kor': 'ko', 'mal': 'ml', 'mar': 'mr', 'msa': 'ms', 'mya': 'my', 'nld': 'nl', 'por': 'pt', 'rus': 'ru', 'swa': 'sw', 'tam': 'ta', 'tel': 'te', 'tha': 'th', 'tgl': 'tl', 'tur': 'tr', 'urd': 'ur', 'vie': 'vi', 'yor': 'yo', 'cmn': 'zh'}
+_PAN_X_LANG = {
+    "afr": "af",
+    "ara": "ar",
+    "bul": "bg",
+    "ben": "bn",
+    "deu": "de",
+    "ell": "el",
+    "eng": "en",
+    "spa": "es",
+    "est": "et",
+    "eus": "eu",
+    "fas": "fa",
+    "fin": "fi",
+    "fra": "fr",
+    "heb": "he",
+    "hin": "hi",
+    "hun": "hu",
+    "ind": "id",
+    "ita": "it",
+    "jpn": "ja",
+    "jav": "jv",
+    "kat": "ka",
+    "kaz": "kk",
+    "kor": "ko",
+    "mal": "ml",
+    "mar": "mr",
+    "msa": "ms",
+    "mya": "my",
+    "nld": "nl",
+    "por": "pt",
+    "rus": "ru",
+    "swa": "sw",
+    "tam": "ta",
+    "tel": "te",
+    "tha": "th",
+    "tgl": "tl",
+    "tur": "tr",
+    "urd": "ur",
+    "vie": "vi",
+    "yor": "yo",
+    "cmn": "zh",
+}
 
-_NAMES = ['SQuAD.eng']
+_NAMES = ["SQuAD.eng"]
 for lang3 in _TYDIQA_LANG.keys():
     _NAMES.append(f"tydiqa.{lang3}")
 for lang3 in _XNLI_LANG.keys():
@@ -289,22 +383,26 @@ _CITATIONS = {
             year={2018}
           }"""
     ),
-    "bucc18": textwrap.dedent("""\
+    "bucc18": textwrap.dedent(
+        """\
         @inproceedings{zweigenbaum2018overview,
           title={Overview of the third BUCC shared task: Spotting parallel sentences in comparable corpora},
           author={Zweigenbaum, Pierre and Sharoff, Serge and Rapp, Reinhard},
           booktitle={Proceedings of 11th Workshop on Building and Using Comparable Corpora},
           pages={39--42},
           year={2018}
-        }"""),
-    "udpos": textwrap.dedent("""\
+        }"""
+    ),
+    "udpos": textwrap.dedent(
+        """\
         @inproceedings{nivre2016universal,
           title={Universal dependencies v1: A multilingual treebank collection},
           author={Nivre, Joakim and De Marneffe, Marie-Catherine and Ginter, Filip and Goldberg, Yoav and Hajic, Jan and Manning, Christopher D and McDonald, Ryan and Petrov, Slav and Pyysalo, Sampo and Silveira, Natalia and others},
           booktitle={Proceedings of the Tenth International Conference on Language Resources and Evaluation (LREC'16)},
           pages={1659--1666},
           year={2016}
-        }"""),
+        }"""
+    ),
     "SQuAD": textwrap.dedent(
         """\
         @article{2016arXiv160605250R,
@@ -418,7 +516,9 @@ class XtremeConfig(datalabs.BuilderConfig):
             label_classes
             **kwargs: keyword arguments forwarded to super.
         """
-        super(XtremeConfig, self).__init__(version=datalabs.Version("1.0.0", ""), **kwargs)
+        super(XtremeConfig, self).__init__(
+            version=datalabs.Version("1.0.0", ""), **kwargs
+        )
         self.text_features = text_features
         self.data_url = data_url
         self.citation = citation
@@ -443,7 +543,10 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
     ]
 
     def _info(self):
-        features = {text_feature: datalabs.Value("string") for text_feature in self.config.text_features.keys()}
+        features = {
+            text_feature: datalabs.Value("string")
+            for text_feature in self.config.text_features.keys()
+        }
         languages = self.config.name.split(".")[1:]
         if "answers" in features.keys():
             features["answers"] = datalabs.features.Sequence(
@@ -455,14 +558,12 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
             task_template = get_task(TaskType.qa_extractive)(
                 question_column="question",
                 context_column="context",
-                answers_column="answers"
+                answers_column="answers",
             )
         if self.config.name.startswith("PAWS-X"):
             features = PawsxParser.features
             task_template = get_task(TaskType.paraphrase_identification)(
-                text1_column="sentence1",
-                text2_column="sentence2",
-                label_column="label"
+                text1_column="sentence1", text2_column="sentence2", label_column="label"
             )
         elif self.config.name.startswith("XNLI"):
             features["gold_label"] = datalabs.features.ClassLabel(
@@ -475,7 +576,7 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
             task_template = get_task(TaskType.natural_language_inference)(
                 text1_column="sentence1",
                 text2_column="sentence2",
-                label_column="gold_label"
+                label_column="gold_label",
             )
         elif self.config.name.startswith("udpos"):
             features = UdposParser.features
@@ -489,8 +590,10 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                 tokens_column="tokens",
                 tags_column="tags",
             )
-        elif self.config.name.startswith("bucc18") or self.config.name.startswith('tatoeba'):
-            features["answers"] = [features.pop('target_sentence')]
+        elif self.config.name.startswith("bucc18") or self.config.name.startswith(
+            "tatoeba"
+        ):
+            features["answers"] = [features.pop("target_sentence")]
             task_template = get_task(TaskType.retrieval)(
                 query_column="source_sentence",
                 answers_column="answers",
@@ -505,7 +608,9 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
             # builder.as_dataset.
             supervised_keys=None,
             # Homepage of the dataset for documentation
-            homepage="https://github.com/google-research/xtreme" + "\t" + self.config.url,
+            homepage="https://github.com/google-research/xtreme"
+            + "\t"
+            + self.config.url,
             citation=self.config.citation + "\n" + _CITATION,
             languages=languages,
             task_templates=[task_template],
@@ -548,7 +653,9 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
             ]
 
         if self.config.name.startswith("MLQA"):
-            mlqa_downloaded_files = dl_manager.download_and_extract(self.config.data_url)
+            mlqa_downloaded_files = dl_manager.download_and_extract(
+                self.config.data_url
+            )
             lang3 = self.config.name.split(".")[-1]
             lang2 = _MLQA_LANG[lang3]
             return [
@@ -577,7 +684,9 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
         if self.config.name.startswith("XQuAD"):
             lang3 = self.config.name.split(".")[1]
             lang2 = _XQUAD_LANG[lang3]
-            xquad_downloaded_file = dl_manager.download_and_extract(self.config.data_url + f"xquad.{lang2}.json")
+            xquad_downloaded_file = dl_manager.download_and_extract(
+                self.config.data_url + f"xquad.{lang2}.json"
+            )
             return [
                 datalabs.SplitGenerator(
                     name=datalabs.Split.VALIDATION,
@@ -586,12 +695,18 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                 ),
             ]
         if self.config.name.startswith("PAWS-X"):
-            return PawsxParser.split_generators(dl_manager=dl_manager, config=self.config)
+            return PawsxParser.split_generators(
+                dl_manager=dl_manager, config=self.config
+            )
         elif self.config.name.startswith("tatoeba"):
             lang3 = self.config.name.split(".")[1]
 
-            tatoeba_source_data = dl_manager.download_and_extract(self.config.data_url + f"tatoeba.{lang3}-eng.{lang3}")
-            tatoeba_eng_data = dl_manager.download_and_extract(self.config.data_url + f"tatoeba.{lang3}-eng.eng")
+            tatoeba_source_data = dl_manager.download_and_extract(
+                self.config.data_url + f"tatoeba.{lang3}-eng.{lang3}"
+            )
+            tatoeba_eng_data = dl_manager.download_and_extract(
+                self.config.data_url + f"tatoeba.{lang3}-eng.eng"
+            )
             return [
                 datalabs.SplitGenerator(
                     name=datalabs.Split.VALIDATION,
@@ -611,15 +726,21 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
             return [
                 datalabs.SplitGenerator(
                     name=datalabs.Split.VALIDATION,
-                    gen_kwargs={"filepath": dl_manager.iter_archive(bucc18_dl_dev_archive)},
+                    gen_kwargs={
+                        "filepath": dl_manager.iter_archive(bucc18_dl_dev_archive)
+                    },
                 ),
                 datalabs.SplitGenerator(
                     name=datalabs.Split.TEST,
-                    gen_kwargs={"filepath": dl_manager.iter_archive(bucc18_dl_test_archive)},
+                    gen_kwargs={
+                        "filepath": dl_manager.iter_archive(bucc18_dl_test_archive)
+                    },
                 ),
             ]
         if self.config.name.startswith("udpos"):
-            return UdposParser.split_generators(dl_manager=dl_manager, config=self.config)
+            return UdposParser.split_generators(
+                dl_manager=dl_manager, config=self.config
+            )
 
         if self.config.name.startswith("SQuAD"):
 
@@ -641,7 +762,9 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
             ]
 
         if self.config.name.startswith("PAN-X"):
-            return PanxParser.split_generators(dl_manager=dl_manager, config=self.config)
+            return PanxParser.split_generators(
+                dl_manager=dl_manager, config=self.config
+            )
 
     def _generate_examples(self, filepath=None, **kwargs):
         """Yields examples."""
@@ -658,8 +781,12 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                             question = qa["question"].strip()
                             id_ = qa["id"]
 
-                            answer_starts = [answer["answer_start"] for answer in qa["answers"]]
-                            answers = [answer["text"].strip() for answer in qa["answers"]]
+                            answer_starts = [
+                                answer["answer_start"] for answer in qa["answers"]
+                            ]
+                            answers = [
+                                answer["text"].strip() for answer in qa["answers"]
+                            ]
 
                             # Features currently used are "context", "question", and "answers".
                             # Others are extracted here for the ease of future expansions.
@@ -674,7 +801,7 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                                 },
                             }
         elif self.config.name.startswith("tydiqa"):
-            lang3 = self.config.name.split('.')[-1]
+            lang3 = self.config.name.split(".")[-1]
             langfull = _TYDIQA_LANG[lang3]
             with open(filepath, encoding="utf-8") as f:
                 data = json.load(f)
@@ -684,12 +811,16 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                         context = paragraph["context"].strip()
                         for qa in paragraph["qas"]:
                             id_ = qa["id"]
-                            examp_langfull = id_.split('-')[0]
+                            examp_langfull = id_.split("-")[0]
                             if examp_langfull == langfull:
                                 question = qa["question"].strip()
 
-                                answer_starts = [answer["answer_start"] for answer in qa["answers"]]
-                                answers = [answer["text"].strip() for answer in qa["answers"]]
+                                answer_starts = [
+                                    answer["answer_start"] for answer in qa["answers"]
+                                ]
+                                answers = [
+                                    answer["text"].strip() for answer in qa["answers"]
+                                ]
 
                                 # Features currently used are "context", "question", and "answers".
                                 # Others are extracted here for the ease of future expansions.
@@ -704,7 +835,7 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                                     },
                                 }
         elif self.config.name.startswith("XNLI"):
-            lang3 = self.config.name.split('.')[-1]
+            lang3 = self.config.name.split(".")[-1]
             lang2 = _XNLI_LANG[lang3]
             with open(filepath, encoding="utf-8") as f:
                 data = csv.DictReader(f, delimiter="\t")
@@ -717,7 +848,9 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                             "gold_label": row["gold_label"],
                         }
         elif self.config.name.startswith("PAWS-X"):
-            yield from PawsxParser.generate_examples(config=self.config, filepath=filepath, **kwargs)
+            yield from PawsxParser.generate_examples(
+                config=self.config, filepath=filepath, **kwargs
+            )
         elif self.config.name.startswith("XQuAD"):
             with open(filepath, encoding="utf-8") as f:
                 xquad = json.load(f)
@@ -728,8 +861,12 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                             question = qa["question"].strip()
                             id_ = qa["id"]
 
-                            answer_starts = [answer["answer_start"] for answer in qa["answers"]]
-                            answers = [answer["text"].strip() for answer in qa["answers"]]
+                            answer_starts = [
+                                answer["answer_start"] for answer in qa["answers"]
+                            ]
+                            answers = [
+                                answer["text"].strip() for answer in qa["answers"]
+                            ]
 
                             # Features currently used are "context", "question", and "answers".
                             # Others are extracted here for the ease of future expansions.
@@ -746,25 +883,31 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
             lang3 = self.config.name.split(".")[1]
             lang2 = _BUCC_LANG[lang3]
             lang2to3 = {v: k for k, v in _BUCC_LANG.items()}
-            lang2to3['en'] = 'eng'
+            lang2to3["en"] = "eng"
             data_dir = f"bucc2018/{lang2}-en"
             for path, file in filepath:
                 if path.startswith(data_dir):
                     csv_content = [line.decode("utf-8") for line in file]
                     if path.endswith("en"):
-                        target_id_map = {k: v for k, v in csv.reader(csv_content, delimiter="\t")}
+                        target_id_map = {
+                            k: v for k, v in csv.reader(csv_content, delimiter="\t")
+                        }
                     elif path.endswith("gold"):
-                        source_target_ids = list(csv.reader(csv_content, delimiter="\t"))
+                        source_target_ids = list(
+                            csv.reader(csv_content, delimiter="\t")
+                        )
                     else:
-                        source_id_map = {k: v for k, v in csv.reader(csv_content, delimiter="\t")}
+                        source_id_map = {
+                            k: v for k, v in csv.reader(csv_content, delimiter="\t")
+                        }
             for id_, pair in enumerate(source_target_ids):
                 source_sent = source_id_map.get(pair[0])
                 target_sent = target_id_map.get(pair[1])
                 yield id_, {
                     "source_sentence": source_sent,
                     "answers": [target_sent],
-                    "source_lang": lang2to3[pair[0].split('-')[0]],
-                    "target_lang": lang2to3[pair[1].split('-')[0]],
+                    "source_lang": lang2to3[pair[0].split("-")[0]],
+                    "target_lang": lang2to3[pair[1].split("-")[0]],
                 }
         elif self.config.name.startswith("tatoeba"):
             source_file = filepath[0]
@@ -785,7 +928,9 @@ class Xtreme(datalabs.GeneratorBasedBuilder):
                     "target_lang": "eng",
                 }
         elif self.config.name.startswith("udpos"):
-            yield from UdposParser.generate_examples(config=self.config, filepath=filepath, **kwargs)
+            yield from UdposParser.generate_examples(
+                config=self.config, filepath=filepath, **kwargs
+            )
         elif self.config.name.startswith("PAN-X"):
             yield from PanxParser.generate_examples(filepath=filepath, **kwargs)
         else:
@@ -885,11 +1030,11 @@ class PawsxParser:
             "sentence1": datalabs.Value("string"),
             "sentence2": datalabs.Value("string"),
             "label": datalabs.features.ClassLabel(
-                    names=[
-                        "0",
-                        "1",
-                    ]
-                )
+                names=[
+                    "0",
+                    "1",
+                ]
+            ),
         }
     )
 
@@ -898,14 +1043,19 @@ class PawsxParser:
         lang3 = config.name.split(".")[1]
         archive = dl_manager.download(config.data_url)
         split_filenames = {
-            datalabs.Split.TRAIN: "translated_train.tsv" if lang3 != "eng" else "train.tsv",
+            datalabs.Split.TRAIN: "translated_train.tsv"
+            if lang3 != "eng"
+            else "train.tsv",
             datalabs.Split.VALIDATION: "dev_2k.tsv",
             datalabs.Split.TEST: "test_2k.tsv",
         }
         return [
             datalabs.SplitGenerator(
                 name=split,
-                gen_kwargs={"filepath": dl_manager.iter_archive(archive), "filename": split_filenames[split]},
+                gen_kwargs={
+                    "filepath": dl_manager.iter_archive(archive),
+                    "filename": split_filenames[split],
+                },
             )
             for split in split_filenames
         ]
@@ -916,11 +1066,11 @@ class PawsxParser:
         lang2 = _PAWSX_LANG[lang3]
         for path, file in filepath:
             if f"/{lang2}/" in path and path.endswith(filename):
-                lines = (line.decode("utf-8").replace('\\t', '\t') for line in file)
+                lines = (line.decode("utf-8").replace("\\t", "\t") for line in file)
                 # skip header
                 next(lines)
                 for id_, line in enumerate(lines):
-                    row = line.split('\t')
+                    row = line.split("\t")
                     if len(row) == 4:
                         yield id_, {
                             "id": int(row[0]),
@@ -929,7 +1079,7 @@ class PawsxParser:
                             "label": row[3],
                         }
                     else:
-                        raise ValueError(f'Invalid row: {row}')
+                        raise ValueError(f"Invalid row: {row}")
 
 
 class UdposParser:
@@ -966,7 +1116,11 @@ class UdposParser:
     @staticmethod
     def split_generators(dl_manager=None, config=None):
         archive = dl_manager.download(config.data_url)
-        split_names = {datalabs.Split.TRAIN: "train", datalabs.Split.VALIDATION: "dev", datalabs.Split.TEST: "test"}
+        split_names = {
+            datalabs.Split.TRAIN: "train",
+            datalabs.Split.VALIDATION: "dev",
+            datalabs.Split.TEST: "test",
+        }
         split_generators = {
             split: datalabs.SplitGenerator(
                 name=split,
@@ -984,7 +1138,11 @@ class UdposParser:
         elif lang3 == "kaz":
             return [split_generators["train"], split_generators["test"]]
         else:
-            return [split_generators["train"], split_generators["validation"], split_generators["test"]]
+            return [
+                split_generators["train"],
+                split_generators["validation"],
+                split_generators["test"],
+            ]
 
     @staticmethod
     def generate_examples(config=None, filepath=None, split=None):

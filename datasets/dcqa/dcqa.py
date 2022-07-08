@@ -18,9 +18,9 @@
 
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
-
 
 logger = datalabs.logging.get_logger(__name__)
 
@@ -50,7 +50,7 @@ the discourse structure of articles.
 _URLS = {
     "train": "https://drive.google.com/uc?export=download&id=1uKKMg9KItYR8jSZFUwqz7UIwy8pHyr2W",
     "dev": "https://drive.google.com/uc?export=download&id=1JX8pdQJaDqwzK7fzNs9mM9UY09be29ci",
-    "test": "https://drive.google.com/uc?export=download&id=1lDWCWzArAM0tJ5EJdx-nJtHtp-29869E"
+    "test": "https://drive.google.com/uc?export=download&id=1lDWCWzArAM0tJ5EJdx-nJtHtp-29869E",
 }
 
 
@@ -85,15 +85,17 @@ class Dcqa(datalabs.GeneratorBasedBuilder):
                     "id": datalabs.Value("string"),
                     "question": datalabs.Value("string"),
                     "context": {
-                        "SentenceID": datalabs.features.Sequence(datalabs.Value("int32")),
-                        "text": datalabs.features.Sequence(datalabs.Value("string"))
+                        "SentenceID": datalabs.features.Sequence(
+                            datalabs.Value("int32")
+                        ),
+                        "text": datalabs.features.Sequence(datalabs.Value("string")),
                     },
                     "answer": {
                         "SentenceID": datalabs.Value("int32"),
-                        "text": datalabs.Value("string")
+                        "text": datalabs.Value("string"),
                     },
                     "AnchorSentenceID": datalabs.Value("int32"),
-                    "QuestionID": datalabs.Value("string")
+                    "QuestionID": datalabs.Value("string"),
                 }
             ),
             # No default supervised_keys (as we have to pass both question
@@ -101,18 +103,25 @@ class Dcqa(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://github.com/wjko2/DCQA-Discourse-Comprehension-by-Question-Answering",
             citation=_CITATION,
-            task_templates=[
-                get_task(TaskType.qa_dcqa)()
-            ],
+            task_templates=[get_task(TaskType.qa_dcqa)()],
         )
 
     def _split_generators(self, dl_manager):
         downloaded_files = dl_manager.download_and_extract(_URLS)
 
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": downloaded_files["train"]}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": downloaded_files["dev"]}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": downloaded_files["test"]}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"filepath": downloaded_files["train"]},
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"filepath": downloaded_files["dev"]},
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
+                gen_kwargs={"filepath": downloaded_files["test"]},
+            ),
         ]
 
     def _generate_examples(self, filepath):
@@ -130,11 +139,11 @@ class Dcqa(datalabs.GeneratorBasedBuilder):
                 QuestionID = data["QuestionID"]
 
                 yield key, {
-                    "id": str(id_sample+1),
+                    "id": str(id_sample + 1),
                     "question": question,
                     "context": context,
                     "answer": answer,
                     "AnchorSentenceID": AnchorSentenceID,
                     "QuestionID": QuestionID,
                 }
-                key +=1
+                key += 1

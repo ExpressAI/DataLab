@@ -1,10 +1,9 @@
 """PeerSum: A Peer Review Dataset for Abstractive Multi-document Summarization."""
-import os
 import json
+import os
+
 import datalabs
 from datalabs import get_task, TaskType
-
-
 
 _CITATION = """\
 @article{Li2022PeerSumAP,
@@ -47,6 +46,7 @@ class PeerSumConfig(datalabs.BuilderConfig):
 
 class PeerSumDataset(datalabs.GeneratorBasedBuilder):
     """PeerSum Dataset."""
+
     _FILE_ID = "13et-nzcHrNg5sZRZs_mP2l32wQ0WBBbT"
 
     BUILDER_CONFIGS = [
@@ -54,18 +54,22 @@ class PeerSumDataset(datalabs.GeneratorBasedBuilder):
             name="document",
             version=datalabs.Version("2.0.0"),
             description="A peer review dataset for abstractive multi-document summarization, single document version.",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         ),
         PeerSumConfig(
             name="dialogue",
             version=datalabs.Version("2.0.0"),
             description="A peer review dataset for abstractive multi-document summarization, multi-document document version.",
-            task_templates=[get_task(TaskType.dialog_summarization)(
-                source_column="dialogue",
-                reference_column=_ABSTRACT)]
-        )
+            task_templates=[
+                get_task(TaskType.dialog_summarization)(
+                    source_column="dialogue", reference_column=_ABSTRACT
+                )
+            ],
+        ),
     ]
     DEFAULT_CONFIG_NAME = "document"
 
@@ -83,10 +87,14 @@ class PeerSumDataset(datalabs.GeneratorBasedBuilder):
         elif self.config.name == "dialogue":
             features_sample = datalabs.Features(
                 {
-                    "dialogue": datalabs.Sequence(datalabs.Features({
-                        "speaker": datalabs.Value("string"),
-                        "text": datalabs.Value("string")
-                    })),
+                    "dialogue": datalabs.Sequence(
+                        datalabs.Features(
+                            {
+                                "speaker": datalabs.Value("string"),
+                                "text": datalabs.Value("string"),
+                            }
+                        )
+                    ),
                     _ABSTRACT: datalabs.Value("string"),
                 }
             )
@@ -107,10 +115,12 @@ class PeerSumDataset(datalabs.GeneratorBasedBuilder):
 
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"f_path": f_path, "split": "train"}
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"f_path": f_path, "split": "train"},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION, gen_kwargs={"f_path": f_path, "split": "val"}
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"f_path": f_path, "split": "val"},
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST, gen_kwargs={"f_path": f_path, "split": "test"}
@@ -145,10 +155,7 @@ class PeerSumDataset(datalabs.GeneratorBasedBuilder):
                 for speaker, text in zip(speakers, texts):
                     input = input + speaker + " : " + text + " "
 
-                raw_feature_info = {
-                    _ARTICLE: input,
-                    _ABSTRACT: summary
-                }
+                raw_feature_info = {_ARTICLE: input, _ABSTRACT: summary}
 
                 yield id_, raw_feature_info
 
@@ -158,8 +165,5 @@ class PeerSumDataset(datalabs.GeneratorBasedBuilder):
                 for speaker, text in zip(speakers, texts):
                     dialogue.append({"speaker": speaker, "text": text})
 
-                raw_feature_info = {
-                    "dialogue": dialogue,
-                    _ABSTRACT: summary
-                }
+                raw_feature_info = {"dialogue": dialogue, _ABSTRACT: summary}
                 yield id_, raw_feature_info

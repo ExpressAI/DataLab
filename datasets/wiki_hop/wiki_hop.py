@@ -17,10 +17,9 @@
 
 import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
-
-
 
 _CITATION = """\
 @misc{welbl2018constructing,
@@ -66,7 +65,10 @@ class WikiHop(datalabs.GeneratorBasedBuilder):
             masked=False,
         ),
         WikiHopConfig(
-            name="masked", version=datalabs.Version("1.0.0"), description="Masked WikiHop dataset", masked=True
+            name="masked",
+            version=datalabs.Version("1.0.0"),
+            description="Masked WikiHop dataset",
+            masked=True,
         ),
     ]
     BUILDER_CONFIG_CLASS = WikiHopConfig
@@ -80,15 +82,18 @@ class WikiHop(datalabs.GeneratorBasedBuilder):
                     "id": datalabs.Value("string"),
                     "question": datalabs.Value("string"),
                     # "answer": datalabs.Value("string"),
-                    "answers": # answers -> answer
-                        {
-                            "text": datalabs.features.Sequence(datalabs.Value("string")),
-                            "answer_start": datalabs.features.Sequence(datalabs.Value("int32")),
-                        },
+                    "answers": {  # answers -> answer
+                        "text": datalabs.features.Sequence(datalabs.Value("string")),
+                        "answer_start": datalabs.features.Sequence(
+                            datalabs.Value("int32")
+                        ),
+                    },
                     "candidates": datalabs.Sequence(datalabs.Value("string")),
                     # "supports": datalabs.Sequence(datalabs.Value("string")), # context->supports
                     "context": datalabs.Value("string"),
-                    "annotations": datalabs.Sequence(datalabs.Sequence(datalabs.Value("string"))),
+                    "annotations": datalabs.Sequence(
+                        datalabs.Sequence(datalabs.Value("string"))
+                    ),
                 }
             ),
             supervised_keys=None,
@@ -98,7 +103,7 @@ class WikiHop(datalabs.GeneratorBasedBuilder):
                 get_task(TaskType.qa_extractive)(
                     question_column="question",
                     context_column="context",
-                    answers_column="answers"
+                    answers_column="answers",
                 )
             ],
         )
@@ -107,17 +112,25 @@ class WikiHop(datalabs.GeneratorBasedBuilder):
         extracted_path = dl_manager.download_and_extract(_URL)
 
         wikihop_path = os.path.join(extracted_path, "qangaroo_v1.1", "wikihop")
-        train_file = "train.json" if self.config.name == "original" else "train.masked.json"
+        train_file = (
+            "train.json" if self.config.name == "original" else "train.masked.json"
+        )
         dev_file = "dev.json" if self.config.name == "original" else "dev.masked.json"
 
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
-                gen_kwargs={"filepath": os.path.join(wikihop_path, train_file), "split": "train"},
+                gen_kwargs={
+                    "filepath": os.path.join(wikihop_path, train_file),
+                    "split": "train",
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
-                gen_kwargs={"filepath": os.path.join(wikihop_path, dev_file), "split": "dev"},
+                gen_kwargs={
+                    "filepath": os.path.join(wikihop_path, dev_file),
+                    "split": "dev",
+                },
             ),
         ]
 
@@ -131,13 +144,13 @@ class WikiHop(datalabs.GeneratorBasedBuilder):
                 example["question"] = example.pop("query")
 
                 answers = [example["answer"].strip()]
-                context = ' '.join(example["supports"])
+                context = " ".join(example["supports"])
                 # yield example["id"], example
                 yield example["id"], {
                     "id": example["id"],
                     "question": example["question"],
                     "answers": {
-                        "answer_start": [-1]*len(answers),
+                        "answer_start": [-1] * len(answers),
                         "text": answers,
                     },
                     "candidates": example["annotations"],
@@ -145,8 +158,3 @@ class WikiHop(datalabs.GeneratorBasedBuilder):
                     "context": context,
                     "annotations": example["annotations"],
                 }
-
-
-
-
-

@@ -22,6 +22,7 @@ import os
 
 import datalabs
 from datalabs import get_task, TaskType
+
 _CITATION = """
 @inproceedings{kornilova-eidelman-2019-billsum,
     title = "{B}ill{S}um: A Corpus for Automatic Summarization of {US} Legislation",
@@ -78,10 +79,12 @@ class Billsum(datalabs.GeneratorBasedBuilder):
             supervised_keys=(_DOCUMENT, _SUMMARY),
             homepage="https://github.com/FiscalNote/BillSum",
             citation=_CITATION,
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_DOCUMENT,
-                reference_column=_SUMMARY),
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_DOCUMENT, reference_column=_SUMMARY
+                ),
             ],
+            languages=["en"],
         )
 
     def _split_generators(self, dl_manager):
@@ -90,15 +93,24 @@ class Billsum(datalabs.GeneratorBasedBuilder):
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
-                gen_kwargs={"path": os.path.join(dl_path, "us_train_data_final_OFFICIAL.jsonl"), "key": "bill_id"},
+                gen_kwargs={
+                    "path": os.path.join(dl_path, "us_train_data_final_OFFICIAL.jsonl"),
+                    "key": "bill_id",
+                },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
-                gen_kwargs={"path": os.path.join(dl_path, "us_test_data_final_OFFICIAL.jsonl"), "key": "bill_id"},
+                gen_kwargs={
+                    "path": os.path.join(dl_path, "us_test_data_final_OFFICIAL.jsonl"),
+                    "key": "bill_id",
+                },
             ),
             datalabs.SplitGenerator(
                 name="ca_test",
-                gen_kwargs={"path": os.path.join(dl_path, "ca_test_data_final_OFFICIAL.jsonl"), "key": "external_id"},
+                gen_kwargs={
+                    "path": os.path.join(dl_path, "ca_test_data_final_OFFICIAL.jsonl"),
+                    "key": "external_id",
+                },
             ),
         ]
 

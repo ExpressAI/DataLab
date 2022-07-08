@@ -14,11 +14,12 @@
 # limitations under the License.
 
 
-
 import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
+
 logger = datalabs.logging.get_logger(__name__)
 
 _CITATION = """\
@@ -39,14 +40,9 @@ _LICENSE = "Available for research use"
 _URL = "https://datalab-hub.s3.amazonaws.com/chunk/conll00.zip"
 
 
-
-
 class Conll00Chunk(datalabs.GeneratorBasedBuilder):
 
-
     VERSION = datalabs.Version("1.0.0")
-
-
 
     def _info(self):
         return datalabs.DatasetInfo(
@@ -57,10 +53,31 @@ class Conll00Chunk(datalabs.GeneratorBasedBuilder):
                     "tokens": datalabs.Sequence(datalabs.Value("string")),
                     "tags": datalabs.Sequence(
                         datalabs.features.ClassLabel(
-                            names=['B-NP', 'B-VP', 'I-NP', 'I-VP', 'B-PP', 'O', 'B-ADVP',
-                                   'B-ADJP', 'I-ADJP', 'B-SBAR', 'I-ADVP',
-                                   'B-PRT', 'I-PP', 'I-SBAR', 'B-CONJP', 'I-CONJP',
-                                   'B-INTJ', 'B-LST', 'I-LST', 'I-INTJ', 'I-PRT', 'B-UCP', 'I-UCP']
+                            names=[
+                                "B-NP",
+                                "B-VP",
+                                "I-NP",
+                                "I-VP",
+                                "B-PP",
+                                "O",
+                                "B-ADVP",
+                                "B-ADJP",
+                                "I-ADJP",
+                                "B-SBAR",
+                                "I-ADVP",
+                                "B-PRT",
+                                "I-PP",
+                                "I-SBAR",
+                                "B-CONJP",
+                                "I-CONJP",
+                                "B-INTJ",
+                                "B-LST",
+                                "I-LST",
+                                "I-INTJ",
+                                "I-PRT",
+                                "B-UCP",
+                                "I-UCP",
+                            ]
                         )
                     ),
                 }
@@ -69,11 +86,11 @@ class Conll00Chunk(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             citation=_CITATION,
             license=_LICENSE,
-            languages=['en'],
+            languages=["en"],
             version=self.VERSION,
-            task_templates=[get_task(TaskType.chunking)(
-                                             tokens_column="tokens",
-                                             tags_column="tags")],
+            task_templates=[
+                get_task(TaskType.chunking)(tokens_column="tokens", tags_column="tags")
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -83,13 +100,17 @@ class Conll00Chunk(datalabs.GeneratorBasedBuilder):
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={
-                    "filepath": os.path.join(data_dir + "/conll00/", "train-conll00.tsv"),
+                    "filepath": os.path.join(
+                        data_dir + "/conll00/", "train-conll00.tsv"
+                    ),
                 },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 gen_kwargs={
-                    "filepath": os.path.join(data_dir + "/conll00/", "test-conll00.tsv"),
+                    "filepath": os.path.join(
+                        data_dir + "/conll00/", "test-conll00.tsv"
+                    ),
                 },
             ),
             datalabs.SplitGenerator(
@@ -117,7 +138,9 @@ class Conll00Chunk(datalabs.GeneratorBasedBuilder):
                     if not current_tokens:
                         # Consecutive empty lines will cause empty sentences
                         continue
-                    assert len(current_tokens) == len(current_labels), "💔 between len of tokens & labels"
+                    assert len(current_tokens) == len(
+                        current_labels
+                    ), "💔 between len of tokens & labels"
                     sentence = (
                         sentence_counter,
                         {

@@ -21,7 +21,6 @@ import datalabs
 from datalabs import get_task, TaskType
 from datalabs.utils.download_manager import DownloadManager
 
-
 _CITATION = """
 @article{DBLP:journals/corr/abs-2104-08726,
   author    = {Abteen Ebrahimi and
@@ -117,7 +116,9 @@ class AmericasNLI(datalabs.GeneratorBasedBuilder):
                     "language": datalabs.Value("string"),
                     "premise": datalabs.Value("string"),
                     "hypothesis": datalabs.Value("string"),
-                    "label": datalabs.ClassLabel(names=["entailment", "neutral", "contradiction"]),
+                    "label": datalabs.ClassLabel(
+                        names=["entailment", "neutral", "contradiction"]
+                    ),
                 }
             )
             languages = _LANGUAGES
@@ -126,7 +127,9 @@ class AmericasNLI(datalabs.GeneratorBasedBuilder):
                 {
                     "premise": datalabs.Value("string"),
                     "hypothesis": datalabs.Value("string"),
-                    "label": datalabs.ClassLabel(names=["entailment", "neutral", "contradiction"]),
+                    "label": datalabs.ClassLabel(
+                        names=["entailment", "neutral", "contradiction"]
+                    ),
                 }
             )
             languages = [self.config.language]
@@ -139,10 +142,12 @@ class AmericasNLI(datalabs.GeneratorBasedBuilder):
             homepage="https://github.com/abteen/AmericasNLI",
             citation=_CITATION,
             languages=languages,
-            task_templates=[get_task(TaskType.natural_language_inference)(
-                text1_column="premise",
-                text2_column="hypothesis",
-                label_column="label"),
+            task_templates=[
+                get_task(TaskType.natural_language_inference)(
+                    text1_column="premise",
+                    text2_column="hypothesis",
+                    label_column="label",
+                ),
             ],
         )
 

@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -45,10 +46,12 @@ _CITATION = """\
 
 _LICENSE = "NA"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/conditional_generation/AdvertiseGen/train.json"
+_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/conditional_generation/AdvertiseGen/train_revised.json"
 _VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/conditional_generation/AdvertiseGen/dev.json"
+_TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/conditional_generation/AdvertiseGen/test_revised.json"
 
 _HOMEPAGE = "https://aclanthology.org/D19-1321"
+
 
 class AdvertiseGen(datalabs.GeneratorBasedBuilder):
     """AdvertiseGen is a Dataset containing content and summary."""
@@ -66,7 +69,7 @@ class AdvertiseGen(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            languages = ["zh"],
+            languages=["zh"],
             task_templates=[
                 get_task(TaskType.conditional_generation)(
                     source_column="source", reference_column="reference"
@@ -74,16 +77,22 @@ class AdvertiseGen(datalabs.GeneratorBasedBuilder):
             ],
         )
 
-        
-
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-        
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
@@ -95,7 +104,3 @@ class AdvertiseGen(datalabs.GeneratorBasedBuilder):
                 source = line["content"]
                 reference = line["summary"]
                 yield id_, {"source": source, "reference": reference}
-                
-
-
-            

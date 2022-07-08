@@ -116,6 +116,26 @@ welsh | `human-ref` | MultiRefSummarization | ```load_dataset("welsh", "human-re
 wsd | `monolingual`| Summarization | ```load_dataset("wsd", "monolingual")``` | Current definition: text: `str`, summary: `str` |
 wsd | `crosslingual` | Summarization | ```load_dataset("wsd", "crosslingual")``` | Current definition: text: `str`, summary: `str` |
 crosssum | 45 languages X 45 languages paris, e.g. `en-en`, langauges: `["am", "ar", "az", "bn", "my", "zh-CN", "zh-TW", "en", "fr", "gu", "ha", "hi", "ig", "id", "ja", "rn", "ko", "ky", "mr", "np", "om", "ps", "fa", "pcm", "pt", "pa", "ru", "gd", "sr-C", "sr-L", "si", "so", "es", "sw", "ta", "te", "th", "ti", "tr", "uk", "ur", "uz", "vi", "cy", "yo"]` | `Summarization` | ```load_dataset("crosssum", language_paris)``` | Current definition: text: `str`, summary: `str` |
+mediasum | `dialogue` | DialogSummarization | ```load_dataset("mediasum", "dialogue")``` | Current definition: dialogue: `{"speaker": List[str], "text": List[str]}`, summary: `str` |
+mediasum | `document` | Summarization | ```load_dataset("mediasum", "document")``` | Current definition: text: `str`, summary: `str` |
+tweetsum | `document` | Summarization | ```load_dataset("tweetsum")``` | Current definition: text: `str`, summary: `str` |
+shortstories | `abstractive` | Summarization | ```load_dataset("shortstories", "abstractive")``` |  Current definition: text: `str`, summary: `str` |
+shortstories | `extractive-smmry` | ExtractiveSummarization | ```load_dataset("shortstories", "extractive-smmry")``` |  Current definition: text: `str`, summary: `List[str]` |
+shortstories | `extractive-resoomer` | ExtractiveSummarization | ```load_dataset("shortstories", "extractive-resoomer")``` |  Current definition: text: `str`, summary: `List[str]` |
+sumpubmed | `document` | Summarization | ```load_dataset("sumpubmed")``` | Current definition: text: `str`, summary: `str` |
+answersumm | `query-multi-doc` | QueryMultiDocSummarization | ```load_dataset("answersumm")``` | Current definition: query: `str` texts: `List[str]`, summary: `str` |
+vt-ssum | `document` | ExtractiveSummarization | ```load_dataset("vt-ssum")``` |  Current definition: text: `str`, summary: `List[str]` |
+wikicite | `query-multi-doc` | QueryMultiDocSummarization | ```load_dataset("wikicite")``` | Current definition: query: `str` texts: `List[str]`, summary: `str` |
+scisummnet | `multidoc` | MultiDocSummarization | ```load_dataset("scisummnet", "multidoc")``` |  Current definition: texts: `List[str]`, summary: `str` |
+scisummnet | `document` | Summarization | ```load_dataset("scisummnet", "document")``` | Current definition: text: `str`, summary: `str` |
+wikihowqa | `document` | Summarization | ```load_dataset("wikihowqa")``` | Current definition: text: `str`, summary: `str` |
+weibo_summary_comments | `document` | ReaderAwareSummarization | ```load_dataset("weibo_summary_comments")``` | Current definition: text: `str` comments: `List[str]`, summary: `str` |
+debatesum | `extract` | Summarization | ```load_dataset("debatesum", "extract")``` | Current definition: text: `str`, summary: `str` |
+debatesum | `abstract` | Summarization | ```load_dataset("debatesum", "abstract")``` | Current definition: text: `str`, summary: `str` |
+multilexsum | `long` | MultiDocSummarization | ```load_dataset("multilexsum", "long")``` |  Current definition: texts: `List[str]`, summary: `str` |
+multilexsum | `short` | MultiDocSummarization | ```load_dataset("multilexsum", "short")``` |  Current definition: texts: `List[str]`, summary: `str` |
+multilexsum | `tiny` | MultiDocSummarization | ```load_dataset("multilexsum", "tiny")``` |  Current definition: texts: `List[str]`, summary: `str` |
+20minuten | `document` | Summarization | ```load_dataset("20minuten")``` | Current definition: text: `str`, summary: `str` |
 
 ## Examples
 

@@ -405,13 +405,14 @@ class DatasetInfo:
                             is_label_column = col_name
                         elif type_name == ClassLabel:
                             is_label_column = col_name
-
                     if is_label_column is not None and isinstance(
                         self.features[is_label_column], ClassLabel
                     ):
                         labels = self.features[template.label_column].names
                         self.task_templates[idx].set_labels(labels)
-                    elif is_label_column is not None:
+                    elif is_label_column is not None and hasattr(
+                        template, "tags_column"
+                    ):
                         # for sequence labeling tasks
                         labels = self.features[template.tags_column].feature.names
                         self.task_templates[idx].set_labels(labels)

@@ -1,23 +1,17 @@
 import json
 import os
-import datalabs
-from datalabs import get_task, TaskType
 import subprocess
 import tempfile
-
 
 # the following package are needed when more additional features are expected to be calculated
 from featurize.summarization import (
     get_features_sample_level,
     get_schema_of_sample_level_features,
-    )
-from datalabs.utils.more_features import (
-    get_feature_schemas,
 )
 
-
-
-
+import datalabs
+from datalabs import get_task, TaskType
+from datalabs.utils.more_features import get_feature_schemas
 
 _DESCRIPTION = """
  GovReport dataset for summarization.
@@ -47,22 +41,44 @@ _CITATION = """\
 _ABSTRACT = "summary"
 _ARTICLE = "text"
 
+
 def _gdrive_url(id):
     return f"https://drive.google.com/uc?id={id}&export=download"
 
+
 def custom_download(url, path):
     with tempfile.TemporaryDirectory() as tmpdir:
-        response = subprocess.check_output([
-            "wget", "--save-cookies", os.path.join(tmpdir, "cookies.txt"), 
-            f"{url}", "-O-"])
+        response = subprocess.check_output(
+            [
+                "wget",
+                "--save-cookies",
+                os.path.join(tmpdir, "cookies.txt"),
+                f"{url}",
+                "-O-",
+            ]
+        )
         with open(os.path.join(tmpdir, "response.txt"), "w") as f:
             f.write(response.decode("utf-8"))
-        response = subprocess.check_output(["sed", "-rn", 's/.*confirm=([0-9A-Za-z_]+).*/\\1/p', os.path.join(tmpdir, "response.txt")])
+        response = subprocess.check_output(
+            [
+                "sed",
+                "-rn",
+                "s/.*confirm=([0-9A-Za-z_]+).*/\\1/p",
+                os.path.join(tmpdir, "response.txt"),
+            ]
+        )
         response = response.decode("utf-8")
-        subprocess.check_output([
-            "wget", "--load-cookies", os.path.join(tmpdir, "cookies.txt"), "-O", path,
-            url+f"&confirm={response}"])
-        
+        subprocess.check_output(
+            [
+                "wget",
+                "--load-cookies",
+                os.path.join(tmpdir, "cookies.txt"),
+                "-O",
+                path,
+                url + f"&confirm={response}",
+            ]
+        )
+
 
 class GovReportConfig(datalabs.BuilderConfig):
     """BuilderConfig for GovReport."""
@@ -77,6 +93,7 @@ class GovReportConfig(datalabs.BuilderConfig):
 
 class GovReportDataset(datalabs.GeneratorBasedBuilder):
     """GovReport Dataset."""
+
     # _FILE = "https://drive.google.com/uc?id=1AwaWVVlv77gbWXwMzUX46r4kq2yY4Ylh&export=download"
     _FILE = _gdrive_url("1AwaWVVlv77gbWXwMzUX46r4kq2yY4Ylh")
     BUILDER_CONFIGS = [
@@ -92,15 +109,16 @@ class GovReportDataset(datalabs.GeneratorBasedBuilder):
 
         features_dataset = {}
         features_sample = datalabs.Features(
-                {
-                    _ARTICLE: datalabs.Value("string"),
-                    _ABSTRACT: datalabs.Value("string"),
-                    # "id": datalab.Value("string"),
-                }
-            )
+            {
+                _ARTICLE: datalabs.Value("string"),
+                _ABSTRACT: datalabs.Value("string"),
+                # "id": datalab.Value("string"),
+            }
+        )
         if self.feature_expanding:
-            features_sample, features_dataset = get_feature_schemas(features_sample,
-                                                                    get_schema_of_sample_level_features)
+            features_sample, features_dataset = get_feature_schemas(
+                features_sample, get_schema_of_sample_level_features
+            )
 
         # Should return a datalab.DatasetInfo object
         return datalabs.DatasetInfo(
@@ -110,9 +128,10 @@ class GovReportDataset(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage="https://github.com/luyang-huang96/LongDocSum",
             citation=_CITATION,
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT),
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                ),
             ],
         )
 
@@ -128,19 +147,24 @@ class GovReportDataset(datalabs.GeneratorBasedBuilder):
 
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"src_path": train_src_path, "tgt_path": train_tgt_path}
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"src_path": train_src_path, "tgt_path": train_tgt_path},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION, gen_kwargs={"src_path": val_src_path, "tgt_path": val_tgt_path}
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"src_path": val_src_path, "tgt_path": val_tgt_path},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST, gen_kwargs={"src_path": test_src_path, "tgt_path": test_tgt_path}
+                name=datalabs.Split.TEST,
+                gen_kwargs={"src_path": test_src_path, "tgt_path": test_tgt_path},
             ),
         ]
 
     def _generate_examples(self, src_path, tgt_path):
         """Generate GovReport examples."""
-        with open(src_path, encoding="utf-8") as f_src, open(tgt_path, encoding="utf-8") as f_tgt:
+        with open(src_path, encoding="utf-8") as f_src, open(
+            tgt_path, encoding="utf-8"
+        ) as f_tgt:
             for (id_, (row_src, row_tgt)) in enumerate(zip(f_src, f_tgt)):
 
                 # if id_ > 20:
@@ -149,17 +173,14 @@ class GovReportDataset(datalabs.GeneratorBasedBuilder):
                 row_src = row_src.strip()
                 row_tgt = row_tgt.strip()
 
-
                 raw_feature_info = {"text": row_src, "summary": row_tgt}
 
                 if not self.feature_expanding:
                     yield id_, raw_feature_info
                 else:
-                    additional_feature_info = get_features_sample_level(raw_feature_info)
+                    additional_feature_info = get_features_sample_level(
+                        raw_feature_info
+                    )
                     raw_feature_info.update(additional_feature_info)
                     # print(additional_feature_info)
                     yield id_, raw_feature_info
-
-
-
-

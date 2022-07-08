@@ -14,9 +14,9 @@
 # limitations under the License.
 
 
-
 import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -39,17 +39,9 @@ _LICENSE = "Available for research use"
 _URL = "https://datalab-hub.s3.amazonaws.com/msr.zip"
 
 
-
-
-
-
-
 class MSR(datalabs.GeneratorBasedBuilder):
 
-
     VERSION = datalabs.Version("1.0.0")
-
-
 
     def _info(self):
         return datalabs.DatasetInfo(
@@ -59,9 +51,7 @@ class MSR(datalabs.GeneratorBasedBuilder):
                     "id": datalabs.Value("string"),
                     "tokens": datalabs.Sequence(datalabs.Value("string")),
                     "tags": datalabs.Sequence(
-                        datalabs.features.ClassLabel(
-                            names=["B","M","E","S"]
-                        )
+                        datalabs.features.ClassLabel(names=["B", "M", "E", "S"])
                     ),
                 }
             ),
@@ -69,11 +59,13 @@ class MSR(datalabs.GeneratorBasedBuilder):
             homepage=_HOMEPAGE,
             citation=_CITATION,
             license=_LICENSE,
-            languages=['zh'],
+            languages=["zh"],
             version=self.VERSION,
-            task_templates=[get_task(TaskType.word_segmentation)(
-                                             tokens_column="tokens",
-                                             tags_column="tags")],
+            task_templates=[
+                get_task(TaskType.word_segmentation)(
+                    tokens_column="tokens", tags_column="tags"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -117,7 +109,9 @@ class MSR(datalabs.GeneratorBasedBuilder):
                     if not current_tokens:
                         # Consecutive empty lines will cause empty sentences
                         continue
-                    assert len(current_tokens) == len(current_labels), "💔 between len of tokens & labels"
+                    assert len(current_tokens) == len(
+                        current_labels
+                    ), "💔 between len of tokens & labels"
                     sentence = (
                         sentence_counter,
                         {

@@ -16,6 +16,7 @@
 # limitations under the License.
 
 import json
+
 import datalabs
 from datalabs import get_task, TaskType
 
@@ -43,11 +44,19 @@ _CITATION = """\
 
 _LICENSE = "N/A"
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/summarization/LCSTS_new/train.json"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/summarization/LCSTS_new/dev.json"
+_TRAIN_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/summarization/LCSTS_new/train_revised.json"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/summarization/LCSTS_new/validation_revised.json"
+)
+_TEST_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/summarization/LCSTS_new/test_revised.json"
+)
 
 _ARTICLE = "text"
 _ABSTRACT = "summary"
+
 
 class LCSTSConfig(datalabs.BuilderConfig):
     """BuilderConfig for LCSTS."""
@@ -76,7 +85,6 @@ class LCSTS(datalabs.GeneratorBasedBuilder):
         # Should return a datalab.DatasetInfo object
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
-
             features=datalabs.Features(
                 {
                     _ARTICLE: datalabs.Value("string"),
@@ -87,27 +95,33 @@ class LCSTS(datalabs.GeneratorBasedBuilder):
             homepage="https://aclanthology.org/D15-1229",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE,
-                reference_column=_ABSTRACT),
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                ),
             ],
         )
 
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-        
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
         """Generate examples."""
         with open(filepath, encoding="utf-8") as f:
-            for id_, row in enumerate(f):
-                line = json.loads(row)
-                if len(line) == 3:
-                    article = line["content"]
-                    abstract = line["summary"]
-                    yield id_, {"text": article, "summary": abstract}
+            for id_, line in enumerate(f.readlines()):
+                line = json.loads(line.strip())
+                yield id_, {"text": line["text"], "summary": line["summary"]}

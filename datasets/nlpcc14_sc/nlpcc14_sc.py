@@ -13,12 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import csv
-from email import header
+import json
+
 import datalabs
 from datalabs import get_task, TaskType
-
-
 
 _CITATION = """\
 For more information, please refer to "http://tcci.ccf.org.cn/conference/2014/pages/page04_sam.html".   
@@ -34,48 +32,61 @@ _LICENSE = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/NL
 
 _HOMEPAGE = "http://tcci.ccf.org.cn/conference/2014/pages/page04_sam.html"
 
-_TRAIN_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/NLPCC14-SC/train.tsv"
-# _TEST_DOWNLOAD_URL = "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/NLPCC14-SC/test.tsv"
+_TRAIN_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/NLPCC14-SC/train_revised.json"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/NLPCC14-SC/validation_revised.json"
+)
+_TEST_DOWNLOAD_URL = (
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/NLPCC14-SC/test_revised.json"
+)
+
 
 class NLPCC14SC(datalabs.GeneratorBasedBuilder):
     def _info(self):
-        
+
         return datalabs.DatasetInfo(
-
             description=_DESCRIPTION,
-
             features=datalabs.Features(
                 {
                     "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=["positive", "negative"])
+                    "label": datalabs.features.ClassLabel(
+                        names=["positive", "negative"]
+                    ),
                 }
             ),
             homepage=_HOMEPAGE,
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.sentiment_classification)(
-                text_column="text",
-                label_column="label")],
+            task_templates=[
+                get_task(TaskType.sentiment_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
+        valid_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+        
         print(f"train_path: \t{train_path}")
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path})
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": valid_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            )
         ]
 
     def _generate_examples(self, filepath):
-        
-        textualize_label = {
-            "1": "positive",
-            "0": "negative"
-        }
 
-        with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter = '\t')
-            for id_, row in enumerate(csv_reader):
-                label, text = row
-                if label == ("0" or "1"):
-                    label = textualize_label[label]
-                    yield id_, {"text": text, "label": label}
+        with open(filepath, encoding="utf-8") as f:
+            for id_, line in enumerate(f.readlines()):
+                line = json.loads(line.strip())
+                yield id_, {"text": line["text"], "label": line["label"]}

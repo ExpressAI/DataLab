@@ -193,4 +193,4 @@ def main():
 if __name__ == "__main__":
     main()
     # python get_dataset_info.py --previous_jsonl
-    # dataset_info.jsonl --output_jsonl new.jsonl
+    # dataset_info.jsonl --output_jsonl dataset_info_dev.jsonl

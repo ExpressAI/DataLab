@@ -15,11 +15,7 @@
 
 import json
 import datalabs
-from pydantic import FilePath
-import requests
 from datalabs import get_task, TaskType
-
-
 
 _DESCRIPTION = """\
 TNEWS is a short news text data set from Toutiao and each text is labelled with one of 15 categories of news. 
@@ -45,13 +41,31 @@ keywords = {benchmark,tensorflow,nlu,glue,corpus,transformers,Chinese,pretrained
 """
 
 
+_TRAIN_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/train_revised.json"
+)
+_VALIDATION_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/validation_revised.json"
+)
+_TEST_DOWNLOAD_URL = (
+    "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/test_revised.json"
+)
 
-_TRAIN_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/train.json"
-_VALIDATION_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/dev.json"
-# _TEST_DOWNLOAD_URL = "http://cdatalab1.oss-cn-beijing.aliyuncs.com/text-classification/tnews/test1.0.json"
+class TNEWSConfig(datalabs.BuilderConfig):
+    
+    def __init__(self, **kwargs):
 
+        super(TNEWSConfig, self).__init__(**kwargs)
 
 class TNEWS(datalabs.GeneratorBasedBuilder):
+
+    BUILDER_CONFIGS = [
+        TNEWSConfig(
+            name="topic_classification",
+            version=datalabs.Version("1.0.0"),
+            description="topic_classification",
+        ),
+    ]
 
     def _info(self):
         return datalabs.DatasetInfo(
@@ -60,85 +74,61 @@ class TNEWS(datalabs.GeneratorBasedBuilder):
                 {
                     "text": datalabs.Value("string"),
                     "keywords": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(names=[
-                        "story",
-                        "culture",
-                        "entertainment",
-                        "sports",
-                        "finance",
-                        "house",
-                        "car",
-                        "edu",
-                        "tech",
-                        "military",
-                        "travel",
-                        "world",
-                        "stock",
-                        "agriculture",
-                        "game"
-                    ]),
+                    "label": datalabs.features.ClassLabel(
+                        names=[
+                            "story",
+                            "culture",
+                            "entertainment",
+                            "sports",
+                            "finance",
+                            "house",
+                            "car",
+                            "edu",
+                            "tech",
+                            "military",
+                            "travel",
+                            "world",
+                            "stock",
+                            "agriculture",
+                            "game",
+                        ]
+                    ),
                 }
             ),
             homepage="https://www.clue.ai/index.html",
             citation=_CITATION,
             languages=["zh"],
-            task_templates=[get_task(TaskType.topic_classification)(
-                text_column="text",
-                label_column="label"
-            )],
+            task_templates=[
+                get_task(TaskType.topic_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
-        
+
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-        # test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        
-        return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}),
-            # datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
-        ]
-        
+        test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
+        return [
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": validation_path}
+            ),
+            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path})
+        ]
 
     def _generate_examples(self, filepath):
 
-        textualize_label = {
-            "100": "story",
-            "101": "culture",
-            "102": "entertainment",
-            "103": "sports",
-            "104": "finance",
-            "106": "house",
-            "107": "car",
-            "108": "edu",
-            "109": "tech",
-            "110": "military",
-            "112": "travel",
-            "113": "world",
-            "114": "stock",
-            "115": "agriculture",
-            "116": "game"            
-        }
-
-        row_count = 0
-    
-
         with open(filepath, "r", encoding="utf-8") as f:
 
-            for line in f:
-                res_info = json.loads(line)
-                if res_info.__contains__("label"):
-                    label = textualize_label[res_info['label']]
-                    yield row_count, {
-                    "text": res_info['sentence'],
-                    "keywords": res_info['keywords'],
-                    "label": label
-                    } 
-                row_count += 1
-
-                
-                
-
-
+            for id_, line in enumerate(f.readlines()):
+                line = json.loads(line.strip())            
+                yield id_, {
+                        "text": line["text"],
+                        "keywords": line["keywords"],
+                        "label": line["label"],
+                    }

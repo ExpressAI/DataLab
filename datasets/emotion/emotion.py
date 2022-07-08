@@ -14,9 +14,9 @@
 # limitations under the License.
 
 import csv
+
 import datalabs
 from datalabs import get_task, TaskType
-
 
 _CITATION = """\
 @inproceedings{saravia-etal-2018-carer,
@@ -54,12 +54,19 @@ class Emotion(datalabs.GeneratorBasedBuilder):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=datalabs.Features(
-                {"text": datalabs.Value("string"), "label": datalabs.ClassLabel(names=class_names)}
+                {
+                    "text": datalabs.Value("string"),
+                    "label": datalabs.ClassLabel(names=class_names),
+                }
             ),
             supervised_keys=("text", "label"),
             homepage=_URL,
             citation=_CITATION,
-            task_templates=[get_task(TaskType.emotion_classification)(text_column="text", label_column="label")],
+            task_templates=[
+                get_task(TaskType.emotion_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
         )
 
     def _split_generators(self, dl_manager):
@@ -68,9 +75,15 @@ class Emotion(datalabs.GeneratorBasedBuilder):
         valid_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": valid_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": valid_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):

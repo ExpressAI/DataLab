@@ -1,18 +1,15 @@
 import json
 import os
+
 import datalabs
 from datalabs import get_task, TaskType
-
 
 # the following package are needed when more additional features are expected to be calculated
 from datalabs.operations.featurize.summarization import (
     get_features_sample_level,
     get_schema_of_sample_level_features,
-    )
-from datalabs.utils.more_features import (
-    get_feature_schemas,
 )
-
+from datalabs.utils.more_features import get_feature_schemas
 
 _DESCRIPTION = """
 Critical Role Dungeons and Dragons Dataset (CRD3) is based on Critical Role, an unscripted, live-streamed show where a fixed group of people play Dungeons and Dragons, an openended role-playing game. 
@@ -55,23 +52,29 @@ class CRD3Config(datalabs.BuilderConfig):
         self.task_templates = task_templates
 
 
-
 class CRD3Dataset(datalabs.GeneratorBasedBuilder):
     """CRD3 Dataset."""
+
     BUILDER_CONFIGS = [
         CRD3Config(
             name="document",
             version=datalabs.Version("1.0.0"),
             description="CRD3 dataset for summarization, single document version",
-            task_templates=[get_task(TaskType.summarization)(
-                source_column=_ARTICLE, reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.summarization)(
+                    source_column=_ARTICLE, reference_column=_ABSTRACT
+                )
+            ],
         ),
         CRD3Config(
             name="dialogue",
             version=datalabs.Version("1.0.0"),
             description="CRD3 dataset for summarization, dialogue summarization version",
-            task_templates=[get_task(TaskType.dialog_summarization)(
-                source_column="dialogue", reference_column=_ABSTRACT)]
+            task_templates=[
+                get_task(TaskType.dialog_summarization)(
+                    source_column="dialogue", reference_column=_ABSTRACT
+                )
+            ],
         ),
     ]
     DEFAULT_CONFIG_NAME = "document"
@@ -88,16 +91,24 @@ class CRD3Dataset(datalabs.GeneratorBasedBuilder):
                 }
             )
             if self.feature_expanding:
-                features_sample, features_dataset = get_feature_schemas(features_sample, get_schema_of_sample_level_features)
+                features_sample, features_dataset = get_feature_schemas(
+                    features_sample, get_schema_of_sample_level_features
+                )
 
         else:
-            features_sample = datalabs.Features({
-                "dialogue": datalabs.Sequence(datalabs.Features({
-                        "speaker": datalabs.Value("string"),
-                        "text": datalabs.Value("string")
-                        })),
-                _ABSTRACT: datalabs.Sequence(datalabs.Value("string")),
-            })
+            features_sample = datalabs.Features(
+                {
+                    "dialogue": datalabs.Sequence(
+                        datalabs.Features(
+                            {
+                                "speaker": datalabs.Value("string"),
+                                "text": datalabs.Value("string"),
+                            }
+                        )
+                    ),
+                    _ABSTRACT: datalabs.Sequence(datalabs.Value("string")),
+                }
+            )
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features_sample,
@@ -120,8 +131,27 @@ class CRD3Dataset(datalabs.GeneratorBasedBuilder):
         with open(test_file_id) as f:
             file_ids.update([line.strip() for line in f])
 
-        skip_id_1 = [15, 26, 41, 45, 48, 59, 66, 67, 69, 70, 74, 
-                     77, 78, 79, 80, 81, 82, 83, 84]
+        skip_id_1 = [
+            15,
+            26,
+            41,
+            45,
+            48,
+            59,
+            66,
+            67,
+            69,
+            70,
+            74,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+        ]
         urls = []
         url_base = os.path.join(_BASE_URL, "c=2")
         for i in range(1, 116):
@@ -133,8 +163,33 @@ class CRD3Dataset(datalabs.GeneratorBasedBuilder):
                 urls.append(os.path.join(url_base, f"C2E{i:03d}_2_0.json"))
                 urls.append(os.path.join(url_base, f"C2E{i:03d}_2_1.json"))
 
-        skip_id_1 = [15, 16, 26, 41, 44, 45, 48, 54, 55, 59, 60, 62, 66, 67, 69, 70, 74, 
-                     77, 78, 79, 80, 81, 82, 83, 84]
+        skip_id_1 = [
+            15,
+            16,
+            26,
+            41,
+            44,
+            45,
+            48,
+            54,
+            55,
+            59,
+            60,
+            62,
+            66,
+            67,
+            69,
+            70,
+            74,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+        ]
         url_base = os.path.join(_BASE_URL, "c=3")
         for i in range(1, 116):
             if f"C1E{i:03d}" in file_ids and i not in skip_id_1:
@@ -147,8 +202,35 @@ class CRD3Dataset(datalabs.GeneratorBasedBuilder):
                 urls.append(os.path.join(url_base, f"C2E{i:03d}_3_1.json"))
                 urls.append(os.path.join(url_base, f"C2E{i:03d}_3_2.json"))
 
-        skip_id_1 = [15, 16, 26, 41, 44, 45, 46, 48, 54, 55, 58, 59, 60, 62, 66, 67, 69, 70, 74, 
-                     77, 78, 79, 80, 81, 82, 83, 84]
+        skip_id_1 = [
+            15,
+            16,
+            26,
+            41,
+            44,
+            45,
+            46,
+            48,
+            54,
+            55,
+            58,
+            59,
+            60,
+            62,
+            66,
+            67,
+            69,
+            70,
+            74,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+        ]
         url_base = os.path.join(_BASE_URL, "c=4")
         for i in range(1, 116):
             if f"C1E{i:03d}" in file_ids and i not in skip_id_1:
@@ -167,13 +249,16 @@ class CRD3Dataset(datalabs.GeneratorBasedBuilder):
 
         return [
             datalabs.SplitGenerator(
-                name=datalabs.Split.TRAIN, gen_kwargs={"f_paths": json_files, "f_ids": train_file_id}
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={"f_paths": json_files, "f_ids": train_file_id},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.VALIDATION, gen_kwargs={"f_paths": json_files, "f_ids": val_file_id}
+                name=datalabs.Split.VALIDATION,
+                gen_kwargs={"f_paths": json_files, "f_ids": val_file_id},
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST, gen_kwargs={"f_paths": json_files, "f_ids": test_file_id}
+                name=datalabs.Split.TEST,
+                gen_kwargs={"f_paths": json_files, "f_ids": test_file_id},
             ),
         ]
 
@@ -192,16 +277,20 @@ class CRD3Dataset(datalabs.GeneratorBasedBuilder):
                     if "document" in self.config.name:
                         text = []
                         for turn in x["TURNS"]:
-                            text.append("{} {}".format(" ".join(turn["NAMES"]), " ".join(turn["UTTERANCES"])))
-                        raw_feature_info = {
-                            _ARTICLE: text,
-                            _ABSTRACT: summary
-                        }
+                            text.append(
+                                "{} {}".format(
+                                    " ".join(turn["NAMES"]),
+                                    " ".join(turn["UTTERANCES"]),
+                                )
+                            )
+                        raw_feature_info = {_ARTICLE: text, _ABSTRACT: summary}
 
                         if not self.feature_expanding:
                             yield cnt, raw_feature_info
                         else:
-                            additional_feature_info = get_features_sample_level(raw_feature_info)
+                            additional_feature_info = get_features_sample_level(
+                                raw_feature_info
+                            )
                             raw_feature_info.update(additional_feature_info)
                             yield cnt, raw_feature_info
                         cnt += 1
@@ -209,7 +298,12 @@ class CRD3Dataset(datalabs.GeneratorBasedBuilder):
                     else:
                         dialogue = []
                         for turn in x["TURNS"]:
-                            dialogue.append({"speaker": " ".join(turn["NAMES"]), "text": " ".join(turn["UTTERANCES"])})
+                            dialogue.append(
+                                {
+                                    "speaker": " ".join(turn["NAMES"]),
+                                    "text": " ".join(turn["UTTERANCES"]),
+                                }
+                            )
                         yield cnt, {
                             "dialogue": dialogue,
                             _ABSTRACT: [summary],
