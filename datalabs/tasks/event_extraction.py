@@ -59,7 +59,7 @@ class EventArgumentsExtraction(EventExtraction):
 
 @register_task(TaskType.event_relation_extraction_causality)
 @dataclass
-class EventRelationExtraction(EventExtraction):
+class EventRelationExtractionCausality(EventExtraction):
     task: TaskType = TaskType.event_relation_extraction_causality
 
     input_schema: ClassVar[Features] = Features({"text": Value("string")})
