@@ -120,4 +120,4 @@ def tokenize(
 ) -> List[str]:
 
     tokenizer = get_tokenizer(tokenizer_name, task_type, language)
-    return {"text_tokenized": " ".join(tokenizer(text))}
+    return {"tokenized": " ".join(tokenizer(text))}

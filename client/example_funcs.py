@@ -41,7 +41,7 @@ def text_classification_func(sample: dict):
 
     res_info_general_all = {}
     for k, v in res_info_general.items():
-        res_info_general_all["text_tokenized" + "_" + k] = v
+        res_info_general_all["text" + "_" + k] = v
 
     return res_info_general_all
 
@@ -57,8 +57,8 @@ def text_matching_func(sample: dict):
     }
     """
 
-    text1 = sample["text1"]
-    text2 = sample["text2"]
+    text1 = sample["text1_" + "tokenized"]
+    text2 = sample["text2_" + "tokenized"]
 
     res_info_general_all = {}
 

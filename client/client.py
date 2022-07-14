@@ -26,7 +26,7 @@ class Client:
         split={"train": 0, "validation": 0, "test": 0},
         transformation={"type": "origin"},
         calculate_features=False,
-        feature_func=None,
+        processed_list=None,
         data_typology="textdataset",
         end_point_add_dataset="https://datalab.nlpedia.ai/api/upload_new_dataset",
     ):
@@ -47,7 +47,7 @@ class Client:
         self.split: Dict = split
         self.transformation: Dict = transformation
         self.calculate_features: bool = calculate_features
-        self.feature_func = feature_func
+        self.processed_list = processed_list
         self.data_typology = data_typology
 
         if dataset_name_db is None:
@@ -105,7 +105,7 @@ class Client:
             self.dataset_name_sdk,
             self.sub_dataset_name_sdk,
             calculate_features=self.calculate_features,
-            feature_func=self.feature_func,
+            processed_list=self.processed_list,
         )
 
         # reformat the metadata information for db
@@ -120,7 +120,7 @@ class Client:
         )
 
         # reformat the sample information for db
-        MAX_NUMBER_OF_SAMPLES = 100000
+        MAX_NUMBER_OF_SAMPLES = 50000
         samples_db = []
         for split in dataset_sdk.keys():
             for idx, sample in enumerate(dataset_sdk[split]):
