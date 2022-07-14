@@ -6,8 +6,6 @@ from datalabs import load_dataset
 from datalabs.operations.aggregate.text_classification import (
     get_features_dataset_level as get_features_dataset_level_text_classification,
 )
-
-# from datalabs.operations.preprocess.general import tokenize
 from datalabs.utils.more_features import get_features_dataset, prefix_dict_key
 
 
@@ -107,7 +105,7 @@ def get_info(
     dataset_name: str,
     sub_dataset_name_sdk: str,
     calculate_features=False,
-    feature_func=None,
+    processed_list=None,
 ):
     """
     Input:
@@ -140,17 +138,31 @@ def get_info(
     # from featurize.text_matching import get_features_sample_level
 
     for split_name in all_splits:
-        # if split_name == 'train':
-        #     continue
+        # processed_list = [
+        #     (tokenize, "text"),
+        #     (feature_func, None)
+        # ]
 
         # get sample-level advanced features
-        # dataset[split_name] = dataset[split_name].apply(
-        #     tokenize, num_proc=multiprocessing.cpu_count(), mode="memory"
-        # )
+        prefix_name = ""
+        for processed_func, processed_field in processed_list:
+            if processed_field is not None:
+                processed_func.processed_fields[0] = processed_field
+                prefix_name = processed_field
+            else:
+                prefix_name = ""
 
-        dataset[split_name] = dataset[split_name].apply(
-            feature_func, num_proc=multiprocessing.cpu_count(), mode="memory"
-        )
+            dataset[split_name] = dataset[split_name].apply(
+                processed_func,
+                num_proc=multiprocessing.cpu_count(),
+                mode="memory",
+                prefix=prefix_name,
+            )
+            print(dataset[split_name])
+
+        # dataset[split_name] = dataset[split_name].apply(
+        #     feature_func, num_proc=multiprocessing.cpu_count(), mode="memory"
+        # )
         all_features = asdict(dataset[split_name]._info)["features"]
 
         # turn on advanced fields
