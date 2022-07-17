@@ -90,3 +90,4 @@ src/datalabs/.coverage
 client/add_my_dataset.py
 train.json
 client/add_my_dataset.py
+apps
