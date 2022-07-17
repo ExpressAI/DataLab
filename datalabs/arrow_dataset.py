@@ -714,7 +714,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
 
     def __load_json(self, path):
         if not os.path.exists(path):
-            open(path, "w").close()
+            open(path, "w+").close()
             return {}
         with open(path, "r") as obj_file:
             try:
@@ -1107,7 +1107,8 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         table = MemoryMappedTable(pa_table, self.__table_path())
         info = self.info.copy()
         info.features.update(inferred_feature)
-        self.__schema_backup(attr_name, inferred_feature[attr_name].dtype)
+        for attr_name in attr_names:
+            self.__schema_backup(attr_name, inferred_feature[attr_name].dtype)
 
         return Dataset(table, info=info, split=self.split, indices_table=self._indices)
 
@@ -1126,7 +1127,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
     def __write_stat(self):
         dirname = os.path.dirname(self.__table_path())
         path = os.path.join(dirname, "stat.json")
-        with open(path, "w") as obj_file:
+        with open(path, "w+") as obj_file:
             json.dump(self._stat, obj_file)
 
     def __load_disk(self):
