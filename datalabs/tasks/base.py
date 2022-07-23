@@ -116,6 +116,8 @@ class TaskType(str, Enum):
     task_oriented_dialogue = "task-oriented-dialogue"
     dialogue_emotion_action_tracking = "dialogue-emotion-action-tracking"
     dialogue_empathetic = "dialogue-empathetic"
+    tabular_classification = "tabular-classification"
+    tabular_regression = "tabular-regression"
 
     @staticmethod
     def list():
