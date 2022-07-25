@@ -38,7 +38,7 @@ TODO
 _TEST_DOWNLOAD_URL = f"{private_utils.PRIVATE_LOC}/sumeval_2022/sumeval_test.json"
 
 
-class SST2(datalabs.GeneratorBasedBuilder):
+class SumEval2022(datalabs.GeneratorBasedBuilder):
     def _info(self):
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
