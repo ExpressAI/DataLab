@@ -38,9 +38,34 @@ _URLs = "https://raw.githubusercontent.com/ShiinaHiiragi/multi-task-dataset/mast
 _LANGUAGES = ["en"]
 _TASK_TEMPLATES = [get_task(TaskType.sentiment_classification)()]
 
+fields = [
+    "apparel",
+    "baby",
+    "books",
+    "camera_photo",
+    "dvd",
+    "electronics",
+    "health_personal_care",
+    "imdb",
+    "kitchen_housewares",
+    "magazines",
+    "MR",
+    "music",
+    "software",
+    "sports_outdoors",
+    "toys_games",
+    "video",
+]
+
 
 class AdvMtl(datalabs.GeneratorBasedBuilder):
-    VERSION = datalabs.Version("1.0.0")
+    BUILDER_CONFIGS = [
+        datalabs.BuilderConfig(
+            name="{}".format(domain), version=datalabs.Version("1.0.0")
+        )
+        for domain in fields
+    ]
+
 
     def _info(self):
         features = datalabs.Features(
@@ -69,49 +94,26 @@ class AdvMtl(datalabs.GeneratorBasedBuilder):
         )
 
     def _split_generators(self, dl_manager):
-        result = []
-        data_types = ["train", "test"]
-        fields = [
-            "apparel",
-            "baby",
-            "books",
-            "camera_photo",
-            "dvd",
-            "electronics",
-            "health_personal_care",
-            "imdb",
-            "kitchen_housewares",
-            "magazines",
-            "MR",
-            "music",
-            "software",
-            "sports_outdoors",
-            "toys_games",
-            "video",
+        domain = str(self.config.name)
+        return [
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN,
+                gen_kwargs={
+                    "filepath": dl_manager.download_and_extract(_URLs.format(domain, "train")),
+                },
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
+                gen_kwargs={
+                    "filepath": dl_manager.download_and_extract(_URLs.format(domain, "test")),
+                },
+            ),
         ]
 
-        for data_field in fields:
-            for data_type in data_types:
-                split_name = data_field + "_" + data_type
-                result.append(
-                    datalabs.SplitGenerator(
-                        name=split_name,
-                        # These kwargs will be passed to _generate_examples
-                        gen_kwargs={
-                            "filepath": dl_manager.download_and_extract(
-                                _URLs.format(data_field, data_type)
-                            ),
-                            "split": data_type,
-                        },
-                    )
-                )
-
-        return result
 
     def _generate_examples(
         self,
-        filepath,
-        split,  # method parameters are unpacked from `gen_kwargs` as given in `_split_generators`
+        filepath
     ):
         """Yields examples as (key, example) tuples."""
         # This method handles input defined in _split_generators to yield (key, example) tuples from the dataset.
