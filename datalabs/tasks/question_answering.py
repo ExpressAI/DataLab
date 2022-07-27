@@ -291,11 +291,14 @@ class QuestionAnsweringMultipleChoiceWithoutContext(QuestionAnsweringMultipleCho
 @dataclass
 class QuestionAnsweringOpenDomain(QuestionAnswering):
     task: TaskType = TaskType.qa_open_domain
-    input_schema: ClassVar[Features] = Features({"question": Value("string")})
+    input_schema: ClassVar[Features] = Features(
+        {"question": Value("string"), "question_types": Sequence(Value("string"))}
+    )
     label_schema: ClassVar[Features] = Features({"answers": Sequence(Value("string"))})
 
     question_column: str = "question"
     answers_column: str = "answers"
+    question_types_column: str = "question_types"
 
 
 @register_task(TaskType.qa_bool_dureader)

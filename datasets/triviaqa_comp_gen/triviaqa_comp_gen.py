@@ -59,20 +59,20 @@ class TriviaQAConfig(datalabs.BuilderConfig):
 class TriviaQA(datalabs.GeneratorBasedBuilder):
     """Natural Questions dataset with compositional generalization annotations."""
 
-    BUILDER_CONFIGS = [
-        TriviaQAConfig(
-            name="overlap",
-            description="overlapped with questions in the training set.",
-        ),
-        TriviaQAConfig(
-            name="comp_gen",
-            description="novel compositions of previously observed entities and structures.",
-            ),
-        TriviaQAConfig(
-            name="novel_entity",
-            description="consists of entities not present in the training set.",
-            )
-    ]
+    # BUILDER_CONFIGS = [
+    #     TriviaQAConfig(
+    #         name="overlap",
+    #         description="overlapped with questions in the training set.",
+    #     ),
+    #     TriviaQAConfig(
+    #         name="comp_gen",
+    #         description="novel compositions of previously observed entities and structures.",
+    #         ),
+    #     TriviaQAConfig(
+    #         name="novel_entity",
+    #         description="consists of entities not present in the training set.",
+    #         )
+    # ]
 
     def _info(self):
         return datalabs.DatasetInfo(
@@ -82,7 +82,7 @@ class TriviaQA(datalabs.GeneratorBasedBuilder):
                     "id": datalabs.Value("string"),
                     "question": datalabs.Value("string"),
                     "answers": datalabs.features.Sequence(datalabs.Value("string")),
-                    "labels": datalabs.features.Sequence(datalabs.Value("string"))
+                    "question_types": datalabs.features.Sequence(datalabs.Value("string"))
                 }
             ),
             # No default supervised_keys (as we have to pass both question
@@ -94,6 +94,7 @@ class TriviaQA(datalabs.GeneratorBasedBuilder):
                 get_task(TaskType.qa_open_domain)(
                     question_column="question",
                     answers_column="answers",
+                    question_types_column="question_types"
                 )
             ],
         )
@@ -116,18 +117,19 @@ class TriviaQA(datalabs.GeneratorBasedBuilder):
         with open(filepath, 'rb') as f:
             triviaqa = json.load(f)
 
-        if self.config.name == 'overlap':
-            selected_groups = [item for item in triviaqa if item['labels'] == ['overlap']]
-        elif self.config.name == 'comp_gen':
-            selected_groups = [item for item in triviaqa if item['labels'] == ['comp_gen']]
-        elif self.config.name == 'novel_entity':
-            selected_groups = [item for item in triviaqa if item['labels'] == ['novel_entity']]
+        # if self.config.name == 'overlap':
+        #     selected_groups = [item for item in triviaqa if item['labels'] == ['overlap']]
+        # elif self.config.name == 'comp_gen':
+        #     selected_groups = [item for item in triviaqa if item['labels'] == ['comp_gen']]
+        # elif self.config.name == 'novel_entity':
+        #     selected_groups = [item for item in triviaqa if item['labels'] == ['novel_entity']]
 
+        selected_groups = triviaqa
         for line in selected_groups:
             yield key, {
                 'id': line['id'],
                 'question': line['question'],
                 'answers': line['answers'],
-                'labels': line["labels"]
+                'question_types': line["labels"]
             }
             key += 1
