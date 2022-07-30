@@ -93,8 +93,7 @@ class WebQ(datalabs.GeneratorBasedBuilder):
             task_templates=[
                 get_task(TaskType.qa_open_domain)(
                     question_column="question",
-                    answers_column="answers",
-                    question_types_column="question_types"
+                    answers_column="answers"
                 )
             ],
         )
