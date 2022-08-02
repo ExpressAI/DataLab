@@ -714,13 +714,14 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
 
     def __load_json(self, path):
         if not os.path.exists(path):
-            open(path, "w+").close()
+            open(path, "a+").close()
             return {}
         with open(path, "r") as obj_file:
-            try:
-                return json.load(obj_file)
-            except:  # noqa
+            cont = obj_file.readline().strip()
+            if cont == "":
                 return {}
+            else:
+                return json.loads(cont)
 
     def __schema_load(self):
         filename = self.cache_files[0]["filename"]
@@ -819,17 +820,6 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         # Update metadata and statistics info
         self._data = update_metadata_with_features(self._data, self.features)
         self.__load_stat()
-
-    # def apply(self, func):
-    #     for sample in self.__iter__():
-    #         # print(func)
-    #         #yield func(sample)
-    #         # print(func._type)
-    #         if func._type in ["Editing","Preprocessing",
-    #         "Featurizing","OperationFunction"]:
-    #             yield func(sample[func.processed_fields[0]])
-    #         else:
-    #             yield func(sample)
 
     def apply_basic(self, func, prefix="", num_proc=1):
         # if isinstance(func, str):
@@ -992,25 +982,6 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                 with Pool(processes=num_proc) as pool:
                     attr_columns = pool.map(process_each, range(self.num_rows))
 
-                # attr_columns = p_map(process_each, range(self.num_rows),
-                # num_cpus=num_proc)
-
-                # with Pool(processes=num_proc) as pool:
-                #     progress_bar = tqdm(total=self.num_rows)
-                #     attr_columns = tqdm(pool.imap(process_each, range(self.num_rows)))
-                # import multiprocessing
-                # with multiprocessing.Pool() as p:
-                #     attr_columns = list(tqdm.tqdm(p.imap(process_each,
-                #     range(self.num_rows)), total=self.num_rows))
-                #     pool.close()
-                #     pool.join()
-                # for v in attr_columns:
-                #     print(v)
-
-                # from tqdm.contrib.concurrent import process_map  # or thread_map
-                # attr_columns = process_map(process_each,
-                # range(self.num_rows), max_workers=num_proc)
-
         attr_names = attr_columns[0].keys()
         for attr_name in attr_names:
             if prefix == "":
@@ -1121,13 +1092,14 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             self._stat = {}
         else:
             dirname = os.path.dirname(table_path_name)
-            path = os.path.join(dirname, "stat.json")
+
+            path = os.path.join(dirname, self.split._name + "-" + "stat.json")
             self._stat = self.__load_json(path)
 
     def __write_stat(self):
         dirname = os.path.dirname(self.__table_path())
-        path = os.path.join(dirname, "stat.json")
-        with open(path, "w+") as obj_file:
+        path = os.path.join(dirname, self.split._name + "-" + "stat.json")
+        with open(path, "w") as obj_file:
             json.dump(self._stat, obj_file)
 
     def __load_disk(self):
