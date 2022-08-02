@@ -723,7 +723,6 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             else:
                 return json.loads(cont)
 
-
     def __schema_load(self):
         filename = self.cache_files[0]["filename"]
         (filepath, filename) = os.path.split(filename)
@@ -821,8 +820,6 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         # Update metadata and statistics info
         self._data = update_metadata_with_features(self._data, self.features)
         self.__load_stat()
-
-
 
     def apply_basic(self, func, prefix="", num_proc=1):
         # if isinstance(func, str):
@@ -985,7 +982,6 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                 with Pool(processes=num_proc) as pool:
                     attr_columns = pool.map(process_each, range(self.num_rows))
 
-
         attr_names = attr_columns[0].keys()
         for attr_name in attr_names:
             if prefix == "":
@@ -1097,10 +1093,8 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
         else:
             dirname = os.path.dirname(table_path_name)
 
-
             path = os.path.join(dirname, self.split._name + "-" + "stat.json")
             self._stat = self.__load_json(path)
-
 
     def __write_stat(self):
         dirname = os.path.dirname(self.__table_path())
