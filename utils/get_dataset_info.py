@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import asdict
 import importlib
 import inspect
 import json
@@ -167,6 +168,10 @@ def main():
                             metadata["splits"] = get_splits(file_name, sub_dataset)
 
                             metadata["languages"] = dataset_info.languages
+                            # features of dataset
+                            metadata["features"] = {
+                                k: asdict(v) for k, v in dataset_info.features.items()
+                            }
                             if dataset_info.task_templates is not None:
                                 metadata["task_categories"] = [
                                     get_value(x.task_categories)
