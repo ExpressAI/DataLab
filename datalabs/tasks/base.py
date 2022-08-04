@@ -108,6 +108,7 @@ class TaskType(str, Enum):
     cloze_generative = "cloze-generative"
     cloze_documents = "cloze_documents"
     text_editing = "text-editing"
+    claim_stance_classification="claim-stance-classification"
     grammatical_error_correction = "grammatical-error-correction"
     grammatical_error_correction_m2 = "grammatical-error-correction-m2"
     essay_writing = "essay-writing"
