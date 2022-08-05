@@ -36,6 +36,7 @@ TODO
 """
 
 _TEST_DOWNLOAD_URL = f"{private_utils.PRIVATE_LOC}/sumeval_2022/sumeval_test.json"
+_SURPRISE_DOWNLOAD_URL = f"{private_utils.PRIVATE_LOC}/sumeval_2022/sumeval_surprise.json"
 
 
 class Sumeval2022(datalabs.GeneratorBasedBuilder):
@@ -66,9 +67,13 @@ class Sumeval2022(datalabs.GeneratorBasedBuilder):
         split_gens = []
         if private_utils.has_private_loc():
             test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
+            surprise_path = dl_manager.download_and_extract(_SURPRISE_DOWNLOAD_URL)
             split_gens += [
                 datalabs.SplitGenerator(
                     name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+                ),
+                datalabs.SplitGenerator(
+                    name="surprise", gen_kwargs={"filepath": surprise_path}
                 )
             ]
         else:
