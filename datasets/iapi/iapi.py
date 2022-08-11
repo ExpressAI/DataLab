@@ -37,10 +37,10 @@ _CITATION = """\
 _LICENSE = "NA"
 
 _TRAIN_DOWNLOAD_URL = (
-    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/iapi/train.txt"
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/argument_pair_identification/iapi/train.txt"
 )
 _TEST_DOWNLOAD_URL = (
-    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/text_matching/iapi/test.txt"
+    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/argument_pair_identification/iapi/test.txt"
 )
 
 
