@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from typing import ClassVar, Optional, Tuple
+from typing import ClassVar
 
-from datalabs.features import ClassLabel, Features, Sequence, Value
+from datalabs.features import Features, Sequence, Value
 from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 
 
@@ -25,7 +25,3 @@ class ArgumentPairExtraction(TaskTemplate):
             self.label_schema: ClassVar[Features] = Features(
                 {self.labels_column: Sequence(Value("string"))}
             )
-
-
-
-      

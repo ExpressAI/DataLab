@@ -21,11 +21,11 @@ class ArgumentPairIdentification(TaskTemplate):
         ]
         if self.input_schema is None:
             self.input_schema: ClassVar[Features] = Features(
-                { 
-                    "quotation_context":Value("string"),
-                    "quotation":Value("string"),
-                    "positive_reply":Value("string"),
-                    "positive_reply_context":Value("string"),
+                {
+                    "quotation_context": Value("string"),
+                    "quotation": Value("string"),
+                    "positive_reply": Value("string"),
+                    "positive_reply_context": Value("string"),
                     "negative_replies": {
                         "negative_reply": Sequence(Value("string")),
                         "negative_reply_context": Sequence(Value("string")),
