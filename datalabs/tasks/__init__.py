@@ -1,6 +1,8 @@
 from typing import Optional
 
 from datalabs.tasks import (
+    argument_pair_extraction,
+    argument_pair_identification,
     cloze,
     conditional_generation,
     coreference_resolution,
@@ -49,12 +51,14 @@ __all__ = [
     "text_classification",
     "multilabel_classification",
     "text_pair_classification",
+    "argument_pair_extraction",
     "cloze",
     "text_editing",
     "TaskTemplate",
     "TaskType",
     "get_task",
     "poetry",
+    "argument_pair_identification",
     "register_task",
     "TASK_REGISTRY",
     "get_logger",

@@ -63,6 +63,7 @@ class ParaphraseIdentification(TextPairClassification):
     text2_column: str = "text2"
     label_column: str = "label"
 
+
 @register_task(TaskType.claim_stance_classification)
 @dataclass
 class ClaimStanceClassification(TextPairClassification):
