@@ -37,12 +37,13 @@ class Ranking(TaskTemplate):
 @dataclass
 class ArgumentPairIdentification(Ranking):
     task: TaskType = TaskType.argument_pair_identification
-    context_column: str = "quotation"  
-    utterance_column: str = "replies"  # a list of replies, including positive and negative reply
-    label_column: str = "label"                 
-                
-                
-                
+    context_column: str = "quotation"
+    utterance_column: str = (
+        "replies"  # a list of replies, including positive and negative reply
+    )
+    label_column: str = "label"
+
+
 @register_task(TaskType.retrieval_based_dialogue)
 @dataclass
 class RetrievalBasedDialogue(Ranking):
@@ -51,7 +52,7 @@ class RetrievalBasedDialogue(Ranking):
     context_column: str = "context"
     utterance_column: str = "utterance"
     label_column: str = "label"
-        
+
     def __post_init__(self):
         self.task_categories = [
             task_cls.get_task() for task_cls in self.get_task_parents()
@@ -69,5 +70,4 @@ class RetrievalBasedDialogue(Ranking):
                 {
                     self.label_column: Value("int32"),
                 }
-            )        
-        
+            )
