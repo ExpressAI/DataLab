@@ -3,7 +3,7 @@ import os
 
 import datalabs
 from datalabs import get_task, TaskType
-
+from datalabs.features import Features, Value, Sequence
 
 _CITATION = """\
 @article{wu2016sequential,
@@ -18,9 +18,9 @@ _DESCRIPTION = """\
 The Douban Conversation Corpus is a data set with open domain conversations. Response candidates in the test set of the Douban Conversation.
 Corpus are collected following the procedure of a retrieval-based chatbot and are labeled by human judges. It simulates the real scenario of a retrievalbased chatbot
 """
-_TRAIN_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/DoubanConversaionCorpus/train.txt"
-_VALIDATION_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/DoubanConversaionCorpus/dev.txt"
-_TEST_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/DoubanConversaionCorpus/test.txt"
+_TRAIN_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/DoubanConversaionCorpus/train_revised.txt"
+_VALIDATION_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/DoubanConversaionCorpus/dev_revised.txt"
+_TEST_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/DoubanConversaionCorpus/test_revised.txt"
 
 
 class DoubanConversaion(datalabs.GeneratorBasedBuilder):
@@ -33,9 +33,9 @@ class DoubanConversaion(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                "context": datalabs.features.Sequence(datalabs.Value("string")),
-                "utterance": datalabs.Value("string"),
-                "label": datalabs.Value("int32") 
+                "context": Sequence(Value("string")),
+                "utterance": Sequence(Value("string")),
+                "label": Value("int32") 
                 }
             ),
             supervised_keys=None,
@@ -68,9 +68,9 @@ class DoubanConversaion(datalabs.GeneratorBasedBuilder):
         with open(filepath, encoding="utf-8") as f:
             
             for id_, row in enumerate(f):
-                line=row.strip().split('\t')
+                line=row.strip().split('##')
                 yield id_, {
-                    "context": line[1:-1],
-                    "utterance": line[-1],
-                    "label":int(line[0])
+                    "context": line[0].split('\t'),
+                    "utterance": line[1].split('\t'),
+                    "label":int(line[2])
                 }

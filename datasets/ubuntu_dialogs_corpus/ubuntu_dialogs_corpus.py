@@ -3,7 +3,7 @@ import os
 
 import datalabs
 from datalabs import get_task, TaskType
-
+from datalabs.features import Features, Value, Sequence
 
 _CITATION = """\
 @article{DBLP:journals/corr/LowePSP15,
@@ -28,9 +28,9 @@ _CITATION = """\
 _DESCRIPTION = """\
 Ubuntu Dialogue Corpus, a dataset containing almost 1 million multi-turn dialogues, with a total of over 7 million utterances and 100 million words. This provides a unique resource for research into building dialogue managers based on neural language models that can make use of large amounts of unlabeled data. The dataset has both the multi-turn property of conversations in the Dialog State Tracking Challenge datasets, and the unstructured nature of interactions from microblog services such as Twitter.
 """
-_TRAIN_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/ubuntu_dialogs_corpus/train.csv"
-_VALIDATION_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/ubuntu_dialogs_corpus/valid.csv"
-_TEST_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/ubuntu_dialogs_corpus/test.csv"
+_TRAIN_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/ubuntu_dialogs_corpus/train_revised.txt"
+_VALIDATION_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/ubuntu_dialogs_corpus/valid_revised.txt"
+_TEST_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/ubuntu_dialogs_corpus/test_revised.txt"
 
 
 class UbuntuDialogsCorpus(datalabs.GeneratorBasedBuilder):
@@ -43,9 +43,9 @@ class UbuntuDialogsCorpus(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                "context": datalabs.features.Sequence(datalabs.Value("string")),
-                "utterance": datalabs.Value("string"),
-                "label": datalabs.Value("int32") 
+                "context": Sequence(Value("string")),
+                "utterance":Sequence(Value("string")),
+                "label": Value("int32") 
                 }
             ),
             supervised_keys=None,
@@ -75,34 +75,15 @@ class UbuntuDialogsCorpus(datalabs.GeneratorBasedBuilder):
 
 
     def _generate_examples(self, filepath,split):
-        
+
         with open(filepath, encoding="utf-8") as f:
-            data = csv.DictReader(f)
-            count=-1
-            for id_, row in enumerate(data):
-                context=row["Context"].strip().split('__eou__ __eot__')[:-1]
+            for id_,row in enumerate(f):
+                row=row.strip().split('##')
+                context=row[0].split('__eou__ __eot__')
+                utters=row[1].split('\t')
 
-                if split=='train':
-                    yield id_, {
+                yield id_, {
                         "context": context,
-                        "utterance": row["Utterance"],
-                        "label": row[ "Label"]
-                    }
-                else:
-                    conversations=[{
-                        "context": context,
-                        "utterance": row["Ground Truth Utterance"],
-                        "label": 1
-                    }]
-
-                    for i in range(9):
-                        conversations.append({
-                            "context": context,
-                            "utterance": row["Distractor_" + str(i)],
-                            "label": 0
-                            }
-                        )
-
-                    for conversation in conversations:
-                        count+=1
-                        yield count, conversation
+                        "utterance": utters,
+                        "label": row[2]
+                }
