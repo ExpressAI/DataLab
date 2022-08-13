@@ -3,6 +3,7 @@ import os
 
 import datalabs
 from datalabs import get_task, TaskType
+from datalabs.features import Features, Value, Sequence
 
 
 _CITATION = """\
@@ -18,9 +19,9 @@ _CITATION = """\
 _DESCRIPTION = """\
 E-commerce Dialogue Corpus, comprising a training data set, a development set and a test set for retrieval based chatbot.
 """
-_TRAIN_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/E-commerce/train.txt"
-_VALIDATION_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/E-commerce/dev.txt"
-_TEST_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/E-commerce/test.txt"
+_TRAIN_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/E-commerce/train_revised.txt"
+_VALIDATION_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/E-commerce/dev_revised.txt"
+_TEST_DOWNLOAD_URL="https://cdatalab1.oss-cn-beijing.aliyuncs.com/dialogue/E-commerce/test_revised.txt"
 
 
 class E_commerce(datalabs.GeneratorBasedBuilder):
@@ -33,9 +34,9 @@ class E_commerce(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
-                "context": datalabs.features.Sequence(datalabs.Value("string")),
-                "utterance": datalabs.Value("string"),
-                "label": datalabs.Value("int32") 
+                "context": Sequence(Value("string")),
+                "utterance": Sequence(Value("string")),
+                "label": Value("int32") 
                 }
             ),
             supervised_keys=None,
@@ -68,9 +69,9 @@ class E_commerce(datalabs.GeneratorBasedBuilder):
         with open(filepath, encoding="utf-8") as f:
             
             for id_, row in enumerate(f):
-                line=row.strip().split('\t')
+                line=row.strip().split('##')
                 yield id_, {
-                    "context": line[1:-1],
-                    "utterance": line[-1],
-                    "label":int(line[0])
+                    "context": line[0].split('\t'),
+                    "utterance": line[1].split('\t'),
+                    "label":int(line[2])
                 }
