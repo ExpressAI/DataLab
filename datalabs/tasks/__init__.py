@@ -2,7 +2,6 @@ from typing import Optional
 
 from datalabs.tasks import (
     argument_pair_extraction,
-    argument_pair_identification,
     cloze,
     conditional_generation,
     coreference_resolution,
@@ -14,6 +13,7 @@ from datalabs.tasks import (
     multilabel_classification,
     poetry,
     question_answering,
+    ranking,
     retrieval,
     semantic_parsing,
     sequence_labeling,
@@ -62,9 +62,9 @@ __all__ = [
     "TaskType",
     "get_task",
     "poetry",
-    "argument_pair_identification",
     "register_task",
     "TASK_REGISTRY",
+    "ranking",
     "get_logger",
 ]
 

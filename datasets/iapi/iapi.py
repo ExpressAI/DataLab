@@ -50,14 +50,11 @@ class IAPI(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             features=datalabs.Features(
                 {
+                   "quotation": Value("string"),
+                    "replies": Sequence(Value("string")),
+                    "label": Value("int32"),
                     "quotation_context": Value("string"),
-                    "quotation": Value("string"),
-                    "positive_reply": Value("string"),
-                    "positive_reply_context": Value("string"),
-                    "negative_replies":{
-                        "negative_reply": Sequence(Value("string")),
-                        "negative_reply_context": Sequence(Value("string")),
-                    }
+                    "replies_context": Sequence(Value("string")),
                 }
             ),
             supervised_keys=None,
@@ -66,11 +63,9 @@ class IAPI(datalabs.GeneratorBasedBuilder):
             languages=["zh"],
             task_templates=[
                 get_task(TaskType.argument_pair_identification)(
-                    quotation_context_column="quotation_context", 
-                    quotation_column="quotation", 
-                    positive_reply_column="positive_reply",
-                    positive_reply_context_column="positive_reply_context",
-                    negative_replies_column="negative_replies",
+                    context_column= "quotation",
+                    utterance_column="replies",
+                    label_column="label",
                      
                 ),
             ],
@@ -92,12 +87,9 @@ class IAPI(datalabs.GeneratorBasedBuilder):
                 line = line.split('#')
 
                 yield id_, {
-                    "quotation_context": line[0], 
                     "quotation": line[1], 
-                    "positive_reply": line[2], 
-                    "positive_reply_context": line[3],
-                    "negative_replies":{
-                        "negative_reply": [line[4],line[6],line[8],line[10]],
-                        "negative_reply_context":[line[5],line[7],line[9],line[11]],
-                   }
+                    "replies":  [line[2],line[4],line[6],line[8],line[10]],
+                    "label": 0,
+                    "quotation_context": line[0], 
+                    "replies_context": [line[3],line[5],line[7],line[9],line[11]],
                 }
