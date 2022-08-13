@@ -13,6 +13,7 @@ from datalabs.tasks import (
     multilabel_classification,
     poetry,
     question_answering,
+    ranking,
     retrieval,
     semantic_parsing,
     sequence_labeling,
@@ -23,7 +24,6 @@ from datalabs.tasks import (
     tabular_regression,
     text_classification,
     text_editing,
-    ranking,
     text_pair_classification,
 )
 from datalabs.tasks.base import (
