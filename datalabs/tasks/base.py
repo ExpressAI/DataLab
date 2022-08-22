@@ -48,6 +48,7 @@ class TaskType(str, Enum):
     qa_bool_dureader = "qa-bool-dureader"
     qa_extractive_dureader = "qa-extractive-dureader"
     qa_multiple_choice_nlpec = "qa-multiple-choice-nlpec"
+    qa_table_text_hybrid = "qa-table-text-hybrid"
     sequence_labeling = "sequence-labeling"
     named_entity_recognition = "named-entity-recognition"
     word_segmentation = "word-segmentation"

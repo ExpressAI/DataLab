@@ -364,6 +364,17 @@ class QuestionAnsweringExtractiveDureader(QuestionAnsweringExtractive):
     )
 
 
+@register_task(TaskType.qa_table_text_hybrid)
+@dataclass
+class QuestionAnsweringTableTextHybrid(QuestionAnsweringExtractive):
+    task: TaskType = TaskType.qa_table_text_hybrid
+    question_column: str = "question"
+    context_column: str = "paragraphs"
+    table_column: str = "table"
+    answer_column: str = "answer"
+    answer_scale_column: str = "scale"
+
+
 @register_task(TaskType.qa_multiple_choice_nlpec)
 @dataclass
 class QuestionAnsweringMultipleChoiceNLPEC(QuestionAnsweringMultipleChoice):
