@@ -73,8 +73,8 @@ setup(
     long_description_content_type="text/markdown",
     author="expressai",
     author_email="stefanpengfei@gamil.com",
-    url="https://github.com/expressai/datalabs",
-    download_url="https://github.com/expressai/datalabs/tags",
+    url="https://github.com/expressai/datalab",
+    download_url="https://github.com/expressai/datalab/tags",
     license="Apache 2.0",
     packages=find_packages(),
     package_data={
