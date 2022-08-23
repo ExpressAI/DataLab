@@ -372,6 +372,7 @@ class QuestionAnsweringTableTextHybrid(QuestionAnsweringExtractive):
     context_column: str = "paragraphs"
     table_column: str = "table"
     answer_column: str = "answer"
+    answer_type_column: str = "answer_type"
     answer_scale_column: str = "scale"
 
 
