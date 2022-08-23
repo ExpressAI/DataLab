@@ -126,7 +126,15 @@ class TATQA(datalabs.GeneratorBasedBuilder):
             # No default supervised_keys (as we have to pass both question
             # and context as input).
             supervised_keys=None,
-            task_templates=get_task(TaskType.qa_table_text_hybrid)(),
+            task_templates=get_task(TaskType.qa_table_text_hybrid)(
+                question_column="question",
+                context_column= "paragraphs",
+                table_column= "table",
+                answer_column = "answer",
+                answer_type_column = "answer_type",
+                answer_scale_column = "scale",
+
+            ),
             homepage="https://rajpurkar.github.io/SQuAD-explorer/",
             citation=_CITATION,
         )
