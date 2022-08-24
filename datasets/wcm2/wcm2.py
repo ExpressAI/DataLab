@@ -131,11 +131,8 @@ class WCM2(datalabs.GeneratorBasedBuilder):
         lang = str(self.config.name)
 
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
-        print(f"train_path: \t{train_path}")
         validation_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
-        print(f"validation_path: \t{validation_path}")
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL[lang])
-        print(f"test_path: \t{test_path}")
 
         return [
             datalabs.SplitGenerator(
