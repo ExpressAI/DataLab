@@ -88,7 +88,6 @@ class OnlineShopping(datalabs.GeneratorBasedBuilder):
         valid_path = dl_manager.download_and_extract(_VALIDATION_DOWNLOAD_URL)
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
-        print(f"train_path: \t{train_path}")
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}

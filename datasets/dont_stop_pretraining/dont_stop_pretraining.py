@@ -182,15 +182,12 @@ class DontStopPretraining(datalabs.GeneratorBasedBuilder):
         train_path = dl_manager.download_and_extract(
             f"{_BASE_URL}/{self.config.name}/train.jsonl"
         )
-        print(f"train_path: \t{train_path}")
         dev_path = dl_manager.download_and_extract(
             f"{_BASE_URL}/{self.config.name}/dev.jsonl"
         )
-        print(f"dev_path: \t{dev_path}")
         test_path = dl_manager.download_and_extract(
             f"{_BASE_URL}/{self.config.name}/test.jsonl"
         )
-        print(f"test_path: \t{test_path}")
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}

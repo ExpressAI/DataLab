@@ -82,9 +82,7 @@ class SST5(datalabs.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         train_path = dl_manager.download_and_extract(_TRAIN_DOWNLOAD_URL)
-        print(f"train_path: \t{train_path}")
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
-        print(f"test_path: \t{test_path}")
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
