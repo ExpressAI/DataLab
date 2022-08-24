@@ -111,7 +111,7 @@ class NQ(datalabs.GeneratorBasedBuilder):
 
     def _generate_examples(self, filepath):
         """This function returns the examples in the json form."""
-        print("generating examples from = %s", filepath)
+        logger.info("generating examples from = %s", filepath)
         key = 0
         with open(filepath, 'rb') as f:
             nq = json.load(f)
