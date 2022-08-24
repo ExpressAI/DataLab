@@ -25,7 +25,6 @@ from functools import partial
 import inspect
 import os
 import shutil
-import sys
 import textwrap
 from typing import Dict, Mapping, Optional, Tuple, Union
 import urllib
@@ -63,7 +62,6 @@ from datalabs.utils.info_utils import (
 )
 from datalabs.utils.mock_download_manager import MockDownloadManager
 from datalabs.utils.streaming_download_manager import StreamingDownloadManager
-
 
 logger = logging.get_logger(__name__)
 
