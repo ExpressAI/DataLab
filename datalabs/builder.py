@@ -65,10 +65,6 @@ from datalabs.utils.mock_download_manager import MockDownloadManager
 from datalabs.utils.streaming_download_manager import StreamingDownloadManager
 
 
-def eprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
-
-
 logger = logging.get_logger(__name__)
 
 
@@ -696,11 +692,11 @@ class DatasetBuilder:
                         if os.path.exists(tmp_dir):
                             shutil.rmtree(tmp_dir)
 
-            # Print is intentional: we want this to always go to stdout so user has
-            # information needed to cancel download/preparation if needed.
+            # Notifies users that download/prepration just start so that they
+            # can cancel the operations if needed.
             # This comes right before the progress bar.
             if self.info.size_in_bytes:
-                eprint(
+                logger.info(
                     f"Downloading and preparing dataset"
                     f" {self.info.builder_name}/{self.info.config_name} "
                     f"(download: {utils.size_str(self.info.download_size)}, generated:"
@@ -711,7 +707,7 @@ class DatasetBuilder:
                     f"to {self._cache_dir}..."
                 )
             else:
-                eprint(
+                logger.info(
                     f"Downloading and preparing dataset"
                     f" {self.info.builder_name}/{self.info.config_name} to"
                     f" {self._cache_dir}..."
@@ -750,8 +746,8 @@ class DatasetBuilder:
                             **download_and_prepare_kwargs,
                         )
                     # Sync info
-                    eprint(f"self.info.dataset_size: {self.info.dataset_size}")
-                    eprint(f"self.info.download_size: {self.info.download_size}")
+                    logger.info(f"self.info.dataset_size: {self.info.dataset_size}")
+                    logger.info(f"self.info.download_size: {self.info.download_size}")
 
                     self.info.dataset_size = sum(
                         split.num_bytes for split in self.info.splits.values()
@@ -772,7 +768,7 @@ class DatasetBuilder:
             # Download post processing resources
             self.download_post_processing_resources(dl_manager)
 
-            eprint(
+            logger.info(
                 f"Dataset {self.name} downloaded and prepared to {self._cache_dir}. "
                 f"Subsequent calls will reuse this data."
             )
