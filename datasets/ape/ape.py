@@ -62,7 +62,7 @@ class APE(datalabs.GeneratorBasedBuilder):
             homepage="http://www.fudan-disc.com/sharedtask/AIDebater21/tracks.html",
             citation=_CITATION,
             license=_LICENSE,
-            languages=["zh"],
+            languages=["en"],
             task_templates=[
                 get_task(TaskType.argument_pair_extraction)(
                     sentences_column="sentences", labels_column="tags"

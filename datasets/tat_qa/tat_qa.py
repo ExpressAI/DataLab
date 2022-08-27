@@ -125,6 +125,7 @@ class TATQA(datalabs.GeneratorBasedBuilder):
             ),
             # No default supervised_keys (as we have to pass both question
             # and context as input).
+            languages=["en"],
             supervised_keys=None,
             task_templates=get_task(TaskType.qa_table_text_hybrid)(
                 question_column="question",
