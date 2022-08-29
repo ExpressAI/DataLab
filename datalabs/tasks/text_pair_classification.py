@@ -73,6 +73,15 @@ class ClaimStanceClassification(TextPairClassification):
     label_column: str = "label"
 
 
+@register_task(TaskType.argument_discovery)
+@dataclass
+class Argument_Discovery(TextPairClassification):
+    task: TaskType = TaskType.argument_discovery
+    text1_column: str = "text1"
+    text2_column: str = "text2"
+    label_column: str = "label"
+
+
 @register_task(TaskType.text_similarity)
 @dataclass
 class TextSimilarity(TextPairClassification):
