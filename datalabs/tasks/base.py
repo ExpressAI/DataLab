@@ -113,6 +113,7 @@ class TaskType(str, Enum):
     grammatical_error_correction_m2 = "grammatical-error-correction-m2"
     essay_writing = "essay-writing"
     argument_pair_extraction = "argument-pair-extraction"
+    argument_discovery = "argument-discovery"
     dialogue = "dialogue"
     argument_pair_identification = "argument-pair-identification"
     knowledge_driven_dialogue = "knowledge-driven-dialogue"
