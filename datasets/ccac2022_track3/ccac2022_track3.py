@@ -69,7 +69,7 @@ class CCAC2022_track3(datalabs.GeneratorBasedBuilder):
 
     def _generate_examples(self, filepath):
 
-        with open(filepath) as f:
+        with open(filepath,encoding='latin-1') as f:
             for id_, line in enumerate(f):
                 line = line.split('\t')
 
