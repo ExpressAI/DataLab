@@ -76,10 +76,10 @@ def task_template_from_dict(task_template_dict: dict) -> Optional[TaskTemplate]:
     """Create one of the supported task templates in :py:mod:
     `datalab.tasks` from a dictionary."""
     task_name = task_template_dict.get("task")
-    if task_name is None:
-        logger.warning(
+    if task_name is None or not isinstance(task_name, str):
+        raise ValueError(
             f"Couldn't find template for task '{task_name}'. "
             f"Available templates: {list(TASK_REGISTRY.keys())}"
         )
-        return None
-    return get_task(task_name).from_dict(task_template_dict)
+    task_type = TaskType(task_name)
+    return get_task(task_type).from_dict(task_template_dict)
