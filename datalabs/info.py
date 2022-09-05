@@ -375,9 +375,9 @@ class DatasetInfo:
         if self.task_templates is not None:
             if isinstance(self.task_templates, (list, tuple)):
                 templates = [
-                    template
-                    if isinstance(template, TaskTemplate)
-                    else task_template_from_dict(template)
+                    task_template_from_dict(template)
+                    if isinstance(template, dict)
+                    else template
                     for template in self.task_templates
                 ]
                 self.task_templates = [
