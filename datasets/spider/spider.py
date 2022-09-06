@@ -77,7 +77,9 @@ class Spider(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             task_templates=[
                 get_task(TaskType.text_to_sql)(
-                    question_column="question", query_column="query"
+                    question_column="question",
+                    db_id_column = "db_id",
+                    query_column="query",
                 )
             ],
         )
