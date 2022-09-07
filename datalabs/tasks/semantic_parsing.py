@@ -33,7 +33,13 @@ class TexttoSQL(SemanticParsing):
     "query_toks_no_value": datalabs.features.Sequence(datalabs.Value("string")),
     "question_toks": datalabs.features.Sequence(datalabs.Value("string")),
     """
-    input_schema: ClassVar[Features] = Features({"question": Value("string")})
+    input_schema: ClassVar[Features] = Features(
+        {
+            "question": Value("string"),
+            "db_id": Value("string"),
+        }
+    )
     label_schema: ClassVar[Features] = Features({"query": Value("string")})
     question_column: str = "question"
+    db_id_column: str = "db_id"
     query_column: str = "query"
