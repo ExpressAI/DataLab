@@ -99,7 +99,7 @@ class Gaokao2018NP1(datalabs.GeneratorBasedBuilder):
                     context_column="context",
                     options_column="options",
                     question_column="question",
-                    answers_column="answer",
+                    answers_column="answers",
                 )
             ],
         ),
