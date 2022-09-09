@@ -37,13 +37,13 @@ _CITATION = """\
 _LICENSE = "NA"
 
 _TRAIN_DOWNLOAD_URL = (
-    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/argument_pair_extraction/ape/train.txt"
+    "https://datalab-hub.s3.amazonaws.com/ape/train.txt"
 )
 _VALIDATION_DOWNLOAD_URL = (
-    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/argument_pair_extraction/ape/dev.txt"
+    "https://datalab-hub.s3.amazonaws.com/ape/dev.txt"
 )
 _TEST_DOWNLOAD_URL = (
-    "https://cdatalab1.oss-cn-beijing.aliyuncs.com/argument_pair_extraction/ape/test.txt"
+    "https://datalab-hub.s3.amazonaws.com/ape/test.txt"
 )
 
 
