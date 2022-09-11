@@ -740,7 +740,7 @@ def parquet_to_arrow(sources, destination):
     """Convert parquet files to arrow file. Inputs can be str paths or
     file-like objects"""
     stream = None if isinstance(destination, str) else destination
-    disable = bool(logging.get_verbosity() == logging.NOTSET)
+    disable = bool(logging.get_verbosity() >= logging.WARNING)
     with ArrowWriter(path=destination, stream=stream) as writer:
         for source in utils.tqdm(sources, unit="sources", disable=disable):
             pf = pa.parquet.ParquetFile(source)

@@ -589,7 +589,7 @@ def _get_origin_metadata_locally_or_by_urls(
         max_workers=max_workers,
         tqdm_class=tqdm,
         desc="Resolving data files",
-        disable=len(data_files) <= 16 or logging.get_verbosity() == logging.NOTSET,
+        disable=len(data_files) <= 16 or logging.get_verbosity() >= logging.WARNING,
     )
 
 

@@ -536,7 +536,7 @@ def http_get(
         total=total,
         initial=resume_size,
         desc="Downloading",
-        disable=bool(logging.get_verbosity() == logging.NOTSET),
+        disable=bool(logging.get_verbosity() >= logging.WARNING),
     )
     for chunk in response.iter_content(chunk_size=1024):
         if chunk:  # filter out keep-alive new chunks

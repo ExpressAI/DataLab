@@ -298,7 +298,7 @@ def map_nested(
 
     disable_tqdm = (
         disable_tqdm
-        or bool(logging.get_verbosity() == logging.NOTSET)
+        or bool(logging.get_verbosity() >= logging.WARNING)
         or not utils.is_progress_bar_enabled()
     )
     iterable = (
