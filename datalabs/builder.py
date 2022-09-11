@@ -1332,7 +1332,7 @@ class GeneratorBasedBuilder(DatasetBuilder):
                     unit=" examples",
                     total=split_info.num_examples,
                     leave=False,
-                    disable=bool(logging.get_verbosity() == logging.NOTSET),
+                    disable=bool(logging.get_verbosity() >= logging.WARNING),
                 ):
                     example = self.info.features.encode_example(record)
                     writer.write(example, key)
@@ -1394,7 +1394,7 @@ class ArrowBasedBuilder(DatasetBuilder):
                 generator,
                 unit=" tables",
                 leave=False,
-                disable=True,  # bool(logging.get_verbosity() == logging.NOTSET)
+                disable=True,  # bool(logging.get_verbosity() >= logging.WARNING)
             ):
                 writer.write_table(table)
             num_examples, num_bytes = writer.finalize()

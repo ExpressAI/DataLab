@@ -196,7 +196,7 @@ class ElasticSearchIndex(BaseIndex):
         progress = utils.tqdm(
             unit="docs",
             total=number_of_docs,
-            disable=bool(logging.get_verbosity() == logging.NOTSET),
+            disable=bool(logging.get_verbosity() >= logging.WARNING),
         )
         successes = 0
 
@@ -386,7 +386,7 @@ class FaissIndex(BaseIndex):
         logger.info(f"Adding {len(vectors)} vectors to the faiss index")
         for i in utils.tqdm(
             range(0, len(vectors), batch_size),
-            disable=bool(logging.get_verbosity() == logging.NOTSET),
+            disable=bool(logging.get_verbosity() >= logging.WARNING),
         ):
             vecs = (
                 vectors[i : i + batch_size]

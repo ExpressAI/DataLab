@@ -2892,7 +2892,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             )
 
         disable_tqdm = (
-            bool(logging.get_verbosity() == logging.NOTSET)
+            bool(logging.get_verbosity() >= logging.WARNING)
             or not utils.is_progress_bar_enabled()
         )
 
@@ -4718,7 +4718,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
                 file_shards_to_delete,
                 desc="Deleting unused files from dataset repository",
                 total=len(file_shards_to_delete),
-                disable=bool(logging.get_verbosity() == logging.NOTSET)
+                disable=bool(logging.get_verbosity() >= logging.WARNING)
                 or not utils.is_progress_bar_enabled(),
             ):
                 delete_file(file)
@@ -4727,7 +4727,7 @@ class Dataset(DatasetInfoMixin, IndexableMixin, TensorflowDatasetMixin, TextData
             enumerate(shards),
             desc="Pushing dataset shards to the dataset hub",
             total=num_shards,
-            disable=bool(logging.get_verbosity() == logging.NOTSET),
+            disable=bool(logging.get_verbosity() >= logging.WARNING),
         ):
             buffer = BytesIO()
             shard.to_parquet(buffer)
