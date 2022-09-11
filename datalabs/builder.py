@@ -53,7 +53,7 @@ from datalabs.naming import camelcase_to_snakecase, filename_prefix_for_split
 from datalabs.splits import Split, SplitDict, SplitGenerator
 from datalabs.utils import logging
 from datalabs.utils.download_manager import DownloadManager, GenerateMode
-from datalabs.utils.file_utils import DownloadConfig, is_remote_url
+from datalabs.utils.file_utils import DownloadConfig, is_remote_url, rmdir
 from datalabs.utils.filelock import FileLock
 from datalabs.utils.info_utils import (
     get_size_checksum_dict,
@@ -654,9 +654,15 @@ class DatasetBuilder:
                 # We need to update the info in case some splits were added
                 # in the meantime
                 # for example when calling load_dataset from multiple workers.
-                self.info = self._load_info()
-                self.download_post_processing_resources(dl_manager)
-                return
+                try:
+                    self.info = self._load_info()
+                    self.download_post_processing_resources(dl_manager)
+                    return
+                except ValueError:
+                    # The cache has some incorrect data.
+                    # Fall-through to generate a new cache.
+                    rmdir(self._cache_dir)
+
             logger.info(f"Generating dataset {self.name} ({self._cache_dir})")
             if not is_remote_url(
                 self._cache_dir_root

@@ -826,3 +826,18 @@ def readline(f: io.RawIOBase):
         if res.endswith(b"\n"):
             break
     return bytes(res)
+
+
+def rmdir(root_path: str) -> None:
+    """Recursively removes a directory."""
+    root = Path(root_path)
+    if not root.exists():
+        return
+
+    for item in root.iterdir():
+        if item.is_dir():
+            rmdir(item)
+        else:
+            item.unlink()
+
+    root.rmdir()
