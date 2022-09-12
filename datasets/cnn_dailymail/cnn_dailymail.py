@@ -91,6 +91,7 @@ def custom_download(url, path):
         response = subprocess.check_output(
             [
                 "wget",
+                "--progress=dot:giga",
                 "--save-cookies",
                 os.path.join(tmpdir, "cookies.txt"),
                 f"{url}",
@@ -111,6 +112,7 @@ def custom_download(url, path):
         subprocess.check_output(
             [
                 "wget",
+                "--progress=dot:giga",
                 "--load-cookies",
                 os.path.join(tmpdir, "cookies.txt"),
                 "-O",
