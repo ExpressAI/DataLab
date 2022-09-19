@@ -25,6 +25,7 @@ from datalabs.tasks import (
     text_classification,
     text_editing,
     text_pair_classification,
+    meta_evaluation
 )
 from datalabs.tasks.base import (
     get_task,
@@ -58,6 +59,7 @@ __all__ = [
     "argument_pair_extraction",
     "cloze",
     "text_editing",
+    "meta_evaluation",
     "TaskTemplate",
     "TaskType",
     "get_task",
@@ -67,7 +69,6 @@ __all__ = [
     "ranking",
     "get_logger",
 ]
-
 
 logger = get_logger(__name__)
 
