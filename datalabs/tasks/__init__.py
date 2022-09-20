@@ -10,6 +10,7 @@ from datalabs.tasks import (
     grammatical_error_correction,
     kg_prediction,
     machine_translation,
+    meta_evaluation,
     multilabel_classification,
     poetry,
     question_answering,
@@ -58,6 +59,7 @@ __all__ = [
     "argument_pair_extraction",
     "cloze",
     "text_editing",
+    "meta_evaluation",
     "TaskTemplate",
     "TaskType",
     "get_task",
@@ -67,7 +69,6 @@ __all__ = [
     "ranking",
     "get_logger",
 ]
-
 
 logger = get_logger(__name__)
 

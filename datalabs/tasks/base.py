@@ -123,6 +123,7 @@ class TaskType(str, Enum):
     dialogue_empathetic = "dialogue-empathetic"
     tabular_classification = "tabular-classification"
     tabular_regression = "tabular-regression"
+    nlg_meta_evaluation = "nlg-meta-evaluation"
 
     @staticmethod
     def list():
