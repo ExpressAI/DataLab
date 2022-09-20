@@ -30,15 +30,15 @@ class MevalSummEval(datalabs.GeneratorBasedBuilder):
                 "references": Sequence(Value("string")),
                 "hypotheses": Sequence({
                     "system_name": Value("string"),
-                    "hypothesis": Value("string"),
-                    "scores": {
-                        "coherence": Value("float64"),
-                        "consistency": Value("float64"),
-                        "fluency": Value("float64"),
-                        "relevance": Value("float64")
-                    }
+                    "hypothesis": Value("string")
                 }
-                )
+                ),
+                "scores": Sequence({
+                    "coherence": Value("float64"),
+                    "consistency": Value("float64"),
+                    "fluency": Value("float64"),
+                    "relevance": Value("float64")
+                })
             }
         )
         return datalabs.DatasetInfo(
@@ -48,11 +48,11 @@ class MevalSummEval(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["en"],
             task_templates=[
-                get_task(TaskType.meta_evaluation)(
+                get_task(TaskType.nlg_meta_evaluation)(
                     source_column="source",
                     hypotheses_column="hypothesis",
                     references_column="references",
-                    scores_aspects="coherence,consistency,fluency,relevance"
+                    scores_column="scores",
                 )
             ]
         )
@@ -71,9 +71,14 @@ class MevalSummEval(datalabs.GeneratorBasedBuilder):
             for id_, line in enumerate(f.readlines()):
                 line = line.strip()
                 line = json.loads(line)
-                source, hypotheses, references = line["source"], line["hypotheses"], line["references"]
+                source, hypotheses_scores, references = line["source"], line["hypotheses"], line["references"]
+
+                hypotheses = [ {"system_name":x["system_name"],
+                                "hypothesis":x["hypothesis"]} for x in hypotheses_scores]
+                scores = [x["scores"] for x in hypotheses_scores]
                 yield id_, {
                     "source": source,
                     "hypotheses": hypotheses,
                     "references": references,
+                    "scores": scores,
                 }

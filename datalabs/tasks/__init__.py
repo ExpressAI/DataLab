@@ -10,6 +10,7 @@ from datalabs.tasks import (
     grammatical_error_correction,
     kg_prediction,
     machine_translation,
+    meta_evaluation,
     multilabel_classification,
     poetry,
     question_answering,
@@ -25,7 +26,6 @@ from datalabs.tasks import (
     text_classification,
     text_editing,
     text_pair_classification,
-    meta_evaluation
 )
 from datalabs.tasks.base import (
     get_task,

@@ -41,11 +41,11 @@ class MevalRank19(datalabs.GeneratorBasedBuilder):
                 "hypotheses": Sequence({
                     "system_name": Value("string"),
                     "hypothesis": Value("string"),
-                    "scores": {
-                        "factuality": Value("float64"),
-                    }
                 }
-                )
+                ),
+                "scores": Sequence({
+                    "factuality": Value("float64"),
+                })
             }
         )
         return datalabs.DatasetInfo(
@@ -55,11 +55,11 @@ class MevalRank19(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["en"],
             task_templates=[
-                get_task(TaskType.meta_evaluation)(
+                get_task(TaskType.nlg_meta_evaluation)(
                     source_column="source",
                     hypotheses_column="hypothesis",
                     references_column="references",
-                    scores_aspects="factuality"
+                    scores_column="scores",
                 )
             ]
         )
@@ -78,9 +78,14 @@ class MevalRank19(datalabs.GeneratorBasedBuilder):
             for id_, line in enumerate(f.readlines()):
                 line = line.strip()
                 line = json.loads(line)
-                source, hypotheses, references = line["source"], line["hypotheses"], line["references"]
+                source, hypotheses_scores, references = line["source"], line["hypotheses"], line["references"]
+
+                hypotheses = [ {"system_name":x["system_name"],
+                                "hypothesis":x["hypothesis"]} for x in hypotheses_scores]
+                scores = [x["scores"] for x in hypotheses_scores]
                 yield id_, {
                     "source": source,
                     "hypotheses": hypotheses,
                     "references": references,
+                    "scores": scores,
                 }

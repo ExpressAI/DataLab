@@ -42,14 +42,14 @@ class MevalSFRES(datalabs.GeneratorBasedBuilder):
                 "references": Sequence(Value("string")),
                 "hypotheses": Sequence({
                     "system_name": Value("string"),
-                    "hypothesis": Value("string"),
-                    "scores": {
-                        "informativeness": Value("float64"),
-                        "naturalness": Value("float64"),
-                        "quality": Value("float64")
-                    }
+                    "hypothesis": Value("string")
                 }
-                )
+                ),
+                "scores": Sequence({
+                    "informativeness": Value("float64"),
+                    "naturalness": Value("float64"),
+                    "quality": Value("float64")
+                })
             }
         )
         return datalabs.DatasetInfo(
@@ -59,11 +59,11 @@ class MevalSFRES(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["en"],
             task_templates=[
-                get_task(TaskType.meta_evaluation)(
+                get_task(TaskType.nlg_meta_evaluation)(
                     source_column="source",
                     hypotheses_column="hypothesis",
                     references_column="references",
-                    scores_aspects="informativeness,naturalness,quality"
+                    scores_column="scores",
                 )
             ]
         )
@@ -88,8 +88,8 @@ class MevalSFRES(datalabs.GeneratorBasedBuilder):
                     "source": source,
                     "hypotheses": [{
                         "system_name": "Unknown",
-                        "hypothesis": hypothesis,
-                        "scores": scores
+                        "hypothesis": hypothesis
                     }],
                     "references": references,
+                    "scores": [scores],
                 }

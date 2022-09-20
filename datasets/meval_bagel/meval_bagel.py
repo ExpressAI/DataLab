@@ -42,14 +42,14 @@ class MevalBAGEL(datalabs.GeneratorBasedBuilder):
                 "references": Sequence(Value("string")),
                 "hypotheses": Sequence({
                     "system_name": Value("string"),
-                    "hypothesis": Value("string"),
-                    "scores": {
+                    "hypothesis": Value("string")
+                }
+                ),
+                "scores": Sequence({
                         "informativeness": Value("float64"),
                         "naturalness": Value("float64"),
                         "quality": Value("float64")
-                    }
-                }
-                )
+                })
             }
         )
         return datalabs.DatasetInfo(
@@ -59,11 +59,11 @@ class MevalBAGEL(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["en"],
             task_templates=[
-                get_task(TaskType.meta_evaluation)(
+                get_task(TaskType.nlg_meta_evaluation)(
                     source_column="source",
                     hypotheses_column="hypothesis",
                     references_column="references",
-                    scores_aspects="informativeness,naturalness,quality"
+                    scores_column = "scores",
                 )
             ]
         )
@@ -82,14 +82,17 @@ class MevalBAGEL(datalabs.GeneratorBasedBuilder):
             for id_, line in enumerate(f.readlines()):
                 line = line.strip()
                 line = json.loads(line)
-                source, hypothesis, references, scores = line["source"], line["hypothesis"], line["references"], line[
-                    "scores"]
+                source, hypothesis, references, scores = line["source"], \
+                                                         line["hypothesis"],\
+                                                         line["references"],\
+                                                         line["scores"]
+
                 yield id_, {
                     "source": source,
                     "hypotheses": [{
                         "system_name": "Unknown",
                         "hypothesis": hypothesis,
-                        "scores": scores
                     }],
+                    "scores": [scores],
                     "references": references,
                 }
