@@ -126,6 +126,7 @@ class TaskType(str, Enum):
     nlg_meta_evaluation = "nlg-meta-evaluation"
     meta_evaluation_wmt = "meta-evaluation-wmt"
 
+
     @staticmethod
     def list():
         return list(map(lambda c: c.value, TaskType))
