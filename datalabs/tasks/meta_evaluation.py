@@ -31,3 +31,22 @@ class NLGMetaEvaluation(TaskTemplate):
                     ),
                 }
             )
+
+
+@register_task(TaskType.meta_evaluation_wmt)
+@dataclass
+class MetaEvaluationWMT(TaskTemplate):
+    task: TaskType = TaskType.meta_evaluation_wmt
+    sys_name_column: str = "sys_name"
+    seg_id_column: str = "seg_id"
+    test_set_column: str = "test_set"
+    source_column: str = "src"
+    reference_column: str = "ref"
+    hypothesis_column: str = "sys"
+    manual_score_raw_column: str = "manual_score_raw"
+    manual_score_z_column: str = "manual_score_z"
+
+    def __post_init__(self):
+        self.task_categories = [
+            task_cls.get_task() for task_cls in self.get_task_parents()
+        ]
