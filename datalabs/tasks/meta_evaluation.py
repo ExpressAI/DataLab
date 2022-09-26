@@ -31,7 +31,6 @@ class NLGMetaEvaluation(TaskTemplate):
                     ),
                 }
             )
- 
 
 
 @register_task(TaskType.meta_evaluation_wmt)
