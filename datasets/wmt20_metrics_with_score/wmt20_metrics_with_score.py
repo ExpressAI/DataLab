@@ -94,7 +94,7 @@ class Wmt20Metrics(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            task_templates = [get_task(TaskType.meta_evaluation_wmt)(
+            task_templates = [get_task(TaskType.meta_evaluation_wmt_da)(
                 sys_name_column= "sys_name",
                 seg_id_column= "seg_id",
                 test_set_column = "test_set",
