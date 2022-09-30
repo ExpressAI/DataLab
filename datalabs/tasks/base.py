@@ -124,7 +124,7 @@ class TaskType(str, Enum):
     tabular_classification = "tabular-classification"
     tabular_regression = "tabular-regression"
     nlg_meta_evaluation = "nlg-meta-evaluation"
-    meta_evaluation_wmt = "meta-evaluation-wmt"
+    meta_evaluation_wmt_da = "meta-evaluation-wmt-da"
 
     @staticmethod
     def list():

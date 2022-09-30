@@ -5,6 +5,7 @@ import pickle
 
 import datalabs
 from datalabs import get_task, TaskType
+
 logger = datalabs.logging.get_logger(__name__)
 
 _DL_URLS = {
@@ -60,13 +61,19 @@ _LANGUAGES = [
     "en-zh",
 ]
 
+_SUPPORTED_VERSIONS = [
+    "1.0.0", # don't filter
+    "1.0.1", # filter out systems without manual scores
+    "1.0.2", # filter out human systems
+    "1.0.3", # filter out segments without manual scores
+]
 
 class Wmt20Metrics(datalabs.GeneratorBasedBuilder):
     BUILDER_CONFIGS = [
         datalabs.BuilderConfig(
-            name="{}".format(lang),
+            name="{}_{}".format(lang, version), version=datalabs.Version(version)
         )
-        for lang in _LANGUAGES
+        for lang in _LANGUAGES for version in _SUPPORTED_VERSIONS
     ]
 
     def _info(self):
@@ -87,7 +94,7 @@ class Wmt20Metrics(datalabs.GeneratorBasedBuilder):
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
-            task_templates = [get_task(TaskType.meta_evaluation_wmt)(
+            task_templates = [get_task(TaskType.meta_evaluation_wmt_da)(
                 sys_name_column= "sys_name",
                 seg_id_column= "seg_id",
                 test_set_column = "test_set",
@@ -97,12 +104,12 @@ class Wmt20Metrics(datalabs.GeneratorBasedBuilder):
                 manual_score_raw_column = "manual_score_raw",
                 manual_score_z_column = "manual_score_z",
             )],
-            # task_templates=[
-            # ],
         )
 
     def _split_generators(self, dl_manager):
-        lang = str(self.config.name)
+        lang = str(self.config.name.split("_")[0])
+        version = str(self.config.name.split("_")[1])
+
         dl_paths = dl_manager.download_and_extract({
                 "DA": _DL_URLS["DA"] + 'metrics-ad-seg-scores-{}.csv'.format(lang),
                 "txt": _DL_URLS["txt"],
@@ -111,17 +118,17 @@ class Wmt20Metrics(datalabs.GeneratorBasedBuilder):
         print(dl_paths)
         data_dir = os.path.join(os.path.dirname(dl_paths["txt"]), "wmt20_metrics")
 
-        if not os.path.exists(data_dir) or not lang + "_data.pkl" in os.listdir(
+        if not os.path.exists(data_dir) or not "{}_{}_data.pkl".format(lang, version) in os.listdir(
             data_dir
         ):
-            _write_file(dl_paths, data_dir, lang)
+            _write_file(dl_paths, data_dir, lang, version)
 
         # Generate shared vocabulary
         return [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TEST,
                 gen_kwargs={
-                    "filepath": os.path.join(data_dir, lang + "_data.pkl"),
+                    "filepath": os.path.join(data_dir, "{}_{}_data.pkl".format(lang, version)),
                 },
             ),
         ]
@@ -155,7 +162,7 @@ def _save_pickle(data, file):
     print(f"Saved to {file}.")
 
 
-def _write_file(dl_paths, data_dir, pair):
+def _write_file(dl_paths, data_dir, pair, version):
     file_manual_name = dl_paths["DA"]
     dir_documents = dl_paths["txt"]
 
@@ -195,7 +202,6 @@ def _write_file(dl_paths, data_dir, pair):
         syss[systemName] = _readfile(os.path.join(dir_sys, file))
         assert len(syss[systemName])==num, 'language {}, {} number is different form refs'.format(pair, file)
 
-
     details_id_SID = {}
     details_SID_id = {}
     dir_details = os.path.join(os.path.join(dir_documents,"txt"),'details')
@@ -206,23 +212,28 @@ def _write_file(dl_paths, data_dir, pair):
         details_id_SID[int(tmp[0])] = tmp[3]+'::'+tmp[-1][:-1]
         details_SID_id[tmp[3]+'::'+tmp[-1][:-1]] = int(tmp[0])
 
-
     output_data = {}
     index = 0
-    for SYSName in syss:
-        for i in range(len(syss[SYSName])):
-            SEGID = details_id_SID[i+1]
+    for SYSName in sorted(syss.keys()):
+        if version == "1.0.1" and SYSName not in manual:
+            continue
+        if version == "1.0.2" and 'human' in SYSName.lower():
+            continue
+        for SEGID in sorted(details_SID_id.keys()):
+            i = details_SID_id[SEGID] - 1
             src = srcs[i][:-1]
             ref = refs[i][:-1]
             sys = syss[SYSName][i][:-1]
+            if version == "1.0.3" and (SYSName not in manual or SEGID not in manual[SYSName]):
+                continue
             manualRaw = str(manual[SYSName][SEGID][0]) if (SYSName in manual and SEGID in manual[SYSName]) else ""
             manualZ = str(manual[SYSName][SEGID][1]) if (SYSName in manual and SEGID in manual[SYSName]) else ""
-            
+
             output_data[index] = [SYSName, SEGID, TestSet, src, ref, sys, manualRaw, manualZ]
             index += 1
 
     if not os.path.exists(data_dir):
         os.makedirs(data_dir)
 
-    _save_pickle(output_data, os.path.join(data_dir, pair + "_data.pkl"))
-    print("language:{}, number of examples:{}".format(pair, len(output_data.keys())))
+    _save_pickle(output_data, os.path.join(data_dir, "{}_{}_data.pkl".format(pair, version)))
+    print("language:{}, version:{} number of examples:{}".format(pair, version, len(output_data.keys())))

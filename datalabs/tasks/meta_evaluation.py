@@ -33,10 +33,10 @@ class NLGMetaEvaluation(TaskTemplate):
             )
 
 
-@register_task(TaskType.meta_evaluation_wmt)
+@register_task(TaskType.meta_evaluation_wmt_da)
 @dataclass
-class MetaEvaluationWMT(TaskTemplate):
-    task: TaskType = TaskType.meta_evaluation_wmt
+class MetaEvaluationWMTDA(TaskTemplate):
+    task: TaskType = TaskType.meta_evaluation_wmt_da
     sys_name_column: str = "sys_name"
     seg_id_column: str = "seg_id"
     test_set_column: str = "test_set"
