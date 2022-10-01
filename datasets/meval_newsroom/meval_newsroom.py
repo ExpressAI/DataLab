@@ -31,7 +31,34 @@ _CITATION = """\
 _TEST_DOWNLOAD_URL = "https://datalab-hub.s3.amazonaws.com/meval/newsroom/test.jsonl"
 
 
+class MevalNewsroomConfig(datalabs.BuilderConfig):
+
+
+    def __init__(
+        self,
+        evaluation_aspect = None,
+        **kwargs
+    ):
+        super(MevalNewsroomConfig, self).__init__(**kwargs)
+        self.evaluation_aspect = evaluation_aspect
+
+
 class MevalNewsroom(datalabs.GeneratorBasedBuilder):
+
+    evaluation_aspects = [
+        "coherence",
+        "fluency",
+        "informativeness",
+        "relevance"
+    ]
+
+    BUILDER_CONFIGS = [MevalNewsroomConfig(
+        name=aspect,
+        version=datalabs.Version("1.0.0"),
+        evaluation_aspect=aspect
+    ) for aspect in evaluation_aspects]
+
+
     def _info(self):
         features = datalabs.Features(
             {
@@ -42,14 +69,7 @@ class MevalNewsroom(datalabs.GeneratorBasedBuilder):
                     "hypothesis": Value("string")
                 }
                 ),
-                "scores": Sequence(
-                    {
-                        "coherence": Value("float64"),
-                        "fluency": Value("float64"),
-                        "informativeness": Value("float64"),
-                        "relevance": Value("float64")
-                    }
-                )
+                "scores": Sequence(Value("float")),
             }
         )
         return datalabs.DatasetInfo(
@@ -59,7 +79,7 @@ class MevalNewsroom(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["en"],
             task_templates=[
-                get_task(TaskType.nlg_meta_evaluation)(
+                get_task(TaskType.meta_evaluation_nlg)(
                     source_column="source",
                     hypotheses_column="hypothesis",
                     references_column="references",
@@ -85,7 +105,7 @@ class MevalNewsroom(datalabs.GeneratorBasedBuilder):
                 source, hypotheses_scores, references = line["source"], line["hypotheses"], line["references"]
                 hypotheses = [ {"system_name":x["system_name"],
                                 "hypothesis":x["hypothesis"]} for x in hypotheses_scores]
-                scores = [x["scores"] for x in hypotheses_scores]
+                scores = [x["scores"][self.config.name] for x in hypotheses_scores]
                 yield id_, {
                     "source": source,
                     "hypotheses": hypotheses,

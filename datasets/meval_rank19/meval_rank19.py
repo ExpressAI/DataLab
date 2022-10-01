@@ -32,7 +32,31 @@ _CITATION = """\
 _TEST_DOWNLOAD_URL = "https://datalab-hub.s3.amazonaws.com/meval/rank19/data.jsonl"
 
 
+class MevalRank19Config(datalabs.BuilderConfig):
+
+
+    def __init__(
+        self,
+        evaluation_aspect = None,
+        **kwargs
+    ):
+        super(MevalRank19Config, self).__init__(**kwargs)
+        self.evaluation_aspect = evaluation_aspect
+
+
+
 class MevalRank19(datalabs.GeneratorBasedBuilder):
+
+    evaluation_aspects = [
+        "factuality",
+    ]
+    BUILDER_CONFIGS = [MevalRank19Config(
+        name=aspect,
+        version=datalabs.Version("1.0.0"),
+        evaluation_aspect=aspect
+    ) for aspect in evaluation_aspects]
+
+
     def _info(self):
         features = datalabs.Features(
             {
@@ -43,9 +67,7 @@ class MevalRank19(datalabs.GeneratorBasedBuilder):
                     "hypothesis": Value("string"),
                 }
                 ),
-                "scores": Sequence({
-                    "factuality": Value("float64"),
-                })
+                "scores": Sequence(Value("float")),
             }
         )
         return datalabs.DatasetInfo(
@@ -55,7 +77,7 @@ class MevalRank19(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["en"],
             task_templates=[
-                get_task(TaskType.nlg_meta_evaluation)(
+                get_task(TaskType.meta_evaluation_nlg)(
                     source_column="source",
                     hypotheses_column="hypothesis",
                     references_column="references",
@@ -82,7 +104,7 @@ class MevalRank19(datalabs.GeneratorBasedBuilder):
 
                 hypotheses = [ {"system_name":x["system_name"],
                                 "hypothesis":x["hypothesis"]} for x in hypotheses_scores]
-                scores = [x["scores"] for x in hypotheses_scores]
+                scores = [x["scores"][self.config.name] for x in hypotheses_scores]
                 yield id_, {
                     "source": source,
                     "hypotheses": hypotheses,

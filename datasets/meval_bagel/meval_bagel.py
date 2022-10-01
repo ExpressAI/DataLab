@@ -34,7 +34,33 @@ _CITATION = """\
 _TEST_DOWNLOAD_URL = "https://datalab-hub.s3.amazonaws.com/meval/bagel/test.jsonl"
 
 
+class MevalBAGELConfig(datalabs.BuilderConfig):
+
+
+    def __init__(
+        self,
+        evaluation_aspect = None,
+        **kwargs
+    ):
+        super(MevalBAGELConfig, self).__init__(**kwargs)
+        self.evaluation_aspect = evaluation_aspect
+
 class MevalBAGEL(datalabs.GeneratorBasedBuilder):
+
+    evaluation_aspects = [
+        "informativeness",
+        "naturalness",
+        "quality"
+    ]
+
+    BUILDER_CONFIGS = [MevalBAGELConfig(
+        name=aspect,
+        version=datalabs.Version("1.0.0"),
+        evaluation_aspect=aspect
+    ) for aspect in evaluation_aspects]
+
+
+
     def _info(self):
         features = datalabs.Features(
             {
@@ -45,11 +71,7 @@ class MevalBAGEL(datalabs.GeneratorBasedBuilder):
                     "hypothesis": Value("string")
                 }
                 ),
-                "scores": Sequence({
-                        "informativeness": Value("float64"),
-                        "naturalness": Value("float64"),
-                        "quality": Value("float64")
-                })
+                "scores": Sequence(Value("float")),
             }
         )
         return datalabs.DatasetInfo(
@@ -59,7 +81,7 @@ class MevalBAGEL(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["en"],
             task_templates=[
-                get_task(TaskType.nlg_meta_evaluation)(
+                get_task(TaskType.meta_evaluation_nlg)(
                     source_column="source",
                     hypotheses_column="hypothesis",
                     references_column="references",
@@ -93,6 +115,6 @@ class MevalBAGEL(datalabs.GeneratorBasedBuilder):
                         "system_name": "Unknown",
                         "hypothesis": hypothesis,
                     }],
-                    "scores": [scores],
+                    "scores": [scores[self.config.name]],
                     "references": references,
                 }

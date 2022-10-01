@@ -22,7 +22,34 @@ _CITATION = """\
 _TEST_DOWNLOAD_URL = "https://datalab-hub.s3.amazonaws.com/meval/summeval/test.jsonl"
 
 
+class MevalSummEvalConfig(datalabs.BuilderConfig):
+
+
+    def __init__(
+        self,
+        evaluation_aspect = None,
+        **kwargs
+    ):
+        super(MevalSummEvalConfig, self).__init__(**kwargs)
+        self.evaluation_aspect = evaluation_aspect
+
+
 class MevalSummEval(datalabs.GeneratorBasedBuilder):
+
+    evaluation_aspects = [
+        "coherence",
+        "fluency",
+        "consistency",
+        "relevance"
+    ]
+
+    BUILDER_CONFIGS = [MevalSummEvalConfig(
+        name=aspect,
+        version=datalabs.Version("1.0.0"),
+        evaluation_aspect=aspect
+    ) for aspect in evaluation_aspects]
+
+
     def _info(self):
         features = datalabs.Features(
             {
@@ -33,12 +60,7 @@ class MevalSummEval(datalabs.GeneratorBasedBuilder):
                     "hypothesis": Value("string")
                 }
                 ),
-                "scores": Sequence({
-                    "coherence": Value("float64"),
-                    "consistency": Value("float64"),
-                    "fluency": Value("float64"),
-                    "relevance": Value("float64")
-                })
+                "scores": Sequence(Value("float")),
             }
         )
         return datalabs.DatasetInfo(
@@ -48,7 +70,7 @@ class MevalSummEval(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["en"],
             task_templates=[
-                get_task(TaskType.nlg_meta_evaluation)(
+                get_task(TaskType.meta_evaluation_nlg)(
                     source_column="source",
                     hypotheses_column="hypothesis",
                     references_column="references",
@@ -75,7 +97,7 @@ class MevalSummEval(datalabs.GeneratorBasedBuilder):
 
                 hypotheses = [ {"system_name":x["system_name"],
                                 "hypothesis":x["hypothesis"]} for x in hypotheses_scores]
-                scores = [x["scores"] for x in hypotheses_scores]
+                scores = [x["scores"][self.config.name] for x in hypotheses_scores]
                 yield id_, {
                     "source": source,
                     "hypotheses": hypotheses,

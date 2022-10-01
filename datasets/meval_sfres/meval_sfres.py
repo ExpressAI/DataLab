@@ -34,7 +34,32 @@ _CITATION = """\
 _TEST_DOWNLOAD_URL = "https://datalab-hub.s3.amazonaws.com/meval/sfres/test.jsonl"
 
 
+class MevalSFRESConfig(datalabs.BuilderConfig):
+
+
+    def __init__(
+        self,
+        evaluation_aspect = None,
+        **kwargs
+    ):
+        super(MevalSFRESConfig, self).__init__(**kwargs)
+        self.evaluation_aspect = evaluation_aspect
+
+
 class MevalSFRES(datalabs.GeneratorBasedBuilder):
+
+    evaluation_aspects = [
+        "naturalness",
+        "informativeness",
+        "quality"
+    ]
+
+    BUILDER_CONFIGS = [MevalSFRESConfig(
+        name=aspect,
+        version=datalabs.Version("1.0.0"),
+        evaluation_aspect=aspect
+    ) for aspect in evaluation_aspects]
+
     def _info(self):
         features = datalabs.Features(
             {
@@ -45,11 +70,7 @@ class MevalSFRES(datalabs.GeneratorBasedBuilder):
                     "hypothesis": Value("string")
                 }
                 ),
-                "scores": Sequence({
-                    "informativeness": Value("float64"),
-                    "naturalness": Value("float64"),
-                    "quality": Value("float64")
-                })
+                "scores": Sequence(Value("float")),
             }
         )
         return datalabs.DatasetInfo(
@@ -59,7 +80,7 @@ class MevalSFRES(datalabs.GeneratorBasedBuilder):
             citation=_CITATION,
             languages=["en"],
             task_templates=[
-                get_task(TaskType.nlg_meta_evaluation)(
+                get_task(TaskType.meta_evaluation_nlg)(
                     source_column="source",
                     hypotheses_column="hypothesis",
                     references_column="references",
@@ -91,5 +112,5 @@ class MevalSFRES(datalabs.GeneratorBasedBuilder):
                         "hypothesis": hypothesis
                     }],
                     "references": references,
-                    "scores": [scores],
+                    "scores": [scores[self.config.name]],
                 }
