@@ -34,7 +34,33 @@ _CITATION = """\
 _TEST_DOWNLOAD_URL = "https://datalab-hub.s3.amazonaws.com/meval/sfhot/test.jsonl"
 
 
+class MevalSFHOTConfig(datalabs.BuilderConfig):
+
+
+    def __init__(
+        self,
+        evaluation_aspect = None,
+        **kwargs
+    ):
+        super(MevalSFHOTConfig, self).__init__(**kwargs)
+        self.evaluation_aspect = evaluation_aspect
+
+
+
 class MevalSFHOT(datalabs.GeneratorBasedBuilder):
+
+    evaluation_aspects = [
+        "naturalness",
+        "informativeness",
+        "quality"
+    ]
+
+    BUILDER_CONFIGS = [MevalSFHOTConfig(
+        name=aspect,
+        version=datalabs.Version("1.0.0"),
+        evaluation_aspect=aspect
+    ) for aspect in evaluation_aspects]
+
     def _info(self):
         features = datalabs.Features(
             {
@@ -45,11 +71,7 @@ class MevalSFHOT(datalabs.GeneratorBasedBuilder):
                     "hypothesis": Value("string")
                 }
                 ),
-                "scores": Sequence({
-                    "informativeness": Value("float64"),
-                    "naturalness": Value("float64"),
-                    "quality": Value("float64")
-                })
+                "scores": Sequence(Value("float")),
             }
         )
         return datalabs.DatasetInfo(
@@ -91,5 +113,5 @@ class MevalSFHOT(datalabs.GeneratorBasedBuilder):
                         "hypothesis": hypothesis,
                     }],
                     "references": references,
-                    "scores": [scores],
+                    "scores": [scores[self.config.name]],
                 }
