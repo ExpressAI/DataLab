@@ -5,10 +5,10 @@ from datalabs.features import Features, Sequence, Value
 from datalabs.tasks.base import register_task, TaskTemplate, TaskType
 
 
-@register_task(TaskType.nlg_meta_evaluation)
+@register_task(TaskType.meta_evaluation_nlg)
 @dataclass
-class NLGMetaEvaluation(TaskTemplate):
-    task: TaskType = TaskType.nlg_meta_evaluation
+class MetaEvaluationNLG(TaskTemplate):
+    task: TaskType = TaskType.meta_evaluation_nlg
     source_column: str = "source"
     hypotheses_column: str = "hypotheses"
     references_column: str = "references"

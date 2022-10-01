@@ -123,7 +123,7 @@ class TaskType(str, Enum):
     dialogue_empathetic = "dialogue-empathetic"
     tabular_classification = "tabular-classification"
     tabular_regression = "tabular-regression"
-    nlg_meta_evaluation = "nlg-meta-evaluation"
+    meta_evaluation_nlg = "meta-evaluation-nlg"
     meta_evaluation_wmt_da = "meta-evaluation-wmt-da"
 
     @staticmethod
