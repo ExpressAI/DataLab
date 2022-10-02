@@ -83,7 +83,7 @@ class MevalBAGEL(datalabs.GeneratorBasedBuilder):
             task_templates=[
                 get_task(TaskType.meta_evaluation_nlg)(
                     source_column="source",
-                    hypotheses_column="hypothesis",
+                    hypotheses_column="hypotheses",
                     references_column="references",
                     scores_column = "scores",
                 )
