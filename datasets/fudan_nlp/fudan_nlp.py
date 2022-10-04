@@ -105,30 +105,16 @@ class FudanNlp(datalabs.GeneratorBasedBuilder):
                     "tokens": datalabs.Sequence(datalabs.Value("string")),
                     "tags": datalabs.Sequence(
                         datalabs.features.ClassLabel(names=[
-                                                    "O",
-                                                    "B-ADJP",
-                                                    "I-ADJP",
-                                                    "B-ADVP",
-                                                    "I-ADVP",
-                                                    "B-CONJP",
-                                                    "I-CONJP",
-                                                    "B-INTJ",
-                                                    "I-INTJ",
-                                                    "B-LST",
-                                                    "I-LST",
-                                                    "B-NP",
-                                                    "I-NP",
-                                                    "B-PP",
-                                                    "I-PP",
-                                                    "B-PRT",
-                                                    "I-PRT",
-                                                    "B-SBAR",
-                                                    "I-SBAR",
-                                                    "B-UCP",
-                                                    "I-UCP",
-                                                    "B-VP",
-                                                    "I-VP",
-                                                ])
+                            "O",
+                            "B-PER",
+                            "I-PER",
+                            "B-ORG",
+                            "I-ORG",
+                            "B-LOC",
+                            "I-LOC",
+                            "B-MISC",
+                            "I-MISC",
+                            ])
                     ),
                 }
             ),
@@ -227,7 +213,7 @@ class FudanNlp(datalabs.GeneratorBasedBuilder):
                         # conll2003 tokens are space separated
                         splits = line.split(" ")
                         tokens.append(splits[0])
-                        tags.append(splits[2].rstrip())
+                        tags.append(splits[3].rstrip())
 
                 # last example
                 if len(tokens) != 0:
