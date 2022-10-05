@@ -92,6 +92,49 @@ class FudanNlp(datalabs.GeneratorBasedBuilder):
             ],
         ),
         FudanNlpConfig(
+            name="mr",
+            description=textwrap.dedent(
+                """\
+                Movie-review data for use in sentiment-analysis experiments. Available are collections 
+                 of movie-review documents labeled with respect to their overall sentiment polarity (positive or negative)
+                  or subjective rating (e.g., "two and a half stars")
+                """
+            ),
+            features=datalabs.Features(
+                {
+                    "text": datalabs.Value("string"),
+                    "label": datalabs.features.ClassLabel(
+                        names=["positive", "negative"]
+                    ),
+                }
+            ),
+            data_url="https://datalab-hub.s3.amazonaws.com/fudan_nlp/mr.zip",
+            data_dir="mr",
+            citation=textwrap.dedent(
+                """\
+                    @inproceedings{pang-lee-2005-seeing,
+                        title = "Seeing Stars: Exploiting Class Relationships for Sentiment Categorization with Respect to Rating Scales",
+                        author = "Pang, Bo  and
+                          Lee, Lillian",
+                        booktitle = "Proceedings of the 43rd Annual Meeting of the Association for Computational Linguistics ({ACL}{'}05)",
+                        month = jun,
+                        year = "2005",
+                        address = "Ann Arbor, Michigan",
+                        publisher = "Association for Computational Linguistics",
+                        url = "https://aclanthology.org/P05-1015",
+                        doi = "10.3115/1219840.1219855",
+                        pages = "115--124",
+                    }
+                            """
+            ),
+            url="http://www.cs.cornell.edu/people/pabo/movie-review-data/",
+            task_templates=[
+                get_task(TaskType.sentiment_classification)(
+                    text_column="text", label_column="label"
+                )
+            ],
+        ),
+        FudanNlpConfig(
             name="conll2003",
             description=textwrap.dedent(
                 """\
@@ -192,6 +235,20 @@ class FudanNlp(datalabs.GeneratorBasedBuilder):
                     text, label = row
                     label = textualize_label[label]
                     yield id_, {"text": text, "label": label}
+
+        elif self.config.name == "mr":
+            textualize_label = {"0": "negative", "1": "positive"}
+            with open(filepath, encoding="utf-8") as csv_file:
+                csv_reader = csv.reader(csv_file, delimiter="\t")
+                for id_, row in enumerate(csv_reader):
+                    text, label = row[0], row[1]
+
+                    label = textualize_label[label]
+                    text = text
+
+                    raw_feature_info = {"text": text, "label": label}
+
+                    yield id_, raw_feature_info
 
         # for the dataset: conll2003
         elif self.config.name == "conll2003":
