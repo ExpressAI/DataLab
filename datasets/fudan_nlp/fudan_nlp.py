@@ -55,7 +55,7 @@ class FudanNlpConfig(datalabs.BuilderConfig):
 class FudanNlp(datalabs.GeneratorBasedBuilder):
     BUILDER_CONFIGS = [
         FudanNlpConfig(
-            name="mr",
+            name="movie_review",
             description=textwrap.dedent(
                 """\
                 Movie-review data for use in sentiment-analysis experiments. Available are collections 
@@ -161,21 +161,23 @@ class FudanNlp(datalabs.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         dataset_path = dl_manager.download_and_extract(self.config.data_url)
+        config_name = self.config.name if \
+            self.config.name != "movie_review" else "mr"
         dataset_path_test =  dl_manager.download_and_extract(
-            f'{_PRIVATE_PREFIX}/{self.config.name}/test.data')
+            f'{_PRIVATE_PREFIX}/{config_name}/test.data')
 
 
         split_gens = [
             datalabs.SplitGenerator(
                 name=datalabs.Split.TRAIN,
                 gen_kwargs={
-                    "filepath": f"{dataset_path}/{self.config.name}/train.data"
+                    "filepath": f"{dataset_path}/{config_name}/train.data"
                 },
             ),
             datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 gen_kwargs={
-                    "filepath": f"{dataset_path}/{self.config.name}/valid.data"
+                    "filepath": f"{dataset_path}/{config_name}/valid.data"
                 },
             ),
             datalabs.SplitGenerator(
@@ -191,7 +193,7 @@ class FudanNlp(datalabs.GeneratorBasedBuilder):
 
     def _generate_examples(self, filepath):
 
-        if self.config.name == "mr":
+        if self.config.name == "movie_review":
             textualize_label = {"0": "negative", "1": "positive"}
             with open(filepath, encoding="utf-8") as csv_file:
                 csv_reader = csv.reader(csv_file, delimiter="\t")
