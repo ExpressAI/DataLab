@@ -16,6 +16,7 @@ import csv
 import textwrap
 import datalabs
 from datalabs import get_task, TaskType
+from datalabs.utils import private_utils
 
 _DESCRIPTION = """\
 There are datasets from Fudan NLP course.
@@ -24,6 +25,8 @@ There are datasets from Fudan NLP course.
 
 _CITATION = """\
 """
+
+_PRIVATE_PREFIX = f"{private_utils.PRIVATE_LOC}/fudan_nlp"
 
 class FudanNlpConfig(datalabs.BuilderConfig):
 
@@ -51,46 +54,6 @@ class FudanNlpConfig(datalabs.BuilderConfig):
 
 class FudanNlp(datalabs.GeneratorBasedBuilder):
     BUILDER_CONFIGS = [
-        FudanNlpConfig(
-            name="imdb",
-            description=textwrap.dedent(
-                """\
-                Large Movie Review Dataset.
-                This is a dataset for binary sentiment classification containing substantially \
-                more data than previous benchmark datasets.\
-                """
-            ),
-            features = datalabs.Features(
-                {
-                    "text": datalabs.Value("string"),
-                    "label": datalabs.features.ClassLabel(
-                        names=["positive", "negative"]
-                    ),
-                }
-            ),
-            data_url="https://datalab-hub.s3.amazonaws.com/fudan_nlp/imdb.zip",
-            data_dir="imdb",
-            citation=textwrap.dedent(
-                """\
-                @InProceedings{maas-EtAl:2011:ACL-HLT2011,
-                  author    = {Maas, Andrew L.  and  Daly, Raymond E.  and  Pham, Peter T.  and  Huang, Dan  and  Ng, Andrew Y.  and  Potts, Christopher},
-                  title     = {Learning Word Vectors for Sentiment Analysis},
-                  booktitle = {Proceedings of the 49th Annual Meeting of the Association for Computational Linguistics: Human Language Technologies},
-                  month     = {June},
-                  year      = {2011},
-                  address   = {Portland, Oregon, USA},
-                  publisher = {Association for Computational Linguistics},
-                  pages     = {142--150},
-                  url       = {http://www.aclweb.org/anthology/P11-1015}
-                            }"""
-            ),
-            url="https://datalab.stanford.edu/sentiment/index.html",
-            task_templates=[
-                get_task(TaskType.sentiment_classification)(
-                    text_column="text", label_column="label"
-                )
-            ],
-        ),
         FudanNlpConfig(
             name="mr",
             description=textwrap.dedent(
@@ -198,7 +161,8 @@ class FudanNlp(datalabs.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         dataset_path = dl_manager.download_and_extract(self.config.data_url)
-
+        dataset_path_test =  dl_manager.download_and_extract(
+            f'{_PRIVATE_PREFIX}/{self.config.name}/test.data')
 
 
         split_gens = [
@@ -209,15 +173,15 @@ class FudanNlp(datalabs.GeneratorBasedBuilder):
                 },
             ),
             datalabs.SplitGenerator(
-                name=datalabs.Split.TEST,
-                gen_kwargs={
-                    "filepath": f"{dataset_path}/{self.config.name}/test.data"
-                },
-            ),
-            datalabs.SplitGenerator(
                 name=datalabs.Split.VALIDATION,
                 gen_kwargs={
                     "filepath": f"{dataset_path}/{self.config.name}/valid.data"
+                },
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST,
+                gen_kwargs={
+                    "filepath": dataset_path_test
                 },
             ),
         ]
@@ -226,24 +190,16 @@ class FudanNlp(datalabs.GeneratorBasedBuilder):
 
 
     def _generate_examples(self, filepath):
-        # for the dataset: imdb
-        if self.config.name == "imdb":
-            textualize_label = {"pos": "positive", "neg": "negative"}
-            with open(filepath, encoding="utf-8") as csv_file:
-                csv_reader = csv.reader(csv_file, delimiter="\t")
-                for id_, row in enumerate(csv_reader):
-                    text, label = row
-                    label = textualize_label[label]
-                    yield id_, {"text": text, "label": label}
 
-        elif self.config.name == "mr":
+        if self.config.name == "mr":
             textualize_label = {"0": "negative", "1": "positive"}
             with open(filepath, encoding="utf-8") as csv_file:
                 csv_reader = csv.reader(csv_file, delimiter="\t")
                 for id_, row in enumerate(csv_reader):
                     text, label = row[0], row[1]
 
-                    label = textualize_label[label]
+                    label = textualize_label[label] if label in textualize_label.keys()\
+                        else label
                     text = text
 
                     raw_feature_info = {"text": text, "label": label}
