@@ -33,6 +33,7 @@ DataLab can be installed from PyPi
 pip install --upgrade pip
 pip install datalabs
 python -m nltk.downloader omw-1.4 # to support more feature calculation
+python -m spacy download en_core_web_sm
 ```
 or from the source
 ```bash
@@ -42,6 +43,7 @@ git clone git@github.com:ExpressAI/DataLab.git
 cd Datalab
 pip install -e .[dev]
 python -m nltk.downloader omw-1.4 # to support more feature calculation
+python -m spacy download en_core_web_sm
 ```
 By adding `[dev]`, some [extra libraries](https://github.com/ExpressAI/DataLab/blob/03f69e5424859e3e9dbcbb487d3e1ce3de45a599/setup.py#L66) will be installed, such as `pre-commit`, `black` and so on.
 
