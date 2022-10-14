@@ -40,7 +40,7 @@ or from the source
 pip install --upgrade pip
 git clone git@github.com:ExpressAI/DataLab.git
 cd Datalab
-pip install -e .[dev]
+pip install -e ."[dev]"
 python -m nltk.downloader omw-1.4 # to support more feature calculation
 ```
 By adding `[dev]`, some [extra libraries](https://github.com/ExpressAI/DataLab/blob/03f69e5424859e3e9dbcbb487d3e1ce3de45a599/setup.py#L66) will be installed, such as `pre-commit`, `black` and so on.
