@@ -24,6 +24,7 @@ jobs:
           pip install explainaboard
           pip install .
           python -c "import nltk; nltk.download('omw-1.4')"
+          python -m spacy download en_core_web_sm
       - name: Run tests with unittest
         run: python -m unittest discover
   format:
