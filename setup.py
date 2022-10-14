@@ -56,7 +56,7 @@ BENCHMARKS_REQUIRE = []
 TESTS_REQUIRE = []
 
 
-QUALITY_REQUIRE = ["black==22.3.0", "flake8==4.0.1", "isort>=5.6.4"]
+QUALITY_REQUIRE = ["pre-commit"]
 
 
 EXTRAS_REQUIRE = {
