@@ -2,8 +2,6 @@
 
 In this file we describe how to analyze the generalization of models trained on open domain question answering datasets, for example [`natural questions`](https://github.com/google-research-datasets/natural-questions).
 
-
-
 ## Data Preparation
 
 In order to perform analysis of your results, the predicted answers should be in the following
@@ -14,15 +12,16 @@ william henry bragg
 may 18, 2018
 ...
 ```
+
 where each line is an answer prediction.
 
 An example system output file is here:
-* [test.dpr.nq.txt](https://github.com/likicode/QA-generalize/blob/master/predictions/test.dpr.nq.txt) 
+
+* [test.dpr.nq.txt](https://github.com/likicode/QA-generalize/blob/master/predictions/test.dpr.nq.txt)
 
 ## Performing Basic Analysis
 
-
-The below example loads the `natural_questions_comp_gen` dataset from DataLab. 
+The below example loads the `natural_questions_comp_gen` dataset from DataLab.
 
 ```shell
 explainaboard --task qa_open_domain --dataset natural_questions_comp_gen --system_outputs MY_FILE > report.json

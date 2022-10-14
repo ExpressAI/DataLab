@@ -2,13 +2,9 @@
 
 DataLab provides different modes for saving processed datasets. We will walk through them using the `ag_new` as an example.
 
-
 (Note: the default mode is `realtime`.)
 
-
-
 ### 1: `realtime`
-
 
 ```python
 from datalabs import load_dataset
@@ -27,10 +23,7 @@ printed results:
 
 ```
 
-
-
 ### 2: `memory`
-
 
 ```python
 from datalabs import load_dataset
@@ -50,9 +43,7 @@ Dataset({
 """
 ```
 
-
 ### 3: `local`
-
 
 ```python
 from datalabs import load_dataset

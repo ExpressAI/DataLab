@@ -1,7 +1,5 @@
 # Datasets
 
-
-
 Add following description into the begining of your script if the script is modified by `huggingface datasets`, for example, [ag_news](https://github.com/ExpressAI/DataLab/blob/main/datasets/ag_news/ag_news.py)
 
 ```

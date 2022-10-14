@@ -1,6 +1,6 @@
 # Progress
-List datasets which are supported by SDK and their associated information w.r.t task schema 
 
+List datasets which are supported by SDK and their associated information w.r.t task schema
 
 |Datasets|Updated Date|Task Schema|Normalized State|Comments|Constructor|
 |:---    |:---        |:---       |:---       |:---    |:---    |

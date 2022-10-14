@@ -1,4 +1,1 @@
 # Introduction of Resources
-
-
-

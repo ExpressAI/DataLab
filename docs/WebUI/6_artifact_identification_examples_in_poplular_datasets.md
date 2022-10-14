@@ -1,10 +1,8 @@
 # More Artifact Identification Examples in Popular Datasets
 
-
-
 ## 1. Observations and conclusions of artifact identification with PMI on the SNLI
 
-[SNLI Artifact Identification Interface](http://datalab.nlpedia.ai/normal_dataset/617794bfb7314cb4146d2384/dataset_bias) shows an artifact identification analysis of the SNLI dataset between features (e.g. `length_{hypothesis}) ` and labels (`entailment`, `neutral` or `contradiction`). The main observations are summarized as follow:
+[SNLI Artifact Identification Interface](http://datalab.nlpedia.ai/normal_dataset/617794bfb7314cb4146d2384/dataset_bias) shows an artifact identification analysis of the SNLI dataset between features (e.g. `length_{hypothesis})` and labels (`entailment`, `neutral` or `contradiction`). The main observations are summarized as follow:
 
 <table>
     <tr>
@@ -77,10 +75,9 @@
     </tr>
 </table>
 
-* `hp` and `pm` denote `hypothesis` and `premise`, respectively. `len` is a function that computes the length of a sentence. 
+* `hp` and `pm` denote `hypothesis` and `premise`, respectively. `len` is a function that computes the length of a sentence.
 
-
-## 2. Observations and conclusions of artifact identification with PMI on the GLUE-SST2 
+## 2. Observations and conclusions of artifact identification with PMI on the GLUE-SST2
 
 [GLUE-SST2 Artifact Identification Interface](http://datalab.nlpedia.ai/normal_dataset/61a9bf6d304f8c55afdc12e9/dataset_bias) shows an artifact identification analysis of the GLUE-SST2 dataset between features(e.g. `length_{sentence}`) and labels (`positive` and `negtive`). The main observations are summarized as follow:
 
@@ -116,12 +113,9 @@
 
 * `len` is a function that computes the length of a sentence. `sent` denotes `sentence`.
 
-
 ## 3. Observations and conclusions of artifact identification with PMI on the DBpedia2014
 
 [DBpedia2014 Artifact Identification Interface](http://datalab.nlpedia.ai/normal_dataset/6177751c8795791d8d46916f/dataset_bias) shows an artifact identification analysis of the DBpedia2014 dataset between several features (e.g. `basic word` and `gender bias`) and labels (`educational institution`, `office holder`, `artist`, `althlete`). The main observations are summarized as follow:
-
-
 
 <table>
     <tr>
@@ -169,14 +163,9 @@
     </tr>
 </table>
 
-
-
-
 ## 4. Observations and conclusions of artifact identification with PMI on the GLUE-qnli
 
-
 [GLUE-qnli Artifact Identification Interface](http://datalab.nlpedia.ai/normal_dataset/6177751c8795791d8d46916f/dataset_bias) shows an artifact identification analysis of the GLUE-qnli dataset between several features (e.g. `basic word` and `gender bias`) and labels (`entailment`, `not-entailment`). The main observations are summarized as follow:
-
 
 <table>
     <tr>
@@ -226,4 +215,3 @@
 </table>
 
 * `len` is a function that computes the length of a sentence. `sent` denotes `sentence`.
-

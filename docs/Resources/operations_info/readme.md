@@ -1,7 +1,7 @@
 # Information for Operations
 
+suppose that
 
-suppose that 
 ```python
  metadata =    {
         "class_type": "aggregating",
@@ -15,6 +15,7 @@ suppose that
 ```
 
 we should have
+
 ```python
 # pip install datalabs
 from datalabs import load_dataset
@@ -24,8 +25,7 @@ dataset = load_dataset("ag_news")
 res=dataset["train"].apply(get_statistics)
 ```
 
-
-Code: 
+Code:
 
 ```python
 cmd_ops = ""

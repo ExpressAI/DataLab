@@ -16,8 +16,8 @@ This is the schema for text classification task.
 * dataset_name: dbpedia_14
 * sub_dataset: dbpedia_14
 * schema instantiation
-    * text_column: content
-    * label_column: label
+  * text_column: content
+  * label_column: label
 
 | Dataset name                                   | Subset                        | Text Column                | Label Column                                                                                                                                                                                                                                                               |
 |------------------------------------------------|-------------------------------|----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -220,8 +220,6 @@ This is the schema for text classification task.
 | mr_upload_by_pf5                               | None                          | text                       | label                                                                                                                                                                                                                                                                      |
 | ag_news_test_yt_trrr                           | null                          | text                       | label                                                                                                                                                                                                                                                                      |
 
-
-
 ## [Summarization](https://github.com/ExpressAI/DataLab/blob/main/src/datalabs/tasks/summarization.py#L25)
 
 This is the schema for summarization task.
@@ -232,7 +230,6 @@ This is the schema for summarization task.
   "summary_column": "string"
 }
 ```
-
 
 | Dataset name         | Subset            | Text Column                        | Summary Column        |
 |----------------------|-------------------|------------------------------------|-----------------------|
@@ -297,5 +294,3 @@ This is the schema for summarization task.
 | reddit_tifu          | long              | text                               | summary               |
 | multi_xscience       | single-document   | text                               | summary               |
 | asap_review          | default           | text                               | review                |
-
-
