@@ -97,7 +97,9 @@ class Snli(datalabs.GeneratorBasedBuilder):
         with open(filepath, encoding="utf-8") as f:
             reader = csv.DictReader(f, delimiter="\t", quoting=csv.QUOTE_NONE)
             for idx, row in enumerate(reader):
-                label = -1 if row["gold_label"] == "-" else row["gold_label"]
+                if row["gold_label"] == "-":
+                    continue
+                label = row["gold_label"]
                 yield idx, {
                     "text1": row["sentence1"],
                     "text2": row["sentence2"],
