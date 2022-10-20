@@ -169,9 +169,14 @@ def main():
 
                             metadata["languages"] = dataset_info.languages
                             # features of dataset
-                            metadata["features"] = {
-                                k: asdict(v) for k, v in dataset_info.features.items()
-                            }
+                            try:
+                                metadata["features"] = {
+                                    k: asdict(v)
+                                    for k, v in dataset_info.features.items()
+                                }
+                            except Exception:
+                                metadata["features"] = {}
+
                             if dataset_info.task_templates is not None:
                                 metadata["task_categories"] = [
                                     get_value(x.task_categories)
