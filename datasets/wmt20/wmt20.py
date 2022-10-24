@@ -104,9 +104,11 @@ class WMT20(datalabs.GeneratorBasedBuilder):
 
     def _generate_examples(self, filepath):
         """Yields examples."""
-        with open(filepath, encoding="utf-8") as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter="\t")
-            for id_, row in enumerate(csv_reader):
+        with open(filepath, encoding="utf8") as csv_file:
+            # csv_reader = csv.reader(csv_file, delimiter="\t")
+            # for line in csv_file:
+            for id_, line in enumerate(csv_file):
+                row = line.split("\t")
                 if len(row) == 1:
                     src, ref = row[0], ""
                 else:
