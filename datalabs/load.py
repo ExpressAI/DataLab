@@ -2097,9 +2097,9 @@ def load_dataset(
         if name == "mini":
             is_mini = True
             name = None
-        else:
-            is_mini = name.endswith("_mini")
-            name = name.rstrip("_mini")
+        elif name.endswith("_mini"):
+            is_mini = True
+            name = name.replace("_mini", "")
 
     # Create a dataset builder
     builder_instance = load_dataset_builder(
