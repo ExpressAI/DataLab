@@ -24,6 +24,7 @@ import inspect
 import json
 import os
 from pathlib import Path
+import random
 import re
 import shutil
 import time
@@ -89,6 +90,7 @@ logger = get_logger(__name__)
 DEFAULT_SPLIT = str(Split.TRAIN)
 
 ALL_ALLOWED_EXTENSIONS = list(_EXTENSION_TO_MODULE.keys()) + ["zip"]
+MINI_NUMBER = 50
 
 
 def init_dynamic_modules(
@@ -2089,6 +2091,16 @@ def load_dataset(
         revision = script_version
     ignore_verifications = ignore_verifications or save_infos
 
+    # Check if the dataset is mini
+    is_mini = False
+    if name is not None:
+        if name == "mini":
+            is_mini = True
+            name = None
+        else:
+            is_mini = name.endswith("_mini")
+            name = name.rstrip("_mini")
+
     # Create a dataset builder
     builder_instance = load_dataset_builder(
         path=path,
@@ -2158,6 +2170,14 @@ def load_dataset(
     ds = builder_instance.as_dataset(
         split=split, ignore_verifications=ignore_verifications, in_memory=keep_in_memory
     )
+    # Random choose a mini dataset
+    if is_mini:
+        for key in ds.keys():
+            if len(ds[key]) > MINI_NUMBER:
+                random.seed(0)
+                mini_indices = random.sample(list(range(len(ds[key]))), MINI_NUMBER)
+                mini_indices.sort()
+                ds[key] = ds[key].select(mini_indices)
     # Rename and cast features to match task schema
     if task is not None:
         ds = ds.prepare_for_task(task)
