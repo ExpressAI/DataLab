@@ -72,7 +72,7 @@ class WMT20(datalabs.GeneratorBasedBuilder):
             description=_DESCRIPTION,
             citation=_CITATION,
             # Homepage of the dataset for documentation
-            homepage="https://www.statmt.org/wmt20/translation-task.html"
+            homepage="https://www.statmt.org/wmt20/translation-task.html",
             # datasets.features.FeatureConnectors
             features=features_sample,
             supervised_keys=None,
