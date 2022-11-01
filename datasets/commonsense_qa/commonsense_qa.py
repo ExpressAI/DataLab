@@ -78,7 +78,7 @@ class CommonsenseQa(datalabs.GeneratorBasedBuilder):
             # builder.as_dataset.
             supervised_keys=None,
             # Homepage of the dataset for documentation
-            homepage="https://www.tau-datasets.org/commonsenseqa",
+            homepage="https://www.tau-nlp.sites.tau.ac.il/commonsenseqa",
             citation=_CITATION,
             task_templates=[
                 get_task(TaskType.qa_multiple_choice_without_context)(
