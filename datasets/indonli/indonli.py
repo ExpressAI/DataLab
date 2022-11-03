@@ -51,8 +51,12 @@ _LICENSE = """
 """
 
 _TRAIN_DOWNLOAD_URL = "https://raw.githubusercontent.com/ir-nlp-csui/indonli/main/data/indonli/train.jsonl"
-_VALID_DOWNLOAD_URL = "https://raw.githubusercontent.com/ir-nlp-csui/indonli/main/data/indonli/val.jsonl"
-_TEST_DOWNLOAD_URL = "https://raw.githubusercontent.com/ir-nlp-csui/indonli/main/data/indonli/test.jsonl"
+_VALID_DOWNLOAD_URL = (
+    "https://raw.githubusercontent.com/ir-nlp-csui/indonli/main/data/indonli/val.jsonl"
+)
+_TEST_DOWNLOAD_URL = (
+    "https://raw.githubusercontent.com/ir-nlp-csui/indonli/main/data/indonli/test.jsonl"
+)
 
 
 class IndoNLIConfig(datalabs.BuilderConfig):
@@ -85,7 +89,9 @@ class IndoNLI(datalabs.GeneratorBasedBuilder):
                 {
                     "premise": datalabs.Value("string"),
                     "hypothesis": datalabs.Value("string"),
-                    "label": datalabs.ClassLabel(names=["entailment", "neutral", "contradiction"]),
+                    "label": datalabs.ClassLabel(
+                        names=["entailment", "neutral", "contradiction"]
+                    ),
                 }
             ),
             supervised_keys=None,
@@ -101,9 +107,15 @@ class IndoNLI(datalabs.GeneratorBasedBuilder):
         test_path = dl_manager.download_and_extract(_TEST_DOWNLOAD_URL)
 
         return [
-            datalabs.SplitGenerator(name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": valid_path}),
-            datalabs.SplitGenerator(name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TRAIN, gen_kwargs={"filepath": train_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.VALIDATION, gen_kwargs={"filepath": valid_path}
+            ),
+            datalabs.SplitGenerator(
+                name=datalabs.Split.TEST, gen_kwargs={"filepath": test_path}
+            ),
         ]
 
     def _generate_examples(self, filepath):
@@ -115,5 +127,7 @@ class IndoNLI(datalabs.GeneratorBasedBuilder):
                 yield id_, {
                     "premise": row_jsonl["premise"],
                     "hypothesis": row_jsonl["hypothesis"],
-                    "label":{"e": "entailment", "n": "neutral", "c": "contradiction"}[row_jsonl["label"]],
+                    "label": {"e": "entailment", "n": "neutral", "c": "contradiction"}[
+                        row_jsonl["label"]
+                    ],
                 }
