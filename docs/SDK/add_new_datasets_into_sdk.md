@@ -42,7 +42,7 @@ Once you successfully finished the above steps, if you would like to make your d
 public, you can set up a pull request.
 
 ## 5. Make your datasets registered
-Once you successfully added a new dataset, please update the the file [dataset_info_dev.jsonl](https://github.com/ExpressAI/DataLab/blob/main/utils/dataset_info_dev.jsonl)
+Once you successfully added a new dataset, please update the the file [dataset_info.jsonl](https://github.com/ExpressAI/DataLab/blob/main/utils/dataset_info.jsonl)
 by conducting the following command: 
 ```shell
 python get_dataset_info.py --previous_jsonl dataset_info.jsonl --output_jsonl dataset_info_dev.jsonl --datasets YOUR_DATASET_NAME
