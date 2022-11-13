@@ -45,7 +45,8 @@ public, you can set up a pull request.
 Once you successfully added a new dataset, please update the the file [dataset_info_dev.jsonl](https://github.com/ExpressAI/DataLab/blob/main/utils/dataset_info_dev.jsonl)
 by conducting the following command: 
 ```shell
-python get_dataset_info.py --previous_jsonl dataset_info.jsonl --output_jsonl dataset_info_dev.jsonl
+python get_dataset_info.py --previous_jsonl dataset_info.jsonl --output_jsonl dataset_info_dev.jsonl --datasets YOUR_DATASET_NAME
+cat dataset_info_dev.jsonl >> dataset_info.jsonl 
 ```
 
 
