@@ -98,13 +98,29 @@ class MevalNewsroom(datalabs.GeneratorBasedBuilder):
 
     def _generate_examples(self, filepath):
         """ Generate Newsroom examples."""
+        system_names = [
+            'lede3',
+            'fragments',
+            'textrank',
+            'abstractive',
+            'pointer_c',
+            'pointer_n',
+            'pointer_s']
         with open(filepath, "r", encoding="utf-8") as f:
             for id_, line in enumerate(f.readlines()):
                 line = line.strip()
                 line = json.loads(line)
                 source, hypotheses_scores, references = line["source"], line["hypotheses"], line["references"]
-                hypotheses = [ {"system_name":x["system_name"],
-                                "hypothesis":x["hypothesis"]} for x in hypotheses_scores]
+                # hypotheses = [ {"system_name":x["system_name"],
+                #                 "hypothesis":x["hypothesis"]} for x in hypotheses_scores]
+
+
+                dict_map = { x["system_name"]:x["hypothesis"] for x in hypotheses_scores}
+                hypotheses = [ {"system_name":x,
+                                "hypothesis":dict_map[x]} for x in system_names]
+
+
+
                 scores = [x["scores"][self.config.name] for x in hypotheses_scores]
                 yield id_, {
                     "source": source,
