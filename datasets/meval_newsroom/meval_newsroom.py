@@ -116,15 +116,17 @@ class MevalNewsroom(datalabs.GeneratorBasedBuilder):
 
 
                 dict_map = { x["system_name"]:x["hypothesis"] for x in hypotheses_scores}
+
                 hypotheses = [ {"system_name":x,
                                 "hypothesis":dict_map[x]} for x in system_names]
 
-
-
-                scores = [x["scores"][self.config.name] for x in hypotheses_scores]
+                dict_map_score = {x["system_name"]: x["scores"][self.config.name] for x
+                                  in hypotheses_scores}
+                scores = [dict_map_score[x] for x in system_names]
                 yield id_, {
                     "source": source,
                     "hypotheses": hypotheses,
                     "references": references,
                     "scores": scores,
                 }
+
