@@ -33,11 +33,7 @@ see: https://aclanthology.org/2021.findings-acl.242.pdf
 _HOMEPAGE = "https://github.com/dqwang122/CALMS"
 _ABSTRACT = "summary"
 _ARTICLE = "text"
-
-
-def _gdrive_url(id):
-    return f"https://drive.google.com/uc?id={id}&export=download&confirm=t"
-
+_CLEAN_TAR_GZ_URL = "https://storage.googleapis.com/inspired-public-data/datasets/mlgsum/raw/clean.tar.gz"
 
 class MLGSumConfig(datalabs.BuilderConfig):
     """BuilderConfig for MLGSum."""
@@ -108,7 +104,7 @@ class MLGSumDataset(datalabs.GeneratorBasedBuilder):
         )
 
     def _split_generators(self, dl_manager):
-        f_path = dl_manager.download_and_extract(_gdrive_url(self._FILE_ID))
+        f_path = dl_manager.download_and_extract(_CLEAN_TAR_GZ_URL)
         lang_id = self.config.name
         return [
             datalabs.SplitGenerator(
