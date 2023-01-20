@@ -37,6 +37,7 @@ class FudanNlpConfig(datalabs.BuilderConfig):
         data_dir,
         citation,
         url,
+        languages=None,
         task_templates=None,
         **kwargs,
     ):
@@ -49,6 +50,7 @@ class FudanNlpConfig(datalabs.BuilderConfig):
         self.data_dir = data_dir
         self.citation = citation
         self.url = url
+        self.languages = languages
 
         self.task_templates = task_templates
 
@@ -96,6 +98,7 @@ class FudanNlp(datalabs.GeneratorBasedBuilder):
                     text_column="text", label_column="label"
                 )
             ],
+            languages=["eng"],
         ),
         FudanNlpConfig(
             name="conll2003",
@@ -145,6 +148,7 @@ class FudanNlp(datalabs.GeneratorBasedBuilder):
                     tokens_column="tokens", tags_column="tags"
                 )
             ],
+            languages=["eng"],
         ),
     ]
 
@@ -157,6 +161,7 @@ class FudanNlp(datalabs.GeneratorBasedBuilder):
             homepage=self.config.url,
             citation=self.config.citation + "\n" + _DESCRIPTION,
             task_templates=self.config.task_templates,
+            languages=self.config.languages,
         )
 
     def _split_generators(self, dl_manager):
