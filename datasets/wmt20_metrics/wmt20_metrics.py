@@ -98,12 +98,14 @@ class Wmt20Metrics(datalabs.GeneratorBasedBuilder):
                 "seg_id": datalabs.Value("string"),
             }
         )
+        src_lang, trg_lang = self.config.name.split("_")[0].split("-")
         return datalabs.DatasetInfo(
             description=_DESCRIPTION,
             features=features,
             supervised_keys=None,
             homepage=_HOMEPAGE,
             citation=_CITATION,
+            languages=[src_lang, trg_lang],
             task_templates=[
                 get_task(TaskType.meta_evaluation_nlg)(
                     source_column="source",
@@ -201,11 +203,14 @@ class Wmt20Metrics(datalabs.GeneratorBasedBuilder):
             ), f"language {lang_pair}, {file} number is different from refs"
 
             for sys_datum, final_datum, seg_id in zip(sys_data, final_data, seg_ids):
-                if system_name in score_data[seg_id]:
+                if seg_id in score_data and system_name in score_data[seg_id]:
                     final_datum["hypotheses"].append(
                         {"system_name": system_name, "hypothesis": sys_datum}
                     )
                     final_datum["scores"].append(score_data[seg_id][system_name])
 
-        for id, x in enumerate(final_data):
-            yield id, x
+        id = 0
+        for x in final_data:
+            if x["hypotheses"]:
+                yield id, x
+                id += 1
