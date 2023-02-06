@@ -174,7 +174,7 @@ class Wmt20Metrics(datalabs.GeneratorBasedBuilder):
         with open(os.path.join(text_dir, "details", f"{lang_pair}.txt"), "r") as f:
             for row in f:
                 tmp = row.strip("\n").split("\t")
-                seg_ids[int(tmp[0])-1] = tmp[3] + "::" + tmp[-1]
+                seg_ids[int(tmp[0]) - 1] = tmp[3] + "::" + tmp[-1]
 
         dir_sys = os.path.join(text_dir, "system-outputs", lang_pair)
         file_sys = [
@@ -212,5 +212,11 @@ class Wmt20Metrics(datalabs.GeneratorBasedBuilder):
         id = 0
         for x in final_data:
             if x["hypotheses"]:
+                sorted_hyp_scores = sorted(
+                    [(hyp, score) for hyp, score in zip(x["hypotheses"], x["scores"])],
+                    key=lambda x: x[0]["system_name"],
+                )
+                x["hypotheses"] = [hyp for hyp, _ in sorted_hyp_scores]
+                x["scores"] = [score for _, score in sorted_hyp_scores]
                 yield id, x
                 id += 1
