@@ -145,6 +145,7 @@ class Wmt20Metrics(datalabs.GeneratorBasedBuilder):
         src_lang, trg_lang = lang_pair.split("-")
         score_type = config_cols[1]
         score_col = "Z.SCR" if score_type == "zscore" else "RAW.SCR"
+        score_denom = 1.0 if score_type == "zscore" else 100.0
         filter_human = len(config_cols) > 2
 
         score_data = {}
@@ -153,7 +154,7 @@ class Wmt20Metrics(datalabs.GeneratorBasedBuilder):
             for row in csvreader:
                 system_name = row["SYS"]
                 seg_id = row["SEGID"]
-                score = float(row[score_col])
+                score = float(row[score_col]) / score_denom
                 if seg_id not in score_data:
                     score_data[seg_id] = {}
                 score_data[seg_id][system_name] = score
