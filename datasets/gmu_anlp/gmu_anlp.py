@@ -68,6 +68,7 @@ class CmuAnlp(datalabs.GeneratorBasedBuilder):
                     "label": datalabs.features.ClassLabel(
                         names=labels
                     ),
+                    "language": datalabs.Value("string"),
                 }
             ),
             homepage="https://nlp.cs.gmu.edu/course/cs678-spring23/",
@@ -95,4 +96,4 @@ class CmuAnlp(datalabs.GeneratorBasedBuilder):
         with open(filepath, encoding="utf-8") as data_file:
             data = json.load(data_file)
             for id_, line in enumerate(data):
-                yield id_, line
+                yield id_, {"text": line["text"], "label": line["label"], "language": line["language"]}
